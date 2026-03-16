@@ -6,7 +6,10 @@ import { requireAuth, requireAdmin, type AuthRequest } from "../middlewares/auth
 import { getCurrentPrice } from "../services/priceService.js";
 import type { Server as SocketIOServer } from "socket.io";
 
-const VALID_INSTRUMENTS = ["EUR/USD", "GBP/USD", "BTC/USD"];
+const VALID_INSTRUMENTS = [
+  "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD", "EUR/JPY",
+  "BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT",
+];
 const VALID_DURATIONS = [30, 60, 120, 300];
 const MIN_TRADE = 100;
 
@@ -261,6 +264,38 @@ router.get("/history", requireAuth, async (req: AuthRequest, res) => {
         status: t.status,
         openedAt: t.openedAt,
         closedAt: t.closedAt,
+      }))
+    );
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/recent", requireAuth, async (_req, res) => {
+  try {
+    const trades = await db
+      .select({
+        id: binaryTradesTable.id,
+        instrument: binaryTradesTable.instrument,
+        direction: binaryTradesTable.direction,
+        amount: binaryTradesTable.amount,
+        status: binaryTradesTable.status,
+        openedAt: binaryTradesTable.openedAt,
+        userId: binaryTradesTable.userId,
+      })
+      .from(binaryTradesTable)
+      .orderBy(desc(binaryTradesTable.openedAt))
+      .limit(30);
+
+    res.json(
+      trades.map((t) => ({
+        id: t.id,
+        instrument: t.instrument,
+        direction: t.direction,
+        amount: parseFloat(t.amount as string),
+        status: t.status,
+        openedAt: t.openedAt,
+        user: `User${String(t.userId).padStart(4, "0")}`,
       }))
     );
   } catch {
