@@ -2,7 +2,7 @@ import { Link, useLocation } from 'wouter';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Activity, Mail, Lock, Loader2, ArrowLeft } from 'lucide-react';
+import { Activity, Mail, Lock, Loader2, ArrowLeft, Zap, Shield } from 'lucide-react';
 import { useLogin } from '@workspace/api-client-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 import { useToast } from '@/hooks/use-toast';
@@ -48,6 +48,12 @@ export function Login() {
     loginMutation.mutate({ data });
   };
 
+  const fillAndLogin = (email: string, password: string) => {
+    form.setValue('email', email);
+    form.setValue('password', password);
+    loginMutation.mutate({ data: { email, password } });
+  };
+
   return (
     <div className="min-h-screen animated-bg flex flex-col justify-center items-center p-4 relative">
       <Link href="/" className="absolute top-8 left-8 text-[#848E9C] hover:text-[#F0B90B] font-medium flex items-center gap-2 transition-colors">
@@ -66,6 +72,42 @@ export function Login() {
         </div>
 
         <div className="card-stealth p-8">
+          <div className="mb-6 p-4 rounded-xl border border-[#2B3139] bg-[#0B0E11]/60">
+            <p className="text-xs text-[#848E9C] font-semibold uppercase tracking-widest mb-3">Quick Access</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => fillAndLogin('demo@ecmarketsindia.com', 'password123')}
+                disabled={loginMutation.isPending}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-[#2B3139] bg-[#1E2329] hover:border-[#02C076] hover:bg-[#02C076]/10 transition-all group text-left"
+              >
+                <Zap className="w-4 h-4 text-[#02C076] shrink-0" />
+                <div>
+                  <p className="text-xs font-bold text-[#EAECEF] group-hover:text-[#02C076]">Demo Client</p>
+                  <p className="text-[10px] text-[#848E9C]">Client dashboard</p>
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => fillAndLogin('admin@ecmarketsindia.com', 'password123')}
+                disabled={loginMutation.isPending}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-[#2B3139] bg-[#1E2329] hover:border-[#F0B90B] hover:bg-[#F0B90B]/10 transition-all group text-left"
+              >
+                <Shield className="w-4 h-4 text-[#F0B90B] shrink-0" />
+                <div>
+                  <p className="text-xs font-bold text-[#EAECEF] group-hover:text-[#F0B90B]">Admin Panel</p>
+                  <p className="text-[10px] text-[#848E9C]">Full admin access</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 mb-5">
+            <div className="flex-1 h-px bg-[#2B3139]" />
+            <span className="text-xs text-[#848E9C] font-medium">or sign in manually</span>
+            <div className="flex-1 h-px bg-[#2B3139]" />
+          </div>
+
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-[#EAECEF]">Email Address</label>
