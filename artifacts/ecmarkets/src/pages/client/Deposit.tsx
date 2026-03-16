@@ -175,39 +175,66 @@ export function Deposit() {
                 </div>
               ) : (
                 <div className="space-y-5">
+                  {/* Amount input group */}
                   <div>
-                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Amount (INR) *</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-3.5 text-[#848E9C] font-bold text-sm">₹</span>
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">
+                      Deposit Amount <span className="text-[#CF304A]">*</span>
+                    </label>
+                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#2B3139] bg-[#0B0E11] focus-within:border-[#F0B90B]/60 transition-colors">
+                      <span className="flex items-center px-4 text-[#F0B90B] font-black text-lg bg-[#F0B90B]/10 border-r border-[#2B3139] select-none shrink-0">
+                        ₹
+                      </span>
                       <input
                         type="number"
                         value={upiAmount}
                         onChange={e => { setUpiAmount(e.target.value); setUpiError(''); }}
-                        className="input-stealth pl-8 w-full"
-                        placeholder="e.g. 10000"
+                        className="flex-1 bg-transparent text-white placeholder-[#4B5563] text-sm font-medium px-4 outline-none w-0 min-w-0"
+                        placeholder="Enter amount (Min ₹5,000)"
                         min={5000}
                       />
+                      <span className="flex items-center px-3 text-xs font-bold text-[#848E9C] bg-transparent select-none shrink-0">
+                        INR
+                      </span>
                     </div>
-                    <p className="text-xs text-[#848E9C] mt-1">Minimum: ₹5,000</p>
+                    <p className="text-xs text-[#848E9C] mt-1.5 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] inline-block" />
+                      Minimum deposit: ₹5,000 &nbsp;·&nbsp; Maximum: ₹2,00,000/day
+                    </p>
                   </div>
 
+                  {/* UPI ID input group */}
                   <div>
-                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Your UPI ID *</label>
-                    <input
-                      type="text"
-                      value={upiId}
-                      onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
-                      className="input-stealth w-full"
-                      placeholder="yourname@upi or phone@bankname"
-                    />
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">
+                      Your UPI ID <span className="text-[#CF304A]">*</span>
+                    </label>
+                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#2B3139] bg-[#0B0E11] focus-within:border-[#F0B90B]/60 transition-colors">
+                      <span className="flex items-center px-4 text-[#02C076] font-black text-base bg-[#02C076]/10 border-r border-[#2B3139] select-none shrink-0">
+                        @
+                      </span>
+                      <input
+                        type="text"
+                        value={upiId}
+                        onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
+                        className="flex-1 bg-transparent text-white placeholder-[#4B5563] text-sm font-medium px-4 outline-none w-0 min-w-0"
+                        placeholder="Enter your UPI ID (e.g., user@upi)"
+                      />
+                    </div>
+                    <p className="text-xs text-[#848E9C] mt-1.5">
+                      e.g. name@okicici, 9876543210@paytm, user@ybl
+                    </p>
                   </div>
 
-                  {upiError && <p className="text-sm text-[#CF304A] font-medium">{upiError}</p>}
+                  {upiError && (
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#CF304A]/10 border border-[#CF304A]/30">
+                      <XCircle className="w-4 h-4 text-[#CF304A] shrink-0" />
+                      <p className="text-sm text-[#CF304A] font-medium">{upiError}</p>
+                    </div>
+                  )}
 
                   <button
                     onClick={submitUPI}
                     disabled={!upiValid || depositMutation.isPending}
-                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full btn-gold flex items-center justify-center gap-2 h-12 rounded-xl text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {depositMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
                     Request Deposit
