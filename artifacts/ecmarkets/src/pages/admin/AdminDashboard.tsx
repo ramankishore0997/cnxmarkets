@@ -34,7 +34,7 @@ export function AdminDashboard() {
             <ArrowDownToLine className="w-32 h-32 text-white" />
           </div>
           <p className="text-[#848E9C] font-semibold uppercase tracking-wider text-sm mb-2">Total Deposits</p>
-          <p className="text-4xl font-bold text-white">${stats?.totalDeposits?.toLocaleString() || 0}</p>
+          <p className="text-4xl font-bold text-white">₹{Number(stats?.totalDeposits || 0).toLocaleString('en-IN')}</p>
           <p className="text-sm text-[#F0B90B] font-medium mt-2">{stats?.pendingDeposits || 0} pending</p>
         </div>
 
@@ -43,7 +43,7 @@ export function AdminDashboard() {
             <ArrowUpFromLine className="w-32 h-32 text-white" />
           </div>
           <p className="text-[#848E9C] font-semibold uppercase tracking-wider text-sm mb-2">Total Withdrawals</p>
-          <p className="text-4xl font-bold text-white">${stats?.totalWithdrawals?.toLocaleString() || 0}</p>
+          <p className="text-4xl font-bold text-white">₹{Number(stats?.totalWithdrawals || 0).toLocaleString('en-IN')}</p>
           <p className="text-sm text-[#F0B90B] font-medium mt-2">{stats?.pendingWithdrawals || 0} pending</p>
         </div>
 

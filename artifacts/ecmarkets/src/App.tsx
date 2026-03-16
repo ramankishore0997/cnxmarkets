@@ -34,6 +34,8 @@ import { AdminKyc } from "@/pages/admin/AdminKyc";
 import { AdminUsers } from "@/pages/admin/AdminUsers";
 import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 import { AdminTrades } from "@/pages/admin/AdminTrades";
+import { AdminStrategies } from "@/pages/admin/AdminStrategies";
+import { SelectStrategy } from "@/pages/client/SelectStrategy";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +90,9 @@ function Router() {
       <Route path="/dashboard/notifications">
         <ProtectedRoute component={Notifications} />
       </Route>
+      <Route path="/dashboard/strategies">
+        <ProtectedRoute component={SelectStrategy} />
+      </Route>
 
       {/* Admin Routes */}
       <Route path="/admin">
@@ -107,6 +112,9 @@ function Router() {
       </Route>
       <Route path="/admin/trades">
         <ProtectedRoute component={AdminTrades} adminOnly={true} />
+      </Route>
+      <Route path="/admin/strategies">
+        <ProtectedRoute component={AdminStrategies} adminOnly={true} />
       </Route>
       {/* Fallbacks for other admin routes */}
       <Route path="/admin/:page">

@@ -1,0 +1,152 @@
+Upgrade the ECMarketsIndia platform so that all dashboard numbers and statistics come from the database instead of hardcoded demo values.
+
+Do not rebuild the project. Improve the existing system.
+
+---
+
+REMOVE DEMO VALUES
+
+Scan the entire project and remove any hard-coded numbers such as:
+
+fake balances
+demo statistics
+placeholder profit numbers
+sample trading values
+
+All values must come dynamically from the database.
+
+---
+
+LIVE DATA INTEGRATION
+
+Ensure the following dashboard elements use live database data:
+
+user balance
+deposit history
+withdrawal history
+strategy assignments
+notifications
+account activity
+
+Replace static values with API calls to backend endpoints.
+
+---
+
+ADMIN PANEL IMPROVEMENT
+
+Upgrade the admin panel so that admins can manage platform data.
+
+Admin must be able to:
+
+create strategies
+edit strategies
+delete strategies
+enable or disable strategies
+
+Each strategy must include:
+
+strategy name
+description
+risk level
+recommended capital
+status
+
+Admin should also be able to view:
+
+user accounts
+KYC status
+deposit requests
+withdrawal requests
+
+---
+
+STRATEGY DATABASE
+
+Create a strategies table.
+
+Example structure:
+
+id
+strategy_name
+description
+risk_level
+recommended_capital
+status
+created_at
+
+---
+
+CLIENT STRATEGY SELECTION PAGE
+
+Add a new page in the client portal called:
+
+"Strategy Selection"
+
+Users must be able to:
+
+view all available strategies
+read strategy descriptions
+select a strategy
+
+Selected strategies should be saved in the user account.
+
+Add a confirmation button:
+
+"Activate Strategy"
+
+---
+
+SYNC STRATEGIES FROM WEBSITE
+
+The strategies listed on the public **Strategies Page** must come from the same database used in the admin panel.
+
+This ensures:
+
+admin adds strategy → appears on website → appears in client portal.
+
+---
+
+CLIENT DASHBOARD UPDATE
+
+After login, the client dashboard must show:
+
+account balance
+selected strategy
+recent transactions
+notifications
+
+Remove any placeholder numbers.
+
+---
+
+CURRENCY UPDATE
+
+Replace all dollar ($) symbols with Indian Rupee format.
+
+Use:
+
+₹ symbol
+
+Ensure all prices, balances, and amounts display in INR.
+
+---
+
+UI IMPROVEMENTS
+
+Ensure all pages remain clean and professional.
+
+Add:
+
+responsive layout
+smooth animations
+modern fintech dashboard UI
+
+---
+
+FINAL RESULT
+
+The entire platform should operate with real data from the backend database.
+
+No hardcoded demo numbers should remain.
+
+Strategies should be manageable from the admin panel and selectable by users in the client portal.

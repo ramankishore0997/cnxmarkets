@@ -14,7 +14,8 @@ import {
   X,
   Activity,
   ChevronRight,
-  ShieldAlert
+  ShieldAlert,
+  Zap
 } from 'lucide-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 
@@ -26,6 +27,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Analytics', href: '/dashboard/analytics', icon: LineChart },
+    { name: 'Strategies', href: '/dashboard/strategies', icon: Zap },
     { name: 'Deposit', href: '/dashboard/deposit', icon: Wallet },
     { name: 'Withdraw', href: '/dashboard/withdraw', icon: ArrowDownUp },
     { name: 'KYC & Security', href: '/dashboard/kyc', icon: ShieldCheck },

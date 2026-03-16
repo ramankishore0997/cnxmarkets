@@ -1,177 +1,192 @@
 import { useState } from 'react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
-import { ShieldAlert, TrendingUp, Target, Filter, Star, BookOpen, BarChart2, Shield, Cpu } from 'lucide-react';
+import { useGetStrategies } from '@workspace/api-client-react';
+import { TrendingUp, Filter, BarChart2, Shield, Cpu, Loader2, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 
+const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
+const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
+
 export function Strategies() {
   const [activeFilter, setActiveFilter] = useState('All');
+  const { data: strategiesRaw, isLoading } = useGetStrategies();
 
-  const strategies = [
-    { id: 1, name: "RazrMarket Strategy", type: "Forex", risk: "High", minCapital: 50000, style: "HFT", desc: "High-frequency momentum in liquid forex pairs." },
-    { id: 2, name: "Momentum Alpha", type: "Forex", risk: "Medium", minCapital: 75000, style: "Trend", desc: "Multi-timeframe trend following across G10 pairs." },
-    { id: 3, name: "Volatility Edge", type: "Forex", risk: "Medium", minCapital: 50000, style: "Statistical", desc: "Exploits volatility clustering in EURUSD and GBPUSD." },
-    { id: 4, name: "Trend Pulse", type: "Forex", risk: "Low", minCapital: 25000, style: "AI-driven", desc: "Identifies and rides major directional moves using AI signals." },
-    { id: 5, name: "FX Momentum", type: "Forex", risk: "Medium", minCapital: 50000, style: "Momentum", desc: "Pure price momentum with dynamic position sizing." },
-    { id: 6, name: "Macro Flow", type: "Forex", risk: "Low", minCapital: 100000, style: "Macro", desc: "Global macro signals applied to forex and commodities." },
-    { id: 7, name: "Gold Breakout", type: "Gold", risk: "High", minCapital: 75000, style: "Breakout", desc: "Captures breakout moves in XAUUSD at key levels." },
-    { id: 8, name: "Quantum Trend", type: "Indices", risk: "Medium", minCapital: 100000, style: "Quantitative", desc: "Quantum-inspired optimization for multi-asset trending." },
-    { id: 9, name: "Velocity FX", type: "Forex", risk: "High", minCapital: 150000, style: "HFT", desc: "Ultra-fast intraday strategies on major forex pairs." },
-    { id: 10, name: "Horizon Algo", type: "Indices", risk: "Low", minCapital: 50000, style: "Systematic", desc: "Long-term trend following with weekly rebalancing." },
-    { id: 11, name: "Apex Momentum", type: "Indices", risk: "High", minCapital: 200000, style: "Momentum", desc: "Captures extreme momentum events with strict risk controls." },
-    { id: 12, name: "Signal Matrix", type: "Forex", risk: "Medium", minCapital: 75000, style: "Multi-signal", desc: "Multi-signal confluence for high-probability setups." },
-    { id: 13, name: "Atlas Strategy", type: "Diversified", risk: "Low", minCapital: 200000, style: "Diversified", desc: "Diversified algo portfolio across forex, gold, and indices." },
-    { id: 14, name: "Zenith FX", type: "Forex", risk: "Medium", minCapital: 100000, style: "Adaptive", desc: "Regime-switching algorithm adapts to market conditions." },
-    { id: 15, name: "Neural Edge", type: "Forex", risk: "High", minCapital: 200000, style: "ML/AI", desc: "Neural network-driven pattern recognition for forex." },
-    { id: 16, name: "Dynamic Flow", type: "Forex", risk: "Medium", minCapital: 75000, style: "Dynamic", desc: "Dynamic capital allocation across momentum strategies." },
-    { id: 17, name: "Aurora FX", type: "Forex", risk: "Low", minCapital: 50000, style: "Carry Trade", desc: "Overnight carry trade optimized for positive swap." },
-    { id: 18, name: "Pulse Trader", type: "Forex", risk: "Medium", minCapital: 50000, style: "Intraday", desc: "Intraday pulse-based entries for London/NY sessions." },
-    { id: 19, name: "Vector Algo", type: "Forex", risk: "Low", minCapital: 75000, style: "Mean Rev", desc: "Mean-reversion vectorized strategy on correlated pairs." },
-    { id: 20, name: "Titan Strategy", type: "Diversified", risk: "Low", minCapital: 500000, style: "Institutional", desc: "Institutional-grade multi-strategy allocation engine." },
-  ];
+  const allStrategies = ((strategiesRaw as any[]) || []).filter((s: any) => s.isActive);
 
-  const filters = ['All', 'Forex', 'Gold', 'Indices', 'Low Risk', 'High Return'];
+  const filters = ['All', 'Forex', 'Gold', 'Indices', 'low', 'medium', 'high'];
+  const filterLabels: Record<string, string> = { All: 'All', Forex: 'Forex', Gold: 'Gold', Indices: 'Indices', low: 'Low Risk', medium: 'Med Risk', high: 'High Risk' };
 
-  const filteredStrategies = strategies.filter(s => {
+  const filteredStrategies = allStrategies.filter((s: any) => {
     if (activeFilter === 'All') return true;
-    if (activeFilter === 'Low Risk') return s.risk === 'Low';
-    if (activeFilter === 'High Return') return s.risk === 'High';
-    return s.type === activeFilter || s.desc.includes(activeFilter);
+    if (['low', 'medium', 'high'].includes(activeFilter)) return s.riskProfile === activeFilter;
+    return s.markets?.includes(activeFilter);
   });
+
+  const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+  const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 section-surface border-b border-[#2B3139]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Quantitative <span className="text-[#F0B90B]">Strategies</span></h1>
-          <p className="text-xl text-[#848E9C] max-w-2xl mx-auto">
-            Discover our portfolio of 20+ battle-tested algorithmic trading strategies designed for different market conditions.
-          </p>
+      {/* HERO */}
+      <section className="animated-bg py-20 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#2B3139]/50 border border-[#F0B90B]/30 text-[#F0B90B] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse mr-2 mt-1"></span>
+            {isLoading ? '...' : `${allStrategies.length} Active Strategies Available`}
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl md:text-6xl font-bold text-white mb-6">
+            Institutional Algo<br /><span className="text-gradient-gold">Strategy Catalogue</span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-lg text-[#848E9C] max-w-2xl mx-auto mb-8">
+            Browse our full library of battle-tested quantitative strategies. From low-risk systematic approaches to high-frequency momentum — there's a strategy for every risk profile.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/auth/register" className="btn-gold text-lg py-4 px-8">Start Trading</Link>
+            <Link href="/auth/login" className="btn-ghost text-lg py-4 px-8">Client Portal</Link>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
-      {/* RAZRMARKET FEATURED CARD */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="card-stealth-gold p-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-[#F0B90B] text-black text-xs font-black px-4 py-2 rounded-bl-xl">FLAGSHIP STRATEGY</div>
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
-                <Star className="w-6 h-6 text-[#F0B90B]" />
-                <h2 className="text-2xl font-black text-white">RazrMarket Strategy</h2>
+      {/* STATS BAR */}
+      <section className="section-surface border-y border-[#2B3139] py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            {[
+              { label: 'Live Strategies', value: isLoading ? null : allStrategies.length },
+              { label: 'Low Risk Options', value: isLoading ? null : allStrategies.filter((s: any) => s.riskProfile === 'low').length },
+              { label: 'Avg Win Rate', value: isLoading ? null : (allStrategies.length ? `${(allStrategies.reduce((sum: number, s: any) => sum + parseFloat(s.winRate), 0) / allStrategies.length).toFixed(1)}%` : '—') },
+              { label: 'Avg Monthly Return', value: isLoading ? null : (allStrategies.length ? `+${(allStrategies.reduce((sum: number, s: any) => sum + parseFloat(s.monthlyReturn), 0) / allStrategies.length).toFixed(1)}%` : '—') },
+            ].map((s, i) => (
+              <div key={i} className="py-2">
+                <p className="text-2xl font-bold text-[#F0B90B]">
+                  {s.value === null ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#F0B90B]" /> : s.value}
+                </p>
+                <p className="text-sm text-[#848E9C] font-medium mt-1">{s.label}</p>
               </div>
-              <p className="text-[#848E9C] leading-relaxed mb-6">
-                A high-frequency algorithmic strategy focused on identifying strong momentum opportunities in liquid forex markets using quantitative models. RazrMarket uses a proprietary multi-timeframe momentum indicator combined with adaptive risk management to generate consistent returns across varying market conditions.
-              </p>
-              <Link href="/auth/register" className="btn-gold inline-block font-bold">Activate Strategy →</Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* STRATEGY GRID */}
+      <section className="py-16 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+            <div>
+              <h2 className="text-3xl font-bold text-white">All Strategies</h2>
+              <p className="text-[#848E9C] mt-1">{isLoading ? 'Loading...' : `${filteredStrategies.length} of ${allStrategies.length} strategies shown`}</p>
             </div>
-            <div className="lg:w-96 grid grid-cols-2 gap-3">
-              {[
-                { label:"Win Rate", val:"73.2%" },
-                { label:"Avg Trade Duration", val:"4.7 hrs" },
-                { label:"Max Drawdown", val:"6.8%" },
-                { label:"Sharpe Ratio", val:"2.1" },
-                { label:"Min Capital", val:"₹50,000" },
-                { label:"Status", val:"🟢 Active" },
-              ].map((s, i) => (
-                <div key={i} className="bg-[#0B0E11] rounded-lg p-3 border border-[#2B3139]">
-                  <p className="text-[#848E9C] text-xs mb-1">{s.label}</p>
-                  <p className="text-[#F0B90B] font-bold text-sm">{s.val}</p>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {filters.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold transition-all border ${activeFilter === f ? 'bg-[#F0B90B] text-black border-[#F0B90B]' : 'border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B]/50 hover:text-white'}`}
+                >
+                  <Filter className="w-3.5 h-3.5" /> {filterLabels[f] || f}
+                </button>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-          {filters.map(f => (
-            <button
-              key={f}
-              onClick={() => setActiveFilter(f)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                activeFilter === f 
-                  ? 'bg-[#F0B90B] text-black shadow-md' 
-                  : 'bg-[#1E2329] border border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B] hover:text-[#F0B90B]'
-              }`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredStrategies.map((strategy) => (
-            <div key={strategy.id} className="card-stealth p-6 flex flex-col h-full group">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-bold text-white text-lg leading-tight">{strategy.name}</h3>
-              </div>
-              
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30 px-3 py-1 rounded-full text-xs font-semibold">
-                  {strategy.style}
-                </span>
-                <span className={
-                  strategy.risk === 'Low' ? 'tag-low' : 
-                  strategy.risk === 'Medium' ? 'tag-medium' : 'tag-high'
-                }>
-                  {strategy.risk} Risk
-                </span>
-              </div>
-              
-              <p className="text-[#848E9C] text-sm mb-6 flex-1">{strategy.desc}</p>
-              
-              <div className="border-t border-[#2B3139] pt-4 mt-auto">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-[#848E9C] text-sm">Min Capital:</span>
-                  <span className="font-bold text-[#EAECEF] text-gold">₹{strategy.minCapital.toLocaleString()}</span>
-                </div>
-                <Link href="/auth/register" className="btn-ghost w-full py-2 flex justify-center text-sm font-semibold block text-center">
-                  View Details
-                </Link>
-              </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-[#F0B90B]" />
             </div>
-          ))}
+          ) : filteredStrategies.length === 0 ? (
+            <div className="text-center py-20">
+              <TrendingUp className="w-16 h-16 text-[#2B3139] mx-auto mb-4" />
+              <p className="text-[#848E9C] font-medium">No strategies match this filter.</p>
+            </div>
+          ) : (
+            <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredStrategies.map((s: any, i: number) => (
+                <motion.div key={s.id || i} variants={fadeUp} className="card-stealth p-6 flex flex-col hover:border-[#F0B90B]/30 transition-all group">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: RISK_BG[s.riskProfile], border: `1px solid ${RISK_COLORS[s.riskProfile]}40` }}>
+                      <Zap className="w-5 h-5" style={{ color: RISK_COLORS[s.riskProfile] }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-white truncate">{s.name}</h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs font-bold capitalize px-2 py-0.5 rounded" style={{ background: RISK_BG[s.riskProfile], color: RISK_COLORS[s.riskProfile] }}>{s.riskProfile} risk</span>
+                        <span className="text-xs text-[#848E9C]">{s.markets}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-[#848E9C] mb-5 leading-relaxed flex-1">{s.description}</p>
+
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                      <p className="text-sm font-bold text-[#02C076]">+{s.monthlyReturn}%</p>
+                      <p className="text-[10px] text-[#848E9C] mt-0.5">Monthly</p>
+                    </div>
+                    <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                      <p className="text-sm font-bold text-[#F0B90B]">{s.winRate}%</p>
+                      <p className="text-[10px] text-[#848E9C] mt-0.5">Win Rate</p>
+                    </div>
+                    <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                      <p className="text-sm font-bold text-white">
+                        ₹{s.minCapital >= 100000 ? `${(s.minCapital / 100000).toFixed(0)}L` : `${(s.minCapital / 1000).toFixed(0)}K`}
+                      </p>
+                      <p className="text-[10px] text-[#848E9C] mt-0.5">Min Capital</p>
+                    </div>
+                  </div>
+
+                  <Link href="/auth/register" className="btn-gold text-sm py-2.5 text-center w-full block">
+                    Get Started
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
-      </div>
+      </section>
 
       {/* COMPARISON TABLE */}
-      <div className="py-20 section-dark border-t border-[#2B3139]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white mb-3 text-center">Strategy Comparison Overview</h2>
-          <p className="text-[#848E9C] text-center mb-10">Compare all 20 strategies across key parameters.</p>
-          <div className="card-stealth overflow-x-auto">
-            <table className="w-full text-sm min-w-[900px]">
-              <thead className="bg-[#2B3139]">
-                <tr>
-                  {["Strategy","Style","Risk","Min Capital","Win Rate","MTD Avg","Holding"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left text-[#F0B90B] font-bold text-xs uppercase tracking-wider">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2B3139]">
-                {strategies.map((s, i) => (
-                  <tr key={i} className={`hover:bg-[#2B3139]/40 transition-colors ${i % 2 === 0 ? 'bg-[#0B0E11]/50' : ''}`}>
-                    <td className="px-4 py-3 font-semibold text-white text-xs">{s.name}</td>
-                    <td className="px-4 py-3 text-[#848E9C] text-xs">{s.style}</td>
-                    <td className="px-4 py-3">
-                      <span className={s.risk==='Low'?'tag-low':s.risk==='Medium'?'tag-medium':'tag-high'}>{s.risk}</span>
-                    </td>
-                    <td className="px-4 py-3 text-[#EAECEF] text-xs">₹{s.minCapital.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-[#F0B90B] text-xs font-bold">{(60 + Math.floor(Math.random()*15)).toFixed(1)}%</td>
-                    <td className="px-4 py-3 text-[#02C076] text-xs font-bold">+{(3 + Math.random()*6).toFixed(1)}%</td>
-                    <td className="px-4 py-3 text-[#848E9C] text-xs">{s.style.includes('HFT') ? 'Minutes' : s.style.includes('Carry') ? 'Days' : 'Hours'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {!isLoading && allStrategies.length > 0 && (
+        <section className="py-16 section-surface border-y border-[#2B3139]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-white mb-3">Full Strategy Comparison</h2>
+              <p className="text-[#848E9C] max-w-2xl mx-auto">Side-by-side metrics for all available strategies</p>
+            </div>
+            <div className="card-stealth overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-[#2B3139]">
+                      {['Strategy', 'Risk', 'Min Capital', 'Win Rate', 'Monthly Return', 'Max Drawdown', 'Markets'].map(h => (
+                        <th key={h} className="px-4 py-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#2B3139]">
+                    {allStrategies.map((s: any, i: number) => (
+                      <tr key={s.id || i} className={`hover:bg-[#2B3139]/40 transition-colors ${i % 2 === 0 ? 'bg-[#0B0E11]/50' : ''}`}>
+                        <td className="px-4 py-3 font-semibold text-white text-xs">{s.name}</td>
+                        <td className="px-4 py-3">
+                          <span className="px-2 py-0.5 rounded text-xs font-bold capitalize" style={{ background: RISK_BG[s.riskProfile], color: RISK_COLORS[s.riskProfile] }}>{s.riskProfile}</span>
+                        </td>
+                        <td className="px-4 py-3 text-[#EAECEF] text-xs">₹{Number(s.minCapital).toLocaleString('en-IN')}</td>
+                        <td className="px-4 py-3 text-[#F0B90B] text-xs font-bold">{s.winRate}%</td>
+                        <td className="px-4 py-3 text-[#02C076] text-xs font-bold">+{s.monthlyReturn}%</td>
+                        <td className="px-4 py-3 text-[#CF304A] text-xs font-bold">{s.maxDrawdown}%</td>
+                        <td className="px-4 py-3 text-[#848E9C] text-xs">{s.markets}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+      )}
 
-      {/* EDUCATION SECTION */}
-      <div className="py-20 section-surface border-t border-[#2B3139]">
+      {/* EDUCATION */}
+      <section className="py-20 section-surface border-t border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-3">What is Algorithmic Trading?</h2>
@@ -179,10 +194,10 @@ export function Strategies() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { icon: Cpu, title:"The Science Behind Algo Trading", body:"Algorithmic trading uses mathematical models and statistical analysis to identify market inefficiencies and execute trades at optimal prices. Unlike human traders, algorithms can process thousands of data points simultaneously and react in microseconds — eliminating emotional bias and execution delays." },
-              { icon: BarChart2, title:"Backtesting & Validation", body:"Before any strategy goes live, it is rigorously backtested against 5+ years of historical data. We use walk-forward optimization to prevent overfitting, and all strategies must pass a strict out-of-sample validation period on a live demo account before managing real client capital." },
-              { icon: Shield, title:"Risk-Adjusted Returns", body:"Raw returns mean nothing without context. We focus on Sharpe Ratio (return per unit of risk), Sortino Ratio (downside risk focus), and Maximum Drawdown. A strategy that returns 50% with 40% drawdown is far inferior to one returning 30% with only 8% drawdown — we optimize for the latter." },
-              { icon: TrendingUp, title:"Why Institutions Use Algos", body:"Hedge funds, investment banks, and proprietary trading firms have used algorithmic trading for decades. The edge? Speed, consistency, and the ability to trade 24/5 without emotion. ECMarketsIndia brings this institutional-grade technology to retail investors through our managed algo platform." },
+              { icon: Cpu, title: 'The Science Behind Algo Trading', body: 'Algorithmic trading uses mathematical models and statistical analysis to identify market inefficiencies and execute trades at optimal prices. Unlike human traders, algorithms can process thousands of data points simultaneously and react in microseconds — eliminating emotional bias and execution delays.' },
+              { icon: BarChart2, title: 'Backtesting & Validation', body: 'Before any strategy goes live, it is rigorously backtested against 5+ years of historical data. We use walk-forward optimization to prevent overfitting, and all strategies must pass a strict out-of-sample validation period on a live demo account before managing real client capital.' },
+              { icon: Shield, title: 'Risk-Adjusted Returns', body: 'Raw returns mean nothing without context. We focus on Sharpe Ratio, Sortino Ratio, and Maximum Drawdown. A strategy that returns 50% with 40% drawdown is far inferior to one returning 30% with only 8% drawdown — we optimize for the latter.' },
+              { icon: TrendingUp, title: 'Why Institutions Use Algos', body: 'Hedge funds, investment banks, and proprietary trading firms have used algorithmic trading for decades. The edge? Speed, consistency, and the ability to trade 24/5 without emotion. ECMarketsIndia brings this institutional-grade technology to retail investors.' },
             ].map((card, i) => (
               <div key={i} className="card-stealth p-8 flex gap-5">
                 <div className="w-12 h-12 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center shrink-0">
@@ -196,15 +211,19 @@ export function Strategies() {
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="py-20 bg-[#1E2329] border-t border-[#2B3139] text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">Ready to automate your trading?</h2>
-        <p className="text-[#848E9C] mb-8">Create an account today and get access to our full strategy suite.</p>
-        <Link href="/auth/register" className="btn-gold inline-block font-bold text-lg">
-          Open Free Account
-        </Link>
-      </div>
+      {/* CTA */}
+      <section className="py-16 section-dark text-center border-t border-[#2B3139]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-white mb-4">Ready to Activate a Strategy?</h2>
+          <p className="text-[#848E9C] mb-8">Open your account in minutes. No trading experience required.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/auth/register" className="btn-gold text-lg py-4 px-8">Create Account</Link>
+            <Link href="/auth/login" className="btn-ghost text-lg py-4 px-8">Login to Portal</Link>
+          </div>
+        </div>
+      </section>
     </PublicLayout>
   );
 }

@@ -296,6 +296,18 @@ export const SubmitWithdrawalBody = zod.object({
 });
 
 /**
+ * @summary Client selects or changes their strategy
+ */
+export const SelectStrategyBody = zod.object({
+  strategyId: zod.number().optional(),
+});
+
+export const SelectStrategyResponse = zod.object({
+  message: zod.string(),
+  success: zod.boolean(),
+});
+
+/**
  * @summary Get transaction history
  */
 export const GetTransactionsResponseItem = zod.object({
@@ -557,6 +569,26 @@ export const UpdateAdminTransactionResponse = zod.object({
 });
 
 /**
+ * @summary Get all strategies (admin, including inactive)
+ */
+export const GetAdminStrategiesResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  riskProfile: zod.enum(["low", "medium", "high"]),
+  minCapital: zod.number(),
+  winRate: zod.number(),
+  maxDrawdown: zod.number(),
+  monthlyReturn: zod.number(),
+  markets: zod.string(),
+  isActive: zod.boolean(),
+  createdAt: zod.string(),
+});
+export const GetAdminStrategiesResponse = zod.array(
+  GetAdminStrategiesResponseItem,
+);
+
+/**
  * @summary Create a new strategy (admin)
  */
 export const CreateAdminStrategyBody = zod.object({
@@ -569,6 +601,18 @@ export const CreateAdminStrategyBody = zod.object({
   monthlyReturn: zod.number(),
   markets: zod.string(),
   isActive: zod.boolean().optional(),
+});
+
+/**
+ * @summary Delete a strategy (admin)
+ */
+export const DeleteAdminStrategyParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteAdminStrategyResponse = zod.object({
+  message: zod.string(),
+  success: zod.boolean(),
 });
 
 /**

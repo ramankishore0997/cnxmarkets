@@ -1,0 +1,42 @@
+Yeh lijiye ek "Super Prompt" jo aapke admin panel aur client portal dono ko puri tarah se dynamic (live) bana dega, dummy data hata dega, aur strategy selection ka poora control client aur admin dono ko de dega.
+
+Replit AI agent ko yeh pura copy-paste karke de dijiye:
+
+Super Prompt for Replit Agent
+Copy and paste this text:
+
+"I need a comprehensive overhaul of both the Admin Panel and the Client Portal to make the entire application fully dynamic. Please execute the following updates step-by-step:
+
+1. Remove Dummy Data & Make All Numbers LIVE:
+
+Audit All Dashboards: Scan the entire codebase (both Admin Panel and Client Portal dashboards).
+
+Remove Hardcoded Values: Strip out all static, hardcoded, or 'dummy' numbers (e.g., fake wallet balances, fake total users, fake profit/loss stats, placeholder charts).
+
+Connect to Database: Replace all these static numbers with dynamic variables fetched directly from the database in real-time. If a user has 0 balance or no trades, it must strictly show '0'.
+
+2. Global Currency Update (USD to INR):
+
+Search the entire project (frontend and backend) and replace all instances of the Dollar symbol ($) or 'USD' with the Indian Rupee symbol (₹) or 'INR'.
+
+3. Strategy Synchronization (Read Existing Pages):
+
+Scan Pages: Please read the existing code for the 'Home' page and the 'Strategies' page.
+
+Extract Strategies: Extract all the trading strategies mentioned on those pages and ensure they are populated into the Strategies database table so they act as the single source of truth.
+
+4. Client Portal - New Strategy Selection Page:
+
+Create New Page: Build a dedicated 'Select Strategy' page inside the Client Portal.
+
+Display Options: Fetch and display all available strategies (extracted in step 3) on this page with their details.
+
+Client Selection: Add a 'Select' or 'Subscribe' button for each strategy. When a client clicks it, update their user profile in the database to reflect this newly active strategy.
+
+5. Admin Panel - Strategy Override:
+
+Ensure the Admin Panel's user management section is synced with this logic.
+
+The admin must be able to view the strategy selected by the client, and also have a dropdown menu to manually change, assign, or remove a strategy for any specific client.
+
+Please ensure all necessary database migrations, API routes (GET for fetching, POST/PUT for updating), and frontend state management are implemented so the UI reflects changes instantly without needing a hard refresh."

@@ -529,3 +529,7 @@ export interface ManualTradeRequest {
   openedAt?: string;
   closedAt?: string;
 }
+
+export type SelectStrategyBody = {
+  strategyId?: number;
+};

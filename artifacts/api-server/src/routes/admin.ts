@@ -286,6 +286,20 @@ router.patch("/transactions/:id", requireAdmin, async (req, res) => {
   }
 });
 
+router.get("/strategies", requireAdmin, async (_req, res) => {
+  try {
+    const strats = await db.select().from(strategiesTable).orderBy(strategiesTable.name);
+    res.json(strats.map(s => ({
+      id: s.id, name: s.name, description: s.description, riskProfile: s.riskProfile,
+      minCapital: parseFloat(s.minCapital as string), winRate: parseFloat(s.winRate as string),
+      maxDrawdown: parseFloat(s.maxDrawdown as string), monthlyReturn: parseFloat(s.monthlyReturn as string),
+      markets: s.markets, isActive: s.isActive, createdAt: s.createdAt.toISOString(),
+    })));
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/strategies", requireAdmin, async (req, res) => {
   try {
     const { name, description, riskProfile, minCapital, winRate, maxDrawdown, monthlyReturn, markets, isActive } = req.body;
@@ -318,6 +332,16 @@ router.patch("/strategies/:id", requireAdmin, async (req, res) => {
       maxDrawdown: parseFloat(strategy.maxDrawdown as string), monthlyReturn: parseFloat(strategy.monthlyReturn as string),
       markets: strategy.markets, isActive: strategy.isActive, createdAt: strategy.createdAt.toISOString(),
     });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/strategies/:id", requireAdmin, async (req, res) => {
+  try {
+    const stratId = parseInt(req.params.id);
+    await db.delete(strategiesTable).where(eq(strategiesTable.id, stratId));
+    res.json({ message: "Strategy deleted", success: true });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }

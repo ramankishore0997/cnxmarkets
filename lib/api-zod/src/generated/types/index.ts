@@ -44,6 +44,7 @@ export * from "./notificationType";
 export * from "./performanceData";
 export * from "./profileUpdateRequest";
 export * from "./registerRequest";
+export * from "./selectStrategyBody";
 export * from "./strategy";
 export * from "./strategyCreateRequest";
 export * from "./strategyCreateRequestRiskProfile";

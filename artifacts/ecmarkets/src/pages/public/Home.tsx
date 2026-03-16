@@ -154,7 +154,7 @@ export function Home() {
                       <h3 className="text-[#EAECEF] font-semibold">Portfolio Overview</h3>
                       <span className="bg-[#02C076]/20 text-[#02C076] text-[10px] px-2 py-0.5 rounded font-bold uppercase">Live</span>
                     </div>
-                    <p className="text-3xl font-bold text-white mb-1">Total Equity: $485,290.00</p>
+                    <p className="text-3xl font-bold text-white mb-1">Total Equity: ₹4,85,290.00</p>
                   </div>
                   <div className="bg-[#F0B90B]/10 border border-[#F0B90B]/30 text-[#F0B90B] flex items-center gap-1 text-sm font-bold px-3 py-1 rounded-md">
                     +12.4% MTD
@@ -186,7 +186,7 @@ export function Home() {
                         <p className="font-semibold text-[#EAECEF]">Quantum Algo • Active</p>
                       </div>
                     </div>
-                    <span className="font-bold text-[#02C076]">+$1,240.50</span>
+                    <span className="font-bold text-[#02C076]">+₹1,240.50</span>
                   </div>
                   <div className="flex justify-between items-center p-4 bg-[#0B0E11] rounded-lg border border-[#2B3139]">
                     <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ export function Home() {
                         <p className="font-semibold text-[#EAECEF]">Gold Scalper • Active</p>
                       </div>
                     </div>
-                    <span className="font-bold text-[#02C076]">+$890.20</span>
+                    <span className="font-bold text-[#02C076]">+₹890.20</span>
                   </div>
                 </div>
               </motion.div>
@@ -213,7 +213,7 @@ export function Home() {
               <div className="text-sm text-[#848E9C] font-semibold tracking-wider">Traders</div>
             </div>
             <div className="flex-1 py-4 md:py-0">
-              <div className="text-4xl font-bold text-gold mb-1"><Counter prefix="$" end={120} suffix="M+" /></div>
+              <div className="text-4xl font-bold text-gold mb-1"><Counter prefix="₹" end={120} suffix="M+" /></div>
               <div className="text-sm text-[#848E9C] font-semibold tracking-wider">Volume</div>
             </div>
             <div className="flex-1 py-4 md:py-0">

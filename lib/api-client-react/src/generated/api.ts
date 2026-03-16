@@ -40,6 +40,7 @@ import type {
   PerformanceData,
   ProfileUpdateRequest,
   RegisterRequest,
+  SelectStrategyBody,
   Strategy,
   StrategyCreateRequest,
   SuccessResponse,
@@ -1156,6 +1157,92 @@ export const useSubmitWithdrawal = <
   TContext
 > => {
   return useMutation(getSubmitWithdrawalMutationOptions(options));
+};
+
+/**
+ * @summary Client selects or changes their strategy
+ */
+export const getSelectStrategyUrl = () => {
+  return `/api/select-strategy`;
+};
+
+export const selectStrategy = async (
+  selectStrategyBody: SelectStrategyBody,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getSelectStrategyUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(selectStrategyBody),
+  });
+};
+
+export const getSelectStrategyMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof selectStrategy>>,
+    TError,
+    { data: BodyType<SelectStrategyBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof selectStrategy>>,
+  TError,
+  { data: BodyType<SelectStrategyBody> },
+  TContext
+> => {
+  const mutationKey = ["selectStrategy"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof selectStrategy>>,
+    { data: BodyType<SelectStrategyBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return selectStrategy(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SelectStrategyMutationResult = NonNullable<
+  Awaited<ReturnType<typeof selectStrategy>>
+>;
+export type SelectStrategyMutationBody = BodyType<SelectStrategyBody>;
+export type SelectStrategyMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Client selects or changes their strategy
+ */
+export const useSelectStrategy = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof selectStrategy>>,
+    TError,
+    { data: BodyType<SelectStrategyBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof selectStrategy>>,
+  TError,
+  { data: BodyType<SelectStrategyBody> },
+  TContext
+> => {
+  return useMutation(getSelectStrategyMutationOptions(options));
 };
 
 /**
@@ -2276,6 +2363,81 @@ export const useUpdateAdminTransaction = <
 };
 
 /**
+ * @summary Get all strategies (admin, including inactive)
+ */
+export const getGetAdminStrategiesUrl = () => {
+  return `/api/admin/strategies`;
+};
+
+export const getAdminStrategies = async (
+  options?: RequestInit,
+): Promise<Strategy[]> => {
+  return customFetch<Strategy[]>(getGetAdminStrategiesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetAdminStrategiesQueryKey = () => {
+  return [`/api/admin/strategies`] as const;
+};
+
+export const getGetAdminStrategiesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAdminStrategies>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAdminStrategies>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetAdminStrategiesQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getAdminStrategies>>
+  > = ({ signal }) => getAdminStrategies({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAdminStrategies>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAdminStrategiesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAdminStrategies>>
+>;
+export type GetAdminStrategiesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get all strategies (admin, including inactive)
+ */
+
+export function useGetAdminStrategies<
+  TData = Awaited<ReturnType<typeof getAdminStrategies>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAdminStrategies>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetAdminStrategiesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * @summary Create a new strategy (admin)
  */
 export const getCreateAdminStrategyUrl = () => {
@@ -2359,6 +2521,90 @@ export const useCreateAdminStrategy = <
   TContext
 > => {
   return useMutation(getCreateAdminStrategyMutationOptions(options));
+};
+
+/**
+ * @summary Delete a strategy (admin)
+ */
+export const getDeleteAdminStrategyUrl = (id: number) => {
+  return `/api/admin/strategies/${id}`;
+};
+
+export const deleteAdminStrategy = async (
+  id: number,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getDeleteAdminStrategyUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteAdminStrategyMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteAdminStrategy>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteAdminStrategy>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteAdminStrategy"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteAdminStrategy>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteAdminStrategy(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteAdminStrategyMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteAdminStrategy>>
+>;
+
+export type DeleteAdminStrategyMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a strategy (admin)
+ */
+export const useDeleteAdminStrategy = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteAdminStrategy>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteAdminStrategy>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDeleteAdminStrategyMutationOptions(options));
 };
 
 /**

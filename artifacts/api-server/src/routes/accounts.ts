@@ -133,4 +133,34 @@ router.get("/allocations", requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
+router.post("/select-strategy", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const { strategyId } = req.body;
+    const userId = req.user!.id;
+
+    let resolvedName: string | null = null;
+    let resolvedId: number | null = null;
+
+    if (strategyId && strategyId !== 0) {
+      const [strat] = await db.select().from(strategiesTable).where(eq(strategiesTable.id, parseInt(String(strategyId)))).limit(1);
+      if (!strat) { res.status(404).json({ message: "Strategy not found" }); return; }
+      if (!strat.isActive) { res.status(400).json({ message: "Strategy is not available" }); return; }
+      resolvedName = strat.name;
+      resolvedId = strat.id;
+    }
+
+    const [existing] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+    if (existing) {
+      await db.update(accountsTable).set({ assignedStrategyId: resolvedId, assignedStrategy: resolvedName, updatedAt: new Date() }).where(eq(accountsTable.userId, userId));
+    } else {
+      await db.insert(accountsTable).values({ userId, totalBalance: "0", totalProfit: "0", totalDeposits: "0", totalWithdrawals: "0", assignedStrategyId: resolvedId, assignedStrategy: resolvedName });
+    }
+
+    res.json({ message: "Strategy updated successfully", assignedStrategyId: resolvedId, assignedStrategy: resolvedName });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
