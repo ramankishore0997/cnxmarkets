@@ -8,7 +8,7 @@ import {
   Loader2, Copy, CheckCircle2, Smartphone, Bitcoin
 } from 'lucide-react';
 
-const USDT_ADDRESS = 'TRX9xQmKLpVwYzN8aB3cDfGhJkMnPqRsUv';
+const USDT_ADDRESS = 'TCnevWTfAeo6SmaJoNF5k5kbZzDxsuR1eo';
 const UPI_HANDLE = 'ecmarkets@upi';
 
 function StatusBadge({ status }: { status: string }) {
@@ -258,12 +258,17 @@ export function Deposit() {
                     </button>
                   </div>
 
-                  {/* QR Placeholder */}
-                  <div className="flex flex-col items-center py-6 bg-[#0B0E11] rounded-xl border border-[#2B3139] border-dashed">
-                    <div className="w-32 h-32 bg-[#2B3139] rounded-xl flex items-center justify-center mb-2">
-                      <Bitcoin className="w-12 h-12 text-[#F0B90B]/30" />
+                  {/* QR Code */}
+                  <div className="flex flex-col items-center py-6 bg-[#0B0E11] rounded-xl border border-[#2B3139]">
+                    <div className="w-48 h-48 bg-white rounded-xl flex items-center justify-center p-2 mb-3 shadow-[0_0_24px_rgba(240,185,11,0.15)]">
+                      <img
+                        src="/usdt-qr.jpg"
+                        alt="USDT TRC20 QR Code"
+                        className="w-full h-full object-contain rounded-lg"
+                      />
                     </div>
-                    <p className="text-xs text-[#848E9C]">QR Code — TRC20 Network</p>
+                    <p className="text-xs font-bold text-[#F0B90B] uppercase tracking-wider">Scan to Send USDT</p>
+                    <p className="text-xs text-[#848E9C] mt-1">TRC20 (Tron) Network Only</p>
                   </div>
 
                   <div className="bg-[#F0B90B]/10 border border-[#F0B90B]/30 rounded-xl p-3 text-xs text-[#F0B90B] font-semibold">
