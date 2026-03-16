@@ -10,12 +10,9 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-const AADHAR_REGEX = /^\d{12}$/;
-
 const schema = z.object({
-  panNumber: z.string().regex(PAN_REGEX, 'Invalid PAN format (e.g. ABCDE1234F)'),
-  aadharNumber: z.string().regex(AADHAR_REGEX, 'Aadhar must be 12 digits'),
+  panNumber: z.string().min(1, 'PAN number is required'),
+  aadharNumber: z.string().min(1, 'Aadhaar number is required'),
   panCardFrontUrl: z.string().min(1, 'PAN card front image required'),
   panCardBackUrl: z.string().min(1, 'PAN card back image required'),
   aadharCardFrontUrl: z.string().min(1, 'Aadhar card front image required'),
@@ -241,7 +238,6 @@ export function Kyc() {
                       {...register('aadharNumber')}
                       placeholder="123456789012"
                       className="input-stealth font-mono"
-                      maxLength={12}
                     />
                     {errors.aadharNumber && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{errors.aadharNumber.message}</p>}
                   </div>
