@@ -156,6 +156,11 @@ export function BinaryTrading() {
   const prevPrices = useRef<Record<string, number>>({ ...BASE_PRICES });
   const pricesRef = useRef<Record<string, number>>({ ...BASE_PRICES });
 
+  const lastAccepted = useRef<Record<string, { price: number; ts: number }>>({});
+  const recentTicks = useRef<Record<string, number[]>>({});
+  const priceLineRef = useRef<any>(null);
+  const entryLinesRef = useRef<Map<number, any>>(new Map());
+
   const token = localStorage.getItem('ecm_token');
   const userId = getUserIdFromToken();
   const authHdr = token ? { Authorization: `Bearer ${token}` } : {};
@@ -260,12 +265,30 @@ export function BinaryTrading() {
     const data = aggregateCandles(minuteCandles.current[instRef.current], tfRef.current);
     series.setData(data);
 
+    const initPrice = BASE_PRICES[instRef.current] ?? 1;
+    const pl = series.createPriceLine({
+      price: initPrice,
+      color: '#FFB800',
+      lineWidth: 1,
+      lineStyle: 2,
+      axisLabelVisible: true,
+      title: 'Live',
+    });
+    priceLineRef.current = pl;
+
     const ro = new ResizeObserver(() => {
       if (chartRef.current) chart.applyOptions({ width: chartRef.current.clientWidth, height: chartRef.current.clientHeight });
     });
     if (chartRef.current.parentElement) ro.observe(chartRef.current.parentElement);
 
-    return () => { ro.disconnect(); chart.remove(); chartInstance.current = null; seriesRef.current = null; };
+    return () => {
+      priceLineRef.current = null;
+      entryLinesRef.current.clear();
+      ro.disconnect();
+      chart.remove();
+      chartInstance.current = null;
+      seriesRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -273,7 +296,46 @@ export function BinaryTrading() {
     ensureCandles(instrument);
     const data = aggregateCandles(minuteCandles.current[instrument], timeframe);
     seriesRef.current.setData(data);
+    if (priceLineRef.current) {
+      const currentP = pricesRef.current[instrument] ?? BASE_PRICES[instrument] ?? 1;
+      try { priceLineRef.current.applyOptions({ price: currentP }); } catch {}
+    }
+    entryLinesRef.current.forEach(line => {
+      try { seriesRef.current?.removePriceLine(line); } catch {}
+    });
+    entryLinesRef.current.clear();
   }, [instrument, timeframe]);
+
+  useEffect(() => {
+    if (!seriesRef.current) return;
+    const series = seriesRef.current;
+    const existingIds = new Set(entryLinesRef.current.keys());
+
+    activeTrades.forEach(trade => {
+      if (trade.instrument !== instrument) return;
+      if (entryLinesRef.current.has(trade.id)) return;
+      try {
+        const line = series.createPriceLine({
+          price: trade.entryPrice,
+          color: trade.direction === 'call' ? '#02C076' : '#CF304A',
+          lineWidth: 1,
+          lineStyle: 1,
+          axisLabelVisible: true,
+          title: `Entry ${trade.direction === 'call' ? '↑' : '↓'}`,
+        });
+        entryLinesRef.current.set(trade.id, line);
+      } catch {}
+    });
+
+    const activeIds = new Set(activeTrades.filter(t => t.instrument === instrument).map(t => t.id));
+    existingIds.forEach(id => {
+      if (!activeIds.has(id)) {
+        const line = entryLinesRef.current.get(id);
+        if (line) { try { series.removePriceLine(line); } catch {} }
+        entryLinesRef.current.delete(id);
+      }
+    });
+  }, [activeTrades, instrument]);
 
   useEffect(() => {
     const socket = connectSocket(window.location.origin, {
@@ -287,26 +349,73 @@ export function BinaryTrading() {
     socket.on('disconnect', () => setConnected(false));
 
     socket.on('price:tick', (d: { instrument: string; price: number; open: number; high: number; low: number; time: number }) => {
-      const { instrument: inst, price, open, high, low, time } = d;
+      const { instrument: inst, open, high, low, time } = d;
+      let { price } = d;
+      const dec = INST_MAP[inst]?.decimals ?? 5;
 
-      setPrices(prev => {
-        const old = prev[inst] ?? price;
+      const prev = lastAccepted.current[inst];
+      if (prev) {
+        const pctChange = Math.abs(price - prev.price) / prev.price;
+        const msElapsed = Date.now() - prev.ts;
+        if (pctChange > 0.02 && msElapsed < 1000) {
+          const bucket = recentTicks.current[inst] ?? [];
+          const last4 = [...bucket.slice(-3), price];
+          price = parseFloat((last4.reduce((a, b) => a + b, 0) / last4.length).toFixed(dec));
+        }
+      }
+      const tickBucket = recentTicks.current[inst] ?? [];
+      recentTicks.current[inst] = [...tickBucket.slice(-9), price];
+      lastAccepted.current[inst] = { price, ts: Date.now() };
+
+      setPrices(prev2 => {
+        const old = prev2[inst] ?? price;
         setPriceDir(pd => ({ ...pd, [inst]: price >= old ? 'up' : 'down' }));
         prevPrices.current[inst] = old;
         pricesRef.current = { ...pricesRef.current, [inst]: price };
-        return { ...prev, [inst]: price };
+        return { ...prev2, [inst]: price };
       });
 
       const bar: CandlestickData = { time: time as UTCTimestamp, open, high, low, close: price };
       ensureCandles(inst);
       const candles = minuteCandles.current[inst];
-      const last = candles[candles.length - 1];
-      if (last && (last.time as number) === (bar.time as number)) candles[candles.length - 1] = bar;
-      else { candles.push(bar); if (candles.length > 720) candles.shift(); }
+      const lastCandle = candles[candles.length - 1];
+      if (lastCandle && (lastCandle.time as number) === (bar.time as number)) {
+        candles[candles.length - 1] = bar;
+      } else {
+        candles.push(bar);
+        if (candles.length > 720) candles.shift();
+      }
 
       if (inst === instRef.current && seriesRef.current) {
-        const aggregated = aggregateCandles(minuteCandles.current[inst], tfRef.current);
-        try { seriesRef.current.setData(aggregated); } catch {}
+        if (tfRef.current === 1) {
+          try {
+            seriesRef.current.update(bar);
+          } catch {
+            try { seriesRef.current.setData(aggregateCandles(candles, 1)); } catch {}
+          }
+        } else {
+          const tfSec = tfRef.current * 60;
+          const bucketStart = Math.floor((bar.time as number) / tfSec) * tfSec;
+          const bucketBars = candles.filter(b => (b.time as number) >= bucketStart);
+          if (bucketBars.length > 0) {
+            const aggBar: CandlestickData = {
+              time: bucketStart as UTCTimestamp,
+              open: bucketBars[0].open,
+              high: Math.max(...bucketBars.map(b => b.high)),
+              low: Math.min(...bucketBars.map(b => b.low)),
+              close: bucketBars[bucketBars.length - 1].close,
+            };
+            try {
+              seriesRef.current.update(aggBar);
+            } catch {
+              try { seriesRef.current.setData(aggregateCandles(candles, tfRef.current)); } catch {}
+            }
+          }
+        }
+
+        if (priceLineRef.current) {
+          try { priceLineRef.current.applyOptions({ price }); } catch {}
+        }
       }
     });
 
