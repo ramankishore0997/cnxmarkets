@@ -22,15 +22,16 @@ import {
 import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
-  { name: 'Overview',       href: '/dashboard',             icon: LayoutDashboard },
-  { name: 'Analytics',      href: '/dashboard/analytics',   icon: LineChart },
-  { name: 'Trade History',  href: '/dashboard/trades',      icon: History },
-  { name: 'Strategies',     href: '/dashboard/strategies',  icon: Zap },
-  { name: 'Deposit',        href: '/dashboard/deposit',     icon: Wallet },
-  { name: 'Withdraw',       href: '/dashboard/withdraw',    icon: ArrowDownUp },
-  { name: 'KYC & Security', href: '/dashboard/kyc',         icon: ShieldCheck },
-  { name: 'Profile',        href: '/dashboard/profile',     icon: User },
-  { name: 'Notifications',  href: '/dashboard/notifications', icon: Bell },
+  { name: 'Overview',         href: '/dashboard',               icon: LayoutDashboard },
+  { name: 'Analytics',        href: '/dashboard/analytics',     icon: LineChart },
+  { name: 'Binary Trading',   href: '/dashboard/binary',        icon: TrendingUp, highlight: true },
+  { name: 'Trade History',    href: '/dashboard/trades',        icon: History },
+  { name: 'Strategies',       href: '/dashboard/strategies',    icon: Zap },
+  { name: 'Deposit',          href: '/dashboard/deposit',       icon: Wallet },
+  { name: 'Withdraw',         href: '/dashboard/withdraw',      icon: ArrowDownUp },
+  { name: 'KYC & Security',   href: '/dashboard/kyc',           icon: ShieldCheck },
+  { name: 'Profile',          href: '/dashboard/profile',       icon: User },
+  { name: 'Notifications',    href: '/dashboard/notifications',  icon: Bell },
 ];
 
 function SidebarLogo() {
@@ -83,6 +84,7 @@ function KycBadge({ status }: { status?: string }) {
 
 function NavItem({ item, isActive, onClose }: { item: typeof navItems[0]; isActive: boolean; onClose: () => void }) {
   const Icon = item.icon;
+  const isHighlight = (item as any).highlight;
   return (
     <Link
       href={item.href}
@@ -90,13 +92,18 @@ function NavItem({ item, isActive, onClose }: { item: typeof navItems[0]; isActi
       className={`flex items-center gap-3 py-3 pr-4 text-sm font-semibold transition-all duration-200 relative group
         ${isActive
           ? 'nav-item-active text-[#FFB800] pl-[13px]'
+          : isHighlight
+          ? 'pl-4 text-[#FFB800]/80 hover:text-[#FFB800]'
           : 'nav-item-hover text-[#6B7280] hover:text-[#F8FAFC] pl-4'
         }`}
     >
       <Icon className={`w-[18px] h-[18px] shrink-0 transition-all duration-200 ${
-        isActive ? 'text-[#FFB800]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
+        isActive ? 'text-[#FFB800]' : isHighlight ? 'text-[#FFB800]/70 group-hover:text-[#FFB800]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
       }`} />
       <span className="flex-1 truncate">{item.name}</span>
+      {isHighlight && !isActive && (
+        <span className="text-[9px] font-black bg-[#FFB800] text-black px-1.5 py-0.5 rounded-full uppercase tracking-wide">LIVE</span>
+      )}
       {isActive && (
         <ChevronRight className="w-3.5 h-3.5 text-[#FFB800]/60 shrink-0" />
       )}

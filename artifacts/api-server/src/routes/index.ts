@@ -11,6 +11,7 @@ import contactRouter from "./contact.js";
 import usersRouter from "./users.js";
 import adminRouter from "./admin.js";
 import adminSettingsRouter from "./adminSettings.js";
+import binaryRouter from "./binary.js";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/contact", contactRouter);
 router.use("/users", usersRouter);
 router.use("/admin", adminRouter);
 router.use("/admin", adminSettingsRouter);
+router.use("/binary", binaryRouter);
 
 export default router;
