@@ -7,7 +7,7 @@ import {
 } from 'lightweight-charts';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
-import { TrendingUp, TrendingDown, Zap, CheckCircle, XCircle, RefreshCw, Wallet, Activity, Clock, Users } from 'lucide-react';
+import { TrendingUp, TrendingDown, Zap, CheckCircle, XCircle, RefreshCw, Wallet, Activity, Clock, Users, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -45,13 +45,17 @@ const TIMEFRAMES = [
   { minutes: 60, label: '1h' },
 ];
 
-const FAKE_USERS = [
-  'Rahul K.', 'Priya S.', 'Amit J.', 'Sneha P.', 'Vikram M.',
-  'Anjali R.', 'Deepak T.', 'Sunita B.', 'Rajesh N.', 'Kavya L.',
-  'Suresh M.', 'Pooja V.', 'Arjun R.', 'Meera K.', 'Rohit S.',
-  'Divya T.', 'Karan B.', 'Nisha R.', 'Anil P.', 'Ritu M.',
+const FAKE_NAMES = [
+  'Rahul', 'Priya', 'Amit', 'Sneha', 'Vikram', 'Anjali', 'Deepak', 'Sunita',
+  'Rajesh', 'Kavya', 'Suresh', 'Pooja', 'Arjun', 'Meera', 'Rohit', 'Divya',
+  'Karan', 'Nisha', 'Anil', 'Ritu', 'Sanjay', 'Lakshmi', 'Mohan', 'Geeta',
 ];
 const FAKE_AMTS = [500, 1000, 2000, 2500, 5000, 10000];
+
+function maskUser(name: string): string {
+  return name.length >= 4 ? `${name.slice(0, 4)}****` : `${name}****`;
+}
+function rand<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function getUserIdFromToken(): number | null {
   try {
@@ -64,8 +68,6 @@ function getUserIdFromToken(): number | null {
 function fmt(price: number, inst: string): string {
   return price.toFixed(INST_MAP[inst]?.decimals ?? 5);
 }
-
-function rand<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function generateCandles(instrument: string, count = 120, tfMinutes = 1): CandlestickData[] {
   const base = BASE_PRICES[instrument] ?? 1;
@@ -101,31 +103,18 @@ function aggregateCandles(bars: CandlestickData[], tfMinutes: number): Candlesti
   return Array.from(map.values()).sort((a, b) => (a.time as number) - (b.time as number));
 }
 
-function getLastAggBar(bars: CandlestickData[], tfMinutes: number): CandlestickData | null {
-  if (!bars.length) return null;
-  if (tfMinutes === 1) return bars[bars.length - 1];
-  const tfSec = tfMinutes * 60;
-  const last = bars[bars.length - 1];
-  const bucketStart = Math.floor((last.time as number) / tfSec) * tfSec;
-  let open = 0, high = -Infinity, low = Infinity, close = 0;
-  let first = true;
-  for (const b of bars) {
-    if ((b.time as number) < bucketStart) continue;
-    if (first) { open = b.open; first = false; }
-    high = Math.max(high, b.high);
-    low  = Math.min(low, b.low);
-    close = b.close;
-  }
-  return { time: bucketStart as UTCTimestamp, open, high, low, close };
-}
-
 interface ActiveTrade {
   id: number; instrument: string; direction: string; entryPrice: number;
   amount: number; duration: number; payoutPct: number; openedAt: string; endsAt: number;
 }
 interface FeedEntry {
   key: string; user: string; instrument: string; amount: number;
-  direction: 'call' | 'put'; status: string; ts: number;
+  direction: 'call' | 'put'; status: string; ts: number; profit?: number;
+}
+interface HistoryEntry {
+  id: number; instrument: string; direction: string; entryPrice: number;
+  exitPrice: number; amount: number; profit: number; payout: number;
+  status: string; payoutPct: number; openedAt: string;
 }
 interface SettledResult {
   tradeId: number; instrument: string; direction: string; entryPrice: number;
@@ -150,6 +139,7 @@ export function BinaryTrading() {
   const [activeTrades, setActiveTrades] = useState<ActiveTrade[]>([]);
   const [result, setResult] = useState<SettledResult | null>(null);
   const [liveFeed, setLiveFeed] = useState<FeedEntry[]>([]);
+  const [myHistory, setMyHistory] = useState<HistoryEntry[]>([]);
   const [tick, setTick] = useState(0);
 
   const chartRef = useRef<HTMLDivElement>(null);
@@ -160,6 +150,7 @@ export function BinaryTrading() {
   const tfRef = useRef(1);
   const instRef = useRef('BTC/USDT');
   const prevPrices = useRef<Record<string, number>>({ ...BASE_PRICES });
+  const pricesRef = useRef<Record<string, number>>({ ...BASE_PRICES });
 
   const token = localStorage.getItem('ecm_token');
   const userId = getUserIdFromToken();
@@ -167,6 +158,7 @@ export function BinaryTrading() {
 
   useEffect(() => { tfRef.current = timeframe; }, [timeframe]);
   useEffect(() => { instRef.current = instrument; }, [instrument]);
+  useEffect(() => { pricesRef.current = prices; }, [prices]);
 
   const ensureCandles = useCallback((inst: string) => {
     if (!minuteCandles.current[inst]) {
@@ -185,12 +177,18 @@ export function BinaryTrading() {
       .then((trades: any[]) => setActiveTrades(trades.map(t => ({ ...t, endsAt: new Date(t.openedAt).getTime() + t.duration * 1000 }))))
       .catch(() => {});
 
+    fetch('/api/binary/history', { headers: authHdr })
+      .then(r => r.ok ? r.json() : [])
+      .then((trades: any[]) => setMyHistory(trades.slice(0, 30)))
+      .catch(() => {});
+
     fetch('/api/binary/recent', { headers: authHdr })
       .then(r => r.ok ? r.json() : [])
       .then((trades: any[]) => {
         const entries: FeedEntry[] = trades.map(t => ({
-          key: `real-${t.id}`, user: t.user, instrument: t.instrument,
-          amount: t.amount, direction: t.direction, status: t.status,
+          key: `real-${t.id}`, user: maskUser(t.user || 'User'),
+          instrument: t.instrument, amount: t.amount,
+          direction: t.direction, status: t.status,
           ts: new Date(t.openedAt).getTime(),
         }));
         setLiveFeed(entries);
@@ -204,20 +202,35 @@ export function BinaryTrading() {
   }, []);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      const instruments = INSTRUMENTS.map(i => i.id);
-      const entry: FeedEntry = {
-        key: `sim-${Date.now()}-${Math.random()}`,
-        user: rand(FAKE_USERS),
-        instrument: rand(instruments),
-        amount: rand(FAKE_AMTS),
-        direction: Math.random() > 0.5 ? 'call' : 'put',
-        status: 'pending',
-        ts: Date.now(),
-      };
-      setLiveFeed(prev => [entry, ...prev].slice(0, 25));
-    }, 2200 + Math.random() * 1800);
-    return () => clearInterval(id);
+    const scheduleSimTrade = () => {
+      const delay = 2200 + Math.random() * 1800;
+      const tid = setTimeout(() => {
+        const inst = rand(INSTRUMENTS.map(i => i.id));
+        const dir: 'call' | 'put' = Math.random() > 0.5 ? 'call' : 'put';
+        const amt = rand(FAKE_AMTS);
+        const key = `sim-${Date.now()}-${Math.random()}`;
+        const entry: FeedEntry = {
+          key, user: maskUser(rand(FAKE_NAMES)),
+          instrument: inst, amount: amt,
+          direction: dir, status: 'pending', ts: Date.now(),
+        };
+        setLiveFeed(prev => [entry, ...prev].slice(0, 30));
+
+        const settleDelay = 4000 + Math.random() * 6000;
+        setTimeout(() => {
+          const won = Math.random() < 0.75;
+          const profit = won ? Math.round(amt * 0.90) : 0;
+          setLiveFeed(prev => prev.map(e =>
+            e.key === key ? { ...e, status: won ? 'won' : 'lost', profit: won ? profit : -amt } : e
+          ));
+        }, settleDelay);
+
+        scheduleSimTrade();
+      }, delay);
+      return tid;
+    };
+    const id = scheduleSimTrade();
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -229,7 +242,7 @@ export function BinaryTrading() {
       rightPriceScale: { borderColor: '#1F2937', scaleMargins: { top: 0.1, bottom: 0.1 } },
       timeScale: { borderColor: '#1F2937', timeVisible: true, secondsVisible: false },
       width: chartRef.current.clientWidth,
-      height: chartRef.current.clientHeight || 360,
+      height: chartRef.current.clientHeight || 320,
     });
     const series = chart.addSeries(CandlestickSeries, {
       upColor: '#02C076', downColor: '#CF304A',
@@ -276,6 +289,7 @@ export function BinaryTrading() {
         const old = prev[inst] ?? price;
         setPriceDir(pd => ({ ...pd, [inst]: price >= old ? 'up' : 'down' }));
         prevPrices.current[inst] = old;
+        pricesRef.current = { ...pricesRef.current, [inst]: price };
         return { ...prev, [inst]: price };
       });
 
@@ -295,6 +309,12 @@ export function BinaryTrading() {
     socket.on('binary:settled', (data: SettledResult) => {
       setResult(data);
       setActiveTrades(prev => prev.filter(t => t.id !== data.tradeId));
+      setMyHistory(prev => [{
+        id: data.tradeId, instrument: data.instrument, direction: data.direction,
+        entryPrice: data.entryPrice, exitPrice: data.exitPrice, amount: data.amount,
+        profit: data.profit, payout: data.payout, status: data.status,
+        payoutPct: data.payoutPct, openedAt: new Date().toISOString(),
+      }, ...prev].slice(0, 30));
       queryClient.invalidateQueries({ queryKey: ['/api/accounts/dashboard'] });
       const won = data.status === 'won', push = data.status === 'push';
       toast({
@@ -324,11 +344,6 @@ export function BinaryTrading() {
       if (!res.ok) { toast({ title: data.message || 'Trade failed', variant: 'destructive' }); return; }
       setActiveTrades(prev => [...prev, { ...data, endsAt: Date.now() + duration * 1000 }]);
       queryClient.invalidateQueries({ queryKey: ['/api/accounts/dashboard'] });
-      const myFeed: FeedEntry = {
-        key: `my-${data.id}`, user: 'You', instrument,
-        amount: amt, direction: dir, status: 'pending', ts: Date.now(),
-      };
-      setLiveFeed(prev => [myFeed, ...prev].slice(0, 25));
       toast({ title: `${dir === 'call' ? '↑ Higher' : '↓ Lower'} trade placed`, description: `₹${amt.toLocaleString('en-IN')} · ${DURATIONS.find(d => d.seconds === duration)?.label}` });
     } catch { toast({ title: 'Network error', variant: 'destructive' }); }
     finally { setPlacing(false); }
@@ -343,9 +358,34 @@ export function BinaryTrading() {
   const forex = INSTRUMENTS.filter(i => i.category === 'Forex');
   const crypto = INSTRUMENTS.filter(i => i.category === 'Crypto');
 
+  const activeTradeStatus: 'winning' | 'losing' | 'none' = (() => {
+    if (!activeTrades.length) return 'none';
+    const wins = activeTrades.filter(t => {
+      const cp = prices[t.instrument] ?? t.entryPrice;
+      return t.direction === 'call' ? cp > t.entryPrice : cp < t.entryPrice;
+    });
+    if (wins.length === activeTrades.length) return 'winning';
+    if (wins.length === 0) return 'losing';
+    return wins.length >= activeTrades.length / 2 ? 'winning' : 'losing';
+  })();
+
+  const screenGlow = activeTradeStatus === 'winning'
+    ? '0 0 0 2px rgba(2,192,118,0.6), 0 0 40px rgba(2,192,118,0.2), inset 0 0 60px rgba(2,192,118,0.04)'
+    : activeTradeStatus === 'losing'
+    ? '0 0 0 2px rgba(207,48,74,0.6), 0 0 40px rgba(207,48,74,0.2), inset 0 0 60px rgba(207,48,74,0.04)'
+    : 'none';
+
   return (
     <DashboardLayout>
-      <div className="flex flex-col h-full" style={{ height: 'calc(100vh - 90px)' }}>
+      <div
+        className="flex flex-col"
+        style={{
+          height: 'calc(100vh - 90px)',
+          borderRadius: '16px',
+          boxShadow: screenGlow,
+          transition: 'box-shadow 0.8s ease',
+        }}
+      >
         {/* Header Bar */}
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2 flex-shrink-0">
           <div className="flex items-center gap-3">
@@ -357,6 +397,19 @@ export function BinaryTrading() {
               <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-[#02C076] animate-pulse' : 'bg-[#CF304A]'}`} />
               <span className={connected ? 'text-[#02C076]' : 'text-[#CF304A]'}>{connected ? 'Live' : 'Connecting'}</span>
             </div>
+            {activeTradeStatus !== 'none' && (
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black animate-pulse"
+                style={{
+                  background: activeTradeStatus === 'winning' ? 'rgba(2,192,118,0.12)' : 'rgba(207,48,74,0.12)',
+                  border: `1px solid ${activeTradeStatus === 'winning' ? 'rgba(2,192,118,0.4)' : 'rgba(207,48,74,0.4)'}`,
+                  color: activeTradeStatus === 'winning' ? '#02C076' : '#CF304A',
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: activeTradeStatus === 'winning' ? '#02C076' : '#CF304A' }} />
+                {activeTradeStatus === 'winning' ? '▲ In Profit' : '▼ In Loss'}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3 text-xs text-[#6B7280]">
             <span className="flex items-center gap-1.5">
@@ -409,7 +462,7 @@ export function BinaryTrading() {
             ))}
           </div>
 
-          {/* CENTER: Chart + Feed */}
+          {/* CENTER: Chart + Active Trades + Split Feed */}
           <div className="flex-1 flex flex-col gap-2 min-w-0 min-h-0">
             {/* Chart Card */}
             <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -440,8 +493,6 @@ export function BinaryTrading() {
                   ))}
                 </div>
               </div>
-
-              {/* Chart */}
               <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 0 }} />
             </div>
 
@@ -453,17 +504,38 @@ export function BinaryTrading() {
                   const pct = Math.min(((trade.duration - remaining) / trade.duration) * 100, 100);
                   const cp = prices[trade.instrument] ?? trade.entryPrice;
                   const winning = trade.direction === 'call' ? cp > trade.entryPrice : cp < trade.entryPrice;
+                  const pnl = winning
+                    ? Math.round(trade.amount * (trade.payoutPct / 100))
+                    : -trade.amount;
                   return (
-                    <div key={trade.id} className="flex-shrink-0 rounded-xl px-3 py-2 min-w-[200px]" style={{ background: 'rgba(0,0,0,0.4)', border: `1px solid ${winning ? 'rgba(2,192,118,0.3)' : 'rgba(207,48,74,0.3)'}` }}>
+                    <div
+                      key={trade.id}
+                      className="flex-shrink-0 rounded-xl px-3 py-2 min-w-[210px] transition-all"
+                      style={{
+                        background: winning ? 'rgba(2,192,118,0.06)' : 'rgba(207,48,74,0.06)',
+                        border: `1px solid ${winning ? 'rgba(2,192,118,0.35)' : 'rgba(207,48,74,0.35)'}`,
+                        boxShadow: winning ? '0 0 12px rgba(2,192,118,0.15)' : '0 0 12px rgba(207,48,74,0.15)',
+                      }}
+                    >
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${trade.direction === 'call' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>
-                          {trade.direction === 'call' ? '↑ CALL' : '↓ PUT'}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${trade.direction === 'call' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>
+                            {trade.direction === 'call' ? '↑ CALL' : '↓ PUT'}
+                          </span>
+                          <span className={`text-[10px] font-black ${winning ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                            {winning ? '▲ Winning' : '▼ Losing'}
+                          </span>
+                        </div>
                         <span className="text-[10px] font-black text-[#FFB800] flex items-center gap-1">
                           <Clock className="w-3 h-3" />{remaining}s
                         </span>
                       </div>
-                      <div className="text-xs text-[#848E9C]">{trade.instrument} · ₹{trade.amount.toLocaleString('en-IN')}</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-[#848E9C]">{trade.instrument} · ₹{trade.amount.toLocaleString('en-IN')}</span>
+                        <span className={`text-xs font-black ${winning ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                          {winning ? '+' : ''}₹{Math.abs(pnl).toLocaleString('en-IN')}
+                        </span>
+                      </div>
                       <div className="mt-1.5 h-1 rounded-full bg-[#1F2937] overflow-hidden">
                         <div className={`h-full rounded-full transition-all duration-500 ${winning ? 'bg-[#02C076]' : 'bg-[#CF304A]'}`} style={{ width: `${pct}%` }} />
                       </div>
@@ -473,45 +545,117 @@ export function BinaryTrading() {
               </div>
             )}
 
-            {/* Live Feed */}
-            <div className="flex-shrink-0 rounded-2xl overflow-hidden" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)', maxHeight: '180px' }}>
-              <div className="flex items-center gap-2 px-4 py-2 border-b flex-shrink-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-                <Users className="w-3.5 h-3.5 text-[#FFB800]" />
-                <span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">Live Trades</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse ml-1" />
-              </div>
-              <div className="overflow-y-auto" style={{ maxHeight: '140px', scrollbarWidth: 'none' }}>
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="text-[#374151]" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <th className="px-4 py-1.5 text-left font-semibold">Trader</th>
-                      <th className="px-2 py-1.5 text-left font-semibold">Pair</th>
-                      <th className="px-2 py-1.5 text-right font-semibold">Amount</th>
-                      <th className="px-2 py-1.5 text-center font-semibold">Direction</th>
-                      <th className="px-4 py-1.5 text-right font-semibold">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {liveFeed.slice(0, 15).map(entry => (
-                      <tr key={entry.key} className="transition-colors hover:bg-white/[0.02]" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                        <td className="px-4 py-1.5 font-bold text-[#9CA3AF]">{entry.user}</td>
-                        <td className="px-2 py-1.5 font-bold text-white">{entry.instrument}</td>
-                        <td className="px-2 py-1.5 text-right text-[#9CA3AF]">₹{entry.amount.toLocaleString('en-IN')}</td>
-                        <td className="px-2 py-1.5 text-center">
-                          <span className={`font-black ${entry.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                            {entry.direction === 'call' ? '↑ Higher' : '↓ Lower'}
+            {/* SPLIT VIEW: Global Live Trades | My Trade History */}
+            <div className="flex-shrink-0 grid grid-cols-2 gap-2" style={{ height: '200px' }}>
+              {/* Column 1: Global Live Trades */}
+              <div className="rounded-2xl overflow-hidden flex flex-col" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <Users className="w-3.5 h-3.5 text-[#FFB800]" />
+                  <span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">Global Live Trades</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse ml-auto flex-shrink-0" />
+                </div>
+                <div className="overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
+                  {liveFeed.slice(0, 20).map(entry => (
+                    <div
+                      key={entry.key}
+                      className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02] transition-colors"
+                      style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{
+                          background: entry.status === 'won' ? '#02C076' : entry.status === 'lost' ? '#CF304A' : '#6B7280',
+                          boxShadow: entry.status === 'won' ? '0 0 6px rgba(2,192,118,0.8)' : entry.status === 'lost' ? '0 0 6px rgba(207,48,74,0.8)' : 'none',
+                          animation: entry.status === 'pending' ? 'pulse 1.5s infinite' : 'none',
+                        }}
+                      />
+                      <span className="text-[10px] font-bold text-[#9CA3AF] w-16 truncate flex-shrink-0">{entry.user}</span>
+                      <span className="text-[10px] font-bold text-white flex-1 truncate">{entry.instrument}</span>
+                      <span className={`text-[10px] font-black flex-shrink-0 ${entry.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                        {entry.direction === 'call' ? '↑' : '↓'}
+                      </span>
+                      <span className="text-[10px] text-[#6B7280] flex-shrink-0 w-14 text-right">
+                        {entry.status === 'pending' && (
+                          <span className="text-[#FFB800] font-bold flex items-center justify-end gap-0.5">
+                            <RefreshCw className="w-2 h-2 animate-spin" />Pending
                           </span>
-                        </td>
-                        <td className="px-4 py-1.5 text-right">
-                          {entry.status === 'pending' && <span className="text-[#FFB800] font-bold flex items-center justify-end gap-1"><RefreshCw className="w-2.5 h-2.5 animate-spin" />Pending</span>}
-                          {entry.status === 'won' && <span className="text-[#02C076] font-bold flex items-center justify-end gap-1"><CheckCircle className="w-2.5 h-2.5" />Won</span>}
-                          {entry.status === 'lost' && <span className="text-[#CF304A] font-bold flex items-center justify-end gap-1"><XCircle className="w-2.5 h-2.5" />Lost</span>}
-                          {entry.status === 'open' && <span className="text-[#FFB800] font-bold flex items-center justify-end gap-1"><Activity className="w-2.5 h-2.5 animate-pulse" />Active</span>}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        )}
+                        {entry.status === 'won' && (
+                          <span className="text-[#02C076] font-black">
+                            +₹{entry.profit ? Math.abs(entry.profit).toLocaleString('en-IN') : (entry.amount * 0.9).toFixed(0)}
+                          </span>
+                        )}
+                        {entry.status === 'lost' && (
+                          <span className="text-[#CF304A] font-black">
+                            −₹{entry.amount.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                  {liveFeed.length === 0 && (
+                    <div className="flex items-center justify-center h-full text-[#374151] text-xs">Waiting for trades…</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Column 2: My Trade History */}
+              <div className="rounded-2xl overflow-hidden flex flex-col" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <History className="w-3.5 h-3.5 text-[#FFB800]" />
+                  <span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">My Trade History</span>
+                  {myHistory.length > 0 && (
+                    <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(255,184,0,0.1)', color: '#FFB800' }}>
+                      {myHistory.length}
+                    </span>
+                  )}
+                </div>
+                <div className="overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
+                  {myHistory.length === 0 && (
+                    <div className="flex flex-col items-center justify-center h-full gap-1">
+                      <Activity className="w-5 h-5 text-[#1F2937]" />
+                      <p className="text-[#374151] text-xs">No trades yet</p>
+                    </div>
+                  )}
+                  {myHistory.map((h, i) => {
+                    const won = h.status === 'won';
+                    const push = h.status === 'push';
+                    return (
+                      <div
+                        key={h.id ?? i}
+                        className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02] transition-colors"
+                        style={{
+                          borderBottom: '1px solid rgba(255,255,255,0.03)',
+                          borderLeft: `2px solid ${won ? '#02C076' : push ? '#FFB800' : '#CF304A'}`,
+                        }}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-black text-white">{h.instrument}</span>
+                            <span className={`text-[9px] font-black ${h.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                              {h.direction === 'call' ? '↑ CALL' : '↓ PUT'}
+                            </span>
+                          </div>
+                          <div className="text-[9px] text-[#4B5563] mt-0.5">
+                            {h.entryPrice != null ? fmt(h.entryPrice, h.instrument) : '—'} → {h.exitPrice != null ? fmt(h.exitPrice, h.instrument) : '—'}
+                          </div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <div className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>
+                            {won ? `+₹${h.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${h.amount.toLocaleString('en-IN')}`}
+                          </div>
+                          <div className="flex items-center justify-end gap-1 mt-0.5">
+                            {won && <CheckCircle className="w-2.5 h-2.5 text-[#02C076]" />}
+                            {!won && !push && <XCircle className="w-2.5 h-2.5 text-[#CF304A]" />}
+                            <span className={`text-[9px] font-black uppercase ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>
+                              {h.status}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -519,7 +663,7 @@ export function BinaryTrading() {
           {/* RIGHT: Trading Panel */}
           <div className="w-[270px] flex-shrink-0 flex flex-col gap-2">
             {result && (
-              <div className={`rounded-2xl p-4 text-center flex-shrink-0`} style={{ background: result.status === 'won' ? 'rgba(2,192,118,0.08)' : result.status === 'push' ? 'rgba(43,49,57,0.8)' : 'rgba(207,48,74,0.08)', border: `1px solid ${result.status === 'won' ? 'rgba(2,192,118,0.35)' : result.status === 'push' ? 'rgba(255,255,255,0.08)' : 'rgba(207,48,74,0.35)'}` }}>
+              <div className="rounded-2xl p-4 text-center flex-shrink-0" style={{ background: result.status === 'won' ? 'rgba(2,192,118,0.08)' : result.status === 'push' ? 'rgba(43,49,57,0.8)' : 'rgba(207,48,74,0.08)', border: `1px solid ${result.status === 'won' ? 'rgba(2,192,118,0.35)' : result.status === 'push' ? 'rgba(255,255,255,0.08)' : 'rgba(207,48,74,0.35)'}` }}>
                 <div className="text-3xl mb-1">{result.status === 'won' ? '🎉' : result.status === 'push' ? '↔' : '❌'}</div>
                 <p className={`font-black text-lg ${result.status === 'won' ? 'text-[#02C076]' : result.status === 'push' ? 'text-white' : 'text-[#CF304A]'}`}>
                   {result.status === 'won' ? `+₹${result.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : result.status === 'push' ? 'Push' : `−₹${result.amount.toLocaleString('en-IN')}`}
@@ -536,6 +680,9 @@ export function BinaryTrading() {
                 <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-widest mb-0.5">{instrument}</p>
                 <p className={`text-2xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
                   {fmt(livePrice, instrument)}
+                </p>
+                <p className={`text-[10px] font-bold mt-0.5 ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                  {priceDirCurrent === 'up' ? '▲ Rising' : '▼ Falling'}
                 </p>
               </div>
 
