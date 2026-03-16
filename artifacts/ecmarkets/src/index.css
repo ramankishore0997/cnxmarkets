@@ -306,17 +306,4 @@
     background: rgba(240,185,11,0.04);
   }
 
-  /* ── Zero-fee badge ─────────────────────────── */
-  .zero-fee-badge {
-    background: linear-gradient(135deg, rgba(2,192,118,0.15), rgba(2,192,118,0.08));
-    border: 1px solid rgba(2,192,118,0.4);
-    border-radius: 10px;
-    color: #02C076;
-    font-weight: 700;
-    font-size: 13px;
-    padding: 8px 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
 }
