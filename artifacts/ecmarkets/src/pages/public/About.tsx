@@ -44,7 +44,7 @@ export function About() {
             transition={{ delay: 0.1 }}
             className="text-xl text-[#848E9C] max-w-3xl mx-auto"
           >
-            ECMarketsIndia was founded by quantitative researchers and software engineers to bridge the gap between retail capital and institutional execution.
+            ECMarketsIndia is a technology-driven global trading platform, built by quantitative researchers and software engineers to deliver institutional-grade algorithmic strategies, analytics tools, and market monitoring infrastructure to investors worldwide.
           </motion.p>
         </div>
       </section>
@@ -147,7 +147,7 @@ export function About() {
             We are a collective of quants, traders, and engineers who believe that code outperforms emotion. We don't employ salespeople or "trading gurus" — our entire focus is on mathematics, execution speed, and absolute returns.
           </p>
           <div className="inline-flex items-center gap-2 border border-[#F0B90B] text-[#F0B90B] px-6 py-2 rounded-full font-semibold">
-            Based in Mumbai, Trading Globally
+            Globally Distributed · Algorithmically Driven
           </div>
         </div>
       </section>

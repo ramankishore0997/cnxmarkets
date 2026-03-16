@@ -206,7 +206,7 @@ export function Pricing() {
           {[
             { icon: BarChart2, title: "Real-Time Analytics Dashboard", desc: "Monitor your portfolio equity curve, open positions, and strategy performance with live updates." },
             { icon: Zap, title: "Institutional Execution Infrastructure", desc: "Sub-5ms order routing via co-located servers connected to Tier-1 liquidity providers." },
-            { icon: Lock, title: "Segregated Capital Protection", desc: "Your capital is held in separate tier-1 bank accounts with LPOA-only trading authority." },
+            { icon: Lock, title: "Segregated Capital Protection", desc: "Your capital is held in separate tier-1 bank accounts. We hold trading authority only — you retain full control over deposits and withdrawals." },
             { icon: Shield, title: "Multi-Layer Risk Management", desc: "Automated circuit breakers, drawdown controls, and 24/7 system monitoring on every account." },
           ].map((item, i) => (
             <div key={i} className="card-stealth p-6 flex gap-4">

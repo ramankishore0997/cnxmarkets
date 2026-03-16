@@ -64,7 +64,7 @@ export function Home() {
 
   const faqs = [
     { q: "What is the minimum capital to get started?", a: "The minimum capital to activate the Starter Account is ₹20,000. The Professional tier starts at ₹1,00,000, providing access to all premium strategies and priority execution." },
-    { q: "Is my capital safe?", a: "Yes. Funds are held in segregated tier-1 bank accounts. We only have trading authority over the accounts via LPOA — we cannot withdraw your funds. Only you control deposits and withdrawals." },
+    { q: "Is my capital safe?", a: "Yes. Funds are held in segregated tier-1 bank accounts entirely separate from company assets. We hold trading authority only — we cannot withdraw your funds under any circumstances. Only you control deposits and withdrawals." },
     { q: "Do I need prior trading experience?", a: "No prior trading experience is required. ECMarketsIndia is a fully managed algorithmic trading platform. Once you allocate capital to a strategy, our systems handle all execution and monitoring automatically." },
     { q: "Can I withdraw my capital at any time?", a: "Absolutely. There is zero lock-in period on any account tier. You can pause strategy execution and request a withdrawal at any time directly from your dashboard." },
     { q: "Which markets do your algorithms trade?", a: "Our core strategies operate primarily on major Forex pairs (EUR/USD, GBP/USD, USD/JPY) and high-liquidity commodities like Gold (XAU/USD). All markets are chosen for maximum liquidity." },
@@ -516,7 +516,7 @@ export function Home() {
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {[
-              { city: "Mumbai", flag: "🇮🇳", role: "Primary HQ", detail: "NSE & BSE co-location" },
+              { city: "Mumbai", flag: "🇮🇳", role: "Primary HQ", detail: "Equinix BOM1 co-location" },
               { city: "London", flag: "🇬🇧", role: "European Hub", detail: "Equinix LD4 data center" },
               { city: "New York", flag: "🇺🇸", role: "US Operations", detail: "NY4 proximity hosting" },
               { city: "Singapore", flag: "🇸🇬", role: "APAC Hub", detail: "SGX direct connectivity" },
@@ -684,7 +684,7 @@ export function Home() {
               { icon: Lock, title:"256-bit AES Encryption", desc:"All data encrypted in transit and at rest using military-grade standards." },
               { icon: Shield, title:"Segregated Client Funds", desc:"Your capital is held in Tier-1 bank accounts, separate from company assets." },
               { icon: Eye, title:"2FA Authentication", desc:"Two-factor authentication required for all account actions and withdrawals." },
-              { icon: Award, title:"SEBI Compliant", desc:"Fully registered and compliant with SEBI regulations for algorithmic trading." },
+              { icon: Award, title:"Client Fund Protection", desc:"All client capital held in segregated tier-1 bank accounts, entirely separate from company assets." },
               { icon: Activity, title:"Real-Time Monitoring", desc:"24/7 automated surveillance of all positions and system performance." },
               { icon: Zap, title:"Instant Kill Switch", desc:"Automatic strategy deactivation when risk thresholds are breached." },
             ].map((item, i) => (
@@ -812,11 +812,11 @@ export function Home() {
       <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connected to India's Top Brokers</h2>
-            <p className="text-[#848E9C]">ECMarketsIndia integrates with all major SEBI-registered brokers for seamless execution.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connected to Global Trading Partners</h2>
+            <p className="text-[#848E9C]">ECMarketsIndia integrates with leading global brokers and liquidity providers for seamless institutional-grade execution.</p>
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {["Zerodha","Upstox","Angel One","ICICI Direct","HDFC Securities","Kotak","5paisa","Fyers"].map((broker, i) => (
+            {["Interactive Brokers","Saxo Bank","Pepperstone","OANDA","IG Markets","CMC Markets","XM Group","IC Markets"].map((broker, i) => (
               <motion.div key={i} variants={fadeUp} className="card-stealth p-5 flex items-center justify-between">
                 <span className="font-bold text-white text-sm">{broker}</span>
                 <span className="text-[#02C076] text-xs font-bold bg-[#02C076]/10 border border-[#02C076]/30 rounded px-2 py-0.5">Connected</span>
@@ -956,10 +956,10 @@ export function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { award:"Best Algo Trading Platform 2025", org:"FinTech India Awards" },
-              { award:"Most Innovative Trading Solution", org:"NSE Innovation Challenge" },
-              { award:"Top Performing PMS", org:"Wealth Management India" },
-              { award:"Client's Choice Award", org:"Trustpilot India" },
+              { award:"Best Algo Trading Platform 2025", org:"Global FinTech Awards" },
+              { award:"Most Innovative Trading Solution", org:"FinTech Innovation Summit" },
+              { award:"Top Performing Strategy Platform", org:"Global Wealth Tech Summit" },
+              { award:"Client's Choice Award", org:"Trustpilot" },
             ].map((a, i) => (
               <div key={i} className="card-stealth p-6 text-center">
                 <Star className="w-8 h-8 text-[#F0B90B] mx-auto mb-4" />
@@ -1019,17 +1019,17 @@ export function Home() {
         </div>
       </section>
 
-      {/* S29 — REGULATORY */}
+      {/* S29 — PLATFORM TRUST */}
       <section className="py-16 section-dark">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Operating with Full Regulatory Compliance</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Built on a Foundation of Trust & Security</h2>
           </div>
           <div className="card-stealth-gold p-6 mb-8 text-center">
-            <p className="text-[#F0B90B] font-semibold text-sm">⚠️ Trading in financial instruments involves substantial risk of loss. Past performance is not indicative of future results. Please read our full Risk Disclosure before investing.</p>
+            <p className="text-[#F0B90B] font-semibold text-sm">⚠️ Trading in financial markets involves significant risk and may not be suitable for all investors. Past performance does not guarantee future results. Only invest capital you can afford to risk.</p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {["SEBI Registered","AML Policy","KYC Verification","PMLA Compliant"].map((item, i) => (
+            {["AML Policy","KYC Verification","Segregated Funds","Data Security"].map((item, i) => (
               <div key={i} className="card-stealth p-4 text-center">
                 <Check className="w-5 h-5 text-[#02C076] mx-auto mb-2" />
                 <p className="text-white text-sm font-semibold">{item}</p>

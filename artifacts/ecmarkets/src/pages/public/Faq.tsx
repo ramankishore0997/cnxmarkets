@@ -22,8 +22,8 @@ export function Faq() {
     },
     {
       category: 'General',
-      q: "Is ECMarketsIndia regulated?",
-      a: "Yes. ECMarketsIndia operates as a SEBI-registered entity in full compliance with Indian financial regulations. We are also fully compliant with PMLA (Prevention of Money Laundering Act) and FEMA regulations for international capital flows."
+      q: "How does ECMarketsIndia protect client funds?",
+      a: "ECMarketsIndia maintains strict AML (Anti-Money Laundering) policies and rigorous KYC verification for all clients. All client funds are held in segregated tier-1 bank accounts entirely separate from company operating capital. We have trading authority only — we cannot move or withdraw client funds. For jurisdiction-specific compliance queries, please contact our compliance team."
     },
     {
       category: 'General',
@@ -118,7 +118,7 @@ export function Faq() {
     {
       category: 'Security',
       q: "Is my money safe?",
-      a: "Yes. Funds are held in segregated tier-1 bank accounts. We only have trading authority over the accounts via LPOA (Limited Power of Attorney) — we cannot withdraw your funds. Only you can deposit and withdraw to accounts matching your verified ID."
+      a: "Yes. Funds are held in segregated tier-1 bank accounts entirely separate from company assets. We hold trading authority only — we cannot withdraw your funds under any circumstances. Only you can initiate deposits and withdrawals to accounts matching your verified identity."
     },
     {
       category: 'Security',

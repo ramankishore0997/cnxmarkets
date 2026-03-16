@@ -267,21 +267,21 @@ export function Markets() {
           </div>
         </div>
 
-        {/* FOREX FOR INDIAN TRADERS */}
+        {/* GLOBAL MARKET ACCESS */}
         <div className="mt-24">
           <div className="card-stealth-gold p-8">
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-white mb-4">🇮🇳 Forex Trading for Indian Investors</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">🌐 Global Market Access via Algorithmic Infrastructure</h2>
                 <p className="text-[#848E9C] mb-4 leading-relaxed">
-                  Indian residents can participate in international forex markets through SEBI-registered entities with proper regulatory compliance. ECMarketsIndia operates under SEBI and PMLA guidelines, ensuring your investments are fully legal and compliant.
+                  ECMarketsIndia provides access to global financial markets through institutional-grade algorithmic trading infrastructure. Our platform connects to Tier-1 liquidity providers and global exchanges, delivering professional execution across forex, commodities, and indices.
                 </p>
                 <ul className="space-y-2 text-sm">
                   {[
-                    "All accounts compliant with FEMA regulations",
-                    "INR denominated accounts with real-time forex conversion",
-                    "SEBI-registered algorithmic trading entity",
-                    "Tax reporting support for Indian clients",
+                    "Direct connectivity to Tier-1 global liquidity providers",
+                    "Multi-currency account support with real-time conversion",
+                    "Strict AML and KYC verification for all clients",
+                    "Full trade transparency with detailed reporting tools",
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
                       <span className="text-[#02C076]">✓</span>
@@ -292,10 +292,10 @@ export function Markets() {
               </div>
               <div className="lg:w-80 space-y-3">
                 {[
-                  { label:"Regulatory Body", val:"SEBI Registered" },
-                  { label:"Currency", val:"INR / USD" },
-                  { label:"Min. Deposit", val:"₹20,000" },
-                  { label:"Tax Support", val:"Form 64A Provided" },
+                  { label:"Platform Type", val:"Global Fintech" },
+                  { label:"Currency", val:"Multi-Currency" },
+                  { label:"Min. Capital", val:"₹20,000" },
+                  { label:"Reporting", val:"Full Trade History" },
                 ].map((s, i) => (
                   <div key={i} className="bg-[#0B0E11] rounded-lg p-3 flex justify-between border border-[#2B3139]">
                     <span className="text-[#848E9C] text-sm">{s.label}</span>

@@ -228,7 +228,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <div className="bg-[#0B0E11] py-6 border-t border-[#2B3139]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
             <p className="text-[#848E9C]">&copy; {new Date().getFullYear()} ECMarketsIndia. All rights reserved.</p>
-            <p className="text-[#CF304A] font-medium">Trading involves significant risk. Past performance does not guarantee future results.</p>
+            <p className="text-[#CF304A] font-medium">Trading in financial markets involves significant risk and may not be suitable for all investors. Past performance does not guarantee future results.</p>
           </div>
         </div>
       </footer>
