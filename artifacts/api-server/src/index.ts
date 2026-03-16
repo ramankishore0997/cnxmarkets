@@ -1,5 +1,6 @@
 import app from "./app";
 import { startTradeCron } from "./services/tradeCron.js";
+import { runStartupSeed } from "./services/startupSeed.js";
 
 const rawPort = process.env["PORT"];
 
@@ -17,5 +18,6 @@ if (Number.isNaN(port) || port <= 0) {
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+  runStartupSeed();
   startTradeCron();
 });
