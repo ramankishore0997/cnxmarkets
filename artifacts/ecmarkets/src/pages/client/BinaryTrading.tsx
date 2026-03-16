@@ -26,6 +26,24 @@ const INSTRUMENTS = [
 const INST_MAP = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i]));
 const BASE_PRICES = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i.base]));
 
+const FINNHUB_TOKEN = 'd6s5389r01qrb5i8m49gd6s5389r01qrb5i8m4a0';
+
+const INST_TO_FINNHUB: Record<string, string> = {
+  'EUR/USD':  'OANDA:EUR_USD',
+  'GBP/USD':  'OANDA:GBP_USD',
+  'USD/JPY':  'OANDA:USD_JPY',
+  'AUD/USD':  'OANDA:AUD_USD',
+  'USD/CAD':  'OANDA:USD_CAD',
+  'EUR/JPY':  'OANDA:EUR_JPY',
+  'BTC/USDT': 'BINANCE:BTCUSDT',
+  'ETH/USDT': 'BINANCE:ETHUSDT',
+  'SOL/USDT': 'BINANCE:SOLUSDT',
+  'BNB/USDT': 'BINANCE:BNBUSDT',
+};
+const FINNHUB_TO_INST: Record<string, string> = Object.fromEntries(
+  Object.entries(INST_TO_FINNHUB).map(([k, v]) => [v, k])
+);
+
 const SEED_24H: Record<string, number> = {
   'EUR/USD': 0.32, 'GBP/USD': -0.18, 'USD/JPY': 0.54, 'AUD/USD': -0.41,
   'USD/CAD': 0.12, 'EUR/JPY': 0.87, 'BTC/USDT': 2.14, 'ETH/USDT': -1.32,
@@ -145,6 +163,7 @@ export function BinaryTrading() {
   const [liveFeed, setLiveFeed] = useState<FeedEntry[]>([]);
   const [myHistory, setMyHistory] = useState<HistoryEntry[]>([]);
   const [tick, setTick] = useState(0);
+  const [finnhubLive, setFinnhubLive] = useState(false);
 
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<IChartApi | null>(null);
@@ -160,6 +179,9 @@ export function BinaryTrading() {
   const recentTicks = useRef<Record<string, number[]>>({});
   const priceLineRef = useRef<any>(null);
   const entryLinesRef = useRef<Map<number, any>>(new Map());
+  const finnhubWsRef = useRef<WebSocket | null>(null);
+  const finnhubOHLC = useRef<Record<string, { open: number; high: number; low: number; close: number; bucketMs: number }>>({});
+  const finnhubActiveRef = useRef<Record<string, boolean>>({});
 
   const token = localStorage.getItem('ecm_token');
   const userId = getUserIdFromToken();
@@ -338,6 +360,107 @@ export function BinaryTrading() {
   }, [activeTrades, instrument]);
 
   useEffect(() => {
+    let ws: WebSocket | null = null;
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const applyFinnhubTick = (sym: string, rawPrice: number, tsMs: number) => {
+      const inst = FINNHUB_TO_INST[sym];
+      if (!inst) return;
+      const dec = INST_MAP[inst]?.decimals ?? 5;
+
+      let price = rawPrice;
+      const prev = lastAccepted.current[inst];
+      if (prev) {
+        const pct = Math.abs(price - prev.price) / prev.price;
+        if (pct > 0.015 && Date.now() - prev.ts < 1000) {
+          const bucket = recentTicks.current[inst] ?? [];
+          const last4 = [...bucket.slice(-3), price];
+          price = parseFloat((last4.reduce((a, b) => a + b, 0) / last4.length).toFixed(dec));
+        }
+      }
+      recentTicks.current[inst] = [...(recentTicks.current[inst] ?? []).slice(-9), price];
+      lastAccepted.current[inst] = { price, ts: Date.now() };
+      if (!finnhubActiveRef.current[inst]) {
+        finnhubActiveRef.current[inst] = true;
+        setFinnhubLive(true);
+      }
+
+      const bucketMs = Math.floor(tsMs / 60000) * 60000;
+      const minuteTs = Math.floor(bucketMs / 1000);
+      const ohlcState = finnhubOHLC.current[inst];
+      if (!ohlcState || ohlcState.bucketMs !== bucketMs) {
+        const prevClose = ohlcState?.close ?? price;
+        finnhubOHLC.current[inst] = { open: prevClose, high: Math.max(prevClose, price), low: Math.min(prevClose, price), close: price, bucketMs };
+      } else {
+        ohlcState.high = Math.max(ohlcState.high, price);
+        ohlcState.low = Math.min(ohlcState.low, price);
+        ohlcState.close = price;
+      }
+      const s = finnhubOHLC.current[inst];
+      const bar: CandlestickData = { time: minuteTs as UTCTimestamp, open: s.open, high: s.high, low: s.low, close: s.close };
+
+      ensureCandles(inst);
+      const candles = minuteCandles.current[inst];
+      const lastCandle = candles[candles.length - 1];
+      if (lastCandle && (lastCandle.time as number) === minuteTs) candles[candles.length - 1] = bar;
+      else { candles.push(bar); if (candles.length > 720) candles.shift(); }
+
+      setPrices(prev2 => {
+        const old = prev2[inst] ?? price;
+        setPriceDir(pd => ({ ...pd, [inst]: price >= old ? 'up' : 'down' }));
+        pricesRef.current = { ...pricesRef.current, [inst]: price };
+        return { ...prev2, [inst]: price };
+      });
+
+      if (inst === instRef.current && seriesRef.current) {
+        try {
+          seriesRef.current.update(bar);
+        } catch {
+          try { seriesRef.current.setData(aggregateCandles(candles, tfRef.current)); } catch {}
+        }
+        if (priceLineRef.current) {
+          try { priceLineRef.current.applyOptions({ price }); } catch {}
+        }
+      }
+    };
+
+    const connect = () => {
+      ws = new WebSocket(`wss://ws.finnhub.io?token=${FINNHUB_TOKEN}`);
+      finnhubWsRef.current = ws;
+
+      ws.onopen = () => {
+        Object.values(INST_TO_FINNHUB).forEach(sym => {
+          ws?.send(JSON.stringify({ type: 'subscribe', symbol: sym }));
+        });
+      };
+
+      ws.onmessage = (evt: MessageEvent) => {
+        try {
+          const msg = JSON.parse(evt.data as string);
+          if (msg.type === 'trade' && Array.isArray(msg.data)) {
+            msg.data.forEach((tick: { s: string; p: number; t: number }) => {
+              applyFinnhubTick(tick.s, tick.p, tick.t);
+            });
+          }
+        } catch {}
+      };
+
+      ws.onerror = () => {};
+      ws.onclose = () => {
+        finnhubWsRef.current = null;
+        reconnectTimer = setTimeout(connect, 5000);
+      };
+    };
+
+    connect();
+    return () => {
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws) { try { ws.close(); } catch {} }
+      finnhubWsRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
     const socket = connectSocket(window.location.origin, {
       path: '/api/socket.io',
       auth: { userId },
@@ -349,23 +472,8 @@ export function BinaryTrading() {
     socket.on('disconnect', () => setConnected(false));
 
     socket.on('price:tick', (d: { instrument: string; price: number; open: number; high: number; low: number; time: number }) => {
-      const { instrument: inst, open, high, low, time } = d;
-      let { price } = d;
-      const dec = INST_MAP[inst]?.decimals ?? 5;
-
-      const prev = lastAccepted.current[inst];
-      if (prev) {
-        const pctChange = Math.abs(price - prev.price) / prev.price;
-        const msElapsed = Date.now() - prev.ts;
-        if (pctChange > 0.02 && msElapsed < 1000) {
-          const bucket = recentTicks.current[inst] ?? [];
-          const last4 = [...bucket.slice(-3), price];
-          price = parseFloat((last4.reduce((a, b) => a + b, 0) / last4.length).toFixed(dec));
-        }
-      }
-      const tickBucket = recentTicks.current[inst] ?? [];
-      recentTicks.current[inst] = [...tickBucket.slice(-9), price];
-      lastAccepted.current[inst] = { price, ts: Date.now() };
+      const { instrument: inst, price, open, high, low, time } = d;
+      if (finnhubActiveRef.current[inst]) return;
 
       setPrices(prev2 => {
         const old = prev2[inst] ?? price;
@@ -379,43 +487,13 @@ export function BinaryTrading() {
       ensureCandles(inst);
       const candles = minuteCandles.current[inst];
       const lastCandle = candles[candles.length - 1];
-      if (lastCandle && (lastCandle.time as number) === (bar.time as number)) {
-        candles[candles.length - 1] = bar;
-      } else {
-        candles.push(bar);
-        if (candles.length > 720) candles.shift();
-      }
+      if (lastCandle && (lastCandle.time as number) === (bar.time as number)) candles[candles.length - 1] = bar;
+      else { candles.push(bar); if (candles.length > 720) candles.shift(); }
 
       if (inst === instRef.current && seriesRef.current) {
-        if (tfRef.current === 1) {
-          try {
-            seriesRef.current.update(bar);
-          } catch {
-            try { seriesRef.current.setData(aggregateCandles(candles, 1)); } catch {}
-          }
-        } else {
-          const tfSec = tfRef.current * 60;
-          const bucketStart = Math.floor((bar.time as number) / tfSec) * tfSec;
-          const bucketBars = candles.filter(b => (b.time as number) >= bucketStart);
-          if (bucketBars.length > 0) {
-            const aggBar: CandlestickData = {
-              time: bucketStart as UTCTimestamp,
-              open: bucketBars[0].open,
-              high: Math.max(...bucketBars.map(b => b.high)),
-              low: Math.min(...bucketBars.map(b => b.low)),
-              close: bucketBars[bucketBars.length - 1].close,
-            };
-            try {
-              seriesRef.current.update(aggBar);
-            } catch {
-              try { seriesRef.current.setData(aggregateCandles(candles, tfRef.current)); } catch {}
-            }
-          }
-        }
-
-        if (priceLineRef.current) {
-          try { priceLineRef.current.applyOptions({ price }); } catch {}
-        }
+        try { seriesRef.current.update(bar); }
+        catch { try { seriesRef.current.setData(aggregateCandles(candles, tfRef.current)); } catch {} }
+        if (priceLineRef.current) { try { priceLineRef.current.applyOptions({ price }); } catch {} }
       }
     });
 
@@ -510,6 +588,12 @@ export function BinaryTrading() {
               <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-[#02C076] animate-pulse' : 'bg-[#CF304A]'}`} />
               <span className={connected ? 'text-[#02C076]' : 'text-[#CF304A]'}>{connected ? 'Live' : 'Connecting'}</span>
             </div>
+            {finnhubLive && (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(2,192,118,0.08)', border: '1px solid rgba(2,192,118,0.2)' }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse" />
+                <span className="text-[#02C076]">Finnhub Direct</span>
+              </div>
+            )}
             {activeTradeStatus !== 'none' && (
               <div
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black animate-pulse"
