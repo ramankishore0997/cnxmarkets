@@ -4,10 +4,13 @@ import { getAuthOptions } from '@/lib/api-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { Link } from 'wouter';
 import {
   Zap, Search, CheckCircle, Loader2, TrendingUp,
-  Shield, AlertTriangle, Target, Wallet, Filter
+  Shield, AlertTriangle, Target, Wallet, Filter, Lock, ShieldCheck
 } from 'lucide-react';
+
+const RAZR_MIN_BALANCE = 20_000;
 
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
@@ -15,9 +18,6 @@ const RISK_ICONS: Record<string, any> = { low: Shield, medium: Target, high: Ale
 
 const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
 const getDailyRate = (n: string) => isRazrName(n) ? 8.0 : 4.0;
-const getMonthlyCompound = (n: string) => isRazrName(n)
-  ? parseFloat(((Math.pow(1.08, 30) - 1) * 100).toFixed(2))
-  : parseFloat(((Math.pow(1.04, 30) - 1) * 100).toFixed(2));
 
 export function SelectStrategy() {
   const queryClient = useQueryClient();
@@ -27,7 +27,10 @@ export function SelectStrategy() {
   const [activating, setActivating] = useState<number | null>(null);
 
   const { data: strategies, isLoading: loadingStrats } = useGetStrategies();
-  const { data: dashboard } = useGetDashboard({ ...getAuthOptions() });
+  const { data: dashboard } = useGetDashboard({
+    ...getAuthOptions(),
+    query: { staleTime: 0, refetchOnMount: true },
+  });
 
   const selectMutation = useSelectStrategy({
     ...getAuthOptions(),
@@ -42,7 +45,7 @@ export function SelectStrategy() {
         setActivating(null);
       },
       onError: (err: any) => {
-        toast({ title: 'Failed', description: err?.message || 'Could not update strategy.', variant: 'destructive' });
+        toast({ title: 'Activation Failed', description: err?.response?.data?.message || err?.message || 'Could not update strategy.', variant: 'destructive' });
         setActivating(null);
       },
     },
@@ -50,7 +53,9 @@ export function SelectStrategy() {
 
   const currentStrategyId = (dashboard as any)?.assignedStrategyId;
   const currentStrategyName = (dashboard as any)?.assignedStrategy;
-  const balance = dashboard?.totalBalance || 0;
+  const balance = dashboard?.totalBalance ?? 0;
+  const kycStatus: string = (dashboard as any)?.kycStatus ?? 'pending';
+  const kycApproved = kycStatus === 'approved';
 
   const allStrategies = (strategies as any[]) || [];
   const filtered = allStrategies.filter((s: any) => {
@@ -60,7 +65,36 @@ export function SelectStrategy() {
     return matchesSearch && matchesRisk;
   });
 
-  const activate = (strategyId: number | null) => {
+  const getButtonState = (s: any): { label: string; icon: any; disabled: boolean; className: string; locked: boolean } => {
+    if (!kycApproved) {
+      return {
+        label: 'Complete KYC to Unlock',
+        icon: Lock,
+        disabled: true,
+        className: 'w-full py-3 rounded-xl bg-[#2B3139] text-[#848E9C] border border-[#2B3139] font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed',
+        locked: true,
+      };
+    }
+    if (isRazrName(s.name) && balance < RAZR_MIN_BALANCE) {
+      return {
+        label: 'Minimum ₹20,000 Required',
+        icon: Lock,
+        disabled: true,
+        className: 'w-full py-3 rounded-xl bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/30 font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed',
+        locked: true,
+      };
+    }
+    return {
+      label: 'Activate Strategy',
+      icon: Zap,
+      disabled: activating !== null,
+      className: 'w-full py-3 rounded-xl bg-[#F0B90B] text-black font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#F8D33A] transition-all disabled:opacity-60 disabled:cursor-not-allowed',
+      locked: false,
+    };
+  };
+
+  const activate = (strategyId: number | null, s?: any) => {
+    if (s && !getButtonState(s).locked === false) return;
     setActivating(strategyId ?? -1);
     selectMutation.mutate({ data: { strategyId: strategyId ?? undefined } } as any);
   };
@@ -85,6 +119,26 @@ export function SelectStrategy() {
         <p className="text-[#848E9C] font-medium">Browse and activate institutional-grade algorithmic trading strategies</p>
       </div>
 
+      {/* KYC Status Banner */}
+      {!kycApproved && (
+        <div className="mb-6 p-4 rounded-xl border border-[#F0B90B]/40 bg-[#F0B90B]/08 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-[#F0B90B]/20 border border-[#F0B90B]/30 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-5 h-5 text-[#F0B90B]" />
+          </div>
+          <div className="flex-1">
+            <p className="font-bold text-[#F0B90B] text-sm">KYC Verification Required</p>
+            <p className="text-xs text-[#848E9C] mt-0.5">
+              {kycStatus === 'submitted' ? 'Your KYC is under review. Strategies will unlock once approved.' : 'Complete your KYC verification to activate any trading strategy.'}
+            </p>
+          </div>
+          {kycStatus !== 'submitted' && (
+            <Link href="/dashboard/kyc" className="shrink-0 px-4 py-2 rounded-xl bg-[#F0B90B] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all">
+              Complete KYC →
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* Current Strategy Banner */}
       {currentStrategyName ? (
         <div className="card-stealth-gold p-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -99,8 +153,6 @@ export function SelectStrategy() {
                 <span className={isRazrName(currentStrategyName) ? 'text-[#02C076] font-bold' : 'text-[#F0B90B] font-bold'}>
                   +{getDailyRate(currentStrategyName)}% /day
                 </span>
-                {' · '}
-                <span className="text-[#02C076] font-bold">+{getMonthlyCompound(currentStrategyName).toFixed(2)}% /mo</span>
               </p>
             </div>
           </div>
@@ -151,7 +203,6 @@ export function SelectStrategy() {
         </div>
       </div>
 
-      {/* Strategy Count */}
       <p className="text-xs text-[#848E9C] mb-4 font-medium">
         {filtered.length} of {allStrategies.length} strategies shown
       </p>
@@ -167,11 +218,15 @@ export function SelectStrategy() {
           {filtered.map((s: any) => {
             const isActive = s.id === currentStrategyId;
             const RiskIcon = RISK_ICONS[s.riskProfile] || Target;
-            const canAfford = balance >= s.minCapital;
             const isLoading = activating === s.id;
             const isRazr = isRazrName(s.name);
             const dailyRate = getDailyRate(s.name);
-            const monthlyRate = getMonthlyCompound(s.name);
+            const monthlyRate = parseFloat(s.monthlyReturn ?? 0);
+            const btn = getButtonState(s);
+            const BtnIcon = btn.icon;
+
+            // RazrMarket min balance check for badge/info
+            const razrBalanceLocked = isRazr && !kycApproved === false && kycApproved && balance < RAZR_MIN_BALANCE;
 
             return (
               <div
@@ -212,7 +267,7 @@ export function SelectStrategy() {
                   <div className="text-[#2B3139] text-lg">→</div>
                   <div className="text-center">
                     <p className="text-lg font-black text-[#02C076] tabular-nums">+{monthlyRate.toFixed(2)}%</p>
-                    <p className="text-[10px] text-[#848E9C]">Monthly (30d)</p>
+                    <p className="text-[10px] text-[#848E9C]">Monthly</p>
                   </div>
                 </div>
 
@@ -227,13 +282,16 @@ export function SelectStrategy() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-4 text-xs">
+                {/* Min Capital / RazrMarket requirement row */}
+                <div className="flex items-center justify-between mb-4 text-xs flex-wrap gap-1">
                   <div className="flex items-center gap-1.5 text-[#848E9C]">
                     <Wallet className="w-3.5 h-3.5" />
-                    <span>Min Capital: <span className={`font-bold ${canAfford ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>₹{Number(s.minCapital).toLocaleString('en-IN')}</span></span>
+                    <span>Min Capital: <span className="font-bold text-[#EAECEF]">₹{Number(s.minCapital).toLocaleString('en-IN')}</span></span>
                   </div>
-                  {!canAfford && balance > 0 && (
-                    <span className="text-[#CF304A] text-[10px] font-bold">Insufficient balance</span>
+                  {isRazr && (
+                    <span className={`px-2 py-0.5 rounded-md font-bold text-[10px] border ${balance >= RAZR_MIN_BALANCE ? 'bg-[#02C076]/15 text-[#02C076] border-[#02C076]/30' : 'bg-[#CF304A]/15 text-[#CF304A] border-[#CF304A]/30'}`}>
+                      Min. Req: ₹{RAZR_MIN_BALANCE.toLocaleString('en-IN')}
+                    </span>
                   )}
                 </div>
 
@@ -243,12 +301,23 @@ export function SelectStrategy() {
                   </button>
                 ) : (
                   <button
-                    onClick={() => activate(s.id)}
-                    disabled={isLoading || activating !== null}
-                    className="w-full py-3 rounded-xl bg-[#F0B90B] text-black font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#F8D33A] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      if (btn.locked) {
+                        if (!kycApproved) {
+                          toast({ title: 'KYC Required', description: 'Please complete your KYC verification before activating a strategy.', variant: 'destructive' });
+                        } else if (razrBalanceLocked || (isRazr && balance < RAZR_MIN_BALANCE)) {
+                          toast({ title: 'Insufficient Funds', description: `A minimum balance of ₹${RAZR_MIN_BALANCE.toLocaleString('en-IN')} is required to activate the RazrMarket Strategy. Please deposit funds to continue.`, variant: 'destructive' });
+                        }
+                        return;
+                      }
+                      setActivating(s.id);
+                      selectMutation.mutate({ data: { strategyId: s.id } } as any);
+                    }}
+                    disabled={isLoading}
+                    className={btn.className}
                   >
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                    Activate Strategy
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <BtnIcon className="w-4 h-4" />}
+                    {isLoading ? 'Activating...' : btn.label}
                   </button>
                 )}
               </div>

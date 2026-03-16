@@ -1,14 +1,17 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { accountsTable, tradesTable, transactionsTable, allocationsTable, strategiesTable } from "@workspace/db/schema";
+import { accountsTable, tradesTable, transactionsTable, allocationsTable, strategiesTable, usersTable } from "@workspace/db/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
+
+const RAZR_MIN_BALANCE = 20_000;
 
 const router = Router();
 
 router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
   try {
     const [account] = await db.select().from(accountsTable).where(eq(accountsTable.userId, req.user!.id)).limit(1);
+    const [userRow] = await db.select({ kycStatus: usersTable.kycStatus }).from(usersTable).where(eq(usersTable.id, req.user!.id)).limit(1);
     const recentTrades = await db.select().from(tradesTable).where(eq(tradesTable.userId, req.user!.id)).orderBy(desc(tradesTable.openedAt)).limit(5);
     const recentTransactions = await db.select().from(transactionsTable).where(eq(transactionsTable.userId, req.user!.id)).orderBy(desc(transactionsTable.createdAt)).limit(5);
     const allocations = await db.select().from(allocationsTable).where(eq(allocationsTable.userId, req.user!.id));
@@ -68,6 +71,7 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
       assignedStrategyId: account?.assignedStrategyId ?? null,
       assignedStrategy: account?.assignedStrategy ?? null,
       assignedStrategyDetails,
+      kycStatus: userRow?.kycStatus ?? 'pending',
       dailyGrowthTarget: account?.dailyGrowthTarget ? parseFloat(account.dailyGrowthTarget as string) : null,
       recentTrades: recentTrades.map(t => ({
         id: t.id, userId: t.userId, strategyId: t.strategyId, market: t.market, instrument: t.instrument,
@@ -152,6 +156,7 @@ router.post("/select-strategy", requireAuth, async (req: AuthRequest, res) => {
   try {
     const { strategyId } = req.body;
     const userId = req.user!.id;
+    const isAdmin = req.user!.role === 'admin';
 
     let resolvedName: string | null = null;
     let resolvedId: number | null = null;
@@ -162,6 +167,29 @@ router.post("/select-strategy", requireAuth, async (req: AuthRequest, res) => {
       if (!strat.isActive) { res.status(400).json({ message: "Strategy is not available" }); return; }
       resolvedName = strat.name;
       resolvedId = strat.id;
+
+      // Admin bypasses all checks
+      if (!isAdmin) {
+        // Step 1: KYC must be approved
+        const [userRow] = await db.select({ kycStatus: usersTable.kycStatus }).from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+        if (!userRow || userRow.kycStatus !== 'approved') {
+          res.status(403).json({ message: "KYC verification required. Please complete your KYC before activating a strategy." });
+          return;
+        }
+
+        // Step 2: Balance check for RazrMarket
+        const nameLower = resolvedName.toLowerCase();
+        if (nameLower.includes('razr') || nameLower.includes('razor')) {
+          const [account] = await db.select({ totalBalance: accountsTable.totalBalance }).from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+          const balance = account ? parseFloat(account.totalBalance as string) : 0;
+          if (balance < RAZR_MIN_BALANCE) {
+            res.status(403).json({
+              message: `Insufficient Funds: A minimum balance of ₹${RAZR_MIN_BALANCE.toLocaleString('en-IN')} is required to activate the RazrMarket Strategy. Please deposit funds to continue.`
+            });
+            return;
+          }
+        }
+      }
     }
 
     // Determine daily growth target: RazrMarket = 8% fixed, others = 4% fixed
