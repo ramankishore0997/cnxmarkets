@@ -2,6 +2,7 @@ import { pgTable, serial, integer, numeric, text, timestamp } from "drizzle-orm/
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
+import { strategiesTable } from "./strategies";
 
 export const accountsTable = pgTable("accounts", {
   id: serial("id").primaryKey(),
@@ -10,6 +11,7 @@ export const accountsTable = pgTable("accounts", {
   totalProfit: numeric("total_profit", { precision: 15, scale: 2 }).notNull().default("0"),
   totalDeposits: numeric("total_deposits", { precision: 15, scale: 2 }).notNull().default("0"),
   totalWithdrawals: numeric("total_withdrawals", { precision: 15, scale: 2 }).notNull().default("0"),
+  assignedStrategyId: integer("assigned_strategy_id").references(() => strategiesTable.id),
   assignedStrategy: text("assigned_strategy"),
   dailyGrowthTarget: numeric("daily_growth_target", { precision: 10, scale: 4 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),

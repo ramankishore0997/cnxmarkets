@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { EquityPoint } from "./equityPoint";
+import type { Strategy } from "./strategy";
 import type { Trade } from "./trade";
 import type { Transaction } from "./transaction";
 
@@ -15,6 +16,10 @@ export interface DashboardData {
   totalDeposits: number;
   totalWithdrawals: number;
   activeStrategies: number;
+  assignedStrategyId?: number;
+  assignedStrategy?: string;
+  assignedStrategyDetails?: Strategy;
+  dailyGrowthTarget?: number;
   recentTrades: Trade[];
   recentTransactions: Transaction[];
   equityCurve: EquityPoint[];

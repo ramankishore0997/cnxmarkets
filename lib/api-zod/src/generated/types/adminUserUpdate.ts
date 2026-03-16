@@ -13,6 +13,7 @@ export interface AdminUserUpdate {
   role?: AdminUserUpdateRole;
   kycStatus?: AdminUserUpdateKycStatus;
   totalBalance?: number;
+  assignedStrategyId?: number;
   assignedStrategy?: string;
   dailyGrowthTarget?: number;
 }

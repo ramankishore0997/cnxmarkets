@@ -181,6 +181,24 @@ export const GetDashboardResponse = zod.object({
   totalDeposits: zod.number(),
   totalWithdrawals: zod.number(),
   activeStrategies: zod.number(),
+  assignedStrategyId: zod.number().optional(),
+  assignedStrategy: zod.string().optional(),
+  assignedStrategyDetails: zod
+    .object({
+      id: zod.number(),
+      name: zod.string(),
+      description: zod.string(),
+      riskProfile: zod.enum(["low", "medium", "high"]),
+      minCapital: zod.number(),
+      winRate: zod.number(),
+      maxDrawdown: zod.number(),
+      monthlyReturn: zod.number(),
+      markets: zod.string(),
+      isActive: zod.boolean(),
+      createdAt: zod.string(),
+    })
+    .optional(),
+  dailyGrowthTarget: zod.number().optional(),
   recentTrades: zod.array(
     zod.object({
       id: zod.number(),
@@ -386,6 +404,7 @@ export const GetAdminUsersResponseItem = zod.object({
   kycStatus: zod.enum(["pending", "submitted", "approved", "rejected"]),
   isActive: zod.boolean(),
   totalBalance: zod.number().optional(),
+  assignedStrategyId: zod.number().optional(),
   assignedStrategy: zod.string().optional(),
   dailyGrowthTarget: zod.number().optional(),
   createdAt: zod.string(),
@@ -406,6 +425,7 @@ export const UpdateAdminUserBody = zod.object({
     .enum(["pending", "submitted", "approved", "rejected"])
     .optional(),
   totalBalance: zod.number().optional(),
+  assignedStrategyId: zod.number().optional(),
   assignedStrategy: zod.string().optional(),
   dailyGrowthTarget: zod.number().optional(),
 });
@@ -421,6 +441,7 @@ export const UpdateAdminUserResponse = zod.object({
   kycStatus: zod.enum(["pending", "submitted", "approved", "rejected"]),
   isActive: zod.boolean(),
   totalBalance: zod.number().optional(),
+  assignedStrategyId: zod.number().optional(),
   assignedStrategy: zod.string().optional(),
   dailyGrowthTarget: zod.number().optional(),
   createdAt: zod.string(),

@@ -242,6 +242,10 @@ export interface DashboardData {
   totalDeposits: number;
   totalWithdrawals: number;
   activeStrategies: number;
+  assignedStrategyId?: number;
+  assignedStrategy?: string;
+  assignedStrategyDetails?: Strategy;
+  dailyGrowthTarget?: number;
   recentTrades: Trade[];
   recentTransactions: Transaction[];
   equityCurve: EquityPoint[];
@@ -354,6 +358,7 @@ export interface AdminUser {
   kycStatus: AdminUserKycStatus;
   isActive: boolean;
   totalBalance?: number;
+  assignedStrategyId?: number;
   assignedStrategy?: string;
   dailyGrowthTarget?: number;
   createdAt: string;
@@ -382,6 +387,7 @@ export interface AdminUserUpdate {
   role?: AdminUserUpdateRole;
   kycStatus?: AdminUserUpdateKycStatus;
   totalBalance?: number;
+  assignedStrategyId?: number;
   assignedStrategy?: string;
   dailyGrowthTarget?: number;
 }

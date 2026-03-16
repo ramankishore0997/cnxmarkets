@@ -14,6 +14,20 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
     const allocations = await db.select().from(allocationsTable).where(eq(allocationsTable.userId, req.user!.id));
     const balance = account ? parseFloat(account.totalBalance as string) : 0;
 
+    let assignedStrategyDetails = null;
+    if (account?.assignedStrategyId) {
+      const [strat] = await db.select().from(strategiesTable).where(eq(strategiesTable.id, account.assignedStrategyId)).limit(1);
+      if (strat) {
+        assignedStrategyDetails = {
+          id: strat.id, name: strat.name, description: strat.description,
+          riskProfile: strat.riskProfile, minCapital: parseFloat(strat.minCapital as string),
+          winRate: parseFloat(strat.winRate as string), maxDrawdown: parseFloat(strat.maxDrawdown as string),
+          monthlyReturn: parseFloat(strat.monthlyReturn as string), markets: strat.markets,
+          isActive: strat.isActive, createdAt: strat.createdAt.toISOString(),
+        };
+      }
+    }
+
     const equityCurve = balance > 0
       ? (() => {
           const curve = [];
@@ -36,7 +50,9 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
       totalDeposits: account ? parseFloat(account.totalDeposits as string) : 0,
       totalWithdrawals: account ? parseFloat(account.totalWithdrawals as string) : 0,
       activeStrategies: allocations.length,
+      assignedStrategyId: account?.assignedStrategyId ?? null,
       assignedStrategy: account?.assignedStrategy ?? null,
+      assignedStrategyDetails,
       dailyGrowthTarget: account?.dailyGrowthTarget ? parseFloat(account.dailyGrowthTarget as string) : null,
       recentTrades: recentTrades.map(t => ({
         id: t.id, userId: t.userId, strategyId: t.strategyId, market: t.market, instrument: t.instrument,

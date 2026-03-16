@@ -950,6 +950,14 @@ components:
           type: number
         activeStrategies:
           type: integer
+        assignedStrategyId:
+          type: integer
+        assignedStrategy:
+          type: string
+        assignedStrategyDetails:
+          $ref: "#/components/schemas/Strategy"
+        dailyGrowthTarget:
+          type: number
         recentTrades:
           type: array
           items:
@@ -1266,6 +1274,8 @@ components:
           type: boolean
         totalBalance:
           type: number
+        assignedStrategyId:
+          type: integer
         assignedStrategy:
           type: string
         dailyGrowthTarget:
@@ -1295,6 +1305,8 @@ components:
           enum: [pending, submitted, approved, rejected]
         totalBalance:
           type: number
+        assignedStrategyId:
+          type: integer
         assignedStrategy:
           type: string
         dailyGrowthTarget:

@@ -1,18 +1,13 @@
 import { useState } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { useGetAdminUsers, useUpdateAdminUser } from '@workspace/api-client-react';
+import { useGetAdminUsers, useUpdateAdminUser, useGetStrategies } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import {
   Users, ShieldCheck, ShieldOff, Search, UserCheck, UserX,
-  Loader2, ChevronDown, ChevronUp, DollarSign, TrendingUp, Target, Save
+  Loader2, ChevronDown, ChevronUp, DollarSign, TrendingUp, Target, Save, Zap
 } from 'lucide-react';
-
-const STRATEGIES = [
-  'Alpha Momentum', 'Delta Neutral', 'Quantum Scalp', 'Sigma Swing',
-  'Omega Arbitrage', 'Custom',
-];
 
 export function AdminUsers() {
   const queryClient = useQueryClient();
@@ -20,9 +15,12 @@ export function AdminUsers() {
   const [search, setSearch] = useState('');
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [editState, setEditState] = useState<Record<number, { balance: string; strategy: string; growth: string }>>({});
+  const [editState, setEditState] = useState<Record<number, { balance: string; strategyId: string; growth: string }>>({});
 
   const { data: users, isLoading } = useGetAdminUsers({ ...getAuthOptions() });
+  const { data: strategies } = useGetStrategies();
+
+  const allStrategies = (strategies as any[]) || [];
 
   const updateMutation = useUpdateAdminUser({
     ...getAuthOptions(),
@@ -49,7 +47,7 @@ export function AdminUsers() {
       id: user.id,
       data: {
         totalBalance: state.balance !== '' ? parseFloat(state.balance) : undefined,
-        assignedStrategy: state.strategy || undefined,
+        assignedStrategyId: state.strategyId !== '' ? parseInt(state.strategyId) : (state.strategyId === '' ? 0 : undefined),
         dailyGrowthTarget: state.growth !== '' ? parseFloat(state.growth) : undefined,
       } as any,
     });
@@ -64,7 +62,7 @@ export function AdminUsers() {
         ...prev,
         [user.id]: {
           balance: user.totalBalance != null ? String(user.totalBalance) : '0',
-          strategy: user.assignedStrategy || '',
+          strategyId: user.assignedStrategyId != null ? String(user.assignedStrategyId) : '',
           growth: user.dailyGrowthTarget != null ? String(user.dailyGrowthTarget) : '',
         }
       }));
@@ -84,6 +82,8 @@ export function AdminUsers() {
     if (status === 'rejected') return { color: '#CF304A', label: 'Rejected' };
     return { color: '#848E9C', label: 'Not Submitted' };
   };
+
+  const riskColors: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 
   if (isLoading) return (
     <AdminLayout>
@@ -114,7 +114,7 @@ export function AdminUsers() {
           { label: 'Total Users', value: allUsers.length, color: '#F0B90B' },
           { label: 'Active', value: allUsers.filter((u: any) => u.isActive).length, color: '#02C076' },
           { label: 'KYC Verified', value: allUsers.filter((u: any) => u.kycStatus === 'approved').length, color: '#2a6df4' },
-          { label: 'Inactive', value: allUsers.filter((u: any) => !u.isActive).length, color: '#CF304A' },
+          { label: 'With Strategy', value: allUsers.filter((u: any) => u.assignedStrategyId).length, color: '#F0B90B' },
         ].map((s, i) => (
           <div key={i} className="card-stealth p-5">
             <p className="text-2xl font-bold mb-1" style={{ color: s.color }}>{s.value}</p>
@@ -134,7 +134,8 @@ export function AdminUsers() {
             {filtered.map((user: any) => {
               const kyc = kycColor(user.kycStatus);
               const isExpanded = expandedId === user.id;
-              const state = editState[user.id] || { balance: '', strategy: '', growth: '' };
+              const state = editState[user.id] || { balance: '', strategyId: '', growth: '' };
+              const assignedStrat = allStrategies.find((s: any) => s.id === user.assignedStrategyId);
 
               return (
                 <div key={user.id}>
@@ -153,9 +154,15 @@ export function AdminUsers() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                      <div className="text-right">
+                      <div className="text-right min-w-[100px]">
                         <p className="font-bold text-white text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
-                        {user.assignedStrategy && <p className="text-xs text-[#F0B90B]">{user.assignedStrategy}</p>}
+                        {assignedStrat ? (
+                          <span className="flex items-center gap-1 text-xs text-[#F0B90B] justify-end">
+                            <Zap className="w-3 h-3" />{assignedStrat.name}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-[#2B3139]">No strategy</span>
+                        )}
                       </div>
 
                       <span className="flex items-center gap-1.5 text-xs font-bold" style={{ color: kyc.color }}>
@@ -203,16 +210,34 @@ export function AdminUsers() {
 
                         <div className="space-y-2">
                           <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-[#02C076]" /> Assigned Strategy
+                            <TrendingUp className="w-4 h-4 text-[#02C076]" /> Assign Strategy
                           </label>
                           <select
-                            value={state.strategy}
-                            onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], strategy: e.target.value } }))}
+                            value={state.strategyId}
+                            onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], strategyId: e.target.value } }))}
                             className="input-stealth appearance-none"
                           >
                             <option value="">— None —</option>
-                            {STRATEGIES.map(s => <option key={s} value={s}>{s}</option>)}
+                            {allStrategies.map((s: any) => (
+                              <option key={s.id} value={s.id}>
+                                {s.name} ({s.riskProfile} risk · {s.monthlyReturn}%/mo)
+                              </option>
+                            ))}
                           </select>
+                          {state.strategyId && (() => {
+                            const sel = allStrategies.find((s: any) => s.id === parseInt(state.strategyId));
+                            return sel ? (
+                              <div className="flex items-center gap-2 px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg">
+                                <span className="text-xs font-bold capitalize" style={{ color: riskColors[sel.riskProfile] || '#848E9C' }}>
+                                  {sel.riskProfile} risk
+                                </span>
+                                <span className="text-[#2B3139]">·</span>
+                                <span className="text-xs text-[#02C076] font-semibold">+{sel.monthlyReturn}%/mo</span>
+                                <span className="text-[#2B3139]">·</span>
+                                <span className="text-xs text-[#848E9C]">{sel.winRate}% win rate</span>
+                              </div>
+                            ) : null;
+                          })()}
                         </div>
 
                         <div className="space-y-2">

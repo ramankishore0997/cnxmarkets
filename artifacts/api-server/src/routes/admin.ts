@@ -44,6 +44,7 @@ router.get("/users", requireAdmin, async (_req, res) => {
       phone: user.phone, country: user.country, role: user.role, kycStatus: user.kycStatus,
       isActive: user.isActive,
       totalBalance: account ? parseFloat(account.totalBalance as string) : 0,
+      assignedStrategyId: account?.assignedStrategyId ?? null,
       assignedStrategy: account?.assignedStrategy ?? null,
       dailyGrowthTarget: account?.dailyGrowthTarget ? parseFloat(account.dailyGrowthTarget as string) : null,
       createdAt: user.createdAt.toISOString(),
@@ -65,9 +66,31 @@ router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
 
     const [user] = await db.update(usersTable).set(userUpdates).where(eq(usersTable.id, userId)).returning();
 
+    const { assignedStrategyId } = req.body;
+
+    let resolvedStrategyName: string | null = assignedStrategy ?? undefined;
+    let resolvedStrategyId: number | null = assignedStrategyId ?? undefined;
+
+    if (assignedStrategyId !== undefined) {
+      if (assignedStrategyId === null || assignedStrategyId === 0) {
+        resolvedStrategyName = null;
+        resolvedStrategyId = null;
+      } else {
+        const [strat] = await db.select().from(strategiesTable).where(eq(strategiesTable.id, parseInt(String(assignedStrategyId)))).limit(1);
+        if (strat) {
+          resolvedStrategyName = strat.name;
+          resolvedStrategyId = strat.id;
+        }
+      }
+    } else if (assignedStrategy !== undefined) {
+      resolvedStrategyName = assignedStrategy || null;
+      resolvedStrategyId = undefined as any;
+    }
+
     const accountUpdates: Record<string, unknown> = { updatedAt: new Date() };
     if (totalBalance !== undefined) accountUpdates.totalBalance = totalBalance.toString();
-    if (assignedStrategy !== undefined) accountUpdates.assignedStrategy = assignedStrategy;
+    if (resolvedStrategyId !== undefined) accountUpdates.assignedStrategyId = resolvedStrategyId;
+    if (resolvedStrategyName !== undefined) accountUpdates.assignedStrategy = resolvedStrategyName;
     if (dailyGrowthTarget !== undefined) accountUpdates.dailyGrowthTarget = dailyGrowthTarget?.toString() ?? null;
 
     if (Object.keys(accountUpdates).length > 1) {
