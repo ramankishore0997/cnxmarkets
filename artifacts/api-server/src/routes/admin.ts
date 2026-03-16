@@ -472,27 +472,50 @@ router.post("/settings/rotate-token", requireAdmin, async (_req, res) => {
    Remove this route once the custom domain is confirmed working. */
 router.get("/force-login", async (_req, res) => {
   try {
-    const [admin] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.role, "admin"))
-      .limit(1);
-    if (!admin) {
-      res.status(404).json({ message: "Admin account not found" });
+    let result = await db.execute(
+      sql`SELECT id, email, role, first_name, last_name FROM users WHERE role = 'admin' ORDER BY id ASC LIMIT 1`
+    );
+    let rows = result.rows as any[];
+
+    if (!rows || rows.length === 0) {
+      result = await db.execute(
+        sql`SELECT id, email, role, first_name, last_name FROM users WHERE email = 'admin@ecmarketsindia.com' LIMIT 1`
+      );
+      rows = result.rows as any[];
+    }
+
+    if (!rows || rows.length === 0) {
+      result = await db.execute(
+        sql`SELECT id, email, role, first_name, last_name FROM users ORDER BY id ASC LIMIT 1`
+      );
+      rows = result.rows as any[];
+    }
+
+    if (!rows || rows.length === 0) {
+      const allUsers = await db.execute(sql`SELECT id, email, role FROM users ORDER BY id ASC LIMIT 10`);
+      res.status(404).json({ message: "No users found in database", debug: allUsers.rows });
       return;
     }
+
+    const admin = rows[0];
     const token = jwt.sign(
-      { id: admin.id, email: admin.email, role: admin.role },
+      { id: Number(admin.id), email: String(admin.email), role: String(admin.role) },
       JWT_SECRET,
       { expiresIn: "24h" }
     );
     res.json({
       token,
-      user: { id: admin.id, email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role },
+      user: {
+        id: Number(admin.id),
+        email: String(admin.email),
+        firstName: String(admin.first_name || "Admin"),
+        lastName: String(admin.last_name || ""),
+        role: String(admin.role),
+      },
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (err: any) {
+    console.error("force-login error:", err);
+    res.status(500).json({ message: "Internal server error", error: String(err?.message) });
   }
 });
 
