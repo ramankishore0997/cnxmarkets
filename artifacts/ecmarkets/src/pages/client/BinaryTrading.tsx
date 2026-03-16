@@ -132,6 +132,10 @@ export function BinaryTrading() {
   const [duration, setDuration] = useState(60);
   const [amount, setAmount] = useState('1000');
   const [placing, setPlacing] = useState(false);
+  const [callHovered, setCallHovered] = useState(false);
+  const [callPressed, setCallPressed] = useState(false);
+  const [putHovered, setPutHovered] = useState(false);
+  const [putPressed, setPutPressed] = useState(false);
   const [payoutPct, setPayoutPct] = useState(90);
   const [connected, setConnected] = useState(false);
   const [prices, setPrices] = useState<Record<string, number>>(BASE_PRICES);
@@ -749,8 +753,22 @@ export function BinaryTrading() {
                 <button
                   onClick={() => handlePlace('call')}
                   disabled={placing}
-                  className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm transition-all disabled:opacity-50 active:scale-95"
-                  style={{ background: 'linear-gradient(135deg, #02C076 0%, #018a53 100%)', boxShadow: placing ? 'none' : '0 0 24px rgba(2,192,118,0.55), 0 0 48px rgba(2,192,118,0.25)', border: '1px solid rgba(2,192,118,0.4)' }}
+                  onMouseEnter={() => setCallHovered(true)}
+                  onMouseLeave={() => { setCallHovered(false); setCallPressed(false); }}
+                  onPointerDown={() => setCallPressed(true)}
+                  onPointerUp={() => setCallPressed(false)}
+                  className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
+                  style={{
+                    background: 'linear-gradient(135deg, #02C076 0%, #018a53 100%)',
+                    border: '1px solid rgba(2,192,118,0.4)',
+                    boxShadow: placing
+                      ? 'none'
+                      : callHovered
+                      ? '0 0 20px #10b981, 0 0 40px rgba(16,185,129,0.5), 0 0 72px rgba(16,185,129,0.2)'
+                      : '0 0 24px rgba(2,192,118,0.45), 0 0 48px rgba(2,192,118,0.2)',
+                    transform: callPressed ? 'scale(0.95)' : callHovered ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  }}
                 >
                   <TrendingUp className="w-5 h-5" />
                   <span>Higher</span>
@@ -759,8 +777,22 @@ export function BinaryTrading() {
                 <button
                   onClick={() => handlePlace('put')}
                   disabled={placing}
-                  className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm transition-all disabled:opacity-50 active:scale-95"
-                  style={{ background: 'linear-gradient(135deg, #CF304A 0%, #a01f36 100%)', boxShadow: placing ? 'none' : '0 0 24px rgba(207,48,74,0.55), 0 0 48px rgba(207,48,74,0.25)', border: '1px solid rgba(207,48,74,0.4)' }}
+                  onMouseEnter={() => setPutHovered(true)}
+                  onMouseLeave={() => { setPutHovered(false); setPutPressed(false); }}
+                  onPointerDown={() => setPutPressed(true)}
+                  onPointerUp={() => setPutPressed(false)}
+                  className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
+                  style={{
+                    background: 'linear-gradient(135deg, #CF304A 0%, #a01f36 100%)',
+                    border: '1px solid rgba(207,48,74,0.4)',
+                    boxShadow: placing
+                      ? 'none'
+                      : putHovered
+                      ? '0 0 20px #ef4444, 0 0 40px rgba(239,68,68,0.5), 0 0 72px rgba(239,68,68,0.2)'
+                      : '0 0 24px rgba(207,48,74,0.45), 0 0 48px rgba(207,48,74,0.2)',
+                    transform: putPressed ? 'scale(0.95)' : putHovered ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  }}
                 >
                   <TrendingDown className="w-5 h-5" />
                   <span>Lower</span>
