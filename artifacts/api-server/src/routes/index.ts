@@ -1,8 +1,28 @@
-import { Router, type IRouter } from "express";
-import healthRouter from "./health";
+import { Router } from "express";
+import healthRouter from "./health.js";
+import authRouter from "./auth.js";
+import kycRouter from "./kyc.js";
+import strategiesRouter from "./strategies.js";
+import accountsRouter from "./accounts.js";
+import transactionsRouter from "./transactions.js";
+import tradesRouter from "./trades.js";
+import notificationsRouter from "./notifications.js";
+import contactRouter from "./contact.js";
+import usersRouter from "./users.js";
+import adminRouter from "./admin.js";
 
-const router: IRouter = Router();
+const router = Router();
 
 router.use(healthRouter);
+router.use("/auth", authRouter);
+router.use("/kyc", kycRouter);
+router.use("/strategies", strategiesRouter);
+router.use("/accounts", accountsRouter);
+router.use("/transactions", transactionsRouter);
+router.use("/trades", tradesRouter);
+router.use("/notifications", notificationsRouter);
+router.use("/contact", contactRouter);
+router.use("/users", usersRouter);
+router.use("/admin", adminRouter);
 
 export default router;

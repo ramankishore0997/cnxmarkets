@@ -1,22 +1,40 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ECMarketsIndia API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: users
+    description: User management
+  - name: kyc
+    description: KYC operations
+  - name: strategies
+    description: Trading strategies
+  - name: accounts
+    description: Client accounts
+  - name: transactions
+    description: Deposit and withdrawal transactions
+  - name: trades
+    description: Trade history
+  - name: notifications
+    description: Notification operations
+  - name: admin
+    description: Admin panel operations
+  - name: contact
+    description: Contact form
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,7 +42,606 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /kyc:
+    get:
+      operationId: getKyc
+      tags: [kyc]
+      summary: Get KYC status
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: KYC details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KycDocument"
+    post:
+      operationId: submitKyc
+      tags: [kyc]
+      summary: Submit KYC documents
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KycSubmitRequest"
+      responses:
+        "200":
+          description: KYC submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KycDocument"
+
+  /strategies:
+    get:
+      operationId: getStrategies
+      tags: [strategies]
+      summary: Get all trading strategies
+      responses:
+        "200":
+          description: List of strategies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Strategy"
+
+  /strategies/{id}:
+    get:
+      operationId: getStrategy
+      tags: [strategies]
+      summary: Get a strategy by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Strategy details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Strategy"
+
+  /accounts/dashboard:
+    get:
+      operationId: getDashboard
+      tags: [accounts]
+      summary: Get client dashboard data
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardData"
+
+  /accounts/performance:
+    get:
+      operationId: getPerformance
+      tags: [accounts]
+      summary: Get account performance
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Performance data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerformanceData"
+
+  /accounts/allocations:
+    get:
+      operationId: getAllocations
+      tags: [accounts]
+      summary: Get strategy allocations
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Allocations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Allocation"
+
+  /transactions/deposit:
+    post:
+      operationId: submitDeposit
+      tags: [transactions]
+      summary: Submit a deposit request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepositRequest"
+      responses:
+        "201":
+          description: Deposit submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions/withdraw:
+    post:
+      operationId: submitWithdrawal
+      tags: [transactions]
+      summary: Submit a withdrawal request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalRequest"
+      responses:
+        "201":
+          description: Withdrawal submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions:
+    get:
+      operationId: getTransactions
+      tags: [transactions]
+      summary: Get transaction history
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Transaction history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+
+  /trades:
+    get:
+      operationId: getTrades
+      tags: [trades]
+      summary: Get recent trades
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Recent trades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Trade"
+
+  /notifications:
+    get:
+      operationId: getNotifications
+      tags: [notifications]
+      summary: Get notifications
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Notifications list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /notifications/{id}/read:
+    patch:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark a notification as read
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /contact:
+    post:
+      operationId: submitContact
+      tags: [contact]
+      summary: Submit a contact form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactRequest"
+      responses:
+        "200":
+          description: Contact submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get admin dashboard stats
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/users:
+    get:
+      operationId: getAdminUsers
+      tags: [admin]
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: All users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+
+  /admin/users/{id}:
+    patch:
+      operationId: updateAdminUser
+      tags: [admin]
+      summary: Update user (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserUpdate"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+
+  /admin/kyc:
+    get:
+      operationId: getAdminKyc
+      tags: [admin]
+      summary: Get all KYC submissions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: All KYC submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminKyc"
+
+  /admin/kyc/{id}:
+    patch:
+      operationId: updateAdminKyc
+      tags: [admin]
+      summary: Approve or reject KYC
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KycUpdateRequest"
+      responses:
+        "200":
+          description: KYC updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/transactions:
+    get:
+      operationId: getAdminTransactions
+      tags: [admin]
+      summary: Get all transactions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: All transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminTransaction"
+
+  /admin/transactions/{id}:
+    patch:
+      operationId: updateAdminTransaction
+      tags: [admin]
+      summary: Approve or reject transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionUpdateRequest"
+      responses:
+        "200":
+          description: Transaction updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/strategies:
+    post:
+      operationId: createAdminStrategy
+      tags: [admin]
+      summary: Create a new strategy (admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StrategyCreateRequest"
+      responses:
+        "201":
+          description: Strategy created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Strategy"
+
+  /admin/strategies/{id}:
+    patch:
+      operationId: updateAdminStrategy
+      tags: [admin]
+      summary: Update a strategy (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StrategyCreateRequest"
+      responses:
+        "200":
+          description: Strategy updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Strategy"
+
+  /admin/notifications/send:
+    post:
+      operationId: sendAdminNotification
+      tags: [admin]
+      summary: Send a notification to users (admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminNotificationRequest"
+      responses:
+        "200":
+          description: Notification sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /users/profile:
+    patch:
+      operationId: updateProfile
+      tags: [users]
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdateRequest"
+      responses:
+        "200":
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/change-password:
+    post:
+      operationId: changePassword
+      tags: [users]
+      summary: Change password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +651,707 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        success:
+          type: boolean
+      required:
+        - message
+        - success
+
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        country:
+          type: string
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - token
+        - user
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        country:
+          type: string
+        role:
+          type: string
+          enum: [client, admin]
+        kycStatus:
+          type: string
+          enum: [pending, submitted, approved, rejected]
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+        - role
+        - kycStatus
+        - isActive
+        - createdAt
+
+    KycDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        idDocumentType:
+          type: string
+        idDocumentUrl:
+          type: string
+        addressProofType:
+          type: string
+        addressProofUrl:
+          type: string
+        status:
+          type: string
+          enum: [pending, submitted, approved, rejected]
+        rejectionReason:
+          type: string
+        submittedAt:
+          type: string
+        reviewedAt:
+          type: string
+      required:
+        - id
+        - userId
+        - status
+
+    KycSubmitRequest:
+      type: object
+      properties:
+        idDocumentType:
+          type: string
+        idDocumentUrl:
+          type: string
+        addressProofType:
+          type: string
+        addressProofUrl:
+          type: string
+      required:
+        - idDocumentType
+        - idDocumentUrl
+        - addressProofType
+        - addressProofUrl
+
+    KycUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected]
+        rejectionReason:
+          type: string
+      required:
+        - status
+
+    Strategy:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        riskProfile:
+          type: string
+          enum: [low, medium, high]
+        minCapital:
+          type: number
+        winRate:
+          type: number
+        maxDrawdown:
+          type: number
+        monthlyReturn:
+          type: number
+        markets:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - description
+        - riskProfile
+        - minCapital
+        - winRate
+        - maxDrawdown
+        - monthlyReturn
+        - markets
+        - isActive
+        - createdAt
+
+    StrategyCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        riskProfile:
+          type: string
+          enum: [low, medium, high]
+        minCapital:
+          type: number
+        winRate:
+          type: number
+        maxDrawdown:
+          type: number
+        monthlyReturn:
+          type: number
+        markets:
+          type: string
+        isActive:
+          type: boolean
+      required:
+        - name
+        - description
+        - riskProfile
+        - minCapital
+        - winRate
+        - maxDrawdown
+        - monthlyReturn
+        - markets
+
+    DashboardData:
+      type: object
+      properties:
+        totalBalance:
+          type: number
+        totalProfit:
+          type: number
+        totalDeposits:
+          type: number
+        totalWithdrawals:
+          type: number
+        activeStrategies:
+          type: integer
+        recentTrades:
+          type: array
+          items:
+            $ref: "#/components/schemas/Trade"
+        recentTransactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+        equityCurve:
+          type: array
+          items:
+            $ref: "#/components/schemas/EquityPoint"
+      required:
+        - totalBalance
+        - totalProfit
+        - totalDeposits
+        - totalWithdrawals
+        - activeStrategies
+        - recentTrades
+        - recentTransactions
+        - equityCurve
+
+    EquityPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        value:
+          type: number
+      required:
+        - date
+        - value
+
+    PerformanceData:
+      type: object
+      properties:
+        monthlyReturns:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyReturn"
+        winRate:
+          type: number
+        lossRate:
+          type: number
+        maxDrawdown:
+          type: number
+        sharpeRatio:
+          type: number
+        totalTrades:
+          type: integer
+        winningTrades:
+          type: integer
+        losingTrades:
+          type: integer
+      required:
+        - monthlyReturns
+        - winRate
+        - lossRate
+        - maxDrawdown
+        - sharpeRatio
+        - totalTrades
+        - winningTrades
+        - losingTrades
+
+    MonthlyReturn:
+      type: object
+      properties:
+        month:
+          type: string
+        return:
+          type: number
+      required:
+        - month
+        - return
+
+    Allocation:
+      type: object
+      properties:
+        strategyId:
+          type: integer
+        strategyName:
+          type: string
+        percentage:
+          type: number
+        amount:
+          type: number
+      required:
+        - strategyId
+        - strategyName
+        - percentage
+        - amount
+
+    DepositRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+        paymentMethod:
+          type: string
+        transactionReference:
+          type: string
+        notes:
+          type: string
+      required:
+        - amount
+        - currency
+        - paymentMethod
+
+    WithdrawalRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+        bankName:
+          type: string
+        accountNumber:
+          type: string
+        ifscCode:
+          type: string
+        accountHolderName:
+          type: string
+        notes:
+          type: string
+      required:
+        - amount
+        - currency
+        - bankName
+        - accountNumber
+        - ifscCode
+        - accountHolderName
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        type:
+          type: string
+          enum: [deposit, withdrawal]
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected, processing]
+        paymentMethod:
+          type: string
+        transactionReference:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - userId
+        - type
+        - amount
+        - currency
+        - status
+        - createdAt
+        - updatedAt
+
+    Trade:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        strategyId:
+          type: integer
+        strategyName:
+          type: string
+        market:
+          type: string
+        instrument:
+          type: string
+        direction:
+          type: string
+          enum: [buy, sell]
+        entryPrice:
+          type: number
+        exitPrice:
+          type: number
+        lotSize:
+          type: number
+        profit:
+          type: number
+        profitPercent:
+          type: number
+        status:
+          type: string
+          enum: [open, closed]
+        openedAt:
+          type: string
+        closedAt:
+          type: string
+      required:
+        - id
+        - userId
+        - market
+        - instrument
+        - direction
+        - entryPrice
+        - lotSize
+        - status
+        - openedAt
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum: [info, success, warning, error]
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - userId
+        - title
+        - message
+        - type
+        - isRead
+        - createdAt
+
+    ContactRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        subject:
+          type: string
+        message:
+          type: string
+      required:
+        - name
+        - email
+        - subject
+        - message
+
+    AdminStats:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        activeUsers:
+          type: integer
+        totalDeposits:
+          type: number
+        totalWithdrawals:
+          type: number
+        pendingDeposits:
+          type: integer
+        pendingWithdrawals:
+          type: integer
+        pendingKyc:
+          type: integer
+        totalStrategies:
+          type: integer
+      required:
+        - totalUsers
+        - activeUsers
+        - totalDeposits
+        - totalWithdrawals
+        - pendingDeposits
+        - pendingWithdrawals
+        - pendingKyc
+        - totalStrategies
+
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        country:
+          type: string
+        role:
+          type: string
+          enum: [client, admin]
+        kycStatus:
+          type: string
+          enum: [pending, submitted, approved, rejected]
+        isActive:
+          type: boolean
+        totalBalance:
+          type: number
+        createdAt:
+          type: string
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+        - role
+        - kycStatus
+        - isActive
+        - createdAt
+
+    AdminUserUpdate:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+        role:
+          type: string
+          enum: [client, admin]
+        kycStatus:
+          type: string
+          enum: [pending, submitted, approved, rejected]
+
+    AdminKyc:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        userEmail:
+          type: string
+        userName:
+          type: string
+        idDocumentType:
+          type: string
+        idDocumentUrl:
+          type: string
+        addressProofType:
+          type: string
+        addressProofUrl:
+          type: string
+        status:
+          type: string
+          enum: [pending, submitted, approved, rejected]
+        rejectionReason:
+          type: string
+        submittedAt:
+          type: string
+      required:
+        - id
+        - userId
+        - userEmail
+        - userName
+        - status
+
+    AdminTransaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        userEmail:
+          type: string
+        userName:
+          type: string
+        type:
+          type: string
+          enum: [deposit, withdrawal]
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected, processing]
+        paymentMethod:
+          type: string
+        transactionReference:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - userId
+        - userEmail
+        - userName
+        - type
+        - amount
+        - currency
+        - status
+        - createdAt
+
+    TransactionUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected, processing]
+        notes:
+          type: string
+      required:
+        - status
+
+    AdminNotificationRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum: [info, success, warning, error]
+        targetUserId:
+          type: integer
+      required:
+        - title
+        - message
+        - type
+
+    ProfileUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        country:
+          type: string
+
+    ChangePasswordRequest:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+          minLength: 8
+      required:
+        - currentPassword
+        - newPassword

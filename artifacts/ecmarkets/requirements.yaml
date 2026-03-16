@@ -1,0 +1,18 @@
+packages:
+  "framer-motion": "For premium smooth page transitions and scroll animations"
+  "recharts": "For performance analytics and equity curve charts"
+  "react-hook-form": "For robust form handling"
+  "@hookform/resolvers": "For zod schema validation in forms"
+  "date-fns": "For formatting dates in dashboards and tables"
+
+images:
+  - path: "artifacts/ecmarkets/public/images/hero-bg.png"
+    description: "Ultra premium abstract dark navy background with subtle glowing electric blue and gold mesh gradients, perfect for a high-end fintech trading platform hero section"
+    aspect_ratio: "16:9"
+  - path: "artifacts/ecmarkets/public/images/platform-preview.png"
+    description: "Abstract glassmorphism representation of a trading interface with floating charts and blue/gold accents on a dark background"
+    aspect_ratio: "16:9"
+
+notes:
+  - All API hooks are imported from @workspace/api-client-react
+  - JWT token stored in localStorage as 'ecm_token'

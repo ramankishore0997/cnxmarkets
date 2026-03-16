@@ -1,0 +1,237 @@
+Create a complete full-stack fintech web platform called **ECMarketsIndia.com**.
+The website must look like a premium global forex / algo trading platform with a dark modern UI similar to institutional trading companies.
+
+Use the following tech stack:
+
+Frontend:
+Next.js (React)
+Tailwind CSS
+Framer Motion animations
+
+Backend:
+Node.js
+Express API
+
+Database:
+PostgreSQL
+
+Authentication:
+JWT + encrypted passwords
+
+The platform must include both:
+
+1. Public marketing website
+2. Secure client dashboard
+3. Admin panel
+
+Design must be extremely modern, responsive, and professional.
+
+Use a **dark theme with blue / gold accent colors**, glassmorphism cards, animated gradients, and smooth page transitions.
+
+---
+
+PUBLIC WEBSITE PAGES
+
+Home Page sections:
+Hero section with animated forex charts
+Trusted by traders statistics
+What is Algo Trading
+Why Choose ECMarketsIndia
+Key Features grid
+Strategy Performance Highlights
+Live Market Chart (TradingView widget)
+Supported Markets (Forex, Gold, Indices)
+Platform Overview
+How It Works (step by step)
+Risk Management philosophy
+Technology Infrastructure
+Client Testimonials
+Strategy Performance Graph
+Security and Data Protection
+Global Infrastructure
+FAQ preview
+Call to Action
+Footer with links
+
+About Page:
+Company introduction
+Mission and vision
+Leadership philosophy
+Technology overview
+Risk management
+Infrastructure
+Transparency commitment
+
+Algo Strategies Page:
+Strategy cards
+Strategy descriptions
+Performance metrics
+Max drawdown
+Win rate
+Risk profile
+Minimum capital
+
+Performance Page:
+Interactive performance charts
+Monthly returns
+Historical performance table
+Equity curve visualization
+Risk statistics
+
+Platform Page:
+Dashboard screenshots
+Mobile experience
+Platform technology
+Execution environment
+Security features
+
+Markets Page:
+Forex pairs
+Gold
+Indices
+Market explanations
+
+Pricing Page:
+Account plans
+Minimum deposit
+Features comparison
+FAQ
+
+FAQ Page:
+Account setup
+Algo trading explanation
+Deposits
+Withdrawals
+Security
+
+Contact Page:
+Contact form
+Support email
+Office address
+Social media links
+
+Legal Pages:
+Terms of service
+Privacy policy
+Risk disclaimer
+Compliance notice
+
+---
+
+CLIENT AREA
+
+Signup Page
+Login Page
+Password reset
+Two factor authentication
+
+KYC Page:
+Upload identity document
+Upload address proof
+Verification status
+
+Client Dashboard:
+Account balance card
+Strategy allocation
+Equity curve chart
+Performance summary
+Recent trades
+Recent transactions
+Profit statistics
+
+Trading Analytics Page:
+Performance graph
+Monthly results
+Win/loss ratio
+Drawdown analysis
+
+Deposit Page:
+Submit deposit request
+Transaction history
+
+Withdrawal Page:
+Withdrawal request form
+Withdrawal history
+
+Profile Page:
+User profile
+Security settings
+Change password
+
+Notifications Page:
+Platform alerts
+Account messages
+
+---
+
+ADMIN PANEL
+
+Admin login
+
+Admin dashboard:
+Total users
+Total deposits
+Total withdrawals
+Active accounts
+Platform statistics
+
+User management:
+View users
+Edit accounts
+Approve KYC
+
+Transactions management:
+View deposits
+Approve deposits
+View withdrawals
+Approve withdrawals
+
+Strategy management:
+Add strategies
+Update strategy data
+Manage allocations
+
+Notifications:
+Send platform messages
+Email alerts
+
+Analytics:
+User growth chart
+Transaction chart
+
+---
+
+EXTRA FEATURES
+
+Responsive mobile design
+Progressive Web App (PWA)
+TradingView market chart widget
+Email notifications
+Telegram notification integration
+Secure API endpoints
+Audit logs
+
+---
+
+DESIGN REQUIREMENTS
+
+Ultra modern UI
+Smooth animations
+Professional fintech look
+High contrast typography
+Clean dashboard layout
+Fast loading pages
+SEO optimized
+
+---
+
+The final output must include:
+
+Complete frontend pages
+Backend API routes
+Database schema
+Admin panel
+Authentication system
+Sample data for testing
+
+Make the UI comparable to top fintech platforms and ensure the entire project can run locally and be deployed easily.

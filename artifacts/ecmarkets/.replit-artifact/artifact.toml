@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "ECMarketsIndia"
+version = "1.0.0"
+id = "artifacts/ecmarkets"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 23494
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/ecmarkets run dev"
+
+[services.env]
+PORT = "23494"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/ecmarkets", "run", "build"]
+publicDir = "artifacts/ecmarkets/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
