@@ -26,22 +26,22 @@ const INSTRUMENTS = [
 const INST_MAP = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i]));
 const BASE_PRICES = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i.base]));
 
-const FINNHUB_TOKEN = 'd6s5389r01qrb5i8m49gd6s5389r01qrb5i8m4a0';
+const ALLTICK_TOKEN = '5d1a2ce3f3c21f3e430c3695b884e96f-c-app';
 
-const INST_TO_FINNHUB: Record<string, string> = {
-  'EUR/USD':  'OANDA:EUR_USD',
-  'GBP/USD':  'OANDA:GBP_USD',
-  'USD/JPY':  'OANDA:USD_JPY',
-  'AUD/USD':  'OANDA:AUD_USD',
-  'USD/CAD':  'OANDA:USD_CAD',
-  'EUR/JPY':  'OANDA:EUR_JPY',
-  'BTC/USDT': 'BINANCE:BTCUSDT',
-  'ETH/USDT': 'BINANCE:ETHUSDT',
-  'SOL/USDT': 'BINANCE:SOLUSDT',
-  'BNB/USDT': 'BINANCE:BNBUSDT',
+const INST_TO_ALLTICK: Record<string, string> = {
+  'EUR/USD':  'EURUSD',
+  'GBP/USD':  'GBPUSD',
+  'USD/JPY':  'USDJPY',
+  'AUD/USD':  'AUDUSD',
+  'USD/CAD':  'USDCAD',
+  'EUR/JPY':  'EURJPY',
+  'BTC/USDT': 'BTCUSDT',
+  'ETH/USDT': 'ETHUSDT',
+  'SOL/USDT': 'SOLUSDT',
+  'BNB/USDT': 'BNBUSDT',
 };
-const FINNHUB_TO_INST: Record<string, string> = Object.fromEntries(
-  Object.entries(INST_TO_FINNHUB).map(([k, v]) => [v, k])
+const ALLTICK_TO_INST: Record<string, string> = Object.fromEntries(
+  Object.entries(INST_TO_ALLTICK).map(([k, v]) => [v, k])
 );
 
 const SEED_24H: Record<string, number> = {
@@ -163,7 +163,7 @@ export function BinaryTrading() {
   const [liveFeed, setLiveFeed] = useState<FeedEntry[]>([]);
   const [myHistory, setMyHistory] = useState<HistoryEntry[]>([]);
   const [tick, setTick] = useState(0);
-  const [finnhubLive, setFinnhubLive] = useState(false);
+  const [alltickLive, setAlltickLive] = useState(false);
 
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<IChartApi | null>(null);
@@ -179,9 +179,9 @@ export function BinaryTrading() {
   const recentTicks = useRef<Record<string, number[]>>({});
   const priceLineRef = useRef<any>(null);
   const entryLinesRef = useRef<Map<number, any>>(new Map());
-  const finnhubWsRef = useRef<WebSocket | null>(null);
-  const finnhubOHLC = useRef<Record<string, { open: number; high: number; low: number; close: number; bucketMs: number }>>({});
-  const finnhubActiveRef = useRef<Record<string, boolean>>({});
+  const alltickWsRef = useRef<WebSocket | null>(null);
+  const alltickOHLC = useRef<Record<string, { open: number; high: number; low: number; close: number; bucketMs: number }>>({});
+  const alltickActiveRef = useRef<Record<string, boolean>>({});
 
   const token = localStorage.getItem('ecm_token');
   const userId = getUserIdFromToken();
@@ -322,6 +322,46 @@ export function BinaryTrading() {
   }, [instrument, timeframe]);
 
   useEffect(() => {
+    const code = INST_TO_ALLTICK[instrument];
+    if (!code || !token) return;
+    const controller = new AbortController();
+    const klineTypeMap: Record<number, number> = { 1: 1, 5: 2, 15: 3, 60: 5 };
+    const klineType = klineTypeMap[timeframe] ?? 1;
+    fetch(`/api/binary/klines?instrument=${encodeURIComponent(instrument)}&kline_type=${klineType}&count=150`, {
+      headers: authHdr,
+      signal: controller.signal,
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then((data: any) => {
+        if (!data || data.ret !== 200 || !Array.isArray(data?.data?.kline_list)) return;
+        const dec = INST_MAP[instrument]?.decimals ?? 5;
+        const bars = (data.data.kline_list as any[])
+          .map(k => ({
+            time: parseInt(k.timestamp, 10) as UTCTimestamp,
+            open:  parseFloat(parseFloat(k.open_price).toFixed(dec)),
+            high:  parseFloat(parseFloat(k.high_price).toFixed(dec)),
+            low:   parseFloat(parseFloat(k.low_price).toFixed(dec)),
+            close: parseFloat(parseFloat(k.close_price).toFixed(dec)),
+          }))
+          .filter(k => !isNaN(k.time) && k.time > 0 && k.open > 0)
+          .sort((a, b) => (a.time as number) - (b.time as number));
+        if (bars.length === 0) return;
+        minuteCandles.current[instrument] = bars;
+        if (seriesRef.current && instRef.current === instrument) {
+          try { seriesRef.current.setData(bars); } catch {}
+          const last = bars[bars.length - 1];
+          if (last) {
+            if (priceLineRef.current) { try { priceLineRef.current.applyOptions({ price: last.close }); } catch {} }
+            setPrices(prev => ({ ...prev, [instrument]: last.close }));
+            pricesRef.current = { ...pricesRef.current, [instrument]: last.close };
+          }
+        }
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [instrument, timeframe]);
+
+  useEffect(() => {
     if (!seriesRef.current) return;
     const series = seriesRef.current;
     const existingIds = new Set(entryLinesRef.current.keys());
@@ -355,9 +395,11 @@ export function BinaryTrading() {
   useEffect(() => {
     let ws: WebSocket | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+    let seqId = 1;
 
-    const applyFinnhubTick = (sym: string, rawPrice: number, tsMs: number) => {
-      const inst = FINNHUB_TO_INST[sym];
+    const applyAlltickTick = (code: string, rawPrice: number, tsMs: number) => {
+      const inst = ALLTICK_TO_INST[code];
       if (!inst) return;
       const dec = INST_MAP[inst]?.decimals ?? 5;
 
@@ -373,23 +415,23 @@ export function BinaryTrading() {
       }
       recentTicks.current[inst] = [...(recentTicks.current[inst] ?? []).slice(-9), price];
       lastAccepted.current[inst] = { price, ts: Date.now() };
-      if (!finnhubActiveRef.current[inst]) {
-        finnhubActiveRef.current[inst] = true;
-        setFinnhubLive(true);
+      if (!alltickActiveRef.current[inst]) {
+        alltickActiveRef.current[inst] = true;
+        setAlltickLive(true);
       }
 
       const bucketMs = Math.floor(tsMs / 60000) * 60000;
       const minuteTs = Math.floor(bucketMs / 1000);
-      const ohlcState = finnhubOHLC.current[inst];
+      const ohlcState = alltickOHLC.current[inst];
       if (!ohlcState || ohlcState.bucketMs !== bucketMs) {
         const prevClose = ohlcState?.close ?? price;
-        finnhubOHLC.current[inst] = { open: prevClose, high: Math.max(prevClose, price), low: Math.min(prevClose, price), close: price, bucketMs };
+        alltickOHLC.current[inst] = { open: prevClose, high: Math.max(prevClose, price), low: Math.min(prevClose, price), close: price, bucketMs };
       } else {
         ohlcState.high = Math.max(ohlcState.high, price);
         ohlcState.low = Math.min(ohlcState.low, price);
         ohlcState.close = price;
       }
-      const s = finnhubOHLC.current[inst];
+      const s = alltickOHLC.current[inst];
       const bar: CandlestickData = { time: minuteTs as UTCTimestamp, open: s.open, high: s.high, low: s.low, close: s.close };
 
       ensureCandles(inst);
@@ -418,29 +460,41 @@ export function BinaryTrading() {
     };
 
     const connect = () => {
-      ws = new WebSocket(`wss://ws.finnhub.io?token=${FINNHUB_TOKEN}`);
-      finnhubWsRef.current = ws;
+      ws = new WebSocket(`wss://quote.alltick.co/quote-b-ws-api?token=${ALLTICK_TOKEN}`);
+      alltickWsRef.current = ws;
 
       ws.onopen = () => {
-        Object.values(INST_TO_FINNHUB).forEach(sym => {
-          ws?.send(JSON.stringify({ type: 'subscribe', symbol: sym }));
-        });
+        ws?.send(JSON.stringify({
+          cmd_id: 22004,
+          seq_id: seqId++,
+          trace: `sub-${Date.now()}`,
+          data: { symbol_list: Object.values(INST_TO_ALLTICK).map(code => ({ code })) },
+        }));
+        heartbeatTimer = setInterval(() => {
+          if (ws?.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ cmd_id: 22000, seq_id: seqId++, trace: `hb-${Date.now()}`, data: {} }));
+          }
+        }, 10000);
       };
 
       ws.onmessage = (evt: MessageEvent) => {
         try {
           const msg = JSON.parse(evt.data as string);
-          if (msg.type === 'trade' && Array.isArray(msg.data)) {
-            msg.data.forEach((tick: { s: string; p: number; t: number }) => {
-              applyFinnhubTick(tick.s, tick.p, tick.t);
-            });
+          if (msg.cmd_id === 22998 && msg.data) {
+            const { code, price, tick_time } = msg.data;
+            const rawPrice = parseFloat(price);
+            const tsMs = parseInt(tick_time, 10);
+            if (!isNaN(rawPrice) && rawPrice > 0 && !isNaN(tsMs)) {
+              applyAlltickTick(code, rawPrice, tsMs);
+            }
           }
         } catch {}
       };
 
       ws.onerror = () => {};
       ws.onclose = () => {
-        finnhubWsRef.current = null;
+        alltickWsRef.current = null;
+        if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; }
         reconnectTimer = setTimeout(connect, 5000);
       };
     };
@@ -448,8 +502,9 @@ export function BinaryTrading() {
     connect();
     return () => {
       if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
       if (ws) { try { ws.close(); } catch {} }
-      finnhubWsRef.current = null;
+      alltickWsRef.current = null;
     };
   }, []);
 
@@ -466,7 +521,7 @@ export function BinaryTrading() {
 
     socket.on('price:tick', (d: { instrument: string; price: number; open: number; high: number; low: number; time: number }) => {
       const { instrument: inst, price, open, high, low, time } = d;
-      if (finnhubActiveRef.current[inst]) return;
+      if (alltickActiveRef.current[inst]) return;
 
       setPrices(prev2 => {
         const old = prev2[inst] ?? price;
@@ -581,10 +636,10 @@ export function BinaryTrading() {
               <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-[#02C076] animate-pulse' : 'bg-[#CF304A]'}`} />
               <span className={connected ? 'text-[#02C076]' : 'text-[#CF304A]'}>{connected ? 'Live' : 'Connecting'}</span>
             </div>
-            {finnhubLive && (
+            {alltickLive && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(2,192,118,0.08)', border: '1px solid rgba(2,192,118,0.2)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse" />
-                <span className="text-[#02C076]">Finnhub Direct</span>
+                <span className="text-[#02C076]">Alltick Live</span>
               </div>
             )}
             {activeTradeStatus !== 'none' && (
