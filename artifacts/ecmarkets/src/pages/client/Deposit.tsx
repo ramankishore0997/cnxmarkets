@@ -3,10 +3,10 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useSubmitDeposit } from '@workspace/api-client-react';
+import { useSubmitDeposit, useGetTransactions } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import { useToast } from '@/hooks/use-toast';
-import { Building2, Copy, CheckCircle2, Loader2 } from 'lucide-react';
+import { Building2, Copy, CheckCircle2, Loader2, CheckCircle, Clock, XCircle, ArrowDownLeft } from 'lucide-react';
 
 const schema = z.object({
   amount: z.coerce.number().min(100, "Minimum deposit is $100"),
@@ -15,9 +15,25 @@ const schema = z.object({
   transactionReference: z.string().optional(),
 });
 
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { icon: any; color: string; bg: string }> = {
+    approved: { icon: CheckCircle, color: '#02C076', bg: '#02C076' },
+    pending: { icon: Clock, color: '#F0B90B', bg: '#F0B90B' },
+    rejected: { icon: XCircle, color: '#CF304A', bg: '#CF304A' },
+  };
+  const s = map[status] || map.pending;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: `${s.bg}20`, color: s.color }}>
+      <s.icon className="w-3 h-3" /> {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  );
+}
+
 export function Deposit() {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  const { data: transactions, isLoading: txLoading } = useGetTransactions({ ...getAuthOptions() });
+  const deposits = (transactions as any[])?.filter((t: any) => t.type === 'deposit') || [];
   
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -143,6 +159,46 @@ export function Deposit() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Deposit History */}
+      <div className="card-stealth p-6 mt-8">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-white">Deposit History</h3>
+          <span className="text-[#848E9C] text-sm">{deposits.length} request{deposits.length !== 1 ? 's' : ''}</span>
+        </div>
+        {txLoading ? (
+          <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" /></div>
+        ) : deposits.length === 0 ? (
+          <div className="text-center py-12">
+            <ArrowDownLeft className="w-12 h-12 text-[#2B3139] mx-auto mb-4" />
+            <p className="text-[#848E9C] font-medium">No deposits yet. Submit your first request above.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#2B3139]">
+                  {['Date', 'Amount', 'Currency', 'Method', 'Status', 'Reference'].map((h) => (
+                    <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2B3139]">
+                {deposits.map((tx: any) => (
+                  <tr key={tx.id} className="hover:bg-[#0B0E11]/40 transition-colors">
+                    <td className="py-4 pr-6 text-[#848E9C] text-sm">{new Date(tx.createdAt).toLocaleDateString()}</td>
+                    <td className="py-4 pr-6 font-bold text-white">${Number(tx.amount).toLocaleString()}</td>
+                    <td className="py-4 pr-6 text-[#EAECEF]">{tx.currency || 'USD'}</td>
+                    <td className="py-4 pr-6 text-[#848E9C] capitalize">{(tx.paymentMethod || '').replace('_', ' ')}</td>
+                    <td className="py-4 pr-6"><StatusBadge status={tx.status} /></td>
+                    <td className="py-4 text-[#848E9C] font-mono text-xs">{tx.transactionReference || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

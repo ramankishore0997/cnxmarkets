@@ -21,11 +21,18 @@ import { Register } from "@/pages/auth/Register";
 // Client Pages
 import { Dashboard } from "@/pages/client/Dashboard";
 import { Deposit } from "@/pages/client/Deposit";
+import { Withdraw } from "@/pages/client/Withdraw";
 import { Kyc } from "@/pages/client/Kyc";
+import { Analytics } from "@/pages/client/Analytics";
+import { Profile } from "@/pages/client/Profile";
+import { Notifications } from "@/pages/client/Notifications";
 
 // Admin Pages
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { AdminTransactions } from "@/pages/admin/AdminTransactions";
+import { AdminKyc } from "@/pages/admin/AdminKyc";
+import { AdminUsers } from "@/pages/admin/AdminUsers";
+import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 
 const queryClient = new QueryClient();
 
@@ -62,15 +69,23 @@ function Router() {
       <Route path="/dashboard">
         <ProtectedRoute component={Dashboard} />
       </Route>
+      <Route path="/dashboard/analytics">
+        <ProtectedRoute component={Analytics} />
+      </Route>
       <Route path="/dashboard/deposit">
         <ProtectedRoute component={Deposit} />
+      </Route>
+      <Route path="/dashboard/withdraw">
+        <ProtectedRoute component={Withdraw} />
       </Route>
       <Route path="/dashboard/kyc">
         <ProtectedRoute component={Kyc} />
       </Route>
-      {/* Fallbacks for other dashboard routes */}
-      <Route path="/dashboard/:page">
-        <ProtectedRoute component={Dashboard} />
+      <Route path="/dashboard/profile">
+        <ProtectedRoute component={Profile} />
+      </Route>
+      <Route path="/dashboard/notifications">
+        <ProtectedRoute component={Notifications} />
       </Route>
 
       {/* Admin Routes */}
@@ -79,6 +94,15 @@ function Router() {
       </Route>
       <Route path="/admin/transactions">
         <ProtectedRoute component={AdminTransactions} adminOnly={true} />
+      </Route>
+      <Route path="/admin/kyc">
+        <ProtectedRoute component={AdminKyc} adminOnly={true} />
+      </Route>
+      <Route path="/admin/users">
+        <ProtectedRoute component={AdminUsers} adminOnly={true} />
+      </Route>
+      <Route path="/admin/notifications">
+        <ProtectedRoute component={AdminNotifications} adminOnly={true} />
       </Route>
       {/* Fallbacks for other admin routes */}
       <Route path="/admin/:page">

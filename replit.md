@@ -95,12 +95,17 @@ All routes under `/api`:
 
 JWT stored as `ecm_token` in localStorage. Token sent as `Authorization: Bearer <token>`. JWT_SECRET env var (defaults to fallback for dev).
 
-## Design System
+## Design System — "Terminal Stealth"
 
-- Dark navy background (#0a0f1e range)
-- Blue accent: electric blue (#2563eb, #3b82f6)
-- Gold accent: #f59e0b, #d97706
-- Inter font
-- Glassmorphism cards
-- Framer Motion animations
-- TradingView widget embeds
+- Background: #0B0E11 (obsidian)
+- Surface: #1E2329 (dark card)
+- Border: #2B3139
+- Gold accent: #F0B90B
+- Green / profit: #02C076
+- Red / loss: #CF304A
+- Text: #EAECEF (primary), #848E9C (muted)
+- Fonts: Inter
+- Components: `.card-stealth`, `.card-stealth-gold`, `.btn-gold`, `.btn-ghost`, `.input-stealth`, `.sidebar-stealth`
+- Framer Motion animated page transitions in DashboardLayout / AdminLayout
+- Recharts (AreaChart, BarChart, PieChart) for data visualization
+- Lucide React icons throughout
