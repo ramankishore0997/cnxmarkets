@@ -47,13 +47,13 @@ export function Faq() {
     },
     {
       category: 'Accounts',
-      q: "How does the performance fee work?",
-      a: "We charge a 20% performance fee on new profits only, utilizing a High-Water Mark model. If your account starts at ₹1,00,000 and grows to ₹1,10,000, we take 20% of the ₹10,000 profit. If it drops back to ₹1,05,000, no fee is charged until it surpasses ₹1,10,000 again."
+      q: "What does the analytics dashboard show?",
+      a: "Your dashboard provides a real-time view of your portfolio: live equity curve, open positions, closed trade log with full details (entry, exit, P&L), strategy allocation breakdown, and historical performance metrics. All data is updated tick-by-tick."
     },
     {
       category: 'Accounts',
-      q: "Are there any management fees?",
-      a: "No. We charge zero management fees. Our business model is entirely performance-based — we only earn when you earn new profits. This perfectly aligns our incentives with your financial success."
+      q: "Can I switch between account tiers?",
+      a: "Yes. You can upgrade your tier at any time by depositing additional capital to meet the new threshold. Your strategy access and execution priority are upgraded immediately after confirmation. Downgrading is also possible with a withdrawal request."
     },
     {
       category: 'Accounts',
@@ -112,8 +112,8 @@ export function Faq() {
     },
     {
       category: 'Deposits & Withdrawals',
-      q: "Are there any withdrawal fees?",
-      a: "No withdrawal fees are charged by ECMarketsIndia. Standard bank transfer fees may apply depending on your bank and transfer method (NEFT is free at most banks). Wire transfers for NRI accounts may incur standard forex conversion charges."
+      q: "Can I add capital to an existing account?",
+      a: "Yes. You can top up your account at any time via UPI, NEFT, RTGS, or IMPS. Additional deposits are reflected in your portfolio within one business day. There is no restriction on how many times you can deposit."
     },
     {
       category: 'Security',

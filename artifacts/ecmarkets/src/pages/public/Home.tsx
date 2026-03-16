@@ -63,12 +63,12 @@ export function Home() {
   ];
 
   const faqs = [
-    { q: "What is the minimum deposit?", a: "The minimum deposit to activate the Starter Algo is ₹20,000. However, to access the full suite, we recommend the Professional tier starting at ₹1,00,000." },
-    { q: "Is my money safe?", a: "Yes. Funds are held in segregated tier-1 bank accounts. We only have trading authority over the accounts via LPOA." },
-    { q: "How does the performance fee work?", a: "We charge a 20% performance fee on new profits only, utilizing a High-Water Mark model." },
-    { q: "Do I need trading experience?", a: "No prior trading experience is required. ECMarketsIndia is a fully managed quantitative solution." },
-    { q: "Can I withdraw my money at any time?", a: "Absolutely. There is zero lock-in period. You can request a withdrawal at any time from your dashboard." },
-    { q: "Which markets do your algorithms trade?", a: "Our core strategies operate primarily on major Forex pairs and high-liquidity commodities like Gold." },
+    { q: "What is the minimum capital to get started?", a: "The minimum capital to activate the Starter Account is ₹20,000. The Professional tier starts at ₹1,00,000, providing access to all premium strategies and priority execution." },
+    { q: "Is my capital safe?", a: "Yes. Funds are held in segregated tier-1 bank accounts. We only have trading authority over the accounts via LPOA — we cannot withdraw your funds. Only you control deposits and withdrawals." },
+    { q: "Do I need prior trading experience?", a: "No prior trading experience is required. ECMarketsIndia is a fully managed algorithmic trading platform. Once you allocate capital to a strategy, our systems handle all execution and monitoring automatically." },
+    { q: "Can I withdraw my capital at any time?", a: "Absolutely. There is zero lock-in period on any account tier. You can pause strategy execution and request a withdrawal at any time directly from your dashboard." },
+    { q: "Which markets do your algorithms trade?", a: "Our core strategies operate primarily on major Forex pairs (EUR/USD, GBP/USD, USD/JPY) and high-liquidity commodities like Gold (XAU/USD). All markets are chosen for maximum liquidity." },
+    { q: "How do I monitor my portfolio?", a: "You get access to a real-time analytics dashboard showing your live equity curve, open positions, closed trade history, and strategy performance metrics — updated tick-by-tick." },
   ];
 
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
@@ -135,10 +135,10 @@ export function Home() {
                 transition={{ delay: 0.5 }}
                 className="flex flex-wrap items-center gap-6 text-sm text-[#EAECEF] font-medium"
               >
-                <span className="flex items-center gap-2 text-[#02C076] font-semibold">✓ Zero Platform Fees</span>
-                <span className="flex items-center gap-2 text-[#02C076] font-semibold">✓ No Profit Sharing</span>
+                <span className="flex items-center gap-2">⚡ Institutional Execution</span>
                 <span className="flex items-center gap-2">🔒 Bank-Grade Security</span>
                 <span className="flex items-center gap-2">📊 Real-Time Analytics</span>
+                <span className="flex items-center gap-2">🌐 24/5 Global Markets</span>
               </motion.div>
             </div>
 
@@ -383,12 +383,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Account Tiers</h2>
-            <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
-              <span className="zero-fee-badge">✓ Zero Platform Fees</span>
-              <span className="zero-fee-badge">✓ No Profit Sharing</span>
-              <span className="zero-fee-badge">✓ Only Pay When You Profit</span>
-            </div>
-            <p className="text-[#848E9C] mt-3 text-sm max-w-lg mx-auto">Zero Fees Trading — No platform fees and no profit-sharing charges. A strict 20% performance fee applies only on new high-water mark profits.</p>
+            <p className="text-[#848E9C] mt-3 text-sm max-w-lg mx-auto">Choose the capital tier that suits your investment goals. Every account includes live analytics, real-time monitoring, and institutional-grade strategy execution.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
@@ -932,7 +927,7 @@ export function Home() {
           <div className="text-center mb-4">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Real Results from Real Clients</h2>
           </div>
-          <p className="text-center text-[#848E9C] text-sm mb-12 italic">* Past performance is not indicative of future results. All returns are pre-performance-fee.</p>
+          <p className="text-center text-[#848E9C] text-sm mb-12 italic">* Past performance is not indicative of future results. Capital is at risk.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { city:"Mumbai", invested:"₹50,000", current:"₹68,400", pct:"+36.8%" },

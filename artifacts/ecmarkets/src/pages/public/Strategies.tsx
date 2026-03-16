@@ -50,17 +50,6 @@ export function Strategies() {
         </div>
       </div>
 
-      {/* ZERO FEE BANNER */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <div className="flex flex-wrap items-center justify-center gap-3 bg-[#1E2329] border border-[#2B3139] rounded-xl px-6 py-4 mb-6">
-          <span className="text-[#848E9C] text-sm font-medium">Platform Pricing:</span>
-          <span className="zero-fee-badge">✓ Zero Platform Fees</span>
-          <span className="zero-fee-badge">✓ No Profit Sharing</span>
-          <span className="zero-fee-badge">✓ 20% Performance Fee on New Profits Only</span>
-          <Link href="/pricing" className="text-[#F0B90B] text-sm font-semibold hover:underline ml-2">View Pricing →</Link>
-        </div>
-      </div>
-
       {/* RAZRMARKET FEATURED CARD */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="card-stealth-gold p-8 relative overflow-hidden">
