@@ -81,7 +81,7 @@ export function Home() {
   const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
 
   const stratTableRows = [
-    { name: "RazrMarket Strategy", trades: "1,247", wr: "82.5%" },
+    { name: "RazrMarket Strategy", trades: "1,247", wr: "78.0%" },
     { name: "Quantum Trend",       trades: "892",   wr: "68.9%" },
     { name: "Gold Breakout",       trades: "634",   wr: "71.5%" },
     { name: "Momentum Alpha",      trades: "1,089", wr: "66.3%" },
