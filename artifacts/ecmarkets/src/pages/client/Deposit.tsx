@@ -1,61 +1,86 @@
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useSubmitDeposit, useGetTransactions } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
-import { useToast } from '@/hooks/use-toast';
-import { Building2, Copy, CheckCircle2, Loader2, CheckCircle, Clock, XCircle, ArrowDownLeft } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  CheckCircle, Clock, XCircle, ArrowDownLeft,
+  Loader2, Copy, CheckCircle2, Smartphone, Bitcoin
+} from 'lucide-react';
 
-const schema = z.object({
-  amount: z.coerce.number().min(100, "Minimum deposit is ₹100"),
-  currency: z.string().min(1, "Currency is required"),
-  paymentMethod: z.string().min(1, "Payment method is required"),
-  transactionReference: z.string().optional(),
-});
+const USDT_ADDRESS = 'TRX9xQmKLpVwYzN8aB3cDfGhJkMnPqRsUv';
+const UPI_HANDLE = 'ecmarkets@upi';
 
 function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { icon: any; color: string; bg: string }> = {
-    approved: { icon: CheckCircle, color: '#02C076', bg: '#02C076' },
-    pending: { icon: Clock, color: '#F0B90B', bg: '#F0B90B' },
-    rejected: { icon: XCircle, color: '#CF304A', bg: '#CF304A' },
+  const map: Record<string, { icon: any; color: string }> = {
+    approved: { icon: CheckCircle, color: '#02C076' },
+    pending:  { icon: Clock,        color: '#F0B90B' },
+    rejected: { icon: XCircle,      color: '#CF304A' },
   };
   const s = map[status] || map.pending;
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: `${s.bg}20`, color: s.color }}>
-      <s.icon className="w-3 h-3" /> {status.charAt(0).toUpperCase() + status.slice(1)}
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
+      style={{ background: `${s.color}20`, color: s.color }}>
+      <s.icon className="w-3 h-3" />
+      {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
 }
 
+type Tab = 'upi' | 'usdt';
+
 export function Deposit() {
-  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [tab, setTab] = useState<Tab>('upi');
   const [copied, setCopied] = useState(false);
+  const [success, setSuccess] = useState<Tab | null>(null);
+
+  const [upiAmount, setUpiAmount] = useState('');
+  const [upiId, setUpiId]         = useState('');
+  const [upiError, setUpiError]   = useState('');
+
+  const [usdtAmount, setUsdtAmount] = useState('');
+  const [usdtError, setUsdtError]   = useState('');
+
   const { data: transactions, isLoading: txLoading } = useGetTransactions({ ...getAuthOptions() });
   const deposits = (transactions as any[])?.filter((t: any) => t.type === 'deposit') || [];
-  
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: { amount: 1000, currency: 'USD', paymentMethod: 'bank_transfer' }
-  });
 
   const depositMutation = useSubmitDeposit({
     ...getAuthOptions(),
     mutation: {
-      onSuccess: () => {
-        toast({ title: "Request Submitted", description: "Your deposit request is pending approval." });
-        form.reset();
-      }
-    }
+      onSuccess: (_data: any, vars: any) => {
+        const method = vars.data.paymentMethod;
+        setSuccess(method === 'upi' ? 'upi' : 'usdt');
+        setUpiAmount(''); setUpiId('');
+        setUsdtAmount('');
+        queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
+      },
+      onError: () => {
+        setUpiError('Submission failed. Please try again.');
+        setUsdtError('Submission failed. Please try again.');
+      },
+    },
   });
 
-  const onSubmit = (data: z.infer<typeof schema>) => {
-    depositMutation.mutate({ data });
+  const submitUPI = () => {
+    setUpiError('');
+    const amt = parseFloat(upiAmount);
+    if (!amt || amt < 100) { setUpiError('Minimum deposit is ₹100'); return; }
+    if (!upiId.trim())     { setUpiError('Please enter your UPI ID'); return; }
+    setSuccess(null);
+    depositMutation.mutate({ data: { amount: amt, currency: 'INR', paymentMethod: 'upi', transactionReference: upiId.trim() } });
   };
 
-  const copyBankDetails = () => {
-    navigator.clipboard.writeText("ECM INTL CORP\nACC: 8934578923\nSWIFT: ECMBXXX");
+  const submitUSDT = () => {
+    setUsdtError('');
+    const amt = parseFloat(usdtAmount);
+    if (!amt || amt < 1) { setUsdtError('Minimum deposit is 1 USDT'); return; }
+    setSuccess(null);
+    depositMutation.mutate({ data: { amount: amt, currency: 'USDT', paymentMethod: 'crypto_usdt' } });
+  };
+
+  const copyText = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -67,108 +92,272 @@ export function Deposit() {
         <p className="text-[#848E9C] font-medium">Add capital to start allocating to strategies</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 card-stealth p-8">
-          <h3 className="text-xl font-bold text-white mb-6">Deposit Details</h3>
-          
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#848E9C]">Amount</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3 text-[#848E9C] font-medium">$</span>
-                  <input 
-                    {...form.register('amount')}
-                    type="number" 
-                    className="input-stealth pl-8"
-                  />
+      {/* Tab switcher */}
+      <div className="flex gap-2 mb-6">
+        {([
+          { key: 'upi',  label: 'UPI India',    icon: Smartphone },
+          { key: 'usdt', label: 'Crypto (USDT)', icon: Bitcoin    },
+        ] as { key: Tab; label: string; icon: any }[]).map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => { setTab(key); setSuccess(null); }}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all border ${
+              tab === key
+                ? 'bg-[#F0B90B] text-black border-[#F0B90B]'
+                : 'bg-transparent text-[#848E9C] border-[#2B3139] hover:border-[#F0B90B]/50 hover:text-white'
+            }`}
+          >
+            <Icon className="w-4 h-4" />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+
+        {/* ── FORM PANEL ── */}
+        <div className="lg:col-span-3 card-stealth p-8">
+
+          {/* UPI TAB */}
+          {tab === 'upi' && (
+            <>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-11 h-11 rounded-xl bg-[#02C076]/20 border border-[#02C076]/30 flex items-center justify-center">
+                  <Smartphone className="w-5 h-5 text-[#02C076]" />
                 </div>
-                {form.formState.errors.amount && (
-                  <p className="text-sm text-[#CF304A]">{form.formState.errors.amount.message}</p>
-                )}
+                <div>
+                  <h3 className="text-lg font-bold text-white">UPI Deposit (India)</h3>
+                  <p className="text-xs text-[#848E9C]">Instant transfer · No fees · INR only</p>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#848E9C]">Currency</label>
-                <select 
-                  {...form.register('currency')}
-                  className="input-stealth appearance-none"
-                >
-                  <option value="USD">USD - US Dollar</option>
-                  <option value="EUR">EUR - Euro</option>
-                  <option value="GBP">GBP - British Pound</option>
-                </select>
+              {success === 'upi' ? (
+                <div className="flex flex-col items-center py-10 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-[#02C076]/20 border border-[#02C076]/30 flex items-center justify-center mb-4">
+                    <CheckCircle className="w-8 h-8 text-[#02C076]" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">Deposit Request Submitted</h4>
+                  <p className="text-[#848E9C] text-sm max-w-sm leading-relaxed">
+                    Our team is manually verifying your payment. Your balance will be updated shortly.
+                  </p>
+                  <button onClick={() => setSuccess(null)} className="mt-6 text-sm font-bold text-[#F0B90B] hover:underline">
+                    Submit another deposit →
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  {/* Send-to UPI info */}
+                  <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
+                    <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-2">Send payment to this UPI ID</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#F0B90B] font-bold text-lg font-mono">{UPI_HANDLE}</span>
+                      <button
+                        onClick={() => copyText(UPI_HANDLE)}
+                        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-white transition-colors"
+                      >
+                        {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-[#02C076]" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copied ? 'Copied!' : 'Copy'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Deposit Amount (INR) *</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-3.5 text-[#848E9C] font-bold text-sm">₹</span>
+                      <input
+                        type="number"
+                        value={upiAmount}
+                        onChange={e => { setUpiAmount(e.target.value); setUpiError(''); }}
+                        className="input-stealth pl-8 w-full"
+                        placeholder="e.g. 5000"
+                        min={100}
+                      />
+                    </div>
+                    <p className="text-xs text-[#848E9C] mt-1">Minimum: ₹100</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Your UPI ID *</label>
+                    <input
+                      type="text"
+                      value={upiId}
+                      onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
+                      className="input-stealth w-full"
+                      placeholder="yourname@upi or phone@bankname"
+                    />
+                    <p className="text-xs text-[#848E9C] mt-1">The UPI ID you used to send the payment</p>
+                  </div>
+
+                  {upiError && <p className="text-sm text-[#CF304A] font-medium">{upiError}</p>}
+
+                  <button
+                    onClick={submitUPI}
+                    disabled={depositMutation.isPending}
+                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5"
+                  >
+                    {depositMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Submit Deposit Request
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* USDT TAB */}
+          {tab === 'usdt' && (
+            <>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-11 h-11 rounded-xl bg-[#F0B90B]/20 border border-[#F0B90B]/30 flex items-center justify-center">
+                  <Bitcoin className="w-5 h-5 text-[#F0B90B]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">USDT Deposit (TRC20)</h3>
+                  <p className="text-xs text-[#848E9C]">Tron network · USDT only · Min 1 USDT</p>
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#848E9C]">Payment Method</label>
-              <select 
-                {...form.register('paymentMethod')}
-                className="input-stealth appearance-none"
-              >
-                <option value="bank_transfer">Wire / Bank Transfer</option>
-                <option value="crypto">Cryptocurrency (USDT/USDC)</option>
-              </select>
-            </div>
+              {success === 'usdt' ? (
+                <div className="flex flex-col items-center py-10 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-[#02C076]/20 border border-[#02C076]/30 flex items-center justify-center mb-4">
+                    <CheckCircle className="w-8 h-8 text-[#02C076]" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">USDT Deposit Request Received</h4>
+                  <p className="text-[#848E9C] text-sm max-w-sm leading-relaxed">
+                    Verification in progress. Your balance will be credited once confirmed by our team.
+                  </p>
+                  <button onClick={() => setSuccess(null)} className="mt-6 text-sm font-bold text-[#F0B90B] hover:underline">
+                    Submit another deposit →
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  {/* Wallet address */}
+                  <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
+                    <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-2">USDT (TRC20) Wallet Address</p>
+                    <p className="font-mono text-[#EAECEF] text-xs break-all mb-3 leading-relaxed">{USDT_ADDRESS}</p>
+                    <button
+                      onClick={() => copyText(USDT_ADDRESS)}
+                      className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-white transition-colors font-semibold"
+                    >
+                      {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-[#02C076]" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copied ? 'Copied!' : 'Copy Address'}
+                    </button>
+                  </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#848E9C]">Transaction Reference (Optional)</label>
-              <input 
-                {...form.register('transactionReference')}
-                type="text" 
-                placeholder="Reference number after transfer"
-                className="input-stealth"
-              />
-            </div>
+                  {/* QR Placeholder */}
+                  <div className="flex flex-col items-center py-6 bg-[#0B0E11] rounded-xl border border-[#2B3139] border-dashed">
+                    <div className="w-32 h-32 bg-[#2B3139] rounded-xl flex items-center justify-center mb-2">
+                      <Bitcoin className="w-12 h-12 text-[#F0B90B]/30" />
+                    </div>
+                    <p className="text-xs text-[#848E9C]">QR Code — TRC20 Network</p>
+                  </div>
 
-            <button 
-              type="submit" 
-              disabled={depositMutation.isPending}
-              className="w-full btn-gold text-lg flex justify-center mt-2"
-            >
-              {depositMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Request"}
-            </button>
-          </form>
+                  <div className="bg-[#F0B90B]/10 border border-[#F0B90B]/30 rounded-xl p-3 text-xs text-[#F0B90B] font-semibold">
+                    ⚠ Only send USDT on the TRC20 (Tron) network. Sending on other networks will result in permanent loss of funds.
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Amount Sent (USDT) *</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-3.5 text-[#848E9C] font-bold text-xs">USDT</span>
+                      <input
+                        type="number"
+                        value={usdtAmount}
+                        onChange={e => { setUsdtAmount(e.target.value); setUsdtError(''); }}
+                        className="input-stealth pl-14 w-full"
+                        placeholder="e.g. 100"
+                        min={1}
+                        step="0.01"
+                      />
+                    </div>
+                    <p className="text-xs text-[#848E9C] mt-1">Minimum: 1 USDT</p>
+                  </div>
+
+                  {usdtError && <p className="text-sm text-[#CF304A] font-medium">{usdtError}</p>}
+
+                  <button
+                    onClick={submitUSDT}
+                    disabled={depositMutation.isPending}
+                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5"
+                  >
+                    {depositMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Submit Deposit Request
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-[#1E2329] border border-[#F0B90B]/30 p-8 rounded-xl shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#F0B90B]/10 rounded-full blur-[40px] pointer-events-none"></div>
-            
-            <div className="w-12 h-12 rounded-xl bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-6">
-              <Building2 className="w-6 h-6 text-[#F0B90B]" />
+        {/* ── INFO PANEL ── */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="card-stealth p-6">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">How It Works</h4>
+            <ol className="space-y-4">
+              {[
+                { step: '1', text: 'Fill in the form and submit your deposit request.' },
+                { step: '2', text: 'Complete the payment on your end (UPI / USDT transfer).' },
+                { step: '3', text: 'Our team manually verifies the payment received.' },
+                { step: '4', text: 'Balance is credited — usually within 1 hour.' },
+              ].map(({ step, text }) => (
+                <li key={step} className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[#F0B90B] text-black text-xs font-black flex items-center justify-center shrink-0 mt-0.5">{step}</span>
+                  <p className="text-sm text-[#848E9C]">{text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="card-stealth p-6">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Processing Times</h4>
+            <div className="space-y-2.5 text-xs">
+              {[
+                { label: 'UPI (INR)',            value: 'Within 1 hour',  color: '#02C076' },
+                { label: 'USDT (TRC20)',         value: '1–3 hours',     color: '#02C076' },
+                { label: 'Weekends / Holidays',  value: 'Up to 24 hours',color: '#F0B90B' },
+              ].map(({ label, value, color }) => (
+                <div key={label} className="flex justify-between">
+                  <span className="text-[#848E9C]">{label}</span>
+                  <span className="font-bold" style={{ color }}>{value}</span>
+                </div>
+              ))}
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Wire Instructions</h3>
-            <p className="text-sm text-[#848E9C] mb-6">Please send funds to the following institutional account.</p>
-            
-            <div className="bg-[#0B0E11] border border-[#2B3139] p-5 rounded-lg relative group">
-              <pre className="text-sm text-[#EAECEF] font-mono whitespace-pre-wrap leading-loose">
-                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">Bank</span><br />ECM INTL CORP{'\n'}
-                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">Account</span><br />8934578923{'\n'}
-                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">SWIFT</span><br />ECMBXXX{'\n'}
-                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">Ref</span><br />Include your email
-              </pre>
-              <button 
-                onClick={copyBankDetails}
-                className="absolute top-4 right-4 p-2 rounded-lg bg-[#1E2329] hover:bg-[#2B3139] text-[#EAECEF] transition-colors border border-[#2B3139]"
-                title="Copy details"
-              >
-                {copied ? <CheckCircle2 className="w-4 h-4 text-[#02C076]" /> : <Copy className="w-4 h-4" />}
-              </button>
+          </div>
+
+          <div className="card-stealth p-6">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Deposit Limits</h4>
+            <div className="space-y-2.5 text-xs">
+              {[
+                { label: 'Min (UPI)',      value: '₹100'       },
+                { label: 'Max (UPI/day)', value: '₹2,00,000'  },
+                { label: 'Min (USDT)',    value: '1 USDT'      },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex justify-between">
+                  <span className="text-[#848E9C]">{label}</span>
+                  <span className="font-bold text-white">{value}</span>
+                </div>
+              ))}
+              <div className="flex justify-between">
+                <span className="text-[#848E9C]">Fees</span>
+                <span className="font-bold text-[#02C076]">None</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Deposit History */}
-      <div className="card-stealth p-6 mt-8">
+      {/* ── TRANSACTION HISTORY ── */}
+      <div className="card-stealth p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-white">Deposit History</h3>
           <span className="text-[#848E9C] text-sm">{deposits.length} request{deposits.length !== 1 ? 's' : ''}</span>
         </div>
+
         {txLoading ? (
-          <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" /></div>
+          <div className="flex justify-center py-10">
+            <Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" />
+          </div>
         ) : deposits.length === 0 ? (
           <div className="text-center py-12">
             <ArrowDownLeft className="w-12 h-12 text-[#2B3139] mx-auto mb-4" />
@@ -179,7 +368,7 @@ export function Deposit() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#2B3139]">
-                  {['Date', 'Amount', 'Currency', 'Method', 'Status', 'Reference'].map((h) => (
+                  {['Date', 'Amount', 'Method', 'UPI / Reference', 'Status'].map(h => (
                     <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
                   ))}
                 </tr>
@@ -187,12 +376,17 @@ export function Deposit() {
               <tbody className="divide-y divide-[#2B3139]">
                 {deposits.map((tx: any) => (
                   <tr key={tx.id} className="hover:bg-[#0B0E11]/40 transition-colors">
-                    <td className="py-4 pr-6 text-[#848E9C] text-sm">{new Date(tx.createdAt).toLocaleDateString()}</td>
-                    <td className="py-4 pr-6 font-bold text-white">${Number(tx.amount).toLocaleString()}</td>
-                    <td className="py-4 pr-6 text-[#EAECEF]">{tx.currency || 'USD'}</td>
-                    <td className="py-4 pr-6 text-[#848E9C] capitalize">{(tx.paymentMethod || '').replace('_', ' ')}</td>
-                    <td className="py-4 pr-6"><StatusBadge status={tx.status} /></td>
-                    <td className="py-4 text-[#848E9C] font-mono text-xs">{tx.transactionReference || '—'}</td>
+                    <td className="py-4 pr-6 text-[#848E9C] text-sm">{new Date(tx.createdAt).toLocaleDateString('en-IN')}</td>
+                    <td className="py-4 pr-6 font-bold text-white">
+                      {tx.currency === 'INR' ? '₹' : ''}{Number(tx.amount).toLocaleString('en-IN')}{tx.currency !== 'INR' ? ` ${tx.currency}` : ''}
+                    </td>
+                    <td className="py-4 pr-6">
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#F0B90B]/20 text-[#F0B90B]'}`}>
+                        {tx.paymentMethod === 'upi' ? 'UPI' : 'USDT'}
+                      </span>
+                    </td>
+                    <td className="py-4 pr-6 text-[#848E9C] font-mono text-xs">{tx.transactionReference || '—'}</td>
+                    <td className="py-4"><StatusBadge status={tx.status} /></td>
                   </tr>
                 ))}
               </tbody>
