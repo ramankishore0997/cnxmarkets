@@ -1,0 +1,312 @@
+Create a premium fintech trading platform website called **ECMarketsIndia.com**.
+
+The design must be **clean, modern, and professional**, similar to global fintech and trading platforms.
+
+TECH STACK
+
+Frontend:
+Next.js (React)
+Tailwind CSS
+Framer Motion animations
+
+Backend (for forms and auth):
+Node.js
+Express
+
+Database:
+PostgreSQL
+
+---
+
+DESIGN STYLE
+
+Theme: **White / Light Fintech Theme**
+
+Primary Colors:
+White background (#ffffff)
+Soft gray sections (#f5f7fb)
+Electric blue accents (#2a6df4)
+Dark text (#111827)
+
+Design elements:
+
+glassmorphism cards
+soft shadows
+rounded cards
+clean typography
+animated charts
+smooth scroll animations
+
+UI must feel like a **professional fintech SaaS platform**.
+
+---
+
+NAVIGATION MENU
+
+Logo: ECMarketsIndia
+
+Menu items:
+
+Home
+Markets
+Strategies
+Platform
+Pricing
+About
+FAQ
+Contact
+Login
+Open Account button
+
+Sticky navigation with subtle shadow on scroll.
+
+---
+
+HOMEPAGE STRUCTURE
+
+Hero Section
+
+Headline:
+"Advanced Algorithmic Trading Technology"
+
+Subtext:
+Institutional-grade infrastructure designed for modern traders.
+
+Buttons:
+Open Account
+Explore Strategies
+
+Right side:
+Animated trading dashboard preview.
+
+---
+
+TRUST METRICS
+
+Large animated counters:
+
+Global users
+Daily platform activity
+Markets supported
+Strategy portfolio size
+
+---
+
+WHY CHOOSE US
+
+Grid of features:
+
+Algorithmic trading technology
+Automated monitoring systems
+Real-time analytics
+Secure infrastructure
+Transparent reporting
+Mobile access
+
+---
+
+PLATFORM PREVIEW
+
+Large dashboard mockup.
+
+Show:
+
+Account balance
+Performance chart
+Trade history table
+Profit analytics
+
+---
+
+MARKETS PAGE (EXPANDED CONTENT)
+
+This page must contain detailed sections explaining different markets.
+
+Sections:
+
+Forex Markets
+
+Explain:
+
+Major pairs
+Minor pairs
+Exotic pairs
+Market hours
+Liquidity advantages
+
+Gold Trading
+
+Explain:
+
+XAUUSD
+safe-haven demand
+volatility characteristics
+
+Indices
+
+Explain:
+
+US indices
+European indices
+Asian indices
+
+Market volatility
+
+Trading sessions:
+
+London
+New York
+Asian
+
+Educational section explaining how global markets move.
+
+Include icons and infographics.
+
+---
+
+STRATEGIES PAGE
+
+Create **20+ strategy cards**.
+
+Each card must include:
+
+Strategy name
+Short description
+Risk level
+Recommended capital
+Strategy style
+
+Example strategy names:
+
+RazrMarket Strategy
+Momentum Alpha
+Volatility Edge
+Trend Pulse
+FX Momentum
+Macro Flow
+Gold Breakout
+Quantum Trend
+Velocity FX
+Horizon Algo
+Apex Momentum
+Signal Matrix
+Atlas Strategy
+Zenith FX
+Neural Edge
+Dynamic Flow
+Aurora FX
+Pulse Trader
+Vector Algo
+Titan Strategy
+
+RazrMarket Strategy description:
+
+A high-frequency algorithmic strategy focused on identifying strong momentum opportunities in liquid forex markets using quantitative models.
+
+Avoid guaranteed return claims.
+
+---
+
+PRICING PAGE
+
+Create account plans.
+
+Starter Plan
+
+Minimum Capital:
+₹20,000
+
+Features:
+
+Access to platform dashboard
+Strategy monitoring
+Performance analytics
+Mobile dashboard
+
+Professional Plan
+
+Higher capital tier
+Additional analytics tools
+
+Institutional Plan
+
+Advanced monitoring
+Custom strategy access
+
+Highlight the Starter plan.
+
+---
+
+HOW IT WORKS SECTION
+
+Step-by-step timeline:
+
+Create account
+Complete KYC verification
+Fund account
+Activate strategy monitoring
+
+---
+
+FAQ SECTION
+
+Questions such as:
+
+What is algorithmic trading?
+What is the minimum capital required?
+How does the platform dashboard work?
+How can I monitor performance?
+
+---
+
+CONTACT PAGE
+
+Contact form
+Support email
+Office location
+Social links
+
+---
+
+FOOTER
+
+Columns:
+
+Company
+Platform
+Resources
+Legal
+
+Include:
+
+Terms
+Privacy Policy
+Risk Disclosure
+
+---
+
+ADDITIONAL FEATURES
+
+TradingView chart widget on markets page
+Responsive design
+SEO optimized pages
+Smooth animations
+Modern fintech typography
+
+---
+
+OUTPUT
+
+Generate:
+
+Homepage
+Markets page
+Strategies page
+Pricing page
+FAQ page
+Contact page
+Signup page
+Login page
+Dashboard UI preview
+
+Ensure the website looks like a **high-end fintech platform with a white premium theme**.

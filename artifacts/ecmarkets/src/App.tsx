@@ -33,7 +33,7 @@ const queryClient = new QueryClient();
 function ProtectedRoute({ component: Component, adminOnly = false }: { component: any, adminOnly?: boolean }) {
   const { isAuthenticated, isLoading, user } = useAuthState();
 
-  if (isLoading) return <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
+  if (isLoading) return <div className="min-h-screen bg-white flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>;
   if (!isAuthenticated) return <Redirect to="/auth/login" />;
   if (adminOnly && user?.role !== 'admin') return <Redirect to="/dashboard" />;
 
@@ -86,9 +86,9 @@ function Router() {
       </Route>
 
       <Route>
-        <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center flex-col gap-4 text-white">
-          <h1 className="text-4xl font-bold">404 - Page Not Found</h1>
-          <a href="/" className="text-primary hover:underline">Return Home</a>
+        <div className="min-h-screen bg-white flex items-center justify-center flex-col gap-4">
+          <h1 className="text-4xl font-bold text-gray-900">404 - Page Not Found</h1>
+          <a href="/" className="text-blue-600 hover:underline">Return Home</a>
         </div>
       </Route>
     </Switch>
