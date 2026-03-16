@@ -81,12 +81,15 @@ export function Analytics() {
 
   const strategy     = (dashboard as any)?.assignedStrategyDetails;
   const strategyName = strategy?.name || (dashboard as any)?.assignedStrategy;
+  const isRazrStrat  = (n: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
+  const dailyRoi     = isRazrStrat(strategyName) ? 8.0 : 4.0;
+  const monthlyRoi   = dailyRoi * 30;
 
   const stats = [
     { label: 'Total Return',   icon: TrendingUp,  color: '#02C076', value: profitPercent !== null ? `+${profitPercent}%` : '—' },
     { label: 'Win Rate',       icon: Target,      color: '#FFB800', value: winRate !== null ? `${winRate}%` : '—' },
     { label: 'Max Drawdown',   icon: TrendingDown,color: '#CF304A', value: strategy?.maxDrawdown != null ? `-${strategy.maxDrawdown}%` : '—' },
-    { label: 'Monthly Return', icon: BarChart3,   color: '#FFB800', value: strategy?.monthlyReturn != null ? `+${strategy.monthlyReturn}%` : (avgMonthly ? `${Number(avgMonthly) >= 0 ? '+' : ''}₹${Number(avgMonthly).toLocaleString()}` : '—') },
+    { label: 'Monthly Return', icon: BarChart3,   color: '#FFB800', value: strategyName ? `+${monthlyRoi}%` : (avgMonthly ? `${Number(avgMonthly) >= 0 ? '+' : ''}₹${Number(avgMonthly).toLocaleString()}` : '—') },
     { label: 'Net Profit',     icon: Zap,         color: '#02C076', value: totalProfit !== 0 ? `${totalProfit >= 0 ? '+' : ''}₹${Math.abs(totalProfit).toLocaleString('en-IN')}` : '₹0' },
     { label: 'Total Trades',   icon: Award,       color: '#3b82f6', value: String(totalTrades) },
   ];
@@ -271,7 +274,7 @@ export function Analytics() {
                     </div>
                   </td>
                   <td className="py-5 pr-6">
-                    <span className="font-terminal font-bold text-[#02C076]">+{strategy.monthlyReturn}%</span>
+                    <span className="font-terminal font-bold text-[#02C076]">+{monthlyRoi}%</span>
                   </td>
                   <td className="py-5 pr-6">
                     <span className="font-terminal font-bold text-[#CF304A]">{strategy.maxDrawdown}%</span>

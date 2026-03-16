@@ -68,7 +68,7 @@ export function Dashboard() {
   const profitPercent = totalBalance > 0 && totalProfit !== 0
     ? (((totalBalance) / (totalBalance - totalProfit) - 1) * 100).toFixed(2)
     : '0.00';
-  const monthlyReturn   = parseFloat(strategy?.monthlyReturn ?? dailyRatePct * 30 / 10);
+  const monthlyReturn   = dailyRatePct * 30;
   const progressPct     = dailyTargetAmt > 0 ? Math.min((liveProfit / dailyTargetAmt) * 100, 100) : 0;
   const dailyGainPct    = totalBalance > 0 ? (liveProfit / totalBalance) * 100 : 0;
 
@@ -183,10 +183,10 @@ export function Dashboard() {
             </div>
 
             <div className="flex flex-wrap gap-5 shrink-0">
-              {strategy?.monthlyReturn != null && (
+              {strategyName && (
                 <div className="text-center">
-                  <p className="font-terminal text-lg font-bold text-[#02C076]">+{strategy.monthlyReturn}%</p>
-                  <p className="text-[10px] text-[#4B5563] font-medium mt-0.5">Monthly</p>
+                  <p className="font-terminal text-lg font-bold text-[#02C076]">+{monthlyReturn}%</p>
+                  <p className="text-[10px] text-[#4B5563] font-medium mt-0.5">Monthly (30d)</p>
                 </div>
               )}
               {strategy?.winRate != null && (

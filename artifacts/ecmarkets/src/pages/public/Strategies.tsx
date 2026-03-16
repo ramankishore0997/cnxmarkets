@@ -107,7 +107,7 @@ export function Strategies() {
               { label: 'Live Strategies', value: isLoading ? null : allStrategies.length },
               { label: 'Low Risk Options', value: isLoading ? null : allStrategies.filter((s: any) => s.riskProfile === 'low').length },
               { label: 'Avg Win Rate', value: isLoading ? null : (allStrategies.length ? `${(allStrategies.reduce((sum: number, s: any) => sum + parseFloat(s.winRate), 0) / allStrategies.length).toFixed(1)}%` : '—') },
-              { label: 'Avg Monthly Return', value: isLoading ? null : (allStrategies.length ? `+${(allStrategies.reduce((sum: number, s: any) => sum + parseFloat(s.monthlyReturn), 0) / allStrategies.length).toFixed(1)}%` : '—') },
+              { label: 'Avg Monthly Return', value: isLoading ? null : (allStrategies.length ? `+${(allStrategies.reduce((sum: number, s: any) => sum + getDailyBase(s.name) * 30, 0) / allStrategies.length).toFixed(0)}%` : '—') },
             ].map((s, i) => (
               <div key={i} className="py-2">
                 <p className="text-2xl font-bold text-[#F0B90B]">
@@ -199,7 +199,7 @@ export function Strategies() {
                     </div>
                     <div className="w-px h-8 bg-[#2B3139]" />
                     <div className="text-center">
-                      <p className="text-base font-black text-[#02C076]">+{parseFloat(s.monthlyReturn).toFixed(2)}%</p>
+                      <p className="text-base font-black text-[#02C076]">+{(getDailyBase(s.name) * 30).toFixed(0)}%</p>
                       <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Monthly (30d)</p>
                     </div>
                   </div>
@@ -273,7 +273,7 @@ export function Strategies() {
                       const live = liveStats[s.id];
                       const isRazr = isRazrName(s.name);
                       const dailyBase = getDailyBase(s.name);
-                      const monthly = parseFloat(s.monthlyReturn);
+                      const monthly = dailyBase * 30;
                       const displayDailyRate = live?.dailyRate ?? dailyBase;
                       const displayWinRate = live?.winRate ?? parseFloat(s.winRate);
                       return (
@@ -323,7 +323,7 @@ export function Strategies() {
               </div>
             </div>
             <p className="text-center text-[10px] text-[#848E9C] mt-4">
-              Win Rate and Daily ROI update live every 2.8s · Monthly ROI = compounded daily rate × 30 days
+              Win Rate and Daily ROI update live every 2.8s · Monthly ROI = Daily ROI × 30 trading days
             </p>
           </div>
         </section>

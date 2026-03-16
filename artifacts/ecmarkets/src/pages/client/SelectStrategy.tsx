@@ -221,7 +221,7 @@ export function SelectStrategy() {
             const isLoading = activating === s.id;
             const isRazr = isRazrName(s.name);
             const dailyRate = getDailyRate(s.name);
-            const monthlyRate = parseFloat(s.monthlyReturn ?? 0);
+            const monthlyRate = getDailyRate(s.name) * 30;
             const btn = getButtonState(s);
             const BtnIcon = btn.icon;
 
