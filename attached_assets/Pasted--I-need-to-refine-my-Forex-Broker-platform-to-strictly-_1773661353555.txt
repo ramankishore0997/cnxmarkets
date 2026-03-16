@@ -1,0 +1,39 @@
+"I need to refine my Forex Broker platform to strictly focus on Forex and Crypto markets. Please implement the following deep-level changes:
+
+1. Cleanse Assets & Market Focus:
+
+Remove Indian Assets: Scan the entire database and frontend. Remove all Indian Indices (Nifty, BankNifty), Indian Stocks, and Commodities that are not relevant to a Forex/Crypto broker.
+
+Set Active Markets: Only keep and display Forex Pairs (e.g., EUR/USD, GBP/JPY, USD/JPY, EUR/GBP) and Cryptocurrencies (e.g., BTC, ETH, SOL, USDT).
+
+Currency Check: Ensure all balances, trade amounts, and profits are displayed in INR (₹) as the primary account currency.
+
+2. Dynamic Strategy & Live Data Logic:
+
+Auto-Update Strategies: Every strategy in the 'Strategies Page' must show live, fluctuating data. If a real API is not connected, create a function to simulate 'Live P&L' and 'Win Rate' that updates every few seconds to look realistic.
+
+Strategy Selection: Ensure clients can select their preferred strategy from a dedicated page, and the Admin can see/override this selection in the Admin Panel.
+
+3. Automated Trading Engine (Forex/Crypto Focus):
+
+Frequency: Trigger an automated trade every 2 to 4 hours for users with an active strategy.
+
+Assets: These automated trades must randomly select from Forex or Crypto pairs only.
+
+Profit Targets (Calculated Daily):
+
+Razor Market Strategy: Automate growth to hit a random target between 6% and 10% daily.
+
+All Other Strategies: Automate growth to hit exactly 4% daily.
+
+Logic: Once the target percentage for the day is reached, the automated trading must pause until the next day starts.
+
+4. KYC & UI Polishing:
+
+KYC Validation: Remove all strict regex/format checks for PAN and Aadhaar. Accept any input provided by the user.
+
+Remove Dummies: Ensure NO placeholder or demo numbers exist in the user or admin dashboards. Everything must be pulled from the database.
+
+5. Real-time Dashboard Updates:
+
+Use WebSockets or a Polling mechanism (every 5-10 seconds) so that the user's dashboard, balance, and 'Open Trades' section update live as the automated trades are executed by the system."

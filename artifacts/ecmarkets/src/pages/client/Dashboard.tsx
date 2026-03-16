@@ -15,7 +15,10 @@ const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B',
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
 
 export function Dashboard() {
-  const { data, isLoading } = useGetDashboard({ ...getAuthOptions() });
+  const { data, isLoading } = useGetDashboard({
+    ...getAuthOptions(),
+    query: { refetchInterval: 8_000 },
+  });
 
   if (isLoading) {
     return (

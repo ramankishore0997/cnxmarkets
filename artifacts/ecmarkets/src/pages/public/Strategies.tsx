@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { useGetStrategies } from '@workspace/api-client-react';
-import { TrendingUp, Filter, BarChart2, Shield, Cpu, Loader2, Zap } from 'lucide-react';
+import { TrendingUp, Filter, BarChart2, Shield, Cpu, Loader2, Zap, Activity } from 'lucide-react';
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
@@ -9,14 +9,57 @@ import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
 
+interface LiveStat { winRate: number; livePnl: number; }
+
 export function Strategies() {
   const [activeFilter, setActiveFilter] = useState('All');
   const { data: strategiesRaw, isLoading } = useGetStrategies();
+  const [liveStats, setLiveStats] = useState<Record<number, LiveStat>>({});
 
   const allStrategies = ((strategiesRaw as any[]) || []).filter((s: any) => s.isActive);
 
-  const filters = ['All', 'Forex', 'Gold', 'Indices', 'low', 'medium', 'high'];
-  const filterLabels: Record<string, string> = { All: 'All', Forex: 'Forex', Gold: 'Gold', Indices: 'Indices', low: 'Low Risk', medium: 'Med Risk', high: 'High Risk' };
+  // Initialise live stats once strategies load
+  useEffect(() => {
+    if (!allStrategies.length) return;
+    const initial: Record<number, LiveStat> = {};
+    allStrategies.forEach((s: any) => {
+      const base = parseFloat(s.winRate);
+      const cap = parseFloat(s.minCapital);
+      const monthly = parseFloat(s.monthlyReturn);
+      initial[s.id] = {
+        winRate: base,
+        livePnl: cap * (monthly / 100) * (0.9 + Math.random() * 0.2),
+      };
+    });
+    setLiveStats(initial);
+  }, [allStrategies.length]);
+
+  // Fluctuate 2-4 random strategies every 2.8 seconds
+  useEffect(() => {
+    if (!allStrategies.length) return;
+    const id = setInterval(() => {
+      const ids = allStrategies.map((s: any) => s.id);
+      const count = Math.floor(Math.random() * 3) + 2;
+      const toUpdate = ids.sort(() => Math.random() - 0.5).slice(0, count);
+      setLiveStats(prev => {
+        const next = { ...prev };
+        toUpdate.forEach((sid: number) => {
+          if (!next[sid]) return;
+          const s = allStrategies.find((x: any) => x.id === sid);
+          const base = parseFloat(s.winRate);
+          next[sid] = {
+            winRate: Math.min(99.9, Math.max(50, next[sid].winRate + (Math.random() - 0.48) * 0.3)),
+            livePnl: next[sid].livePnl * (1 + (Math.random() - 0.45) * 0.008),
+          };
+        });
+        return next;
+      });
+    }, 2_800);
+    return () => clearInterval(id);
+  }, [allStrategies.length]);
+
+  const filters = ['All', 'Forex', 'Crypto', 'low', 'medium', 'high'];
+  const filterLabels: Record<string, string> = { All: 'All', Forex: 'Forex', Crypto: 'Crypto', low: 'Low Risk', medium: 'Med Risk', high: 'High Risk' };
 
   const filteredStrategies = allStrategies.filter((s: any) => {
     if (activeFilter === 'All') return true;
@@ -109,12 +152,17 @@ export function Strategies() {
             <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredStrategies.map((s: any, i: number) => (
                 <motion.div key={s.id || i} variants={fadeUp} className="card-stealth p-6 flex flex-col hover:border-[#F0B90B]/30 transition-all group">
-                  <div className="flex items-start gap-3 mb-4">
+                  <div className="flex items-start gap-3 mb-3">
                     <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: RISK_BG[s.riskProfile], border: `1px solid ${RISK_COLORS[s.riskProfile]}40` }}>
                       <Zap className="w-5 h-5" style={{ color: RISK_COLORS[s.riskProfile] }} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-white truncate">{s.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-white truncate">{s.name}</h3>
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-[#02C076] bg-[#02C076]/10 px-1.5 py-0.5 rounded shrink-0">
+                          <Activity className="w-2.5 h-2.5" /> LIVE
+                        </span>
+                      </div>
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-xs font-bold capitalize px-2 py-0.5 rounded" style={{ background: RISK_BG[s.riskProfile], color: RISK_COLORS[s.riskProfile] }}>{s.riskProfile} risk</span>
                         <span className="text-xs text-[#848E9C]">{s.markets}</span>
@@ -122,7 +170,17 @@ export function Strategies() {
                     </div>
                   </div>
 
-                  <p className="text-sm text-[#848E9C] mb-5 leading-relaxed flex-1">{s.description}</p>
+                  <p className="text-sm text-[#848E9C] mb-4 leading-relaxed flex-1">{s.description}</p>
+
+                  {/* Live P&L strip */}
+                  {liveStats[s.id] && (
+                    <div className="flex items-center justify-between bg-[#0B0E11] border border-[#02C076]/20 rounded-xl px-3 py-2 mb-3">
+                      <span className="text-[10px] font-semibold text-[#848E9C] uppercase tracking-wide">Live P&amp;L Today</span>
+                      <span className="text-sm font-bold text-[#02C076]">
+                        +₹{liveStats[s.id].livePnl.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-3 gap-2 mb-4">
                     <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
@@ -130,8 +188,10 @@ export function Strategies() {
                       <p className="text-[10px] text-[#848E9C] mt-0.5">Monthly</p>
                     </div>
                     <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
-                      <p className="text-sm font-bold text-[#F0B90B]">{s.winRate}%</p>
-                      <p className="text-[10px] text-[#848E9C] mt-0.5">Win Rate</p>
+                      <p className="text-sm font-bold text-[#F0B90B] tabular-nums">
+                        {liveStats[s.id] ? liveStats[s.id].winRate.toFixed(1) : s.winRate}%
+                      </p>
+                      <p className="text-[10px] text-[#848E9C] mt-0.5">Win Rate ↻</p>
                     </div>
                     <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
                       <p className="text-sm font-bold text-white">
