@@ -40,10 +40,10 @@ export function Strategies() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 section-gray border-b border-border">
+      <div className="pt-24 pb-16 section-surface border-b border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Quantitative <span className="text-primary">Strategies</span></h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Quantitative <span className="text-[#F0B90B]">Strategies</span></h1>
+          <p className="text-xl text-[#848E9C] max-w-2xl mx-auto">
             Discover our portfolio of 20+ battle-tested algorithmic trading strategies designed for different market conditions.
           </p>
         </div>
@@ -57,8 +57,8 @@ export function Strategies() {
               onClick={() => setActiveFilter(f)}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
                 activeFilter === f 
-                  ? 'bg-primary text-white shadow-md' 
-                  : 'bg-white border border-border text-gray-600 hover:border-primary/50 hover:text-primary'
+                  ? 'bg-[#F0B90B] text-black shadow-md' 
+                  : 'bg-[#1E2329] border border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B] hover:text-[#F0B90B]'
               }`}
             >
               {f}
@@ -68,13 +68,15 @@ export function Strategies() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredStrategies.map((strategy) => (
-            <div key={strategy.id} className="card-light p-6 flex flex-col h-full group">
+            <div key={strategy.id} className="card-stealth p-6 flex flex-col h-full group">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="font-bold text-gray-900 text-lg leading-tight">{strategy.name}</h3>
+                <h3 className="font-bold text-white text-lg leading-tight">{strategy.name}</h3>
               </div>
               
               <div className="flex flex-wrap gap-2 mb-4">
-                <span className="blue-badge">{strategy.style}</span>
+                <span className="bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30 px-3 py-1 rounded-full text-xs font-semibold">
+                  {strategy.style}
+                </span>
                 <span className={
                   strategy.risk === 'Low' ? 'tag-low' : 
                   strategy.risk === 'Medium' ? 'tag-medium' : 'tag-high'
@@ -83,14 +85,14 @@ export function Strategies() {
                 </span>
               </div>
               
-              <p className="text-gray-600 text-sm mb-6 flex-1">{strategy.desc}</p>
+              <p className="text-[#848E9C] text-sm mb-6 flex-1">{strategy.desc}</p>
               
-              <div className="border-t border-border pt-4 mt-auto">
+              <div className="border-t border-[#2B3139] pt-4 mt-auto">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-500 text-sm">Min Capital:</span>
-                  <span className="font-bold text-gray-900">₹{strategy.minCapital.toLocaleString()}</span>
+                  <span className="text-[#848E9C] text-sm">Min Capital:</span>
+                  <span className="font-bold text-[#EAECEF] text-gold">₹{strategy.minCapital.toLocaleString()}</span>
                 </div>
-                <Link href="/auth/register" className="btn-outline w-full py-2 flex justify-center text-sm font-semibold">
+                <Link href="/auth/register" className="btn-ghost w-full py-2 flex justify-center text-sm font-semibold block text-center">
                   View Details
                 </Link>
               </div>
@@ -99,10 +101,10 @@ export function Strategies() {
         </div>
       </div>
 
-      <div className="py-20 bg-primary/5 border-t border-primary/10 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to automate your trading?</h2>
-        <p className="text-gray-600 mb-8">Create an account today and get access to our full strategy suite.</p>
-        <Link href="/auth/register" className="btn-primary px-8 py-4 inline-block font-bold text-lg">
+      <div className="py-20 bg-[#1E2329] border-t border-[#2B3139] text-center">
+        <h2 className="text-3xl font-bold text-white mb-4">Ready to automate your trading?</h2>
+        <p className="text-[#848E9C] mb-8">Create an account today and get access to our full strategy suite.</p>
+        <Link href="/auth/register" className="btn-gold inline-block font-bold text-lg">
           Open Free Account
         </Link>
       </div>

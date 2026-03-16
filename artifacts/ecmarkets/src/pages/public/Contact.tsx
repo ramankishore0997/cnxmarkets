@@ -24,11 +24,11 @@ export function Contact() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 bg-white border-b border-border">
+      <div className="pt-24 pb-16 section-dark border-b border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Get in <span className="text-primary">Touch</span></h1>
-            <p className="text-xl text-gray-600">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Get in <span className="text-gradient-gold">Touch</span></h1>
+            <p className="text-xl text-[#848E9C]">
               Whether you have a question about features, pricing, or need technical support, our team is ready to answer all your questions.
             </p>
           </div>
@@ -36,13 +36,13 @@ export function Contact() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div className="space-y-6">
-              <div className="card-light p-6 rounded-2xl flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
-                  <MapPin className="w-6 h-6 text-primary group-hover:text-white" />
+              <div className="card-stealth p-6 flex items-start gap-6 group">
+                <div className="w-12 h-12 rounded-xl bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center shrink-0 group-hover:border-[#F0B90B] transition-colors">
+                  <MapPin className="w-6 h-6 text-[#F0B90B]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Corporate Headquarters</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <h3 className="text-xl font-bold text-white mb-2">Corporate Headquarters</h3>
+                  <p className="text-[#848E9C] leading-relaxed">
                     Level 12, Tower 2, BKC<br />
                     Bandra Kurla Complex<br />
                     Mumbai, Maharashtra 400051<br />
@@ -51,62 +51,62 @@ export function Contact() {
                 </div>
               </div>
 
-              <div className="card-light p-6 rounded-2xl flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
-                  <Mail className="w-6 h-6 text-primary group-hover:text-white" />
+              <div className="card-stealth p-6 flex items-start gap-6 group">
+                <div className="w-12 h-12 rounded-xl bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center shrink-0 group-hover:border-[#F0B90B] transition-colors">
+                  <Mail className="w-6 h-6 text-[#F0B90B]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Email Support</h3>
-                  <p className="text-gray-500 text-sm mb-1">General inquiries:</p>
-                  <a href="mailto:info@ecmarketsindia.com" className="text-gray-900 hover:text-primary transition-colors font-medium block mb-3">info@ecmarketsindia.com</a>
-                  <p className="text-gray-500 text-sm mb-1">Technical support:</p>
-                  <a href="mailto:support@ecmarketsindia.com" className="text-gray-900 hover:text-primary transition-colors font-medium">support@ecmarketsindia.com</a>
+                  <h3 className="text-xl font-bold text-white mb-2">Email Support</h3>
+                  <p className="text-[#848E9C] text-sm mb-1">General inquiries:</p>
+                  <a href="mailto:info@ecmarketsindia.com" className="text-white hover:text-[#F0B90B] transition-colors font-medium block mb-3">info@ecmarketsindia.com</a>
+                  <p className="text-[#848E9C] text-sm mb-1">Technical support:</p>
+                  <a href="mailto:support@ecmarketsindia.com" className="text-white hover:text-[#F0B90B] transition-colors font-medium">support@ecmarketsindia.com</a>
                 </div>
               </div>
 
-              <div className="card-light p-6 rounded-2xl flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
-                  <Phone className="w-6 h-6 text-primary group-hover:text-white" />
+              <div className="card-stealth p-6 flex items-start gap-6 group">
+                <div className="w-12 h-12 rounded-xl bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center shrink-0 group-hover:border-[#F0B90B] transition-colors">
+                  <Phone className="w-6 h-6 text-[#F0B90B]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Direct Line</h3>
-                  <a href="tel:+912212345678" className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors block mb-2">+91 22 1234 5678</a>
+                  <h3 className="text-xl font-bold text-white mb-2">Direct Line</h3>
+                  <a href="tel:+912212345678" className="text-2xl font-bold text-white hover:text-[#F0B90B] transition-colors block mb-2">+91 22 1234 5678</a>
                 </div>
               </div>
               
-              <div className="card-light p-6 rounded-2xl flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
-                  <Clock className="w-6 h-6 text-primary group-hover:text-white" />
+              <div className="card-stealth p-6 flex items-start gap-6 group">
+                <div className="w-12 h-12 rounded-xl bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center shrink-0 group-hover:border-[#F0B90B] transition-colors">
+                  <Clock className="w-6 h-6 text-[#F0B90B]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Working Hours</h3>
-                  <p className="text-gray-600">Mon-Fri: 9:00 AM - 6:00 PM IST</p>
-                  <p className="text-gray-600">Sat-Sun: Closed</p>
+                  <h3 className="text-xl font-bold text-white mb-2">Working Hours</h3>
+                  <p className="text-[#848E9C]">Mon-Fri: 9:00 AM - 6:00 PM IST</p>
+                  <p className="text-[#848E9C]">Sat-Sun: Closed</p>
                 </div>
               </div>
             </div>
 
             {/* Contact Form */}
-            <div className="card-light p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-xl border-t-4 border-t-primary">
-              <h3 className="text-2xl font-bold text-gray-900 mb-8">Send a Message</h3>
+            <div className="card-stealth p-8 md:p-10 relative overflow-hidden shadow-xl border-t-4 border-t-[#F0B90B]">
+              <h3 className="text-2xl font-bold text-white mb-8">Send a Message</h3>
               
               <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">First Name</label>
+                    <label className="text-sm font-semibold text-[#848E9C]">First Name</label>
                     <input 
                       required 
                       type="text" 
-                      className="w-full bg-gray-50 border border-border rounded-xl py-3 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
+                      className="input-stealth"
                       placeholder="John"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Last Name</label>
+                    <label className="text-sm font-semibold text-[#848E9C]">Last Name</label>
                     <input 
                       required 
                       type="text" 
-                      className="w-full bg-gray-50 border border-border rounded-xl py-3 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
+                      className="input-stealth"
                       placeholder="Doe"
                     />
                   </div>
@@ -114,27 +114,27 @@ export function Contact() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Email Address</label>
+                    <label className="text-sm font-semibold text-[#848E9C]">Email Address</label>
                     <input 
                       required 
                       type="email" 
-                      className="w-full bg-gray-50 border border-border rounded-xl py-3 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
+                      className="input-stealth"
                       placeholder="john@company.com"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Phone Number</label>
+                    <label className="text-sm font-semibold text-[#848E9C]">Phone Number</label>
                     <input 
                       type="tel" 
-                      className="w-full bg-gray-50 border border-border rounded-xl py-3 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
+                      className="input-stealth"
                       placeholder="+91"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">Subject</label>
-                  <select className="w-full bg-gray-50 border border-border rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm">
+                  <label className="text-sm font-semibold text-[#848E9C]">Subject</label>
+                  <select className="input-stealth appearance-none">
                     <option value="general">General Inquiry</option>
                     <option value="support">Technical Support</option>
                     <option value="billing">Billing & Pricing</option>
@@ -143,11 +143,11 @@ export function Contact() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">Message</label>
+                  <label className="text-sm font-semibold text-[#848E9C]">Message</label>
                   <textarea 
                     required 
                     rows={5}
-                    className="w-full bg-gray-50 border border-border rounded-xl py-3 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none shadow-sm"
+                    className="input-stealth resize-none"
                     placeholder="How can we help you?"
                   ></textarea>
                 </div>
@@ -155,7 +155,7 @@ export function Contact() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full py-4 rounded-xl font-bold btn-primary flex justify-center items-center gap-2 text-lg"
+                  className="btn-gold w-full py-4 flex justify-center items-center gap-2 text-lg"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

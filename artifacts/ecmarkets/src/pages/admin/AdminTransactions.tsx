@@ -31,19 +31,19 @@ export function AdminTransactions() {
     updateMutation.mutate({ id, data: { status } });
   };
 
-  if (isLoading) return <AdminLayout><div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div></AdminLayout>;
+  if (isLoading) return <AdminLayout><div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div></AdminLayout>;
 
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Transaction Approvals</h1>
-        <p className="text-gray-500 font-medium">Review and process client deposits and withdrawals</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Transaction Approvals</h1>
+        <p className="text-[#848E9C] font-medium">Review and process client deposits and withdrawals</p>
       </div>
 
-      <div className="bg-white border border-border shadow-sm rounded-2xl overflow-hidden">
+      <div className="card-stealth overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-700 font-semibold border-b border-border">
+          <table className="w-full text-left text-sm text-[#EAECEF]">
+            <thead className="bg-[#2B3139] text-[#EAECEF] font-semibold">
               <tr>
                 <th className="px-6 py-4">User</th>
                 <th className="px-6 py-4">Type</th>
@@ -53,25 +53,25 @@ export function AdminTransactions() {
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-[#2B3139]">
               {transactions?.map((tx) => (
-                <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={tx.id} className="hover:bg-[#2B3139]/50 transition-colors">
                   <td className="px-6 py-4">
-                    <p className="font-bold text-gray-900">{tx.userName}</p>
-                    <p className="text-xs text-gray-500">{tx.userEmail}</p>
+                    <p className="font-bold text-white">{tx.userName}</p>
+                    <p className="text-xs text-[#848E9C]">{tx.userEmail}</p>
                   </td>
                   <td className="px-6 py-4 capitalize">
-                    <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${tx.type === 'deposit' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                    <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${tx.type === 'deposit' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#F0B90B]/20 text-[#F0B90B]'}`}>
                       {tx.type}
                     </span>
                   </td>
-                  <td className="px-6 py-4 font-mono font-bold text-gray-900">
+                  <td className="px-6 py-4 font-mono font-bold text-white">
                     {tx.currency} {tx.amount.toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 text-xs font-medium text-gray-500">
+                  <td className="px-6 py-4 text-xs font-medium text-[#848E9C]">
                     {new Date(tx.createdAt).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 capitalize font-semibold text-gray-900">
+                  <td className="px-6 py-4 capitalize font-semibold text-white">
                     {tx.status}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -80,14 +80,14 @@ export function AdminTransactions() {
                         <button 
                           onClick={() => handleAction(tx.id, 'approved')}
                           disabled={processingId === tx.id}
-                          className="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors border border-green-200"
+                          className="p-1.5 rounded-lg bg-[#02C076]/20 text-[#02C076] hover:bg-[#02C076]/40 transition-colors border border-[#02C076]/30"
                         >
                           {processingId === tx.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                         </button>
                         <button 
                           onClick={() => handleAction(tx.id, 'rejected')}
                           disabled={processingId === tx.id}
-                          className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors border border-red-200"
+                          className="p-1.5 rounded-lg bg-[#CF304A]/20 text-[#CF304A] hover:bg-[#CF304A]/40 transition-colors border border-[#CF304A]/30"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -98,7 +98,7 @@ export function AdminTransactions() {
               ))}
               {!transactions?.length && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500 font-medium">
+                  <td colSpan={6} className="px-6 py-8 text-center text-[#848E9C] font-medium">
                     No transactions found
                   </td>
                 </tr>

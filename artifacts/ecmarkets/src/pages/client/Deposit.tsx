@@ -47,36 +47,36 @@ export function Deposit() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Fund Account</h1>
-        <p className="text-gray-500 font-medium">Add capital to start allocating to strategies</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Fund Account</h1>
+        <p className="text-[#848E9C] font-medium">Add capital to start allocating to strategies</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white border border-gray-200 shadow-sm p-8 rounded-3xl">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">Deposit Details</h3>
+        <div className="lg:col-span-2 card-stealth p-8">
+          <h3 className="text-xl font-bold text-white mb-6">Deposit Details</h3>
           
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Amount</label>
+                <label className="text-sm font-semibold text-[#848E9C]">Amount</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-3 text-gray-500 font-medium">$</span>
+                  <span className="absolute left-4 top-3 text-[#848E9C] font-medium">$</span>
                   <input 
                     {...form.register('amount')}
                     type="number" 
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-8 pr-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
+                    className="input-stealth pl-8"
                   />
                 </div>
                 {form.formState.errors.amount && (
-                  <p className="text-sm text-red-500">{form.formState.errors.amount.message}</p>
+                  <p className="text-sm text-[#CF304A]">{form.formState.errors.amount.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Currency</label>
+                <label className="text-sm font-semibold text-[#848E9C]">Currency</label>
                 <select 
                   {...form.register('currency')}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all appearance-none shadow-sm"
+                  className="input-stealth appearance-none"
                 >
                   <option value="USD">USD - US Dollar</option>
                   <option value="EUR">EUR - Euro</option>
@@ -86,10 +86,10 @@ export function Deposit() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Payment Method</label>
+              <label className="text-sm font-semibold text-[#848E9C]">Payment Method</label>
               <select 
                 {...form.register('paymentMethod')}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all appearance-none shadow-sm"
+                className="input-stealth appearance-none"
               >
                 <option value="bank_transfer">Wire / Bank Transfer</option>
                 <option value="crypto">Cryptocurrency (USDT/USDC)</option>
@@ -97,19 +97,19 @@ export function Deposit() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Transaction Reference (Optional)</label>
+              <label className="text-sm font-semibold text-[#848E9C]">Transaction Reference (Optional)</label>
               <input 
                 {...form.register('transactionReference')}
                 type="text" 
                 placeholder="Reference number after transfer"
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm"
+                className="input-stealth"
               />
             </div>
 
             <button 
               type="submit" 
               disabled={depositMutation.isPending}
-              className="w-full py-3.5 rounded-xl font-bold btn-primary text-lg flex justify-center mt-2 shadow-md"
+              className="w-full btn-gold text-lg flex justify-center mt-2"
             >
               {depositMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Request"}
             </button>
@@ -117,28 +117,28 @@ export function Deposit() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-blue-50 border border-blue-100 p-8 rounded-3xl shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] pointer-events-none"></div>
+          <div className="bg-[#1E2329] border border-[#F0B90B]/30 p-8 rounded-xl shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#F0B90B]/10 rounded-full blur-[40px] pointer-events-none"></div>
             
-            <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center mb-6 shadow-sm">
-              <Building2 className="w-6 h-6 text-primary" />
+            <div className="w-12 h-12 rounded-xl bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-6">
+              <Building2 className="w-6 h-6 text-[#F0B90B]" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Wire Instructions</h3>
-            <p className="text-sm text-gray-600 mb-6">Please send funds to the following institutional account.</p>
+            <h3 className="text-lg font-bold text-white mb-2">Wire Instructions</h3>
+            <p className="text-sm text-[#848E9C] mb-6">Please send funds to the following institutional account.</p>
             
-            <div className="bg-white border border-gray-200 p-5 rounded-2xl relative group shadow-sm">
-              <pre className="text-sm text-gray-800 font-mono whitespace-pre-wrap leading-loose">
-                <span className="text-gray-500 font-sans font-semibold text-xs uppercase tracking-wider">Bank</span><br />ECM INTL CORP{'\n'}
-                <span className="text-gray-500 font-sans font-semibold text-xs uppercase tracking-wider">Account</span><br />8934578923{'\n'}
-                <span className="text-gray-500 font-sans font-semibold text-xs uppercase tracking-wider">SWIFT</span><br />ECMBXXX{'\n'}
-                <span className="text-gray-500 font-sans font-semibold text-xs uppercase tracking-wider">Ref</span><br />Include your email
+            <div className="bg-[#0B0E11] border border-[#2B3139] p-5 rounded-lg relative group">
+              <pre className="text-sm text-[#EAECEF] font-mono whitespace-pre-wrap leading-loose">
+                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">Bank</span><br />ECM INTL CORP{'\n'}
+                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">Account</span><br />8934578923{'\n'}
+                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">SWIFT</span><br />ECMBXXX{'\n'}
+                <span className="text-[#848E9C] font-sans font-semibold text-xs uppercase tracking-wider">Ref</span><br />Include your email
               </pre>
               <button 
                 onClick={copyBankDetails}
-                className="absolute top-4 right-4 p-2 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 transition-colors border border-gray-200 shadow-sm"
+                className="absolute top-4 right-4 p-2 rounded-lg bg-[#1E2329] hover:bg-[#2B3139] text-[#EAECEF] transition-colors border border-[#2B3139]"
                 title="Copy details"
               >
-                {copied ? <CheckCircle2 className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                {copied ? <CheckCircle2 className="w-4 h-4 text-[#02C076]" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowRight, Activity, Globe, Shield, Lock, Phone } from 'lucide-react';
+import { Menu, X, Activity, Globe, Shield, Lock, Phone } from 'lucide-react';
 import { TradingWidget } from '../shared/TradingWidget';
 
 export function PublicLayout({ children }: { children: ReactNode }) {
@@ -35,28 +35,28 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
-      {/* Ticker bar at the very top - Dark Navy */}
-      <div className="bg-[#0b0f19] text-white">
+      {/* Ticker bar at the very top */}
+      <div className="bg-[#1E2329] border-b border-[#2B3139] text-[#EAECEF]">
         <TradingWidget />
       </div>
       
       <header 
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-          scrolled ? 'bg-white/90 backdrop-blur-md shadow-[0_2px_16px_rgba(0,0,0,0.08)] py-3' : 'bg-white py-5'
+          scrolled ? 'bg-[#0B0E11]/90 backdrop-blur-md shadow-lg border-b border-[#F0B90B]/30 py-3' : 'bg-[#0B0E11] border-b border-[#2B3139] py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-md">
-              <Activity className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 rounded-lg bg-[#0B0E11] border border-[#F0B90B] flex items-center justify-center shadow-[0_0_8px_rgba(240,185,11,0.4)] animate-[pulse-gold_2s_infinite]">
+              <Activity className="w-5 h-5 text-[#F0B90B]" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-gray-900">
-              ECMarkets<span className="text-primary">India</span>
+            <span className="text-xl font-bold tracking-tight text-white">
+              ECMarkets<span className="text-[#F0B90B]">India</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          <nav className="hidden xl:flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = location === link.href;
               return (
@@ -64,14 +64,14 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                   key={link.name} 
                   href={link.href}
                   className={`text-sm font-medium transition-all relative py-1 ${
-                    isActive ? 'text-primary' : 'text-gray-600 hover:text-primary'
+                    isActive ? 'text-[#F0B90B]' : 'text-[#848E9C] hover:text-[#EAECEF]'
                   }`}
                 >
                   {link.name}
                   {isActive && (
                     <motion.div 
                       layoutId="activeNavIndicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#F0B90B]"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -81,24 +81,24 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             })}
           </nav>
 
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden xl:flex items-center gap-4">
             <Link 
               href="/auth/login"
-              className="px-5 py-2 text-sm font-medium btn-outline transition-colors"
+              className="btn-ghost"
             >
               Sign In
             </Link>
             <Link 
               href="/auth/register"
-              className="px-5 py-2 text-sm font-medium btn-primary flex items-center gap-2"
+              className="btn-gold"
             >
-              Open Account <ArrowRight className="w-4 h-4" />
+              Open Account
             </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="md:hidden text-gray-900 p-2"
+            className="xl:hidden text-white p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X /> : <Menu />}
@@ -113,7 +113,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden bg-white border-b border-border shadow-lg absolute top-[100px] left-0 right-0 z-40"
+            className="xl:hidden bg-[#1E2329] border-b border-[#2B3139] shadow-lg absolute top-[100px] left-0 right-0 z-40"
           >
             <div className="p-4 flex flex-col gap-2">
               {navLinks.map((link) => {
@@ -123,23 +123,23 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                     key={link.name} 
                     href={link.href}
                     className={`text-lg font-medium p-3 rounded-xl transition-colors ${
-                      isActive ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-50'
+                      isActive ? 'bg-[#2B3139] text-[#F0B90B]' : 'text-[#EAECEF] hover:bg-[#2B3139]'
                     }`}
                   >
                     {link.name}
                   </Link>
                 );
               })}
-              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border">
+              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-[#2B3139]">
                 <Link 
                   href="/auth/login"
-                  className="w-full text-center py-3 font-medium btn-outline rounded-xl"
+                  className="w-full text-center py-3 font-medium btn-ghost rounded-xl"
                 >
                   Sign In
                 </Link>
                 <Link 
                   href="/auth/register"
-                  className="w-full text-center py-3 btn-primary font-medium rounded-xl"
+                  className="w-full text-center py-3 btn-gold font-medium rounded-xl"
                 >
                   Open Account
                 </Link>
@@ -163,86 +163,72 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         </AnimatePresence>
       </main>
 
-      <footer className="bg-[#f5f7fb] border-t border-border pt-16 pb-8 mt-auto relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <footer className="bg-[#1E2329] border-t border-[#2B3139] pt-16 pb-0 mt-auto relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
             <div className="lg:col-span-2">
               <Link href="/" className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-[#0B0E11] border border-[#F0B90B] flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-[#F0B90B]" />
                 </div>
-                <span className="text-2xl font-bold tracking-tight text-gray-900">
-                  ECMarkets<span className="text-primary">India</span>
+                <span className="text-2xl font-bold tracking-tight text-white">
+                  ECMarkets<span className="text-[#F0B90B]">India</span>
                 </span>
               </Link>
-              <p className="text-muted-foreground text-sm mb-8 leading-relaxed max-w-sm">
-                Institutional-grade algorithmic trading strategies for retail and professional investors. Maximize returns with high-frequency, low-latency execution and advanced risk management.
+              <p className="text-[#848E9C] text-sm mb-8 leading-relaxed max-w-sm">
+                Institutional-grade algorithmic trading platform for retail and professional investors. Maximize returns with high-frequency, low-latency execution.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-primary hover:text-white transition-all text-gray-500">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Globe className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-primary hover:text-white transition-all text-gray-500">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Shield className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-primary hover:text-white transition-all text-gray-500">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Lock className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-primary hover:text-white transition-all text-gray-500">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Phone className="w-5 h-5" />
                 </a>
               </div>
             </div>
             
             <div>
-              <h4 className="text-gray-900 font-semibold mb-6">Company</h4>
-              <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-                <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Careers</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Press</Link></li>
+              <h4 className="text-white font-semibold mb-6">Company</h4>
+              <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
+                <li><Link href="/about" className="hover:text-[#F0B90B] transition-colors">About Us</Link></li>
+                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Careers</Link></li>
+                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Blog</Link></li>
+                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Press</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-semibold mb-6">Platform</h4>
-              <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-                <li><Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
-                <li><Link href="/strategies" className="hover:text-primary transition-colors">Strategies</Link></li>
-                <li><Link href="/performance" className="hover:text-primary transition-colors">Performance</Link></li>
-                <li><Link href="/markets" className="hover:text-primary transition-colors">Markets</Link></li>
+              <h4 className="text-white font-semibold mb-6">Platform</h4>
+              <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
+                <li><Link href="/dashboard" className="hover:text-[#F0B90B] transition-colors">Dashboard</Link></li>
+                <li><Link href="/strategies" className="hover:text-[#F0B90B] transition-colors">Strategies</Link></li>
+                <li><Link href="/performance" className="hover:text-[#F0B90B] transition-colors">Performance</Link></li>
+                <li><Link href="/markets" className="hover:text-[#F0B90B] transition-colors">Markets</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-gray-900 font-semibold mb-6">Resources & Legal</h4>
-              <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-                <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
-                <li><Link href="/contact" className="hover:text-primary transition-colors">Support & Contact</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Documentation</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <h4 className="text-white font-semibold mb-6">Resources & Legal</h4>
+              <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
+                <li><Link href="/faq" className="hover:text-[#F0B90B] transition-colors">FAQ</Link></li>
+                <li><Link href="/contact" className="hover:text-[#F0B90B] transition-colors">Support</Link></li>
+                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Documentation</Link></li>
+                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
-          
-          <div className="border-t border-border pt-8 mt-8">
-            <div className="bg-white rounded-xl p-6 mb-8 border border-border shadow-sm">
-              <h5 className="text-red-600 font-semibold mb-2 flex items-center gap-2">
-                <Shield className="w-4 h-4" /> Trading involves substantial risk
-              </h5>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Trading foreign exchange (Forex), contracts for differences (CFDs), and other financial instruments on margin carries a high level of risk and may not be suitable for all investors. The high degree of leverage can work against you as well as for you. Before deciding to invest, you should carefully consider your investment objectives, level of experience, and risk appetite. The possibility exists that you could sustain a loss of some or all of your initial investment, and therefore, you should not invest money that you cannot afford to lose. You should be aware of all the risks associated with trading and seek advice from an independent financial advisor if you have any doubts. Past performance is not indicative of future results.
-              </p>
-            </div>
-            
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-              <p>&copy; {new Date().getFullYear()} ECMarketsIndia. All rights reserved.</p>
-              <div className="flex gap-6">
-                <span>Secure SSL Encrypted</span>
-                <span>Tier-1 Liquidity</span>
-              </div>
-            </div>
+        </div>
+        <div className="bg-[#0B0E11] py-6 border-t border-[#2B3139]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <p className="text-[#848E9C]">&copy; {new Date().getFullYear()} ECMarketsIndia. All rights reserved.</p>
+            <p className="text-[#CF304A] font-medium">Trading involves significant risk. Past performance does not guarantee future results.</p>
           </div>
         </div>
       </footer>

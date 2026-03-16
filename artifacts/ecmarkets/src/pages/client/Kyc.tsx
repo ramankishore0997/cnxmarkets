@@ -33,33 +33,33 @@ export function Kyc() {
     }
   });
 
-  if (isLoading) return <DashboardLayout><div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div></DashboardLayout>;
+  if (isLoading) return <DashboardLayout><div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div></DashboardLayout>;
 
   return (
     <DashboardLayout>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Identity Verification</h1>
-          <p className="text-gray-500 font-medium">Complete KYC to unlock full trading limits</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Identity Verification</h1>
+          <p className="text-[#848E9C] font-medium">Complete KYC to unlock full trading limits</p>
         </div>
 
         {kycData?.status && kycData.status !== 'rejected' ? (
-          <div className="bg-white border border-gray-200 shadow-sm p-12 rounded-3xl text-center">
-            <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${kycData.status === 'approved' ? 'bg-green-50' : 'bg-yellow-50'}`}>
-              <ShieldCheck className={`w-12 h-12 ${kycData.status === 'approved' ? 'text-green-600' : 'text-yellow-600'}`} />
+          <div className="card-stealth p-12 text-center">
+            <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${kycData.status === 'approved' ? 'bg-[#02C076]/20' : 'bg-[#F0B90B]/20'}`}>
+              <ShieldCheck className={`w-12 h-12 ${kycData.status === 'approved' ? 'text-[#02C076]' : 'text-[#F0B90B]'}`} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3 capitalize">Status: {kycData.status}</h2>
-            <p className="text-gray-600 max-w-sm mx-auto leading-relaxed">
+            <h2 className="text-2xl font-bold text-white mb-3 capitalize">Status: {kycData.status}</h2>
+            <p className="text-[#848E9C] max-w-sm mx-auto leading-relaxed">
               {kycData.status === 'approved' 
                 ? 'Your account is fully verified. You have access to all platform features.' 
                 : 'Your documents are currently under review by our compliance team. This usually takes 1-2 business days.'}
             </p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 shadow-sm p-8 md:p-10 rounded-3xl">
+          <div className="card-stealth p-8 md:p-10">
             {kycData?.status === 'rejected' && (
-              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-8 flex items-start gap-3">
-                <div className="mt-0.5"><ShieldCheck className="w-5 h-5 text-red-500" /></div>
+              <div className="bg-[#CF304A]/20 border border-[#CF304A]/40 text-[#CF304A] p-4 rounded-xl mb-8 flex items-start gap-3">
+                <div className="mt-0.5"><ShieldCheck className="w-5 h-5 text-[#CF304A]" /></div>
                 <div>
                   <strong className="block mb-1">Verification Failed</strong>
                   <p className="text-sm">{kycData.rejectionReason}</p>
@@ -69,53 +69,53 @@ export function Kyc() {
             
             <form onSubmit={form.handleSubmit((d) => submitMutation.mutate({ data: d }))} className="space-y-8">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm">1</span> 
+                <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#F0B90B]/20 text-[#F0B90B] flex items-center justify-center text-sm border border-[#F0B90B]/40">1</span> 
                   Proof of Identity
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Document Type</label>
-                    <select {...form.register('idDocumentType')} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm">
+                    <label className="text-sm font-semibold text-[#848E9C]">Document Type</label>
+                    <select {...form.register('idDocumentType')} className="input-stealth appearance-none">
                       <option value="passport">Passport</option>
                       <option value="national_id">National ID / Aadhaar</option>
                       <option value="driving_license">Driving License</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Document URL</label>
-                    <input {...form.register('idDocumentUrl')} placeholder="https://..." className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm" />
-                    {form.formState.errors.idDocumentUrl && <p className="text-xs text-red-500">{form.formState.errors.idDocumentUrl.message}</p>}
+                    <label className="text-sm font-semibold text-[#848E9C]">Document URL</label>
+                    <input {...form.register('idDocumentUrl')} placeholder="https://..." className="input-stealth" />
+                    {form.formState.errors.idDocumentUrl && <p className="text-xs text-[#CF304A]">{form.formState.errors.idDocumentUrl.message}</p>}
                   </div>
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm">2</span> 
+              <div className="pt-6 border-t border-[#2B3139]">
+                <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#F0B90B]/20 text-[#F0B90B] flex items-center justify-center text-sm border border-[#F0B90B]/40">2</span> 
                   Proof of Address
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Document Type</label>
-                    <select {...form.register('addressProofType')} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm">
+                    <label className="text-sm font-semibold text-[#848E9C]">Document Type</label>
+                    <select {...form.register('addressProofType')} className="input-stealth appearance-none">
                       <option value="utility_bill">Utility Bill</option>
                       <option value="bank_statement">Bank Statement</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Document URL</label>
-                    <input {...form.register('addressProofUrl')} placeholder="https://..." className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all shadow-sm" />
-                    {form.formState.errors.addressProofUrl && <p className="text-xs text-red-500">{form.formState.errors.addressProofUrl.message}</p>}
+                    <label className="text-sm font-semibold text-[#848E9C]">Document URL</label>
+                    <input {...form.register('addressProofUrl')} placeholder="https://..." className="input-stealth" />
+                    {form.formState.errors.addressProofUrl && <p className="text-xs text-[#CF304A]">{form.formState.errors.addressProofUrl.message}</p>}
                   </div>
                 </div>
               </div>
 
               <div className="pt-4">
-                <button type="submit" disabled={submitMutation.isPending} className="w-full py-4 rounded-xl font-bold btn-primary text-lg flex justify-center shadow-md">
+                <button type="submit" disabled={submitMutation.isPending} className="btn-gold w-full flex justify-center text-lg">
                   {submitMutation.isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : "Submit Documents"}
                 </button>
-                <p className="text-center text-xs text-gray-500 mt-4">Your data is encrypted and stored securely.</p>
+                <p className="text-center text-xs text-[#848E9C] mt-4">Your data is encrypted and stored securely.</p>
               </div>
             </form>
           </div>

@@ -36,21 +36,21 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     <>
       <div className="p-6">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-md">
-            <Activity className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 rounded-lg bg-[#0B0E11] border border-[#F0B90B] flex items-center justify-center shadow-[0_0_8px_rgba(240,185,11,0.4)]">
+            <Activity className="w-5 h-5 text-[#F0B90B]" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-gray-900">
-            ECMarkets<span className="text-primary">India</span>
+          <span className="text-xl font-bold tracking-tight text-white">
+            ECMarkets<span className="text-[#F0B90B]">India</span>
           </span>
         </Link>
       </div>
       
-      <div className="px-6 py-6 border-b border-border bg-gray-50/50">
-        <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Welcome Back</p>
-        <p className="text-xl font-bold text-gray-900 truncate mb-3">{user?.firstName || 'Trader'} {user?.lastName}</p>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-border shadow-sm">
-          <span className={`w-2 h-2 rounded-full animate-pulse ${user?.kycStatus === 'approved' ? 'bg-green-500' : 'bg-yellow-500'}`}></span>
-          <span className="text-xs text-gray-600 capitalize font-medium">KYC: {user?.kycStatus || 'Pending'}</span>
+      <div className="px-6 py-6 border-b border-[#2B3139] bg-[#0B0E11]">
+        <p className="text-xs text-[#848E9C] uppercase tracking-wider font-semibold mb-2">Trader Identity</p>
+        <p className="text-xl font-bold text-white truncate mb-3">{user?.firstName || 'Trader'} {user?.lastName}</p>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1E2329] border border-[#2B3139]">
+          <span className={`w-2 h-2 rounded-full animate-pulse ${user?.kycStatus === 'approved' ? 'bg-[#02C076]' : 'bg-[#F0B90B]'}`}></span>
+          <span className="text-xs text-[#EAECEF] capitalize font-medium">KYC: {user?.kycStatus || 'Pending'}</span>
         </div>
       </div>
 
@@ -64,44 +64,38 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden group ${
                 isActive 
-                  ? 'bg-blue-50 text-primary' 
-                  : 'hover:bg-gray-50 border border-transparent text-gray-600'
+                  ? 'nav-item-active' 
+                  : 'hover:bg-[#2B3139] border border-transparent text-[#848E9C]'
               }`}
             >
-              {isActive && (
-                <motion.div 
-                  layoutId="sidebarActiveIndicator"
-                  className="absolute left-0 top-0 bottom-0 w-1 bg-primary" 
-                />
-              )}
               <div className="flex items-center gap-3 z-10">
-                <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-primary' : 'text-gray-500 group-hover:text-primary'}`} />
-                <span className={`font-semibold ${isActive ? 'text-primary' : 'group-hover:text-gray-900'}`}>
+                <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-[#F0B90B]' : 'text-[#848E9C] group-hover:text-[#EAECEF]'}`} />
+                <span className={`font-semibold ${isActive ? 'text-[#F0B90B]' : 'group-hover:text-white'}`}>
                   {item.name}
                 </span>
               </div>
-              {isActive && <ChevronRight className="w-4 h-4 text-primary z-10" />}
+              {isActive && <ChevronRight className="w-4 h-4 text-[#F0B90B] z-10" />}
             </Link>
           )
         })}
       </nav>
 
-      <div className="p-6 border-t border-border">
+      <div className="p-6 border-t border-[#2B3139]">
         <button 
           onClick={logout}
-          className="flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-all font-bold"
+          className="flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#CF304A]/10 text-[#CF304A] hover:bg-[#CF304A]/20 border border-[#CF304A]/20 transition-all font-bold"
         >
           <LogOut className="w-5 h-5" />
-          Secure Logout
+          Terminate Session
         </button>
       </div>
     </>
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] text-gray-900 flex">
+    <div className="min-h-screen bg-[#0B0E11] text-[#EAECEF] flex">
       {/* Desktop Sidebar */}
-      <aside className="w-72 bg-white border-r border-border hidden md:flex flex-col fixed inset-y-0 left-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+      <aside className="w-72 sidebar-stealth hidden md:flex flex-col fixed inset-y-0 left-0 z-20">
         <SidebarContent />
       </aside>
 
@@ -114,17 +108,17 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 md:hidden"
             />
             <motion.aside 
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="w-72 bg-white flex flex-col fixed inset-y-0 left-0 z-50 shadow-2xl"
+              className="w-72 bg-[#1E2329] border-r border-[#2B3139] flex flex-col fixed inset-y-0 left-0 z-50 shadow-2xl"
             >
               <div className="absolute top-4 right-4 z-50">
-                <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-gray-500 hover:text-gray-900 bg-gray-100 rounded-full">
+                <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-[#848E9C] hover:text-white bg-[#0B0E11] rounded-full">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -136,33 +130,33 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-72 flex flex-col min-h-screen relative overflow-hidden">
-        <header className="h-20 bg-white border-b border-border sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10 shadow-sm">
+        <header className="h-20 bg-[#1E2329] border-b border-[#2B3139] sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10">
           <div className="flex items-center md:hidden">
-            <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2 text-[#848E9C] hover:bg-[#2B3139] rounded-lg">
               <Menu className="w-6 h-6" />
             </button>
           </div>
           
           <div className="hidden md:flex items-center">
-            <h2 className="text-gray-900 font-bold text-xl capitalize">
+            <h2 className="text-white font-bold text-xl capitalize">
               {location === '/dashboard' ? 'Overview' : location.split('/').pop()?.replace('-', ' ')}
             </h2>
           </div>
 
           <div className="flex-1 flex justify-end items-center gap-6">
-            <Link href="/dashboard/notifications" className="relative p-2 text-gray-500 hover:text-primary transition-colors bg-gray-50 rounded-full">
+            <Link href="/dashboard/notifications" className="relative p-2 text-[#848E9C] hover:text-[#F0B90B] transition-colors bg-[#0B0E11] border border-[#2B3139] rounded-full">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#CF304A] border-2 border-[#1E2329] rounded-full"></span>
             </Link>
             
-            <div className="h-8 w-px bg-border hidden sm:block"></div>
+            <div className="h-8 w-px bg-[#2B3139] hidden sm:block"></div>
             
             <Link href="/dashboard/profile" className="flex items-center gap-3 group">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors">{user?.firstName} {user?.lastName}</p>
-                <p className="text-xs text-gray-500 font-medium">{user?.email}</p>
+                <p className="text-sm font-bold text-white group-hover:text-[#F0B90B] transition-colors">{user?.firstName} {user?.lastName}</p>
+                <p className="text-xs text-[#848E9C] font-medium">{user?.email}</p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-white shadow-md">
+              <div className="w-10 h-10 rounded-full bg-[#F0B90B] flex items-center justify-center font-bold text-black shadow-md">
                 {user?.firstName?.[0] || 'U'}{user?.lastName?.[0] || ''}
               </div>
             </Link>

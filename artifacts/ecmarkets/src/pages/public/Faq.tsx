@@ -56,19 +56,19 @@ export function Faq() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 text-center bg-white border-b border-border">
+      <div className="pt-24 pb-16 text-center section-dark border-b border-[#2B3139]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Frequently Asked <span className="text-primary">Questions</span></h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Frequently Asked <span className="text-gradient-gold">Questions</span></h1>
+          <p className="text-xl text-[#848E9C] mb-8">
             Everything you need to know about our algorithms, security, and operations.
           </p>
           
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-4 top-3.5 h-5 w-5 text-[#848E9C]" />
             <input 
               type="text" 
               placeholder="Search for answers..." 
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-border focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm text-gray-900 bg-gray-50"
+              className="input-stealth pl-12 py-3 text-lg"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@ export function Faq() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 mb-20 flex flex-col md:flex-row gap-12">
         <div className="w-full md:w-64 shrink-0">
-          <h3 className="font-bold text-gray-900 mb-4 uppercase tracking-wider text-sm">Categories</h3>
+          <h3 className="font-bold text-white mb-4 uppercase tracking-wider text-sm">Categories</h3>
           <ul className="space-y-2">
             {categories.map(cat => (
               <li key={cat}>
@@ -84,8 +84,8 @@ export function Faq() {
                   onClick={() => { setActiveCategory(cat); setOpenIndex(0); }}
                   className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     activeCategory === cat 
-                      ? 'bg-blue-50 text-primary' 
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-[#1E2329] text-[#F0B90B] border-l-2 border-[#F0B90B]' 
+                      : 'text-[#848E9C] hover:bg-[#1E2329] hover:text-white'
                   }`}
                 >
                   {cat}
@@ -96,19 +96,19 @@ export function Faq() {
         </div>
         
         <div className="flex-1 space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">{activeCategory}</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">{activeCategory}</h2>
           {filteredFaqs.length > 0 ? filteredFaqs.map((faq, i) => (
             <div 
               key={i} 
-              className={`card-light overflow-hidden transition-colors ${openIndex === i ? 'border-primary' : 'border-border'}`}
+              className={`card-stealth overflow-hidden transition-colors ${openIndex === i ? 'border-l-2 border-l-[#F0B90B]' : ''}`}
             >
               <button
                 className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
               >
-                <span className="font-semibold text-lg text-gray-900 pr-8">{faq.q}</span>
+                <span className={`font-semibold text-lg pr-8 ${openIndex === i ? 'text-white' : 'text-[#848E9C]'}`}>{faq.q}</span>
                 <ChevronDown 
-                  className={`w-5 h-5 text-gray-500 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-primary' : ''}`} 
+                  className={`w-5 h-5 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-[#F0B90B]' : 'text-[#848E9C]'}`} 
                 />
               </button>
               <AnimatePresence>
@@ -119,7 +119,7 @@ export function Faq() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <div className="px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
+                    <div className="px-6 pb-5 text-[#848E9C] leading-relaxed border-t border-[#2B3139] pt-4">
                       {faq.a}
                     </div>
                   </motion.div>
@@ -127,7 +127,7 @@ export function Faq() {
               </AnimatePresence>
             </div>
           )) : (
-            <div className="text-gray-500 py-8 text-center">No questions found for this category.</div>
+            <div className="text-[#848E9C] py-8 text-center">No questions found for this category.</div>
           )}
         </div>
       </div>
