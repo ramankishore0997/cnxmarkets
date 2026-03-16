@@ -149,14 +149,26 @@ router.post("/select-strategy", requireAuth, async (req: AuthRequest, res) => {
       resolvedId = strat.id;
     }
 
-    const [existing] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
-    if (existing) {
-      await db.update(accountsTable).set({ assignedStrategyId: resolvedId, assignedStrategy: resolvedName, updatedAt: new Date() }).where(eq(accountsTable.userId, userId));
-    } else {
-      await db.insert(accountsTable).values({ userId, totalBalance: "0", totalProfit: "0", totalDeposits: "0", totalWithdrawals: "0", assignedStrategyId: resolvedId, assignedStrategy: resolvedName });
+    // Determine daily growth target: RazrMarket = 6-10% random, others = 4%
+    let dailyGrowthTarget: string | null = null;
+    if (resolvedName) {
+      const nameLower = resolvedName.toLowerCase();
+      if (nameLower.includes('razr') || nameLower.includes('razor')) {
+        const pct = 6 + Math.random() * 4; // 6-10%
+        dailyGrowthTarget = pct.toFixed(4);
+      } else {
+        dailyGrowthTarget = '4.0000';
+      }
     }
 
-    res.json({ message: "Strategy updated successfully", assignedStrategyId: resolvedId, assignedStrategy: resolvedName });
+    const [existing] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+    if (existing) {
+      await db.update(accountsTable).set({ assignedStrategyId: resolvedId, assignedStrategy: resolvedName, dailyGrowthTarget, updatedAt: new Date() }).where(eq(accountsTable.userId, userId));
+    } else {
+      await db.insert(accountsTable).values({ userId, totalBalance: "0", totalProfit: "0", totalDeposits: "0", totalWithdrawals: "0", assignedStrategyId: resolvedId, assignedStrategy: resolvedName, dailyGrowthTarget });
+    }
+
+    res.json({ message: "Strategy updated successfully", assignedStrategyId: resolvedId, assignedStrategy: resolvedName, dailyGrowthTarget });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Link } from 'wouter';
+import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
@@ -55,6 +56,11 @@ export function Dashboard() {
             <Upload className="w-4 h-4" /> Withdraw
           </Link>
         </div>
+      </div>
+
+      {/* Live Market Ticker */}
+      <div className="mb-6">
+        <LivePriceTicker />
       </div>
 
       {/* Main Balance Hero Card */}

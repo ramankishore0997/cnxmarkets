@@ -4,6 +4,7 @@ import { useGetStrategies } from '@workspace/api-client-react';
 import { TrendingUp, Filter, BarChart2, Shield, Cpu, Loader2, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
+import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
@@ -72,6 +73,11 @@ export function Strategies() {
       {/* STRATEGY GRID */}
       <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Live Price Ticker */}
+          <div className="mb-10">
+            <LivePriceTicker />
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
             <div>
               <h2 className="text-3xl font-bold text-white">All Strategies</h2>
