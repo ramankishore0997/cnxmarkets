@@ -1,0 +1,39 @@
+"I want to upgrade the main content area and all cards on the dashboard to a High-End Premium Trading Interface. Please apply these specific UI/UX changes:
+
+1. Portfolio Overview & Main Cards:
+
+Glassmorphism: Replace solid dark backgrounds with a subtle translucent dark-blue tint (backdrop-blur: 12px).
+
+Gradient Borders: Add a very thin (1px) linear-gradient border to all cards (Top-left: White/Gold opacity 0.2, Bottom-right: Transparent) to give them a 'raised' glass look.
+
+Typography: Use 'Manrope' or 'Inter' font. Make the 'Total Account Value' (₹89,493.05) look bold and sharp with a slight white glow.
+
+2. Refining Right-Side Info (Status & Net Deposits):
+
+Instead of plain text rows, put each info point (Status, Net Deposits, Total Trades) inside a mini-glass tile or use a clean 'Separator Line' (divider) with 0.1 opacity.
+
+The 'Active' dot should have a pulsing animation to look truly 'Live'.
+
+3. Strategy Card Enhancement:
+
+The 'RazrMarket Strategy' card needs to stand out. Add a subtle gold-to-transparent gradient glow behind the lightning icon.
+
+For metrics like 'Win Rate' and 'Max Drawdown', use a slightly larger, bold font for the numbers and a muted gray for the labels.
+
+4. Progress Bar & Live Profit:
+
+Modern Progress Bar: Change the solid green bar to a Gradient Bar (Lime Green to Emerald). Add a 'glow' effect to the tip of the progress bar.
+
+Dynamic Numbers: Ensure the 'Live Profit Today' (+₹5,907.07) has a slight green 'breathing' animation to signify real-time updates.
+
+5. Bottom Grid Cards (Net Deposits, Total Profit, etc.):
+
+Icon Styling: Place the icons (Wallet, Chart, Trend) inside a small circular or squircle background with a 10% opacity of the brand color (Gold/Green).
+
+Hover Effect: When hovering over any card, it should lift up slightly (translateY -5px) and the border-gradient should brighten.
+
+6. Global Refinement:
+
+Use a more sophisticated background for the entire dashboard—a very dark navy gradient (e.g., #050810 to #0C1222) instead of flat black.
+
+Ensure all corners are consistently rounded at 16px for a modern 'iOS-like' feel."
