@@ -135,7 +135,8 @@ export function Home() {
                 transition={{ delay: 0.5 }}
                 className="flex flex-wrap items-center gap-6 text-sm text-[#EAECEF] font-medium"
               >
-                <span className="flex items-center gap-2">⚡ Zero Commission</span>
+                <span className="flex items-center gap-2 text-[#02C076] font-semibold">✓ Zero Platform Fees</span>
+                <span className="flex items-center gap-2 text-[#02C076] font-semibold">✓ No Profit Sharing</span>
                 <span className="flex items-center gap-2">🔒 Bank-Grade Security</span>
                 <span className="flex items-center gap-2">📊 Real-Time Analytics</span>
               </motion.div>
@@ -228,9 +229,9 @@ export function Home() {
       </section>
 
       {/* WHY CHOOSE US */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Built for Performance</h2>
             <p className="text-lg text-[#848E9C]">Experience terminal-grade tools and execution speeds.</p>
           </div>
@@ -250,7 +251,7 @@ export function Home() {
       </section>
 
       {/* PLATFORM PREVIEW */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2">
@@ -301,9 +302,9 @@ export function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Start in Minutes</h2>
           </div>
           
@@ -323,9 +324,9 @@ export function Home() {
       </section>
 
       {/* PERFORMANCE SNAPSHOT */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Proven Performance</h2>
             <p className="text-[#848E9C]">Consistent risk-adjusted returns</p>
           </div>
@@ -378,10 +379,16 @@ export function Home() {
       </section>
 
       {/* ACCOUNT TIERS */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Account Tiers</h2>
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+              <span className="zero-fee-badge">✓ Zero Platform Fees</span>
+              <span className="zero-fee-badge">✓ No Profit Sharing</span>
+              <span className="zero-fee-badge">✓ Only Pay When You Profit</span>
+            </div>
+            <p className="text-[#848E9C] mt-3 text-sm max-w-lg mx-auto">Zero Fees Trading — No platform fees and no profit-sharing charges. A strict 20% performance fee applies only on new high-water mark profits.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
@@ -421,7 +428,7 @@ export function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {testimonials.map((t, i) => (
@@ -439,7 +446,7 @@ export function Home() {
       </section>
 
       {/* FAQ PREVIEW */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-8 text-center">Questions?</h2>
           <div className="space-y-4">
@@ -464,10 +471,10 @@ export function Home() {
       </section>
 
       {/* S11 — PLATFORM TECHNOLOGY */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <motion.div variants={fadeUp} className="text-center mb-16">
+            <motion.div variants={fadeUp} className="text-center mb-10">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Built on Institutional Infrastructure</h2>
               <p className="text-[#848E9C] max-w-2xl mx-auto">Three-layer architecture designed for institutional-grade performance and reliability.</p>
             </motion.div>
@@ -506,9 +513,9 @@ export function Home() {
       </section>
 
       {/* S12 — GLOBAL INFRASTRUCTURE */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Global Trading Infrastructure</h2>
             <p className="text-[#848E9C]">Tier-1 data centers across 4 continents for minimum latency to every exchange.</p>
           </div>
@@ -534,7 +541,7 @@ export function Home() {
       </section>
 
       {/* S13 — LIVE STRATEGY TABLE */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Live Strategy Performance</h2>
@@ -575,9 +582,9 @@ export function Home() {
       </section>
 
       {/* S14 — PLATFORM STATISTICS */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Platform by the Numbers</h2>
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -603,9 +610,9 @@ export function Home() {
       </section>
 
       {/* S15 — CLIENT GROWTH */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Consistent Growth, Consistent Results</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -644,9 +651,9 @@ export function Home() {
       </section>
 
       {/* S16 — HOW ALGOS WORK */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">How Our Algorithms Generate Alpha</h2>
           </div>
           <div className="flex flex-col lg:flex-row items-start gap-4">
@@ -672,9 +679,9 @@ export function Home() {
       </section>
 
       {/* S17 — SECURITY */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Bank-Grade Security Infrastructure</h2>
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
@@ -702,9 +709,9 @@ export function Home() {
       </section>
 
       {/* S18 — MARKET LIQUIDITY */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Trading the World's Most Liquid Markets</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
@@ -726,9 +733,9 @@ export function Home() {
       </section>
 
       {/* S19 — RISK MANAGEMENT */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Multi-Layer Risk Management</h2>
             <p className="text-[#848E9C]">Four independent risk controls protect your capital at every level.</p>
           </div>
@@ -753,7 +760,7 @@ export function Home() {
       </section>
 
       {/* S20 — MOBILE PREVIEW */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -807,9 +814,9 @@ export function Home() {
       </section>
 
       {/* S21 — BROKER INTEGRATIONS */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connected to India's Top Brokers</h2>
             <p className="text-[#848E9C]">ECMarketsIndia integrates with all major SEBI-registered brokers for seamless execution.</p>
           </div>
@@ -825,7 +832,7 @@ export function Home() {
       </section>
 
       {/* S22 — ALGO VS MANUAL */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Algorithmic vs Manual Trading</h2>
@@ -862,9 +869,9 @@ export function Home() {
       </section>
 
       {/* S23 — EDUCATION */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Learn Algorithmic Trading</h2>
             <p className="text-[#848E9C]">Free educational resources for every experience level.</p>
           </div>
@@ -894,9 +901,9 @@ export function Home() {
       </section>
 
       {/* S24 — BLOG PREVIEW */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Market Intelligence & Insights</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -920,7 +927,7 @@ export function Home() {
       </section>
 
       {/* S25 — REAL RESULTS */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-4">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Real Results from Real Clients</h2>
@@ -947,9 +954,9 @@ export function Home() {
       </section>
 
       {/* S26 — AWARDS */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Recognized by the Industry</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -970,9 +977,9 @@ export function Home() {
       </section>
 
       {/* S27 — SUPPORT */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">World-Class Support, Always Available</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -995,9 +1002,9 @@ export function Home() {
       </section>
 
       {/* S28 — PARTNER */}
-      <section className="py-24 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#2B3139]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Institutional & Corporate Partnerships</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1018,7 +1025,7 @@ export function Home() {
       </section>
 
       {/* S29 — REGULATORY */}
-      <section className="py-24 section-dark">
+      <section className="py-16 section-dark">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-4">Operating with Full Regulatory Compliance</h2>

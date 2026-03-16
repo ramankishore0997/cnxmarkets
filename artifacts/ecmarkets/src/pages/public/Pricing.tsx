@@ -65,12 +65,18 @@ export function Pricing() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 text-center section-dark border-b border-[#2B3139]">
+      <div className="pt-20 pb-12 text-center section-dark border-b border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Transparent <span className="text-gradient-gold">Pricing</span></h1>
-          <p className="text-xl text-[#848E9C] max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Transparent <span className="text-gradient-gold">Pricing</span></h1>
+          <p className="text-lg text-[#848E9C] max-w-2xl mx-auto mb-6">
             No hidden management fees. We charge a strict 20% performance fee on high-water mark profits only. If we don't perform, we don't get paid.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span className="zero-fee-badge">✓ Zero Platform Fees</span>
+            <span className="zero-fee-badge">✓ No Profit Sharing</span>
+            <span className="zero-fee-badge">✓ 20% Performance Fee — New Profits Only</span>
+          </div>
+          <p className="text-[#848E9C] text-sm mt-4 max-w-xl mx-auto">Zero Fees Trading — No platform fees and no profit-sharing charges. You keep 100% of your capital growth minus performance fees on new highs.</p>
         </div>
       </div>
 

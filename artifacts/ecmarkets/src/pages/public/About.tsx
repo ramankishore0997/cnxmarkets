@@ -50,7 +50,7 @@ export function About() {
       </section>
 
       {/* Story */}
-      <section className="py-24 section-surface">
+      <section className="py-16 section-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
@@ -112,9 +112,9 @@ export function About() {
       </section>
 
       {/* Values */}
-      <section className="py-24 section-dark border-t border-[#2B3139]">
+      <section className="py-16 section-dark border-t border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Core Principles</h2>
             <p className="text-lg text-[#848E9C]">The philosophies that drive our algorithms and our business.</p>
           </div>
@@ -140,7 +140,7 @@ export function About() {
       </section>
       
       {/* Team Philosophy */}
-      <section className="py-24 bg-[#1E2329] border-t border-[#2B3139] text-center">
+      <section className="py-16 bg-[#1E2329] border-t border-[#2B3139] text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Our Team</h2>
           <p className="text-xl text-[#848E9C] leading-relaxed mb-8">

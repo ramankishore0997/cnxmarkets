@@ -107,7 +107,7 @@ export function Performance() {
         </div>
 
         {/* Monthly Returns */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-10">
           <div className="lg:col-span-2 card-stealth p-6 md:p-8">
             <h3 className="text-2xl font-bold text-white mb-8">Monthly Returns (2023)</h3>
             <div className="h-[300px] w-full">

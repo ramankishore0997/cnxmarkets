@@ -26,7 +26,7 @@ export function Contact() {
     <PublicLayout>
       <div className="pt-24 pb-16 section-dark border-b border-[#2B3139]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-10">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Get in <span className="text-gradient-gold">Touch</span></h1>
             <p className="text-xl text-[#848E9C]">
               Whether you have a question about features, pricing, or need technical support, our team is ready to answer all your questions.
