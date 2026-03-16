@@ -1,0 +1,278 @@
+Create an ultra-premium fintech trading platform UI called **ECMarketsIndia.com**.
+
+The UI must look like a **top-tier institutional trading platform** similar to modern forex / fintech companies.
+
+Use the following stack:
+
+Frontend:
+Next.js (React)
+Tailwind CSS
+Framer Motion animations
+
+Design style:
+Ultra-modern fintech dark theme.
+
+Primary colors:
+Deep navy background (#0b0f19)
+Electric blue accent (#1e90ff)
+Gold highlight (#f5c542)
+
+Design principles:
+Glassmorphism cards
+Gradient lighting effects
+Soft shadows
+Smooth scroll animations
+Floating dashboard elements
+Animated charts
+High contrast typography
+
+The UI must feel extremely premium, futuristic, and professional.
+
+---
+
+GLOBAL UI REQUIREMENTS
+
+Use full width layouts.
+
+Add subtle animated gradients in the background.
+
+Cards should have:
+backdrop blur
+border glow
+hover animations.
+
+Buttons should have:
+gradient backgrounds
+soft glow hover effect.
+
+Charts should have:
+glowing lines
+animated loading effects.
+
+---
+
+NAVIGATION DESIGN
+
+Create a sticky navigation bar with:
+
+logo
+Markets
+Platforms
+Algo Accounts
+Performance
+Pricing
+About
+Contact
+Login
+Open Account button
+
+Navigation should have:
+blur background
+scroll shadow
+hover underline animation.
+
+---
+
+HOMEPAGE HERO SECTION
+
+Full screen hero section.
+
+Left side:
+Large headline
+
+"Institutional Grade Algo Trading Platform"
+
+Subtext explaining technology.
+
+Two buttons:
+Open Account
+View Performance
+
+Right side:
+Animated trading dashboard preview with charts.
+
+Add floating light effects.
+
+---
+
+TRUST STATISTICS SECTION
+
+Display large animated numbers:
+
+$120M+ trading volume
+50,000+ traders
+120+ countries
+99.99% uptime
+
+Use glowing counters.
+
+---
+
+FEATURE GRID SECTION
+
+6 premium cards with icons:
+
+Advanced Algorithms
+Low Latency Infrastructure
+Real Time Analytics
+Risk Management Systems
+Secure Platform
+Mobile Monitoring
+
+Cards should animate on hover.
+
+---
+
+PLATFORM PREVIEW SECTION
+
+Show large trading dashboard UI mockup.
+
+Include:
+
+balance cards
+performance charts
+trade table
+profit analytics
+
+---
+
+LIVE MARKET CHART SECTION
+
+Embed a TradingView style chart component.
+
+Include tabs for:
+
+EURUSD
+GBPUSD
+XAUUSD
+
+Charts must look modern and interactive.
+
+---
+
+HOW IT WORKS SECTION
+
+Create a horizontal step timeline:
+
+1. Create account
+2. Verify identity
+3. Fund account
+4. Activate strategy
+
+Each step should have animated icons.
+
+---
+
+PERFORMANCE ANALYTICS SECTION
+
+Add a large equity curve chart.
+
+Display:
+
+monthly returns
+profit curve
+drawdown metrics
+
+Use glowing line charts.
+
+---
+
+ACCOUNT TYPES SECTION
+
+Create 3 premium pricing cards:
+
+Starter Algo
+Professional Algo
+Institutional Algo
+
+Cards should highlight recommended plan.
+
+---
+
+MOBILE PLATFORM SECTION
+
+Display phone mockups showing dashboard.
+
+Explain mobile monitoring features.
+
+---
+
+TESTIMONIALS SECTION
+
+Add animated carousel of client reviews.
+
+---
+
+FAQ SECTION
+
+Accordion style questions.
+
+Smooth open/close animations.
+
+---
+
+FINAL CTA SECTION
+
+Large gradient section.
+
+Headline:
+
+"Start Your Algo Trading Journey Today"
+
+Buttons:
+
+Open Account
+Contact Support
+
+---
+
+FOOTER
+
+Large premium footer with 4 columns:
+
+Company
+Platform
+Legal
+Support
+
+Include social icons.
+
+Add subtle animated background glow.
+
+---
+
+ADDITIONAL UI DETAILS
+
+Typography:
+Use modern fintech fonts.
+
+Spacing:
+Generous padding and whitespace.
+
+Animations:
+Scroll reveal animations.
+Hover glow effects.
+
+Performance:
+Optimize for fast loading and responsiveness.
+
+Mobile:
+Design must be fully responsive.
+
+---
+
+OUTPUT REQUIREMENTS
+
+Generate complete UI pages with reusable components.
+
+Include:
+
+homepage
+login page
+signup page
+dashboard UI mockup
+account pages
+pricing page
+FAQ page
+
+Ensure the final design looks like a professional global fintech platform.

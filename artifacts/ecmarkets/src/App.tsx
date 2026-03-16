@@ -8,6 +8,11 @@ import { useAuthState } from "@/hooks/use-auth-state";
 import { Home } from "@/pages/public/Home";
 import { Markets } from "@/pages/public/Markets";
 import { Strategies } from "@/pages/public/Strategies";
+import { About } from "@/pages/public/About";
+import { Performance } from "@/pages/public/Performance";
+import { Pricing } from "@/pages/public/Pricing";
+import { Faq } from "@/pages/public/Faq";
+import { Contact } from "@/pages/public/Contact";
 
 // Auth Pages
 import { Login } from "@/pages/auth/Login";
@@ -28,7 +33,7 @@ const queryClient = new QueryClient();
 function ProtectedRoute({ component: Component, adminOnly = false }: { component: any, adminOnly?: boolean }) {
   const { isAuthenticated, isLoading, user } = useAuthState();
 
-  if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
+  if (isLoading) return <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
   if (!isAuthenticated) return <Redirect to="/auth/login" />;
   if (adminOnly && user?.role !== 'admin') return <Redirect to="/dashboard" />;
 
@@ -42,15 +47,12 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/markets" component={Markets} />
       <Route path="/strategies" component={Strategies} />
-      
-      {/* Simple placeholders for requested generic pages to ensure completeness */}
-      <Route path="/about" component={() => <Home />} />
-      <Route path="/performance" component={() => <Home />} />
-      <Route path="/platform" component={() => <Home />} />
-      <Route path="/pricing" component={() => <Home />} />
-      <Route path="/faq" component={() => <Home />} />
-      <Route path="/contact" component={() => <Home />} />
-      <Route path="/legal/:page" component={() => <Home />} />
+      <Route path="/about" component={About} />
+      <Route path="/performance" component={Performance} />
+      <Route path="/pricing" component={Pricing} />
+      <Route path="/faq" component={Faq} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/legal/:page" component={Home} />
 
       {/* Auth Routes */}
       <Route path="/auth/login" component={Login} />
@@ -84,7 +86,7 @@ function Router() {
       </Route>
 
       <Route>
-        <div className="min-h-screen bg-background flex items-center justify-center flex-col gap-4 text-white">
+        <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center flex-col gap-4 text-white">
           <h1 className="text-4xl font-bold">404 - Page Not Found</h1>
           <a href="/" className="text-primary hover:underline">Return Home</a>
         </div>
