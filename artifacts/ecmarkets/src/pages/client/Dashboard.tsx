@@ -68,8 +68,9 @@ export function Dashboard() {
   const profitPercent = totalBalance > 0 && totalProfit !== 0
     ? (((totalBalance) / (totalBalance - totalProfit) - 1) * 100).toFixed(2)
     : '0.00';
-  const monthlyCompound = parseFloat(((Math.pow(1 + dailyRatePct / 100, 30) - 1) * 100).toFixed(2));
+  const monthlyReturn   = parseFloat(strategy?.monthlyReturn ?? dailyRatePct * 30 / 10);
   const progressPct     = dailyTargetAmt > 0 ? Math.min((liveProfit / dailyTargetAmt) * 100, 100) : 0;
+  const dailyGainPct    = totalBalance > 0 ? (liveProfit / totalBalance) * 100 : 0;
 
   return (
     <DashboardLayout>
@@ -206,6 +207,14 @@ export function Dashboard() {
                   <p className="text-[10px] text-[#4B5563] font-medium mt-0.5">Daily Target</p>
                 </div>
               )}
+              {totalBalance > 0 && dailyTargetAmt > 0 && (
+                <div className="text-center">
+                  <p className={`font-terminal text-lg font-bold ${dailyGainPct >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                    {dailyGainPct >= 0 ? '+' : ''}{dailyGainPct.toFixed(2)}%
+                  </p>
+                  <p className="text-[10px] text-[#4B5563] font-medium mt-0.5">Daily Return</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -239,13 +248,13 @@ export function Dashboard() {
                 <p className="font-terminal text-glow-green-breathe text-4xl font-black tabular-nums leading-none">
                   +₹{liveProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                {totalBalance > 0 && (
+                {totalBalance > 0 && dailyTargetAmt > 0 && (
                   <span className={`mb-1 px-2.5 py-1 rounded-lg text-sm font-terminal font-bold tabular-nums border ${
-                    liveProfit >= 0
+                    dailyGainPct >= 0
                       ? 'bg-[#02C076]/12 border-[#02C076]/30 text-[#02C076]'
                       : 'bg-[#CF304A]/12 border-[#CF304A]/30 text-[#CF304A]'
                   }`}>
-                    {liveProfit >= 0 ? '+' : ''}{((liveProfit / totalBalance) * 100).toFixed(2)}% Daily Gain
+                    {dailyGainPct >= 0 ? '+' : ''}{dailyGainPct.toFixed(2)}% Daily Gain
                   </span>
                 )}
               </div>
@@ -277,8 +286,8 @@ export function Dashboard() {
                   <p className="text-[10px] text-[#4B5563] mt-0.5">Daily Target</p>
                 </div>
                 <div className="glass-tile text-center">
-                  <p className="font-terminal text-sm font-bold text-[#02C076]">+{monthlyCompound}%</p>
-                  <p className="text-[10px] text-[#4B5563] mt-0.5">Monthly (30d)</p>
+                  <p className="font-terminal text-sm font-bold text-[#02C076]">+{monthlyReturn}%</p>
+                  <p className="text-[10px] text-[#4B5563] mt-0.5">Monthly Return</p>
                 </div>
               </div>
             </div>
