@@ -16,6 +16,7 @@ export const usersTable = pgTable("users", {
   role: roleEnum("role").notNull().default("client"),
   kycStatus: kycStatusEnum("kyc_status").notNull().default("pending"),
   isActive: boolean("is_active").notNull().default(true),
+  profilePhoto: text("profile_photo"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

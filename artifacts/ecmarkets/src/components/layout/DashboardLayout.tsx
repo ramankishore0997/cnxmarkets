@@ -50,11 +50,18 @@ function SidebarLogo() {
   );
 }
 
-function UserAvatar({ firstName, lastName, size = 'md' }: { firstName?: string; lastName?: string; size?: 'sm' | 'md' | 'lg' }) {
+function UserAvatar({ firstName, lastName, photo, size = 'md' }: { firstName?: string; lastName?: string; photo?: string | null; size?: 'sm' | 'md' | 'lg' }) {
   const initials = `${firstName?.[0] || 'U'}${lastName?.[0] || ''}`.toUpperCase();
-  const sizeClass = size === 'lg' ? 'w-12 h-12 text-base' : size === 'sm' ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm';
+  const dim = size === 'lg' ? 'w-12 h-12 text-base' : size === 'sm' ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm';
+  if (photo) {
+    return (
+      <div className={`${dim} rounded-full shrink-0 overflow-hidden ring-2 ring-[#FFB800]/40 shadow-lg shadow-[#FFB800]/15`}>
+        <img src={photo} alt="Avatar" className="w-full h-full object-cover" />
+      </div>
+    );
+  }
   return (
-    <div className={`${sizeClass} rounded-full bg-gradient-to-br from-[#FFB800] via-[#F0B90B] to-[#c8960c] flex items-center justify-center font-black text-black shadow-lg shadow-[#FFB800]/20 shrink-0`}>
+    <div className={`${dim} rounded-full bg-gradient-to-br from-[#FFB800] via-[#F0B90B] to-[#c8960c] flex items-center justify-center font-black text-black shadow-lg shadow-[#FFB800]/20 shrink-0`}>
       {initials}
     </div>
   );
@@ -108,7 +115,7 @@ function SidebarContent({ onClose, user, logout, location }: any) {
       {/* User Profile */}
       <div className="px-4 py-5 border-b border-white/[0.04]">
         <div className="flex items-center gap-3 mb-3">
-          <UserAvatar firstName={user?.firstName} lastName={user?.lastName} size="lg" />
+          <UserAvatar firstName={user?.firstName} lastName={user?.lastName} photo={(user as any)?.profilePhoto} size="lg" />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-[#F8FAFC] truncate leading-tight">
               {user?.firstName || 'Trader'} {user?.lastName || ''}
@@ -253,7 +260,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   {user?.email}
                 </p>
               </div>
-              <UserAvatar firstName={user?.firstName} lastName={user?.lastName} size="sm" />
+              <UserAvatar firstName={user?.firstName} lastName={user?.lastName} photo={(user as any)?.profilePhoto} size="sm" />
             </Link>
           </div>
         </header>

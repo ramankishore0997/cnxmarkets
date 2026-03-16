@@ -84,7 +84,8 @@ router.get("/me", requireAuth, async (req: AuthRequest, res) => {
     res.json({
       id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName,
       phone: user.phone, country: user.country, role: user.role, kycStatus: user.kycStatus,
-      isActive: user.isActive, createdAt: user.createdAt.toISOString(),
+      isActive: user.isActive, profilePhoto: user.profilePhoto ?? null,
+      createdAt: user.createdAt.toISOString(),
     });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
