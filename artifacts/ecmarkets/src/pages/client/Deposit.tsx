@@ -135,16 +135,42 @@ export function Deposit() {
               </div>
 
               {success === 'upi' ? (
-                <div className="flex flex-col items-center py-10 text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-[#02C076]/20 border border-[#02C076]/30 flex items-center justify-center mb-4">
-                    <CheckCircle className="w-8 h-8 text-[#02C076]" />
+                <div className="flex flex-col items-center py-8 text-center">
+                  {/* Animated waiting indicator */}
+                  <div className="relative mb-5">
+                    <div className="w-20 h-20 rounded-full border-4 border-[#F0B90B]/20 flex items-center justify-center">
+                      <Loader2 className="w-8 h-8 text-[#F0B90B] animate-spin absolute" />
+                      <Smartphone className="w-8 h-8 text-[#F0B90B]" />
+                    </div>
+                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F0B90B] flex items-center justify-center">
+                      <Clock className="w-3 h-3 text-black" />
+                    </span>
                   </div>
-                  <h4 className="text-lg font-bold text-white mb-2">Deposit Request Submitted</h4>
-                  <p className="text-[#848E9C] text-sm max-w-sm leading-relaxed">
-                    Our team is manually verifying your payment. Your balance will be updated shortly.
-                  </p>
-                  <button onClick={() => setSuccess(null)} className="mt-6 text-sm font-bold text-[#F0B90B] hover:underline">
-                    Submit another deposit →
+
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F0B90B]/20 border border-[#F0B90B]/40 mb-4">
+                    <span className="w-2 h-2 rounded-full bg-[#F0B90B] animate-pulse" />
+                    <span className="text-xs font-bold text-[#F0B90B] uppercase tracking-wider">Waiting for Payment</span>
+                  </div>
+
+                  <h4 className="text-xl font-black text-white mb-3">Payment Request Sent!</h4>
+
+                  <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-5 text-left max-w-sm mb-5">
+                    <p className="text-[#EAECEF] text-sm leading-relaxed">
+                      Please check your UPI app <span className="text-[#F0B90B] font-semibold">(PhonePe, Google Pay, etc.)</span>.
+                      You have received a payment request for the entered amount.
+                    </p>
+                    <p className="text-[#EAECEF] text-sm leading-relaxed mt-3 font-semibold">
+                      Please complete the payment. Your balance will be updated instantly after successful payment.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-[#848E9C]">
+                    <CheckCircle className="w-3.5 h-3.5 text-[#02C076]" />
+                    Request logged · Status: <span className="font-bold text-[#F0B90B]">Pending</span>
+                  </div>
+
+                  <button onClick={() => setSuccess(null)} className="mt-5 text-sm font-bold text-[#848E9C] hover:text-white transition-colors">
+                    ← Submit another request
                   </button>
                 </div>
               ) : (
