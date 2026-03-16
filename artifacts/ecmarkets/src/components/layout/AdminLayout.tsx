@@ -33,6 +33,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'KYC Approvals', href: '/admin/kyc', icon: FileCheck },
     { name: 'Transactions', href: '/admin/transactions', icon: ArrowRightLeft },
+    { name: 'Trade Injection', href: '/admin/trades', icon: Activity },
     { name: 'Strategies', href: '/admin/strategies', icon: TrendingUp },
     { name: 'Notifications', href: '/admin/notifications', icon: Send },
   ];

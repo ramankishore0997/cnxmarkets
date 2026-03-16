@@ -33,6 +33,7 @@ import { AdminTransactions } from "@/pages/admin/AdminTransactions";
 import { AdminKyc } from "@/pages/admin/AdminKyc";
 import { AdminUsers } from "@/pages/admin/AdminUsers";
 import { AdminNotifications } from "@/pages/admin/AdminNotifications";
+import { AdminTrades } from "@/pages/admin/AdminTrades";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +104,9 @@ function Router() {
       </Route>
       <Route path="/admin/notifications">
         <ProtectedRoute component={AdminNotifications} adminOnly={true} />
+      </Route>
+      <Route path="/admin/trades">
+        <ProtectedRoute component={AdminTrades} adminOnly={true} />
       </Route>
       {/* Fallbacks for other admin routes */}
       <Route path="/admin/:page">

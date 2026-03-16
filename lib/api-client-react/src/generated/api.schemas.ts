@@ -80,6 +80,12 @@ export const KycDocumentStatus = {
 export interface KycDocument {
   id: number;
   userId: number;
+  panNumber?: string;
+  aadharNumber?: string;
+  panCardFrontUrl?: string;
+  panCardBackUrl?: string;
+  aadharCardFrontUrl?: string;
+  aadharCardBackUrl?: string;
   idDocumentType?: string;
   idDocumentUrl?: string;
   addressProofType?: string;
@@ -91,10 +97,16 @@ export interface KycDocument {
 }
 
 export interface KycSubmitRequest {
-  idDocumentType: string;
-  idDocumentUrl: string;
-  addressProofType: string;
-  addressProofUrl: string;
+  panNumber?: string;
+  aadharNumber?: string;
+  panCardFrontUrl?: string;
+  panCardBackUrl?: string;
+  aadharCardFrontUrl?: string;
+  aadharCardBackUrl?: string;
+  idDocumentType?: string;
+  idDocumentUrl?: string;
+  addressProofType?: string;
+  addressProofUrl?: string;
 }
 
 export type KycUpdateRequestStatus =
@@ -342,6 +354,8 @@ export interface AdminUser {
   kycStatus: AdminUserKycStatus;
   isActive: boolean;
   totalBalance?: number;
+  assignedStrategy?: string;
+  dailyGrowthTarget?: number;
   createdAt: string;
 }
 
@@ -367,6 +381,9 @@ export interface AdminUserUpdate {
   isActive?: boolean;
   role?: AdminUserUpdateRole;
   kycStatus?: AdminUserUpdateKycStatus;
+  totalBalance?: number;
+  assignedStrategy?: string;
+  dailyGrowthTarget?: number;
 }
 
 export type AdminKycStatus =
@@ -384,6 +401,12 @@ export interface AdminKyc {
   userId: number;
   userEmail: string;
   userName: string;
+  panNumber?: string;
+  aadharNumber?: string;
+  panCardFrontUrl?: string;
+  panCardBackUrl?: string;
+  aadharCardFrontUrl?: string;
+  aadharCardBackUrl?: string;
   idDocumentType?: string;
   idDocumentUrl?: string;
   addressProofType?: string;
@@ -468,4 +491,35 @@ export interface ChangePasswordRequest {
   currentPassword: string;
   /** @minLength 8 */
   newPassword: string;
+}
+
+export type ManualTradeRequestDirection =
+  (typeof ManualTradeRequestDirection)[keyof typeof ManualTradeRequestDirection];
+
+export const ManualTradeRequestDirection = {
+  buy: "buy",
+  sell: "sell",
+} as const;
+
+export type ManualTradeRequestStatus =
+  (typeof ManualTradeRequestStatus)[keyof typeof ManualTradeRequestStatus];
+
+export const ManualTradeRequestStatus = {
+  open: "open",
+  closed: "closed",
+} as const;
+
+export interface ManualTradeRequest {
+  userId: number;
+  instrument: string;
+  market: string;
+  direction: ManualTradeRequestDirection;
+  entryPrice: number;
+  exitPrice?: number;
+  lotSize: number;
+  profit?: number;
+  profitPercent?: number;
+  status?: ManualTradeRequestStatus;
+  openedAt?: string;
+  closedAt?: string;
 }

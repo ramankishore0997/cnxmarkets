@@ -4,31 +4,71 @@ import { useGetAdminUsers, useUpdateAdminUser } from '@workspace/api-client-reac
 import { getAuthOptions } from '@/lib/api-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { Users, ShieldCheck, ShieldOff, Search, UserCheck, UserX, Loader2 } from 'lucide-react';
+import {
+  Users, ShieldCheck, ShieldOff, Search, UserCheck, UserX,
+  Loader2, ChevronDown, ChevronUp, DollarSign, TrendingUp, Target, Save
+} from 'lucide-react';
+
+const STRATEGIES = [
+  'Alpha Momentum', 'Delta Neutral', 'Quantum Scalp', 'Sigma Swing',
+  'Omega Arbitrage', 'Custom',
+];
 
 export function AdminUsers() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
   const [processingId, setProcessingId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [editState, setEditState] = useState<Record<number, { balance: string; strategy: string; growth: string }>>({});
 
   const { data: users, isLoading } = useGetAdminUsers({ ...getAuthOptions() });
 
   const updateMutation = useUpdateAdminUser({
     ...getAuthOptions(),
     mutation: {
-      onSuccess: (_, vars) => {
+      onSuccess: () => {
         toast({ title: "User Updated", description: "Changes saved successfully." });
         queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
         setProcessingId(null);
       },
-      onError: () => toast({ title: "Failed", variant: "destructive" })
+      onError: () => toast({ title: "Failed to update user", variant: "destructive" })
     }
   });
 
   const toggleActive = (id: number, current: boolean) => {
     setProcessingId(id);
     updateMutation.mutate({ id, data: { isActive: !current } });
+  };
+
+  const saveAccountSettings = (user: any) => {
+    const state = editState[user.id];
+    if (!state) return;
+    setProcessingId(user.id);
+    updateMutation.mutate({
+      id: user.id,
+      data: {
+        totalBalance: state.balance !== '' ? parseFloat(state.balance) : undefined,
+        assignedStrategy: state.strategy || undefined,
+        dailyGrowthTarget: state.growth !== '' ? parseFloat(state.growth) : undefined,
+      } as any,
+    });
+  };
+
+  const toggleExpand = (user: any) => {
+    if (expandedId === user.id) {
+      setExpandedId(null);
+    } else {
+      setExpandedId(user.id);
+      setEditState(prev => ({
+        ...prev,
+        [user.id]: {
+          balance: user.totalBalance != null ? String(user.totalBalance) : '0',
+          strategy: user.assignedStrategy || '',
+          growth: user.dailyGrowthTarget != null ? String(user.dailyGrowthTarget) : '',
+        }
+      }));
+    }
   };
 
   const allUsers = (users as any[]) || [];
@@ -69,7 +109,6 @@ export function AdminUsers() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
           { label: 'Total Users', value: allUsers.length, color: '#F0B90B' },
@@ -91,59 +130,138 @@ export function AdminUsers() {
             <p className="text-[#848E9C] font-medium">{search ? 'No users match your search.' : 'No users yet.'}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#2B3139]">
-                  {['Client', 'Balance', 'KYC Status', 'Account Status', 'Joined', 'Actions'].map((h) => (
-                    <th key={h} className="px-6 py-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2B3139]">
-                {filtered.map((user: any) => {
-                  const kyc = kycColor(user.kycStatus);
-                  return (
-                    <tr key={user.id} className="hover:bg-[#2B3139]/40 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-[#F0B90B] flex items-center justify-center font-bold text-black text-sm shrink-0">
-                            {user.firstName?.[0] || '?'}{user.lastName?.[0] || ''}
-                          </div>
-                          <div>
-                            <p className="font-bold text-white">{user.firstName} {user.lastName}</p>
-                            <p className="text-xs text-[#848E9C]">{user.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 font-bold text-white">${Number(user.totalBalance || 0).toLocaleString()}</td>
-                      <td className="px-6 py-4">
-                        <span className="flex items-center gap-1.5 text-xs font-bold" style={{ color: kyc.color }}>
-                          <ShieldCheck className="w-3.5 h-3.5" /> {kyc.label}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold ${user.isActive ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>
-                          {user.isActive ? <UserCheck className="w-3 h-3" /> : <UserX className="w-3 h-3" />}
-                          {user.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-[#848E9C] text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
-                      <td className="px-6 py-4">
+          <div className="divide-y divide-[#2B3139]">
+            {filtered.map((user: any) => {
+              const kyc = kycColor(user.kycStatus);
+              const isExpanded = expandedId === user.id;
+              const state = editState[user.id] || { balance: '', strategy: '', growth: '' };
+
+              return (
+                <div key={user.id}>
+                  <div
+                    className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-[#2B3139]/40 transition-colors cursor-pointer"
+                    onClick={() => toggleExpand(user)}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-9 h-9 rounded-full bg-[#F0B90B] flex items-center justify-center font-bold text-black text-sm shrink-0">
+                        {user.firstName?.[0] || '?'}{user.lastName?.[0] || ''}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-white truncate">{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-[#848E9C] truncate">{user.email}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                      <div className="text-right">
+                        <p className="font-bold text-white text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
+                        {user.assignedStrategy && <p className="text-xs text-[#F0B90B]">{user.assignedStrategy}</p>}
+                      </div>
+
+                      <span className="flex items-center gap-1.5 text-xs font-bold" style={{ color: kyc.color }}>
+                        <ShieldCheck className="w-3.5 h-3.5" /> {kyc.label}
+                      </span>
+
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold ${user.isActive ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>
+                        {user.isActive ? <UserCheck className="w-3 h-3" /> : <UserX className="w-3 h-3" />}
+                        {user.isActive ? 'Active' : 'Inactive'}
+                      </span>
+
+                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
                         <button
                           onClick={() => toggleActive(user.id, user.isActive)}
                           disabled={processingId === user.id}
-                          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${user.isActive ? 'bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/30 hover:bg-[#CF304A]/30' : 'bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/30 hover:bg-[#02C076]/30'}`}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${user.isActive ? 'bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/30 hover:bg-[#CF304A]/30' : 'bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/30 hover:bg-[#02C076]/30'}`}
                         >
                           {processingId === user.id ? <Loader2 className="w-3 h-3 animate-spin" /> : (user.isActive ? <ShieldOff className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />)}
                           {user.isActive ? 'Deactivate' : 'Activate'}
                         </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        <button className="p-1.5 rounded-lg hover:bg-[#2B3139] text-[#848E9C] hover:text-white transition-colors">
+                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {isExpanded && (
+                    <div className="bg-[#0B0E11] border-t border-[#2B3139] px-6 py-5">
+                      <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4">Account Settings</p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
+                            <DollarSign className="w-4 h-4 text-[#F0B90B]" /> Account Balance (₹)
+                          </label>
+                          <input
+                            type="number"
+                            value={state.balance}
+                            onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], balance: e.target.value } }))}
+                            placeholder="0.00"
+                            className="input-stealth"
+                            min="0"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-[#02C076]" /> Assigned Strategy
+                          </label>
+                          <select
+                            value={state.strategy}
+                            onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], strategy: e.target.value } }))}
+                            className="input-stealth appearance-none"
+                          >
+                            <option value="">— None —</option>
+                            {STRATEGIES.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
+                            <Target className="w-4 h-4 text-[#2a6df4]" /> Daily Growth Target (%)
+                          </label>
+                          <input
+                            type="number"
+                            value={state.growth}
+                            onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], growth: e.target.value } }))}
+                            placeholder="e.g. 1.5"
+                            className="input-stealth"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end mt-4">
+                        <button
+                          onClick={() => saveAccountSettings(user)}
+                          disabled={processingId === user.id}
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F0B90B] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all"
+                        >
+                          {processingId === user.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                          Save Changes
+                        </button>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-[#2B3139] grid grid-cols-3 gap-4 text-xs text-[#848E9C]">
+                        <div>
+                          <span className="block font-semibold text-[#EAECEF]">Joined</span>
+                          {new Date(user.createdAt).toLocaleDateString('en-IN')}
+                        </div>
+                        <div>
+                          <span className="block font-semibold text-[#EAECEF]">Phone</span>
+                          {user.phone || '—'}
+                        </div>
+                        <div>
+                          <span className="block font-semibold text-[#EAECEF]">Country</span>
+                          {user.country || '—'}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

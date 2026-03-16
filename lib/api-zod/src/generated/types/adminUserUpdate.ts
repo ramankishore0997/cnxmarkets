@@ -12,4 +12,7 @@ export interface AdminUserUpdate {
   isActive?: boolean;
   role?: AdminUserUpdateRole;
   kycStatus?: AdminUserUpdateKycStatus;
+  totalBalance?: number;
+  assignedStrategy?: string;
+  dailyGrowthTarget?: number;
 }

@@ -479,6 +479,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
+    delete:
+      operationId: deleteAdminKyc
+      tags: [admin]
+      summary: Delete KYC record
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: KYC deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/trades:
+    post:
+      operationId: createAdminTrade
+      tags: [admin]
+      summary: Manually add a trade for a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManualTradeRequest"
+      responses:
+        "201":
+          description: Trade created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trade"
 
   /admin/transactions:
     get:
@@ -757,6 +797,18 @@ components:
           type: integer
         userId:
           type: integer
+        panNumber:
+          type: string
+        aadharNumber:
+          type: string
+        panCardFrontUrl:
+          type: string
+        panCardBackUrl:
+          type: string
+        aadharCardFrontUrl:
+          type: string
+        aadharCardBackUrl:
+          type: string
         idDocumentType:
           type: string
         idDocumentUrl:
@@ -782,6 +834,18 @@ components:
     KycSubmitRequest:
       type: object
       properties:
+        panNumber:
+          type: string
+        aadharNumber:
+          type: string
+        panCardFrontUrl:
+          type: string
+        panCardBackUrl:
+          type: string
+        aadharCardFrontUrl:
+          type: string
+        aadharCardBackUrl:
+          type: string
         idDocumentType:
           type: string
         idDocumentUrl:
@@ -790,11 +854,6 @@ components:
           type: string
         addressProofUrl:
           type: string
-      required:
-        - idDocumentType
-        - idDocumentUrl
-        - addressProofType
-        - addressProofUrl
 
     KycUpdateRequest:
       type: object
@@ -1207,6 +1266,10 @@ components:
           type: boolean
         totalBalance:
           type: number
+        assignedStrategy:
+          type: string
+        dailyGrowthTarget:
+          type: number
         createdAt:
           type: string
       required:
@@ -1230,6 +1293,12 @@ components:
         kycStatus:
           type: string
           enum: [pending, submitted, approved, rejected]
+        totalBalance:
+          type: number
+        assignedStrategy:
+          type: string
+        dailyGrowthTarget:
+          type: number
 
     AdminKyc:
       type: object
@@ -1241,6 +1310,18 @@ components:
         userEmail:
           type: string
         userName:
+          type: string
+        panNumber:
+          type: string
+        aadharNumber:
+          type: string
+        panCardFrontUrl:
+          type: string
+        panCardBackUrl:
+          type: string
+        aadharCardFrontUrl:
+          type: string
+        aadharCardBackUrl:
           type: string
         idDocumentType:
           type: string
@@ -1355,3 +1436,40 @@ components:
       required:
         - currentPassword
         - newPassword
+
+    ManualTradeRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+        instrument:
+          type: string
+        market:
+          type: string
+        direction:
+          type: string
+          enum: [buy, sell]
+        entryPrice:
+          type: number
+        exitPrice:
+          type: number
+        lotSize:
+          type: number
+        profit:
+          type: number
+        profitPercent:
+          type: number
+        status:
+          type: string
+          enum: [open, closed]
+        openedAt:
+          type: string
+        closedAt:
+          type: string
+      required:
+        - userId
+        - instrument
+        - market
+        - direction
+        - entryPrice
+        - lotSize

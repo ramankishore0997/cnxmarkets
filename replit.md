@@ -58,19 +58,27 @@ artifacts-monorepo/
 - `/dashboard/profile` — Profile & change password
 - `/dashboard/notifications` — Notification center
 
-### Admin Panel (requires admin role)
+### Admin Panel (requires admin role, access via /admin URL only)
 - `/admin` — Stats dashboard
-- `/admin/users` — User management + KYC approval
-- `/admin/kyc` — KYC review
-- `/admin/transactions` — Transaction approval
+- `/admin/users` — User management; expandable rows with balance edit, assigned strategy dropdown, daily growth target %, activate/deactivate
+- `/admin/kyc` — KYC review showing PAN number, Aadhar number, 4 document images (inline preview); approve/reject/delete
+- `/admin/transactions` — Transaction approval; approving deposits/withdrawals auto-updates account balance
+- `/admin/trades` — Manual trade injection for any user; injects trade + auto-updates account balance
 - `/admin/strategies` — Strategy CRUD
-- `/admin/notifications` — Send notifications
+- `/admin/notifications` — Send notifications to individual users or broadcast
+
+### Client KYC page
+- `/dashboard/kyc` — PAN card (number + front/back image upload), Aadhar card (number + front/back image upload), all base64 stored, validation per Indian formats (PAN: ABCDE1234F, Aadhar: 12 digits)
 
 ## Database Schema
 
 Tables: `users`, `accounts`, `kyc_documents`, `strategies`, `transactions`, `trades`, `notifications`, `allocations`
 
 Enums: `role` (client|admin), `kyc_status`, `risk_profile`, `transaction_type`, `transaction_status`, `direction`, `trade_status`, `notification_type`
+
+### Notable schema fields
+- `kyc_documents`: panNumber, aadharNumber, panCardFrontUrl, panCardBackUrl, aadharCardFrontUrl, aadharCardBackUrl (all text, base64 images stored in DB)
+- `accounts`: assignedStrategy (text), dailyGrowthTarget (numeric)
 
 ## API Routes
 
@@ -85,6 +93,9 @@ All routes under `/api`:
 - `/contact` — submit contact form (public)
 - `/users` — update profile, change password (auth required)
 - `/admin/*` — admin operations (admin role required)
+  - PATCH `/admin/users/:id` — update role, status, balance, assignedStrategy, dailyGrowthTarget
+  - DELETE `/admin/kyc/:id` — delete KYC record + reset user status to pending
+  - POST `/admin/trades` — inject trade + auto-update account balance
 
 ## Demo Credentials
 

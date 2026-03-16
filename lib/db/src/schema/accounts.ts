@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, numeric, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, numeric, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
@@ -10,6 +10,8 @@ export const accountsTable = pgTable("accounts", {
   totalProfit: numeric("total_profit", { precision: 15, scale: 2 }).notNull().default("0"),
   totalDeposits: numeric("total_deposits", { precision: 15, scale: 2 }).notNull().default("0"),
   totalWithdrawals: numeric("total_withdrawals", { precision: 15, scale: 2 }).notNull().default("0"),
+  assignedStrategy: text("assigned_strategy"),
+  dailyGrowthTarget: numeric("daily_growth_target", { precision: 10, scale: 4 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

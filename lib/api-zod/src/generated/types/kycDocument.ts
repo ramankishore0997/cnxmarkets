@@ -10,6 +10,12 @@ import type { KycDocumentStatus } from "./kycDocumentStatus";
 export interface KycDocument {
   id: number;
   userId: number;
+  panNumber?: string;
+  aadharNumber?: string;
+  panCardFrontUrl?: string;
+  panCardBackUrl?: string;
+  aadharCardFrontUrl?: string;
+  aadharCardBackUrl?: string;
   idDocumentType?: string;
   idDocumentUrl?: string;
   addressProofType?: string;

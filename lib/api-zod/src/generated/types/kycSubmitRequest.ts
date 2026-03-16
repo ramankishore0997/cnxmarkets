@@ -7,8 +7,14 @@
  */
 
 export interface KycSubmitRequest {
-  idDocumentType: string;
-  idDocumentUrl: string;
-  addressProofType: string;
-  addressProofUrl: string;
+  panNumber?: string;
+  aadharNumber?: string;
+  panCardFrontUrl?: string;
+  panCardBackUrl?: string;
+  aadharCardFrontUrl?: string;
+  aadharCardBackUrl?: string;
+  idDocumentType?: string;
+  idDocumentUrl?: string;
+  addressProofType?: string;
+  addressProofUrl?: string;
 }

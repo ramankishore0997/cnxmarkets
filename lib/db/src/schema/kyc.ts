@@ -8,6 +8,12 @@ export const kycDocStatusEnum = pgEnum("kyc_doc_status", ["pending", "submitted"
 export const kycDocumentsTable = pgTable("kyc_documents", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => usersTable.id),
+  panNumber: text("pan_number"),
+  aadharNumber: text("aadhar_number"),
+  panCardFrontUrl: text("pan_card_front_url"),
+  panCardBackUrl: text("pan_card_back_url"),
+  aadharCardFrontUrl: text("aadhar_card_front_url"),
+  aadharCardBackUrl: text("aadhar_card_back_url"),
   idDocumentType: text("id_document_type"),
   idDocumentUrl: text("id_document_url"),
   addressProofType: text("address_proof_type"),

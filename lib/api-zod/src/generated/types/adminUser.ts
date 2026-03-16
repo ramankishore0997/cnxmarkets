@@ -19,5 +19,7 @@ export interface AdminUser {
   kycStatus: AdminUserKycStatus;
   isActive: boolean;
   totalBalance?: number;
+  assignedStrategy?: string;
+  dailyGrowthTarget?: number;
   createdAt: string;
 }

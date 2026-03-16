@@ -12,6 +12,12 @@ export interface AdminKyc {
   userId: number;
   userEmail: string;
   userName: string;
+  panNumber?: string;
+  aadharNumber?: string;
+  panCardFrontUrl?: string;
+  panCardBackUrl?: string;
+  aadharCardFrontUrl?: string;
+  aadharCardBackUrl?: string;
   idDocumentType?: string;
   idDocumentUrl?: string;
   addressProofType?: string;

@@ -82,6 +82,12 @@ export const LogoutResponse = zod.object({
 export const GetKycResponse = zod.object({
   id: zod.number(),
   userId: zod.number(),
+  panNumber: zod.string().optional(),
+  aadharNumber: zod.string().optional(),
+  panCardFrontUrl: zod.string().optional(),
+  panCardBackUrl: zod.string().optional(),
+  aadharCardFrontUrl: zod.string().optional(),
+  aadharCardBackUrl: zod.string().optional(),
   idDocumentType: zod.string().optional(),
   idDocumentUrl: zod.string().optional(),
   addressProofType: zod.string().optional(),
@@ -96,15 +102,27 @@ export const GetKycResponse = zod.object({
  * @summary Submit KYC documents
  */
 export const SubmitKycBody = zod.object({
-  idDocumentType: zod.string(),
-  idDocumentUrl: zod.string(),
-  addressProofType: zod.string(),
-  addressProofUrl: zod.string(),
+  panNumber: zod.string().optional(),
+  aadharNumber: zod.string().optional(),
+  panCardFrontUrl: zod.string().optional(),
+  panCardBackUrl: zod.string().optional(),
+  aadharCardFrontUrl: zod.string().optional(),
+  aadharCardBackUrl: zod.string().optional(),
+  idDocumentType: zod.string().optional(),
+  idDocumentUrl: zod.string().optional(),
+  addressProofType: zod.string().optional(),
+  addressProofUrl: zod.string().optional(),
 });
 
 export const SubmitKycResponse = zod.object({
   id: zod.number(),
   userId: zod.number(),
+  panNumber: zod.string().optional(),
+  aadharNumber: zod.string().optional(),
+  panCardFrontUrl: zod.string().optional(),
+  panCardBackUrl: zod.string().optional(),
+  aadharCardFrontUrl: zod.string().optional(),
+  aadharCardBackUrl: zod.string().optional(),
   idDocumentType: zod.string().optional(),
   idDocumentUrl: zod.string().optional(),
   addressProofType: zod.string().optional(),
@@ -368,6 +386,8 @@ export const GetAdminUsersResponseItem = zod.object({
   kycStatus: zod.enum(["pending", "submitted", "approved", "rejected"]),
   isActive: zod.boolean(),
   totalBalance: zod.number().optional(),
+  assignedStrategy: zod.string().optional(),
+  dailyGrowthTarget: zod.number().optional(),
   createdAt: zod.string(),
 });
 export const GetAdminUsersResponse = zod.array(GetAdminUsersResponseItem);
@@ -385,6 +405,9 @@ export const UpdateAdminUserBody = zod.object({
   kycStatus: zod
     .enum(["pending", "submitted", "approved", "rejected"])
     .optional(),
+  totalBalance: zod.number().optional(),
+  assignedStrategy: zod.string().optional(),
+  dailyGrowthTarget: zod.number().optional(),
 });
 
 export const UpdateAdminUserResponse = zod.object({
@@ -398,6 +421,8 @@ export const UpdateAdminUserResponse = zod.object({
   kycStatus: zod.enum(["pending", "submitted", "approved", "rejected"]),
   isActive: zod.boolean(),
   totalBalance: zod.number().optional(),
+  assignedStrategy: zod.string().optional(),
+  dailyGrowthTarget: zod.number().optional(),
   createdAt: zod.string(),
 });
 
@@ -409,6 +434,12 @@ export const GetAdminKycResponseItem = zod.object({
   userId: zod.number(),
   userEmail: zod.string(),
   userName: zod.string(),
+  panNumber: zod.string().optional(),
+  aadharNumber: zod.string().optional(),
+  panCardFrontUrl: zod.string().optional(),
+  panCardBackUrl: zod.string().optional(),
+  aadharCardFrontUrl: zod.string().optional(),
+  aadharCardBackUrl: zod.string().optional(),
   idDocumentType: zod.string().optional(),
   idDocumentUrl: zod.string().optional(),
   addressProofType: zod.string().optional(),
@@ -434,6 +465,36 @@ export const UpdateAdminKycBody = zod.object({
 export const UpdateAdminKycResponse = zod.object({
   message: zod.string(),
   success: zod.boolean(),
+});
+
+/**
+ * @summary Delete KYC record
+ */
+export const DeleteAdminKycParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteAdminKycResponse = zod.object({
+  message: zod.string(),
+  success: zod.boolean(),
+});
+
+/**
+ * @summary Manually add a trade for a user
+ */
+export const CreateAdminTradeBody = zod.object({
+  userId: zod.number(),
+  instrument: zod.string(),
+  market: zod.string(),
+  direction: zod.enum(["buy", "sell"]),
+  entryPrice: zod.number(),
+  exitPrice: zod.number().optional(),
+  lotSize: zod.number(),
+  profit: zod.number().optional(),
+  profitPercent: zod.number().optional(),
+  status: zod.enum(["open", "closed"]).optional(),
+  openedAt: zod.string().optional(),
+  closedAt: zod.string().optional(),
 });
 
 /**

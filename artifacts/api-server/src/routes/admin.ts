@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable } from "@workspace/db/schema";
+import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable } from "@workspace/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 
@@ -42,7 +42,10 @@ router.get("/users", requireAdmin, async (_req, res) => {
     res.json(users.map(({ user, account }) => ({
       id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName,
       phone: user.phone, country: user.country, role: user.role, kycStatus: user.kycStatus,
-      isActive: user.isActive, totalBalance: account ? parseFloat(account.totalBalance as string) : 0,
+      isActive: user.isActive,
+      totalBalance: account ? parseFloat(account.totalBalance as string) : 0,
+      assignedStrategy: account?.assignedStrategy ?? null,
+      dailyGrowthTarget: account?.dailyGrowthTarget ? parseFloat(account.dailyGrowthTarget as string) : null,
       createdAt: user.createdAt.toISOString(),
     })));
   } catch (err) {
@@ -52,18 +55,49 @@ router.get("/users", requireAdmin, async (_req, res) => {
 
 router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const { isActive, role, kycStatus } = req.body;
-    const updates: Record<string, unknown> = { updatedAt: new Date() };
-    if (isActive !== undefined) updates.isActive = isActive;
-    if (role !== undefined) updates.role = role;
-    if (kycStatus !== undefined) updates.kycStatus = kycStatus;
-    const [user] = await db.update(usersTable).set(updates).where(eq(usersTable.id, parseInt(req.params.id))).returning();
+    const userId = parseInt(req.params.id);
+    const { isActive, role, kycStatus, totalBalance, assignedStrategy, dailyGrowthTarget } = req.body;
+
+    const userUpdates: Record<string, unknown> = { updatedAt: new Date() };
+    if (isActive !== undefined) userUpdates.isActive = isActive;
+    if (role !== undefined) userUpdates.role = role;
+    if (kycStatus !== undefined) userUpdates.kycStatus = kycStatus;
+
+    const [user] = await db.update(usersTable).set(userUpdates).where(eq(usersTable.id, userId)).returning();
+
+    const accountUpdates: Record<string, unknown> = { updatedAt: new Date() };
+    if (totalBalance !== undefined) accountUpdates.totalBalance = totalBalance.toString();
+    if (assignedStrategy !== undefined) accountUpdates.assignedStrategy = assignedStrategy;
+    if (dailyGrowthTarget !== undefined) accountUpdates.dailyGrowthTarget = dailyGrowthTarget?.toString() ?? null;
+
+    if (Object.keys(accountUpdates).length > 1) {
+      const existing = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+      if (existing.length > 0) {
+        await db.update(accountsTable).set(accountUpdates).where(eq(accountsTable.userId, userId));
+      } else {
+        await db.insert(accountsTable).values({
+          userId,
+          totalBalance: (totalBalance ?? 0).toString(),
+          totalProfit: "0", totalDeposits: "0", totalWithdrawals: "0",
+          assignedStrategy: assignedStrategy ?? null,
+          dailyGrowthTarget: dailyGrowthTarget?.toString() ?? null,
+        });
+      }
+    }
+
+    const [account] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+
     res.json({
       id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName,
       phone: user.phone, country: user.country, role: user.role, kycStatus: user.kycStatus,
-      isActive: user.isActive, createdAt: user.createdAt.toISOString(),
+      isActive: user.isActive,
+      totalBalance: account ? parseFloat(account.totalBalance as string) : 0,
+      assignedStrategy: account?.assignedStrategy ?? null,
+      dailyGrowthTarget: account?.dailyGrowthTarget ? parseFloat(account.dailyGrowthTarget as string) : null,
+      createdAt: user.createdAt.toISOString(),
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -78,6 +112,12 @@ router.get("/kyc", requireAdmin, async (_req, res) => {
     res.json(docs.map(({ doc, user }) => ({
       id: doc.id, userId: doc.userId,
       userEmail: user?.email || "", userName: `${user?.firstName} ${user?.lastName}`,
+      panNumber: doc.panNumber,
+      aadharNumber: doc.aadharNumber,
+      panCardFrontUrl: doc.panCardFrontUrl,
+      panCardBackUrl: doc.panCardBackUrl,
+      aadharCardFrontUrl: doc.aadharCardFrontUrl,
+      aadharCardBackUrl: doc.aadharCardBackUrl,
       idDocumentType: doc.idDocumentType, idDocumentUrl: doc.idDocumentUrl,
       addressProofType: doc.addressProofType, addressProofUrl: doc.addressProofUrl,
       status: doc.status, rejectionReason: doc.rejectionReason,
@@ -97,6 +137,72 @@ router.patch("/kyc/:id", requireAdmin, async (req, res) => {
     await db.update(usersTable).set({ kycStatus: status }).where(eq(usersTable.id, doc.userId));
     res.json({ message: "KYC updated successfully", success: true });
   } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/kyc/:id", requireAdmin, async (req, res) => {
+  try {
+    const kycId = parseInt(req.params.id);
+    const [doc] = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.id, kycId)).limit(1);
+    if (!doc) { res.status(404).json({ message: "KYC record not found" }); return; }
+    await db.delete(kycDocumentsTable).where(eq(kycDocumentsTable.id, kycId));
+    await db.update(usersTable).set({ kycStatus: "pending" }).where(eq(usersTable.id, doc.userId));
+    res.json({ message: "KYC record deleted successfully", success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/trades", requireAdmin, async (req, res) => {
+  try {
+    const { userId, instrument, market, direction, entryPrice, exitPrice, lotSize, profit, profitPercent, status, openedAt, closedAt } = req.body;
+    if (!userId || !instrument || !market || !direction || !entryPrice || !lotSize) {
+      res.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+    const [trade] = await db.insert(tradesTable).values({
+      userId,
+      instrument,
+      market,
+      direction,
+      entryPrice: entryPrice.toString(),
+      exitPrice: exitPrice?.toString() ?? null,
+      lotSize: lotSize.toString(),
+      profit: profit?.toString() ?? null,
+      profitPercent: profitPercent?.toString() ?? null,
+      status: status || "closed",
+      openedAt: openedAt ? new Date(openedAt) : new Date(),
+      closedAt: closedAt ? new Date(closedAt) : (status === "closed" ? new Date() : null),
+    }).returning();
+
+    if (profit && parseFloat(profit.toString()) !== 0) {
+      const [account] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+      if (account) {
+        const currentBalance = parseFloat(account.totalBalance as string);
+        const currentProfit = parseFloat(account.totalProfit as string);
+        const profitAmt = parseFloat(profit.toString());
+        await db.update(accountsTable).set({
+          totalBalance: (currentBalance + profitAmt).toString(),
+          totalProfit: (currentProfit + profitAmt).toString(),
+          updatedAt: new Date(),
+        }).where(eq(accountsTable.userId, userId));
+      }
+    }
+
+    res.status(201).json({
+      id: trade.id, userId: trade.userId, market: trade.market, instrument: trade.instrument,
+      direction: trade.direction, entryPrice: parseFloat(trade.entryPrice as string),
+      exitPrice: trade.exitPrice ? parseFloat(trade.exitPrice as string) : undefined,
+      lotSize: parseFloat(trade.lotSize as string),
+      profit: trade.profit ? parseFloat(trade.profit as string) : undefined,
+      profitPercent: trade.profitPercent ? parseFloat(trade.profitPercent as string) : undefined,
+      status: trade.status, openedAt: trade.openedAt.toISOString(),
+      closedAt: trade.closedAt?.toISOString(),
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -123,9 +229,34 @@ router.get("/transactions", requireAdmin, async (_req, res) => {
 router.patch("/transactions/:id", requireAdmin, async (req, res) => {
   try {
     const { status, notes } = req.body;
-    await db.update(transactionsTable)
+    const txId = parseInt(req.params.id);
+    const [tx] = await db.update(transactionsTable)
       .set({ status, notes, updatedAt: new Date() })
-      .where(eq(transactionsTable.id, parseInt(req.params.id)));
+      .where(eq(transactionsTable.id, txId)).returning();
+
+    if (status === "approved" && tx.type === "deposit") {
+      const [account] = await db.select().from(accountsTable).where(eq(accountsTable.userId, tx.userId)).limit(1);
+      if (account) {
+        const amount = parseFloat(tx.amount as string);
+        await db.update(accountsTable).set({
+          totalBalance: (parseFloat(account.totalBalance as string) + amount).toString(),
+          totalDeposits: (parseFloat(account.totalDeposits as string) + amount).toString(),
+          updatedAt: new Date(),
+        }).where(eq(accountsTable.userId, tx.userId));
+      }
+    }
+    if (status === "approved" && tx.type === "withdrawal") {
+      const [account] = await db.select().from(accountsTable).where(eq(accountsTable.userId, tx.userId)).limit(1);
+      if (account) {
+        const amount = parseFloat(tx.amount as string);
+        await db.update(accountsTable).set({
+          totalBalance: Math.max(0, parseFloat(account.totalBalance as string) - amount).toString(),
+          totalWithdrawals: (parseFloat(account.totalWithdrawals as string) + amount).toString(),
+          updatedAt: new Date(),
+        }).where(eq(accountsTable.userId, tx.userId));
+      }
+    }
+
     res.json({ message: "Transaction updated successfully", success: true });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });

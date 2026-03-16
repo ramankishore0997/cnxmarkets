@@ -35,6 +35,7 @@ import type {
   KycSubmitRequest,
   KycUpdateRequest,
   LoginRequest,
+  ManualTradeRequest,
   Notification,
   PerformanceData,
   ProfileUpdateRequest,
@@ -1939,6 +1940,176 @@ export const useUpdateAdminKyc = <
   TContext
 > => {
   return useMutation(getUpdateAdminKycMutationOptions(options));
+};
+
+/**
+ * @summary Delete KYC record
+ */
+export const getDeleteAdminKycUrl = (id: number) => {
+  return `/api/admin/kyc/${id}`;
+};
+
+export const deleteAdminKyc = async (
+  id: number,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getDeleteAdminKycUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteAdminKycMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteAdminKyc>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteAdminKyc>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteAdminKyc"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteAdminKyc>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteAdminKyc(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteAdminKycMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteAdminKyc>>
+>;
+
+export type DeleteAdminKycMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete KYC record
+ */
+export const useDeleteAdminKyc = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteAdminKyc>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteAdminKyc>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDeleteAdminKycMutationOptions(options));
+};
+
+/**
+ * @summary Manually add a trade for a user
+ */
+export const getCreateAdminTradeUrl = () => {
+  return `/api/admin/trades`;
+};
+
+export const createAdminTrade = async (
+  manualTradeRequest: ManualTradeRequest,
+  options?: RequestInit,
+): Promise<Trade> => {
+  return customFetch<Trade>(getCreateAdminTradeUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(manualTradeRequest),
+  });
+};
+
+export const getCreateAdminTradeMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createAdminTrade>>,
+    TError,
+    { data: BodyType<ManualTradeRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createAdminTrade>>,
+  TError,
+  { data: BodyType<ManualTradeRequest> },
+  TContext
+> => {
+  const mutationKey = ["createAdminTrade"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createAdminTrade>>,
+    { data: BodyType<ManualTradeRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createAdminTrade(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateAdminTradeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createAdminTrade>>
+>;
+export type CreateAdminTradeMutationBody = BodyType<ManualTradeRequest>;
+export type CreateAdminTradeMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Manually add a trade for a user
+ */
+export const useCreateAdminTrade = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createAdminTrade>>,
+    TError,
+    { data: BodyType<ManualTradeRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createAdminTrade>>,
+  TError,
+  { data: BodyType<ManualTradeRequest> },
+  TContext
+> => {
+  return useMutation(getCreateAdminTradeMutationOptions(options));
 };
 
 /**
