@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
