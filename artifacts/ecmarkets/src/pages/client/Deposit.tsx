@@ -62,21 +62,24 @@ export function Deposit() {
     },
   });
 
+  const upiAmtNum  = parseFloat(upiAmount)  || 0;
+  const usdtAmtNum = parseFloat(usdtAmount) || 0;
+  const upiValid   = upiAmtNum >= 5000 && upiId.trim().length > 0;
+  const usdtValid  = usdtAmtNum >= 100;
+
   const submitUPI = () => {
     setUpiError('');
-    const amt = parseFloat(upiAmount);
-    if (!amt || amt < 100) { setUpiError('Minimum deposit is ₹100'); return; }
-    if (!upiId.trim())     { setUpiError('Please enter your UPI ID'); return; }
+    if (upiAmtNum < 5000)      { setUpiError('Minimum deposit is ₹5,000'); return; }
+    if (!upiId.trim())          { setUpiError('Please enter your UPI ID'); return; }
     setSuccess(null);
-    depositMutation.mutate({ data: { amount: amt, currency: 'INR', paymentMethod: 'upi', transactionReference: upiId.trim() } });
+    depositMutation.mutate({ data: { amount: upiAmtNum, currency: 'INR', paymentMethod: 'upi', transactionReference: upiId.trim() } });
   };
 
   const submitUSDT = () => {
     setUsdtError('');
-    const amt = parseFloat(usdtAmount);
-    if (!amt || amt < 1) { setUsdtError('Minimum deposit is 1 USDT'); return; }
+    if (usdtAmtNum < 100) { setUsdtError('Minimum deposit is 100 USDT'); return; }
     setSuccess(null);
-    depositMutation.mutate({ data: { amount: amt, currency: 'USDT', paymentMethod: 'crypto_usdt' } });
+    depositMutation.mutate({ data: { amount: usdtAmtNum, currency: 'USDT', paymentMethod: 'crypto_usdt' } });
   };
 
   const copyText = (text: string) => {
@@ -146,23 +149,8 @@ export function Deposit() {
                 </div>
               ) : (
                 <div className="space-y-5">
-                  {/* Send-to UPI info */}
-                  <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
-                    <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-2">Send payment to this UPI ID</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#F0B90B] font-bold text-lg font-mono">{UPI_HANDLE}</span>
-                      <button
-                        onClick={() => copyText(UPI_HANDLE)}
-                        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-white transition-colors"
-                      >
-                        {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-[#02C076]" /> : <Copy className="w-3.5 h-3.5" />}
-                        {copied ? 'Copied!' : 'Copy'}
-                      </button>
-                    </div>
-                  </div>
-
                   <div>
-                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Deposit Amount (INR) *</label>
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Amount (INR) *</label>
                     <div className="relative">
                       <span className="absolute left-4 top-3.5 text-[#848E9C] font-bold text-sm">₹</span>
                       <input
@@ -170,11 +158,11 @@ export function Deposit() {
                         value={upiAmount}
                         onChange={e => { setUpiAmount(e.target.value); setUpiError(''); }}
                         className="input-stealth pl-8 w-full"
-                        placeholder="e.g. 5000"
-                        min={100}
+                        placeholder="e.g. 10000"
+                        min={5000}
                       />
                     </div>
-                    <p className="text-xs text-[#848E9C] mt-1">Minimum: ₹100</p>
+                    <p className="text-xs text-[#848E9C] mt-1">Minimum: ₹5,000</p>
                   </div>
 
                   <div>
@@ -186,18 +174,17 @@ export function Deposit() {
                       className="input-stealth w-full"
                       placeholder="yourname@upi or phone@bankname"
                     />
-                    <p className="text-xs text-[#848E9C] mt-1">The UPI ID you used to send the payment</p>
                   </div>
 
                   {upiError && <p className="text-sm text-[#CF304A] font-medium">{upiError}</p>}
 
                   <button
                     onClick={submitUPI}
-                    disabled={depositMutation.isPending}
-                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5"
+                    disabled={!upiValid || depositMutation.isPending}
+                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {depositMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                    Submit Deposit Request
+                    Request Deposit
                   </button>
                 </div>
               )}
@@ -213,7 +200,7 @@ export function Deposit() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">USDT Deposit (TRC20)</h3>
-                  <p className="text-xs text-[#848E9C]">Tron network · USDT only · Min 1 USDT</p>
+                  <p className="text-xs text-[#848E9C]">Tron network · USDT only · Min 100 USDT</p>
                 </div>
               </div>
 
@@ -258,7 +245,7 @@ export function Deposit() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Amount Sent (USDT) *</label>
+                    <label className="block text-sm font-semibold text-[#EAECEF] mb-2">Amount (USDT) *</label>
                     <div className="relative">
                       <span className="absolute left-4 top-3.5 text-[#848E9C] font-bold text-xs">USDT</span>
                       <input
@@ -266,23 +253,23 @@ export function Deposit() {
                         value={usdtAmount}
                         onChange={e => { setUsdtAmount(e.target.value); setUsdtError(''); }}
                         className="input-stealth pl-14 w-full"
-                        placeholder="e.g. 100"
-                        min={1}
+                        placeholder="e.g. 500"
+                        min={100}
                         step="0.01"
                       />
                     </div>
-                    <p className="text-xs text-[#848E9C] mt-1">Minimum: 1 USDT</p>
+                    <p className="text-xs text-[#848E9C] mt-1">Minimum: 100 USDT</p>
                   </div>
 
                   {usdtError && <p className="text-sm text-[#CF304A] font-medium">{usdtError}</p>}
 
                   <button
                     onClick={submitUSDT}
-                    disabled={depositMutation.isPending}
-                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5"
+                    disabled={!usdtValid || depositMutation.isPending}
+                    className="w-full btn-gold flex items-center justify-center gap-2 py-3.5 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {depositMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                    Submit Deposit Request
+                    Submit Request
                   </button>
                 </div>
               )}
@@ -329,9 +316,9 @@ export function Deposit() {
             <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Deposit Limits</h4>
             <div className="space-y-2.5 text-xs">
               {[
-                { label: 'Min (UPI)',      value: '₹100'       },
+                { label: 'Min (UPI)',      value: '₹5,000'     },
                 { label: 'Max (UPI/day)', value: '₹2,00,000'  },
-                { label: 'Min (USDT)',    value: '1 USDT'      },
+                { label: 'Min (USDT)',    value: '100 USDT'    },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between">
                   <span className="text-[#848E9C]">{label}</span>
