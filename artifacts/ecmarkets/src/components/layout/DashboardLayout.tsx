@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   X,
   Activity,
-  ChevronRight
+  ChevronRight,
+  ShieldAlert
 } from 'lucide-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 
@@ -80,7 +81,17 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         })}
       </nav>
 
-      <div className="p-6 border-t border-[#2B3139]">
+      <div className="p-4 border-t border-[#2B3139] space-y-3">
+        {user?.role === 'admin' && (
+          <Link
+            href="/admin"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#F0B90B] text-black hover:bg-[#d4a017] transition-all font-bold shadow-[0_0_16px_rgba(240,185,11,0.3)]"
+          >
+            <ShieldAlert className="w-5 h-5" />
+            Admin Panel
+          </Link>
+        )}
         <button 
           onClick={logout}
           className="flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#CF304A]/10 text-[#CF304A] hover:bg-[#CF304A]/20 border border-[#CF304A]/20 transition-all font-bold"
