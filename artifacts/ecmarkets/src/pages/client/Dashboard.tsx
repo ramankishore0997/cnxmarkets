@@ -14,12 +14,46 @@ import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
 
+const getISTProgress = () => {
+  const now = new Date();
+  const istMs = now.getTime() + (5.5 * 3600 * 1000);
+  const istDate = new Date(istMs);
+  const secondsSinceMidnight = (istDate.getUTCHours() * 3600) + (istDate.getUTCMinutes() * 60) + istDate.getUTCSeconds();
+  return Math.min(secondsSinceMidnight / 86400, 1);
+};
+
 export function Dashboard() {
   const { data, isLoading } = useGetDashboard({
     ...getAuthOptions(),
     query: { refetchInterval: 8_000 },
   });
 
+  // Derive all values from data (safe with nullish fallbacks)
+  const totalBalance = data?.totalBalance ?? 0;
+  const totalProfit = data?.totalProfit ?? 0;
+  const strategy = (data as any)?.assignedStrategyDetails;
+  const strategyName: string | undefined = strategy?.name || (data as any)?.assignedStrategy;
+  const dailyTarget = (data as any)?.dailyGrowthTarget;
+  const isRazrStrategy = (n?: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
+  const dailyRatePct = isRazrStrategy(strategyName) ? 8.0 : (dailyTarget ?? 4.0);
+  const dailyTargetAmt = totalBalance > 0 ? totalBalance * (dailyRatePct / 100) : 0;
+
+  // ALL hooks must be declared before any early return
+  const [liveProfit, setLiveProfit] = useState<number>(() => dailyTargetAmt * getISTProgress());
+
+  useEffect(() => {
+    if (!dailyTargetAmt) return;
+    setLiveProfit(dailyTargetAmt * getISTProgress());
+    const id = setInterval(() => {
+      setLiveProfit(prev => {
+        const increment = dailyTargetAmt * 0.0012 * (0.6 + Math.random() * 0.8);
+        return Math.min(prev + increment, dailyTargetAmt);
+      });
+    }, 4_500);
+    return () => clearInterval(id);
+  }, [dailyTargetAmt]);
+
+  // Early return after all hooks
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -34,43 +68,10 @@ export function Dashboard() {
   }
 
   const equityData = data?.equityCurve?.length ? data.equityCurve : [];
-  const totalBalance = data?.totalBalance ?? 0;
-  const totalProfit = data?.totalProfit ?? 0;
   const profitPercent = totalBalance > 0 && totalProfit !== 0
     ? (((totalBalance) / (totalBalance - totalProfit) - 1) * 100).toFixed(2)
     : '0.00';
-
-  const strategy = (data as any)?.assignedStrategyDetails;
-  const strategyName = strategy?.name || (data as any)?.assignedStrategy;
-  const dailyTarget = (data as any)?.dailyGrowthTarget;
-
-  // Live profit counter — ticks up gradually through the trading day
-  const isRazrStrategy = (n?: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
-  const dailyRatePct = isRazrStrategy(strategyName) ? 8.0 : (dailyTarget ?? 4.0);
-  const dailyTargetAmt = totalBalance > 0 ? totalBalance * (dailyRatePct / 100) : 0;
   const monthlyCompound = parseFloat(((Math.pow(1 + dailyRatePct / 100, 30) - 1) * 100).toFixed(2));
-
-  const getISTProgress = () => {
-    const now = new Date();
-    const istMs = now.getTime() + (5.5 * 3600 * 1000);
-    const istDate = new Date(istMs);
-    const secondsSinceMidnight = (istDate.getUTCHours() * 3600) + (istDate.getUTCMinutes() * 60) + istDate.getUTCSeconds();
-    return Math.min(secondsSinceMidnight / 86400, 1);
-  };
-
-  const [liveProfit, setLiveProfit] = useState<number>(() => dailyTargetAmt * getISTProgress());
-
-  useEffect(() => {
-    if (!dailyTargetAmt) return;
-    setLiveProfit(dailyTargetAmt * getISTProgress());
-    const id = setInterval(() => {
-      setLiveProfit(prev => {
-        const increment = dailyTargetAmt * 0.0012 * (0.6 + Math.random() * 0.8);
-        return Math.min(prev + increment, dailyTargetAmt);
-      });
-    }, 4_500);
-    return () => clearInterval(id);
-  }, [dailyTargetAmt]);
 
   return (
     <DashboardLayout>
