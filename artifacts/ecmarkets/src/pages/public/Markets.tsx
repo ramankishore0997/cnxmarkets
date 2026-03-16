@@ -163,7 +163,182 @@ export function Markets() {
           </div>
         </div>
 
+        {/* DETAILED FOREX PAIRS */}
+        <div className="mt-24">
+          <h2 className="text-2xl font-bold text-white mb-4">Complete Tradable Instruments</h2>
+          <p className="text-[#848E9C] mb-8">All instruments available on ECMarketsIndia, organised by category and liquidity tier.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div>
+              <h3 className="text-[#F0B90B] font-bold uppercase tracking-wider text-sm mb-4">Major Forex Pairs</h3>
+              <div className="card-stealth overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-[#2B3139]">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-[#EAECEF] text-xs">Pair</th>
+                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Spread</th>
+                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Daily Vol</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#2B3139]">
+                    {[
+                      { pair:"EUR/USD", spread:"0.1", vol:"$1.3T" },
+                      { pair:"GBP/USD", spread:"0.4", vol:"$800B" },
+                      { pair:"USD/JPY", spread:"0.2", vol:"$900B" },
+                      { pair:"AUD/USD", spread:"0.3", vol:"$400B" },
+                      { pair:"USD/CAD", spread:"0.4", vol:"$350B" },
+                      { pair:"USD/CHF", spread:"0.3", vol:"$250B" },
+                      { pair:"NZD/USD", spread:"0.5", vol:"$180B" },
+                    ].map(r => (
+                      <tr key={r.pair} className="hover:bg-[#2B3139]/40">
+                        <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>
+                        <td className="px-4 py-2.5 text-right text-[#02C076] text-xs">{r.spread} pip</td>
+                        <td className="px-4 py-2.5 text-right text-[#848E9C] text-xs">{r.vol}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-[#F0B90B] font-bold uppercase tracking-wider text-sm mb-4">Minor & Cross Pairs</h3>
+              <div className="card-stealth overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-[#2B3139]">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-[#EAECEF] text-xs">Pair</th>
+                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Spread</th>
+                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Sessions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#2B3139]">
+                    {[
+                      { pair:"EUR/GBP", spread:"0.6", sessions:"EU" },
+                      { pair:"EUR/JPY", spread:"0.7", sessions:"EU+NY" },
+                      { pair:"GBP/JPY", spread:"0.9", sessions:"EU+NY" },
+                      { pair:"AUD/JPY", spread:"0.8", sessions:"Tokyo" },
+                      { pair:"EUR/CHF", spread:"0.7", sessions:"EU" },
+                      { pair:"GBP/CHF", spread:"1.2", sessions:"EU" },
+                      { pair:"EUR/AUD", spread:"1.0", sessions:"All" },
+                    ].map(r => (
+                      <tr key={r.pair} className="hover:bg-[#2B3139]/40">
+                        <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>
+                        <td className="px-4 py-2.5 text-right text-[#02C076] text-xs">{r.spread} pip</td>
+                        <td className="px-4 py-2.5 text-right text-[#848E9C] text-xs">{r.sessions}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-[#F0B90B] font-bold uppercase tracking-wider text-sm mb-4">Metals & Indices</h3>
+              <div className="card-stealth overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-[#2B3139]">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-[#EAECEF] text-xs">Instrument</th>
+                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Type</th>
+                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Vol</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#2B3139]">
+                    {[
+                      { pair:"XAU/USD", type:"Metal", vol:"High" },
+                      { pair:"XAG/USD", type:"Metal", vol:"Med" },
+                      { pair:"US30", type:"Index", vol:"High" },
+                      { pair:"SPX500", type:"Index", vol:"High" },
+                      { pair:"NAS100", type:"Index", vol:"High" },
+                      { pair:"GER40", type:"Index", vol:"Med" },
+                      { pair:"UK100", type:"Index", vol:"Med" },
+                    ].map(r => (
+                      <tr key={r.pair} className="hover:bg-[#2B3139]/40">
+                        <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>
+                        <td className="px-4 py-2.5 text-right text-[#848E9C] text-xs">{r.type}</td>
+                        <td className="px-4 py-2.5 text-right text-xs">
+                          <span className={r.vol==='High' ? 'text-[#CF304A] font-bold' : 'text-[#F0B90B] font-bold'}>{r.vol}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FOREX FOR INDIAN TRADERS */}
+        <div className="mt-24">
+          <div className="card-stealth-gold p-8">
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-white mb-4">🇮🇳 Forex Trading for Indian Investors</h2>
+                <p className="text-[#848E9C] mb-4 leading-relaxed">
+                  Indian residents can participate in international forex markets through SEBI-registered entities with proper regulatory compliance. ECMarketsIndia operates under SEBI and PMLA guidelines, ensuring your investments are fully legal and compliant.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  {[
+                    "All accounts compliant with FEMA regulations",
+                    "INR denominated accounts with real-time forex conversion",
+                    "SEBI-registered algorithmic trading entity",
+                    "Tax reporting support for Indian clients",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <span className="text-[#02C076]">✓</span>
+                      <span className="text-[#EAECEF]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="lg:w-80 space-y-3">
+                {[
+                  { label:"Regulatory Body", val:"SEBI Registered" },
+                  { label:"Currency", val:"INR / USD" },
+                  { label:"Min. Deposit", val:"₹20,000" },
+                  { label:"Tax Support", val:"Form 64A Provided" },
+                ].map((s, i) => (
+                  <div key={i} className="bg-[#0B0E11] rounded-lg p-3 flex justify-between border border-[#2B3139]">
+                    <span className="text-[#848E9C] text-sm">{s.label}</span>
+                    <span className="text-[#F0B90B] font-bold text-sm">{s.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SESSION VOLATILITY GUIDE */}
+        <div className="mt-24">
+          <h2 className="text-2xl font-bold text-white mb-8">Volatility & Session Guide for Algo Traders</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { session:"Tokyo / Sydney", time:"12:00 AM – 8:00 AM IST", pairs:"JPY pairs, AUD, NZD", vol:"Low to Medium", tip:"Best for carry trade strategies. Calmer conditions with slow, directional moves." },
+              { session:"London (European)", time:"1:30 PM – 9:30 PM IST", pairs:"EUR, GBP, CHF pairs", vol:"High", tip:"Peak liquidity session. Our momentum algorithms generate highest signal density during London open." },
+              { session:"New York (American)", time:"6:30 PM – 12:30 AM IST", pairs:"USD, Gold, Indices", vol:"Very High", tip:"US economic data releases create major opportunities for breakout and momentum strategies." },
+            ].map((sess, i) => (
+              <div key={i} className="card-stealth p-6">
+                <h3 className="font-bold text-[#F0B90B] mb-1">{sess.session}</h3>
+                <p className="text-[#848E9C] text-xs mb-3">{sess.time}</p>
+                <p className="text-white text-sm font-semibold mb-1">Active Pairs</p>
+                <p className="text-[#848E9C] text-sm mb-3">{sess.pairs}</p>
+                <div className="flex items-center gap-2 mb-3">
+                  <Activity className="w-4 h-4 text-[#F0B90B]" />
+                  <span className="text-[#EAECEF] text-sm font-bold">{sess.vol}</span>
+                </div>
+                <p className="text-[#848E9C] text-xs border-t border-[#2B3139] pt-3">{sess.tip}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
+
+      {/* CTA */}
+      <div className="py-16 bg-[#1E2329] border-t border-[#2B3139] text-center">
+        <h2 className="text-2xl font-bold text-white mb-4">Access All 50+ Instruments</h2>
+        <p className="text-[#848E9C] mb-6">Activate any strategy and let our algorithms do the trading.</p>
+        <Link href="/auth/register" className="btn-gold inline-block font-bold">Open Your Account</Link>
+      </div>
+
     </PublicLayout>
   );
 }

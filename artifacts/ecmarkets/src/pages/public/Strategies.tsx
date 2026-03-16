@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
-import { ShieldAlert, TrendingUp, Target, Filter } from 'lucide-react';
+import { ShieldAlert, TrendingUp, Target, Filter, Star, BookOpen, BarChart2, Shield, Cpu } from 'lucide-react';
 import { Link } from 'wouter';
+import { motion } from 'framer-motion';
 
 export function Strategies() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -46,6 +47,40 @@ export function Strategies() {
           <p className="text-xl text-[#848E9C] max-w-2xl mx-auto">
             Discover our portfolio of 20+ battle-tested algorithmic trading strategies designed for different market conditions.
           </p>
+        </div>
+      </div>
+
+      {/* RAZRMARKET FEATURED CARD */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        <div className="card-stealth-gold p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 bg-[#F0B90B] text-black text-xs font-black px-4 py-2 rounded-bl-xl">FLAGSHIP STRATEGY</div>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <Star className="w-6 h-6 text-[#F0B90B]" />
+                <h2 className="text-2xl font-black text-white">RazrMarket Strategy</h2>
+              </div>
+              <p className="text-[#848E9C] leading-relaxed mb-6">
+                A high-frequency algorithmic strategy focused on identifying strong momentum opportunities in liquid forex markets using quantitative models. RazrMarket uses a proprietary multi-timeframe momentum indicator combined with adaptive risk management to generate consistent returns across varying market conditions.
+              </p>
+              <Link href="/auth/register" className="btn-gold inline-block font-bold">Activate Strategy →</Link>
+            </div>
+            <div className="lg:w-96 grid grid-cols-2 gap-3">
+              {[
+                { label:"Win Rate", val:"73.2%" },
+                { label:"Avg Trade Duration", val:"4.7 hrs" },
+                { label:"Max Drawdown", val:"6.8%" },
+                { label:"Sharpe Ratio", val:"2.1" },
+                { label:"Min Capital", val:"₹50,000" },
+                { label:"Status", val:"🟢 Active" },
+              ].map((s, i) => (
+                <div key={i} className="bg-[#0B0E11] rounded-lg p-3 border border-[#2B3139]">
+                  <p className="text-[#848E9C] text-xs mb-1">{s.label}</p>
+                  <p className="text-[#F0B90B] font-bold text-sm">{s.val}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -98,6 +133,68 @@ export function Strategies() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* COMPARISON TABLE */}
+      <div className="py-20 section-dark border-t border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-white mb-3 text-center">Strategy Comparison Overview</h2>
+          <p className="text-[#848E9C] text-center mb-10">Compare all 20 strategies across key parameters.</p>
+          <div className="card-stealth overflow-x-auto">
+            <table className="w-full text-sm min-w-[900px]">
+              <thead className="bg-[#2B3139]">
+                <tr>
+                  {["Strategy","Style","Risk","Min Capital","Win Rate","MTD Avg","Holding"].map(h => (
+                    <th key={h} className="px-4 py-3 text-left text-[#F0B90B] font-bold text-xs uppercase tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2B3139]">
+                {strategies.map((s, i) => (
+                  <tr key={i} className={`hover:bg-[#2B3139]/40 transition-colors ${i % 2 === 0 ? 'bg-[#0B0E11]/50' : ''}`}>
+                    <td className="px-4 py-3 font-semibold text-white text-xs">{s.name}</td>
+                    <td className="px-4 py-3 text-[#848E9C] text-xs">{s.style}</td>
+                    <td className="px-4 py-3">
+                      <span className={s.risk==='Low'?'tag-low':s.risk==='Medium'?'tag-medium':'tag-high'}>{s.risk}</span>
+                    </td>
+                    <td className="px-4 py-3 text-[#EAECEF] text-xs">₹{s.minCapital.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-[#F0B90B] text-xs font-bold">{(60 + Math.floor(Math.random()*15)).toFixed(1)}%</td>
+                    <td className="px-4 py-3 text-[#02C076] text-xs font-bold">+{(3 + Math.random()*6).toFixed(1)}%</td>
+                    <td className="px-4 py-3 text-[#848E9C] text-xs">{s.style.includes('HFT') ? 'Minutes' : s.style.includes('Carry') ? 'Days' : 'Hours'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* EDUCATION SECTION */}
+      <div className="py-20 section-surface border-t border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-3">What is Algorithmic Trading?</h2>
+            <p className="text-[#848E9C] max-w-2xl mx-auto">Understand the science behind our trading technology.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { icon: Cpu, title:"The Science Behind Algo Trading", body:"Algorithmic trading uses mathematical models and statistical analysis to identify market inefficiencies and execute trades at optimal prices. Unlike human traders, algorithms can process thousands of data points simultaneously and react in microseconds — eliminating emotional bias and execution delays." },
+              { icon: BarChart2, title:"Backtesting & Validation", body:"Before any strategy goes live, it is rigorously backtested against 5+ years of historical data. We use walk-forward optimization to prevent overfitting, and all strategies must pass a strict out-of-sample validation period on a live demo account before managing real client capital." },
+              { icon: Shield, title:"Risk-Adjusted Returns", body:"Raw returns mean nothing without context. We focus on Sharpe Ratio (return per unit of risk), Sortino Ratio (downside risk focus), and Maximum Drawdown. A strategy that returns 50% with 40% drawdown is far inferior to one returning 30% with only 8% drawdown — we optimize for the latter." },
+              { icon: TrendingUp, title:"Why Institutions Use Algos", body:"Hedge funds, investment banks, and proprietary trading firms have used algorithmic trading for decades. The edge? Speed, consistency, and the ability to trade 24/5 without emotion. ECMarketsIndia brings this institutional-grade technology to retail investors through our managed algo platform." },
+            ].map((card, i) => (
+              <div key={i} className="card-stealth p-8 flex gap-5">
+                <div className="w-12 h-12 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center shrink-0">
+                  <card.icon className="w-6 h-6 text-[#F0B90B]" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white mb-3">{card.title}</h3>
+                  <p className="text-[#848E9C] text-sm leading-relaxed">{card.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

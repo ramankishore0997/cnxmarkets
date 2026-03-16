@@ -1,11 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { 
-  Shield, Zap, Activity, Globe, Lock, Cpu, Smartphone, TrendingUp, Check
+  Shield, Zap, Activity, Globe, Lock, Cpu, Smartphone, TrendingUp, Check,
+  Database, Server, GitBranch, Eye, BarChart2, BellRing, Users, Award,
+  BookOpen, FileText, Headphones, Building2, ChevronDown, Star
 } from 'lucide-react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
-import { AreaChart, Area, BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, CartesianGrid } from 'recharts';
+
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
 function Counter({ end, suffix = "", prefix = "", duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -452,6 +457,580 @@ export function Home() {
                     {faq.a}
                   </div>
                 )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S11 — PLATFORM TECHNOLOGY */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Built on Institutional Infrastructure</h2>
+              <p className="text-[#848E9C] max-w-2xl mx-auto">Three-layer architecture designed for institutional-grade performance and reliability.</p>
+            </motion.div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <motion.div variants={fadeUp} className="space-y-6">
+                {[
+                  { layer: "01", title: "Data Ingestion", desc: "50+ market feeds, real-time tick data, institutional liquidity providers", icon: Database },
+                  { layer: "02", title: "Strategy Engine", desc: "Proprietary algorithms, risk management, backtesting & signal generation", icon: Cpu },
+                  { layer: "03", title: "Execution Layer", desc: "Co-located servers, <5ms latency, smart order routing & trade monitoring", icon: Zap },
+                ].map((item, i) => (
+                  <div key={i} className="card-stealth p-6 border-l-4 border-l-[#F0B90B] flex gap-5">
+                    <span className="text-2xl font-black text-[#F0B90B] shrink-0">{item.layer}</span>
+                    <div>
+                      <h3 className="font-bold text-white mb-1">{item.title}</h3>
+                      <p className="text-[#848E9C] text-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+              <motion.div variants={stagger} className="grid grid-cols-2 gap-4">
+                {[
+                  { val: "<5ms", label: "Execution Latency" },
+                  { val: "99.99%", label: "System Uptime" },
+                  { val: "50+", label: "Integrated Brokers" },
+                  { val: "10M+", label: "Signals / Day" },
+                ].map((s, i) => (
+                  <motion.div key={i} variants={fadeUp} className="card-stealth p-6 text-center">
+                    <p className="text-2xl font-black text-[#F0B90B] mb-1">{s.val}</p>
+                    <p className="text-xs text-[#848E9C] uppercase tracking-wider">{s.label}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* S12 — GLOBAL INFRASTRUCTURE */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Global Trading Infrastructure</h2>
+            <p className="text-[#848E9C]">Tier-1 data centers across 4 continents for minimum latency to every exchange.</p>
+          </div>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            {[
+              { city: "Mumbai", flag: "🇮🇳", role: "Primary HQ", detail: "NSE & BSE co-location" },
+              { city: "London", flag: "🇬🇧", role: "European Hub", detail: "Equinix LD4 data center" },
+              { city: "New York", flag: "🇺🇸", role: "US Operations", detail: "NY4 proximity hosting" },
+              { city: "Singapore", flag: "🇸🇬", role: "APAC Hub", detail: "SGX direct connectivity" },
+            ].map((loc, i) => (
+              <motion.div key={i} variants={fadeUp} className="card-stealth p-6 text-center">
+                <span className="text-4xl mb-3 block">{loc.flag}</span>
+                <h3 className="font-bold text-[#F0B90B] text-lg mb-1">{loc.city}</h3>
+                <p className="text-white text-sm font-semibold mb-1">{loc.role}</p>
+                <p className="text-[#848E9C] text-xs">{loc.detail}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+          <div className="text-center card-stealth py-4 px-8 inline-block mx-auto rounded-full border-[#F0B90B]/40 border">
+            <span className="text-[#F0B90B] font-bold">⚡ Average latency to exchange: &lt;2ms</span>
+          </div>
+        </div>
+      </section>
+
+      {/* S13 — LIVE STRATEGY TABLE */}
+      <section className="py-24 section-dark">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Live Strategy Performance</h2>
+            <p className="text-[#848E9C]">Real-time performance data from active strategies across all accounts.</p>
+          </div>
+          <div className="card-stealth overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-[#2B3139]">
+                <tr>
+                  {["Strategy", "Trades (MTD)", "Win Rate", "MTD Return", "Status"].map(h => (
+                    <th key={h} className="px-5 py-4 text-left text-[#EAECEF] font-bold text-xs uppercase tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2B3139]">
+                {[
+                  { name: "RazrMarket Strategy", trades: "1,247", wr: "73.2%", ret: "+8.4%" },
+                  { name: "Quantum Trend", trades: "892", wr: "68.9%", ret: "+6.1%" },
+                  { name: "Gold Breakout", trades: "634", wr: "71.5%", ret: "+5.8%" },
+                  { name: "Momentum Alpha", trades: "1,089", wr: "66.3%", ret: "+4.9%" },
+                  { name: "Velocity FX", trades: "2,341", wr: "61.8%", ret: "+3.7%" },
+                ].map((row, i) => (
+                  <tr key={i} className="hover:bg-[#2B3139]/40 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-white">{row.name}</td>
+                    <td className="px-5 py-4 text-[#EAECEF]">{row.trades}</td>
+                    <td className="px-5 py-4 text-[#F0B90B] font-bold">{row.wr}</td>
+                    <td className="px-5 py-4 text-[#02C076] font-bold">{row.ret}</td>
+                    <td className="px-5 py-4"><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />Active</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="text-center mt-6">
+            <Link href="/strategies" className="text-[#F0B90B] hover:underline font-semibold">View All Strategies →</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* S14 — PLATFORM STATISTICS */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Platform by the Numbers</h2>
+          </div>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { end: 2.4, prefix: "$", suffix: "B+", label: "Assets Managed" },
+              { end: 50000, prefix: "", suffix: "+", label: "Active Traders" },
+              { end: 120, prefix: "", suffix: "+", label: "Countries" },
+              { end: 99, prefix: "", suffix: ".99%", label: "Uptime SLA" },
+              { end: 1.2, prefix: "", suffix: "M+", label: "Trades Executed" },
+              { end: 20, prefix: "", suffix: "+", label: "Live Strategies" },
+              { end: 5, prefix: "", suffix: "-Year", label: "Track Record" },
+              { end: 24, prefix: "", suffix: "/7", label: "Support" },
+            ].map((s, i) => (
+              <motion.div key={i} variants={fadeUp} className="card-stealth p-6 text-center">
+                <p className="text-3xl font-black text-[#F0B90B] mb-2">
+                  <Counter prefix={s.prefix} end={s.end} suffix={s.suffix} />
+                </p>
+                <p className="text-xs text-[#848E9C] uppercase tracking-wider font-semibold">{s.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* S15 — CLIENT GROWTH */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Consistent Growth, Consistent Results</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-4">
+              {[
+                { label: "+847 New Clients This Month", color: "text-[#02C076]", bg: "bg-[#02C076]/10 border-[#02C076]/30" },
+                { label: "$28.4M Capital Deployed (MTD)", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
+                { label: "Average Client Return: +7.2% MTD", color: "text-[#02C076]", bg: "bg-[#02C076]/10 border-[#02C076]/30" },
+                { label: "Strategy Approval Rating: 94.8%", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
+              ].map((b, i) => (
+                <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  className={`border rounded-xl px-6 py-4 font-bold ${b.color} ${b.bg}`}>
+                  {b.label}
+                </motion.div>
+              ))}
+            </div>
+            <div className="card-stealth p-6">
+              <h3 className="text-white font-bold mb-4">Monthly Client Growth 2025</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={[
+                    {m:"Jan",v:2100},{m:"Feb",v:2350},{m:"Mar",v:2600},{m:"Apr",v:2900},
+                    {m:"May",v:3100},{m:"Jun",v:3400},{m:"Jul",v:3700},{m:"Aug",v:4000},
+                    {m:"Sep",v:4200},{m:"Oct",v:4500},{m:"Nov",v:4700},{m:"Dec",v:4900}
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#2B3139" />
+                    <XAxis dataKey="m" axisLine={false} tickLine={false} fontSize={11} stroke="#848E9C" />
+                    <Tooltip contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #2B3139', color: '#fff' }} />
+                    <Bar dataKey="v" fill="#F0B90B" radius={[3,3,0,0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* S16 — HOW ALGOS WORK */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">How Our Algorithms Generate Alpha</h2>
+          </div>
+          <div className="flex flex-col lg:flex-row items-start gap-4">
+            {[
+              { num:"01", icon: Database, title:"Data Collection", desc:"50+ real-time market feeds with tick-level precision" },
+              { num:"02", icon: Cpu, title:"Signal Generation", desc:"AI-powered pattern recognition across 20+ strategies" },
+              { num:"03", icon: Shield, title:"Risk Validation", desc:"Hard drawdown limits and dynamic position sizing" },
+              { num:"04", icon: Zap, title:"Execution", desc:"Sub-5ms order placement via co-located servers" },
+              { num:"05", icon: Eye, title:"Monitoring", desc:"24/7 continuous P&L tracking and circuit breakers" },
+            ].map((step, i) => (
+              <div key={i} className="flex lg:flex-col items-start lg:items-center gap-4 flex-1">
+                {i > 0 && <div className="hidden lg:block w-full h-px bg-[#F0B90B]/30 -mt-10 -mx-4" />}
+                <div className="card-stealth p-6 text-center w-full">
+                  <div className="text-3xl font-black text-[#F0B90B] mb-3">{step.num}</div>
+                  <step.icon className="w-8 h-8 text-[#F0B90B] mx-auto mb-3" />
+                  <h3 className="font-bold text-white mb-2 text-sm">{step.title}</h3>
+                  <p className="text-[#848E9C] text-xs leading-relaxed">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S17 — SECURITY */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Bank-Grade Security Infrastructure</h2>
+          </div>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            {[
+              { icon: Lock, title:"256-bit AES Encryption", desc:"All data encrypted in transit and at rest using military-grade standards." },
+              { icon: Shield, title:"Segregated Client Funds", desc:"Your capital is held in Tier-1 bank accounts, separate from company assets." },
+              { icon: Eye, title:"2FA Authentication", desc:"Two-factor authentication required for all account actions and withdrawals." },
+              { icon: Award, title:"SEBI Compliant", desc:"Fully registered and compliant with SEBI regulations for algorithmic trading." },
+              { icon: Activity, title:"Real-Time Monitoring", desc:"24/7 automated surveillance of all positions and system performance." },
+              { icon: Zap, title:"Instant Kill Switch", desc:"Automatic strategy deactivation when risk thresholds are breached." },
+            ].map((item, i) => (
+              <motion.div key={i} variants={fadeUp} className="card-stealth p-6 group">
+                <div className="w-12 h-12 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-4 group-hover:border-[#F0B90B] transition-colors">
+                  <item.icon className="w-5 h-5 text-[#F0B90B]" />
+                </div>
+                <h3 className="font-bold text-white mb-2">{item.title}</h3>
+                <p className="text-[#848E9C] text-sm leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+          <div className="text-center card-stealth-gold p-4 rounded-xl">
+            <p className="text-[#F0B90B] font-bold">🔐 Your capital is protected by institutional-grade security systems. We never have withdrawal authority over your funds.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* S18 — MARKET LIQUIDITY */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Trading the World's Most Liquid Markets</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            {[
+              { market:"Forex", vol:"$7.5 Trillion", period:"Daily Volume", desc:"Most liquid market in the world. Tight spreads, deep order books, 24/5 access." },
+              { market:"Gold", vol:"$180 Billion", period:"Daily Volume", desc:"Safe-haven asset with high volatility potential and inverse USD correlation." },
+              { market:"Indices", vol:"$400 Billion", period:"Daily Volume", desc:"Exposure to global equity movements without individual stock risk." },
+            ].map((m, i) => (
+              <div key={i} className="card-stealth p-8 text-center">
+                <h3 className="font-bold text-white text-xl mb-3">{m.market}</h3>
+                <p className="text-4xl font-black text-[#F0B90B] mb-1">{m.vol}</p>
+                <p className="text-[#848E9C] text-xs uppercase tracking-wider mb-4">{m.period}</p>
+                <p className="text-[#848E9C] text-sm">{m.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-[#848E9C] italic">ECMarketsIndia operates exclusively in the highest-liquidity instruments to minimize slippage and maximize execution quality.</p>
+        </div>
+      </section>
+
+      {/* S19 — RISK MANAGEMENT */}
+      <section className="py-24 section-dark">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Multi-Layer Risk Management</h2>
+            <p className="text-[#848E9C]">Four independent risk controls protect your capital at every level.</p>
+          </div>
+          <div className="space-y-4">
+            {[
+              { layer:"1", title:"Position-Level Risk", desc:"Maximum position size per trade is dynamically calculated as a percentage of current account equity, adjusting automatically with portfolio growth or drawdown." },
+              { layer:"2", title:"Strategy-Level Risk", desc:"Each individual strategy has a hard daily loss limit. If triggered, the strategy pauses automatically until manual review and reset by the quant team." },
+              { layer:"3", title:"Account-Level Risk", desc:"A maximum drawdown threshold is set at the account level. Breaching this threshold triggers instant deactivation of all strategies until the client reviews the situation." },
+              { layer:"4", title:"Platform-Level Risk", desc:"Global circuit breakers activate during extreme market events (flash crashes, news spikes, liquidity crises), halting all trading across the platform simultaneously." },
+            ].map((l, i) => (
+              <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="card-stealth p-6 flex gap-6 border-l-4 border-l-[#F0B90B]">
+                <div className="w-10 h-10 rounded-full bg-[#F0B90B] text-black flex items-center justify-center font-black text-lg shrink-0">{l.layer}</div>
+                <div>
+                  <h3 className="font-bold text-white mb-2">{l.title}</h3>
+                  <p className="text-[#848E9C] text-sm leading-relaxed">{l.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S20 — MOBILE PREVIEW */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Monitor Your Portfolio Anywhere</h2>
+              <ul className="space-y-5 mb-8">
+                {[
+                  "Real-time P&L tracking with live chart updates",
+                  "Push notifications on every trade execution",
+                  "One-tap deposit and withdrawal requests",
+                  "Strategy activation and deactivation controls",
+                  "KYC and account management on mobile",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-[#02C076] shrink-0 mt-0.5" />
+                    <span className="text-[#EAECEF]">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/auth/register" className="btn-gold inline-block">Get Started Now</Link>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-64 h-[480px] bg-[#1E2329] border-2 border-[#2B3139] rounded-[36px] p-4 shadow-2xl relative">
+                <div className="w-20 h-5 bg-[#2B3139] rounded-full mx-auto mb-4" />
+                <div className="space-y-3">
+                  <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
+                    <p className="text-[#848E9C] text-xs mb-1">Portfolio Value</p>
+                    <p className="text-[#F0B90B] text-xl font-black">₹4,85,290</p>
+                    <p className="text-[#02C076] text-xs">+7.2% MTD</p>
+                  </div>
+                  <div className="bg-[#0B0E11] rounded-xl p-3 h-24 border border-[#2B3139]">
+                    <div className="h-full flex items-end gap-1">
+                      {[40,55,45,70,60,85,75,90].map((h,i) => (
+                        <div key={i} className="flex-1 bg-[#F0B90B]/60 rounded-sm" style={{ height: `${h}%` }} />
+                      ))}
+                    </div>
+                  </div>
+                  {[{ name:"Quantum Algo", pl:"+₹1,240" },{ name:"Gold Scalper", pl:"+₹890" }].map((s,i) => (
+                    <div key={i} className="bg-[#0B0E11] rounded-xl p-3 flex justify-between items-center border border-[#2B3139]">
+                      <div>
+                        <p className="text-white text-xs font-semibold">{s.name}</p>
+                        <p className="text-[#848E9C] text-[10px]">Active</p>
+                      </div>
+                      <p className="text-[#02C076] text-xs font-bold">{s.pl}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* S21 — BROKER INTEGRATIONS */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connected to India's Top Brokers</h2>
+            <p className="text-[#848E9C]">ECMarketsIndia integrates with all major SEBI-registered brokers for seamless execution.</p>
+          </div>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {["Zerodha","Upstox","Angel One","ICICI Direct","HDFC Securities","Kotak","5paisa","Fyers"].map((broker, i) => (
+              <motion.div key={i} variants={fadeUp} className="card-stealth p-5 flex items-center justify-between">
+                <span className="font-bold text-white text-sm">{broker}</span>
+                <span className="text-[#02C076] text-xs font-bold bg-[#02C076]/10 border border-[#02C076]/30 rounded px-2 py-0.5">Connected</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* S22 — ALGO VS MANUAL */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Algorithmic vs Manual Trading</h2>
+          </div>
+          <div className="card-stealth overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-[#2B3139]">
+                <tr>
+                  <th className="px-5 py-4 text-left text-[#EAECEF] font-bold">Feature</th>
+                  <th className="px-5 py-4 text-center text-[#CF304A] font-bold">Manual Trading</th>
+                  <th className="px-5 py-4 text-center text-[#F0B90B] font-bold">ECMarketsIndia Algo</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2B3139]">
+                {[
+                  ["Execution Speed", "Seconds", "<5ms"],
+                  ["Emotion-Free", "❌", "✅"],
+                  ["24/5 Monitoring", "❌", "✅"],
+                  ["Backtested Strategies", "Rarely", "Always"],
+                  ["Risk Management", "Manual", "Automated"],
+                  ["Consistent Execution", "❌", "✅"],
+                  ["Scalability", "Limited", "Unlimited"],
+                ].map(([feat, manual, algo], i) => (
+                  <tr key={i} className={i % 2 === 0 ? "bg-[#0B0E11]/50" : ""}>
+                    <td className="px-5 py-4 text-[#EAECEF] font-medium">{feat}</td>
+                    <td className="px-5 py-4 text-center text-[#CF304A]">{manual}</td>
+                    <td className="px-5 py-4 text-center text-[#02C076] font-bold">{algo}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* S23 — EDUCATION */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Learn Algorithmic Trading</h2>
+            <p className="text-[#848E9C]">Free educational resources for every experience level.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { level:"Beginner", lessons:12, title:"Algo Trading Fundamentals", desc:"Master the basics of quantitative trading strategies and automated execution." },
+              { level:"Intermediate", lessons:8, title:"Risk Management Mastery", desc:"Learn institutional risk controls, position sizing, and drawdown management." },
+              { level:"Intermediate", lessons:10, title:"Strategy Backtesting", desc:"Build and validate trading strategies using historical market data." },
+              { level:"Advanced", lessons:6, title:"Live Trading Psychology", desc:"Develop the discipline needed to trust algorithms during market volatility." },
+            ].map((course, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="card-stealth p-6 flex gap-5">
+                <BookOpen className="w-8 h-8 text-[#F0B90B] shrink-0 mt-1" />
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="tag-medium text-xs">{course.level}</span>
+                    <span className="text-[#848E9C] text-xs">{course.lessons} lessons</span>
+                  </div>
+                  <h3 className="font-bold text-white mb-2">{course.title}</h3>
+                  <p className="text-[#848E9C] text-sm mb-3">{course.desc}</p>
+                  <Link href="/auth/register" className="text-[#F0B90B] text-sm font-semibold hover:underline">Start Learning →</Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S24 — BLOG PREVIEW */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Market Intelligence & Insights</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { tag:"Performance", date:"March 2026", title:"How We Generated 71.4% Returns in 15 Months", excerpt:"A deep dive into the quantitative models and risk controls that drove our flagship fund's performance." },
+              { tag:"Strategy", date:"February 2026", title:"RazrMarket Strategy: Inside Our Flagship Algorithm", excerpt:"An inside look at the momentum identification system that powers our highest-performing strategy." },
+              { tag:"Education", date:"January 2026", title:"Why Algorithmic Trading Beats Manual Trading", excerpt:"Data-driven analysis showing how automation consistently outperforms discretionary trading." },
+            ].map((post, i) => (
+              <div key={i} className="card-stealth p-6 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30 rounded-full px-3 py-0.5 text-xs font-bold">{post.tag}</span>
+                  <span className="text-[#848E9C] text-xs">{post.date}</span>
+                </div>
+                <h3 className="font-bold text-white mb-3 leading-snug">{post.title}</h3>
+                <p className="text-[#848E9C] text-sm flex-1 mb-4">{post.excerpt}</p>
+                <Link href="/contact" className="text-[#F0B90B] text-sm font-semibold hover:underline">Read More →</Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S25 — REAL RESULTS */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Real Results from Real Clients</h2>
+          </div>
+          <p className="text-center text-[#848E9C] text-sm mb-12 italic">* Past performance is not indicative of future results. All returns are pre-performance-fee.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { city:"Mumbai", invested:"₹50,000", current:"₹68,400", pct:"+36.8%" },
+              { city:"Delhi", invested:"₹1,00,000", current:"₹1,41,200", pct:"+41.2%" },
+              { city:"Bangalore", invested:"₹2,00,000", current:"₹2,78,000", pct:"+39.0%" },
+              { city:"Chennai", invested:"₹5,00,000", current:"₹6,92,000", pct:"+38.4%" },
+            ].map((r, i) => (
+              <div key={i} className="card-stealth p-6 text-center">
+                <p className="text-[#F0B90B] font-bold mb-4">{r.city}</p>
+                <p className="text-[#848E9C] text-xs mb-1">Invested</p>
+                <p className="text-white font-bold mb-3">{r.invested}</p>
+                <p className="text-[#848E9C] text-xs mb-1">Current Value</p>
+                <p className="text-white font-bold mb-3">{r.current}</p>
+                <p className="text-3xl font-black text-[#02C076]">{r.pct}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S26 — AWARDS */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Recognized by the Industry</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { award:"Best Algo Trading Platform 2025", org:"FinTech India Awards" },
+              { award:"Most Innovative Trading Solution", org:"NSE Innovation Challenge" },
+              { award:"Top Performing PMS", org:"Wealth Management India" },
+              { award:"Client's Choice Award", org:"Trustpilot India" },
+            ].map((a, i) => (
+              <div key={i} className="card-stealth p-6 text-center">
+                <Star className="w-8 h-8 text-[#F0B90B] mx-auto mb-4" />
+                <h3 className="font-bold text-white mb-2 text-sm leading-snug">{a.award}</h3>
+                <p className="text-[#848E9C] text-xs">{a.org}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S27 — SUPPORT */}
+      <section className="py-24 section-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">World-Class Support, Always Available</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { icon: Headphones, title:"Live Chat", detail:"Available during market hours 9am–7pm IST", time:"~2 min response" },
+              { icon: FileText, title:"Email Support", detail:"Detailed technical and account queries", time:"~4 hour response" },
+              { icon: Users, title:"Priority Phone", detail:"Dedicated line for Institutional clients", time:"Immediate" },
+            ].map((s, i) => (
+              <div key={i} className="card-stealth p-8 text-center">
+                <div className="w-14 h-14 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center mx-auto mb-5">
+                  <s.icon className="w-7 h-7 text-[#F0B90B]" />
+                </div>
+                <h3 className="font-bold text-white text-lg mb-2">{s.title}</h3>
+                <p className="text-[#848E9C] text-sm mb-4">{s.detail}</p>
+                <span className="bg-[#02C076]/10 border border-[#02C076]/30 text-[#02C076] text-xs font-bold rounded-full px-3 py-1">{s.time}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* S28 — PARTNER */}
+      <section className="py-24 section-surface border-y border-[#2B3139]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Institutional & Corporate Partnerships</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="card-stealth-gold p-8">
+              <Building2 className="w-8 h-8 text-[#F0B90B] mb-4" />
+              <h3 className="text-xl font-bold text-white mb-3">White-Label Solution</h3>
+              <p className="text-[#848E9C] mb-6 text-sm">For brokers who want to offer algorithmic trading to their existing client base under their own brand.</p>
+              <Link href="/contact" className="btn-ghost inline-block text-sm font-bold">Contact Partnership Team →</Link>
+            </div>
+            <div className="card-stealth-gold p-8">
+              <TrendingUp className="w-8 h-8 text-[#F0B90B] mb-4" />
+              <h3 className="text-xl font-bold text-white mb-3">Fund Manager Access</h3>
+              <p className="text-[#848E9C] mb-6 text-sm">For portfolio managers seeking institutional-grade algorithmic execution with custom risk parameters.</p>
+              <Link href="/contact" className="btn-ghost inline-block text-sm font-bold">Schedule a Call →</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* S29 — REGULATORY */}
+      <section className="py-24 section-dark">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">Operating with Full Regulatory Compliance</h2>
+          </div>
+          <div className="card-stealth-gold p-6 mb-8 text-center">
+            <p className="text-[#F0B90B] font-semibold text-sm">⚠️ Trading in financial instruments involves substantial risk of loss. Past performance is not indicative of future results. Please read our full Risk Disclosure before investing.</p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {["SEBI Registered","AML Policy","KYC Verification","PMLA Compliant"].map((item, i) => (
+              <div key={i} className="card-stealth p-4 text-center">
+                <Check className="w-5 h-5 text-[#02C076] mx-auto mb-2" />
+                <p className="text-white text-sm font-semibold">{item}</p>
               </div>
             ))}
           </div>

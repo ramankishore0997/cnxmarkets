@@ -1,9 +1,12 @@
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { motion } from 'framer-motion';
-import { Check, X, ShieldAlert } from 'lucide-react';
+import { Check, X, ShieldAlert, ChevronDown } from 'lucide-react';
 import { Link } from 'wouter';
+import { useState } from 'react';
 
 export function Pricing() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   const plans = [
     {
       name: "Starter Algo",
@@ -137,6 +140,90 @@ export function Pricing() {
               Our 20% performance fee is strictly calculated using a High-Water Mark (HWM). This means if your account drops in value, we must recover the losses before charging performance fees again. We only profit when your account reaches new all-time highs.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* FEATURE COMPARISON TABLE */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-white mb-3">Full Feature Comparison</h2>
+          <p className="text-[#848E9C]">Every feature across every tier, side by side.</p>
+        </div>
+        <div className="card-stealth overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-[#2B3139]">
+              <tr>
+                <th className="px-5 py-4 text-left text-[#EAECEF] font-bold">Feature</th>
+                <th className="px-5 py-4 text-center text-[#848E9C] font-bold">Starter</th>
+                <th className="px-5 py-4 text-center text-[#F0B90B] font-bold">Professional</th>
+                <th className="px-5 py-4 text-center text-[#848E9C] font-bold">Institutional</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#2B3139]">
+              {[
+                ["Min. Capital", "₹20,000", "₹1,00,000", "₹5,00,000"],
+                ["Management Fee", "Zero", "Zero", "Zero"],
+                ["Performance Fee", "20% HWM", "20% HWM", "20% HWM"],
+                ["Strategies Access", "2 strategies", "All 5+ strategies", "All + Beta"],
+                ["Execution Speed", "Standard", "Priority", "Zero-Latency FIX"],
+                ["Custom Allocation", "❌", "✅", "✅"],
+                ["Account Manager", "❌", "✅ Dedicated", "✅ Direct Quant"],
+                ["Trade Alerts", "Email", "Email + SMS", "All + WhatsApp"],
+                ["Withdrawal Time", "24 hours", "4 hours", "Instant"],
+                ["KYC Turnaround", "24 hours", "4 hours", "1 hour"],
+                ["Dashboard Access", "✅", "✅ Advanced", "✅ Institutional"],
+                ["API Access", "❌", "❌", "✅ FIX API"],
+                ["White-Label Reports", "❌", "❌", "✅"],
+                ["Custom Risk Params", "❌", "❌", "✅"],
+                ["Support Channel", "Email", "Email + Phone", "Direct Quant Line"],
+              ].map(([feat, s, p, i], idx) => (
+                <tr key={idx} className={idx % 2 === 0 ? "bg-[#0B0E11]/30" : ""}>
+                  <td className="px-5 py-3.5 text-[#EAECEF] font-medium">{feat}</td>
+                  <td className="px-5 py-3.5 text-center text-[#848E9C] text-sm">{s}</td>
+                  <td className="px-5 py-3.5 text-center text-[#F0B90B] font-semibold text-sm">{p}</td>
+                  <td className="px-5 py-3.5 text-center text-[#EAECEF] text-sm">{i}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* GUARANTEE */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="bg-[linear-gradient(135deg,rgba(240,185,11,0.1),rgba(240,185,11,0.05))] border border-[#F0B90B]/40 rounded-2xl p-8 text-center">
+          <div className="text-5xl mb-4">🛡️</div>
+          <h2 className="text-2xl font-bold text-white mb-3">The ECMarketsIndia Guarantee</h2>
+          <p className="text-[#848E9C] leading-relaxed max-w-2xl mx-auto">
+            Zero management fees. Performance fees only on new profits. Full transparency via live dashboard. No lock-in periods. Withdraw anytime. If our strategies underperform, we earn nothing. Our alignment with your financial success is absolute.
+          </p>
+        </div>
+      </div>
+
+      {/* PRICING FAQ */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <h2 className="text-2xl font-bold text-white mb-8 text-center">Pricing Questions</h2>
+        <div className="space-y-3">
+          {[
+            { q: "When exactly is the performance fee charged?", a: "Performance fees are charged quarterly (every 3 months) on net new profits above your High-Water Mark. You'll receive a detailed performance statement 5 days before deduction, with full transparency on calculations." },
+            { q: "What if my account loses money?", a: "No performance fees are charged on losses. Ever. Your account must recover all losses and surpass the previous HWM before we charge another performance fee. In a losing month, we earn nothing." },
+            { q: "Can I switch between tiers?", a: "Yes. You can upgrade tiers at any time by depositing additional capital to reach the new threshold. Downgrading requires a withdrawal to below the tier minimum and is processed within the next settlement cycle." },
+            { q: "Is there a trial period or demo?", a: "We offer a 30-day paper trading demo for all new registrants to observe our algorithm performance without committing real capital. Contact our team after registration to activate your demo environment." },
+          ].map((faq, i) => (
+            <div key={i} className={`card-stealth overflow-hidden ${openFaq === i ? 'border-l-2 border-l-[#F0B90B]' : ''}`}>
+              <button className="w-full px-6 py-4 flex justify-between items-center text-left" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                <span className={`font-semibold ${openFaq === i ? 'text-white' : 'text-[#848E9C]'}`}>{faq.q}</span>
+                <ChevronDown className={`w-5 h-5 shrink-0 transition-transform ${openFaq === i ? 'rotate-180 text-[#F0B90B]' : 'text-[#848E9C]'}`} />
+              </button>
+              {openFaq === i && (
+                <div className="px-6 pb-5 text-[#848E9C] text-sm leading-relaxed border-t border-[#2B3139] pt-4">{faq.a}</div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-10">
+          <p className="text-[#848E9C] mb-4">Have more questions about pricing?</p>
+          <Link href="/contact" className="btn-ghost inline-block">Contact Our Team</Link>
         </div>
       </div>
     </PublicLayout>

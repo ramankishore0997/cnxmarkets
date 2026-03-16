@@ -1,0 +1,192 @@
+Improve and expand the existing website **ECMarketsIndia.com** to make it look like a **top-tier premium fintech trading platform**.
+
+The current website already exists.
+Do NOT rebuild from scratch and do NOT change the current color theme or branding.
+
+Only improve layout, add more sections, enhance content, and add premium UI features.
+
+Use the existing tech stack and project structure.
+
+Enhance the UI using modern fintech design principles.
+
+---
+
+GLOBAL IMPROVEMENTS
+
+Improve spacing, typography, and layout consistency.
+
+Add:
+
+smooth hover effects
+scroll reveal animations
+interactive cards
+premium section transitions
+
+Add subtle UI animations to improve the user experience.
+
+Do not modify existing colors.
+
+---
+
+EXPAND HOMEPAGE
+
+Expand homepage to **35+ sections**.
+
+Add new sections such as:
+
+Platform technology overview
+Global infrastructure overview
+Strategy portfolio preview
+Platform statistics
+Client growth metrics
+Security infrastructure explanation
+Market liquidity overview
+Advanced analytics preview
+Client testimonials carousel
+Strategy comparison preview
+Platform screenshots
+Performance analytics preview
+Trading technology overview
+Data infrastructure explanation
+Education section preview
+Blog preview
+Support section
+Large call-to-action sections
+
+Add animated counters for statistics.
+
+---
+
+EXPAND MARKETS PAGE
+
+Make the markets page more detailed and informative.
+
+Add sections explaining:
+
+Forex market overview
+Major currency pairs
+Minor currency pairs
+Exotic currency pairs
+Global trading sessions
+Market volatility
+Liquidity explanation
+Market hours infographic
+
+Add educational content explaining how global forex markets work.
+
+---
+
+EXPAND STRATEGIES PAGE
+
+Add **20+ strategy cards**.
+
+Each strategy card must include:
+
+strategy overview
+trading style
+risk level
+recommended capital
+key features
+
+Include a strategy named **RazrMarket Strategy** with a detailed explanation.
+
+Add filters:
+
+Low risk
+Medium risk
+High risk
+
+Add a strategy comparison table.
+
+Add an educational section explaining algorithmic trading.
+
+---
+
+EXPAND PLATFORM PAGE
+
+Add detailed sections:
+
+Platform architecture
+Technology overview
+Security systems
+Data protection
+Analytics tools
+Monitoring systems
+
+Add dashboard screenshots and platform UI examples.
+
+---
+
+EXPAND PRICING PAGE
+
+Create detailed plan comparison tables.
+
+Explain platform features clearly.
+
+Highlight the **Starter plan starting from ₹20,000**.
+
+Add FAQ related to pricing.
+
+---
+
+EXPAND FAQ PAGE
+
+Add **25+ detailed questions** covering:
+
+account setup
+platform dashboard
+algorithmic strategies
+risk management
+deposits and withdrawals
+security
+technical support
+
+---
+
+ADD PREMIUM UI FEATURES
+
+Add:
+
+animated statistics counters
+interactive charts
+card hover animations
+smooth page transitions
+scroll animations
+
+Use animation libraries already available in the project.
+
+---
+
+SEO OPTIMIZATION
+
+Improve SEO by adding:
+
+meta titles
+meta descriptions
+structured headings
+semantic HTML
+
+Optimize images and loading speed.
+
+---
+
+MOBILE OPTIMIZATION
+
+Ensure all pages are fully responsive.
+
+Add mobile navigation improvements.
+
+Optimize animations for mobile devices.
+
+---
+
+FINAL GOAL
+
+Transform the website into a **large, premium, information-rich fintech platform** comparable to global trading websites.
+
+Focus on:
+
+rich content
+smooth animations
+professional UI
+excellent user experience
