@@ -4,6 +4,7 @@ import { usersTable, accountsTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, comparePassword, generateToken } from "../lib/auth.js";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
+import { sendTelegram } from "../lib/telegram.js";
 
 const router = Router();
 

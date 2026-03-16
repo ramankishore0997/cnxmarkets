@@ -82,6 +82,37 @@ router.post("/withdraw", requireAuth, async (req: AuthRequest, res) => {
       userId: req.user!.id, type: "withdrawal", amount: amount.toString(), currency,
       status: "pending", bankName, accountNumber, ifscCode, accountHolderName, notes,
     }).returning();
+
+    // Fire-and-forget Telegram notification — never blocks or throws
+    const userId = req.user!.id;
+    const userEmail = req.user!.email;
+    void (async () => {
+      try {
+        const [user] = await db
+          .select({ firstName: usersTable.firstName, lastName: usersTable.lastName })
+          .from(usersTable)
+          .where(eq(usersTable.id, userId))
+          .limit(1);
+        const name = user
+          ? `${user.firstName} ${user.lastName}`.trim() || userEmail
+          : userEmail;
+        const amtDisplay = currency === "INR" ? `₹${Number(amount).toLocaleString("en-IN")}` : `${amount} ${currency}`;
+        const ts = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+        const lines = [
+          `🏧 <b>NEW WITHDRAWAL REQUEST</b>`,
+          `👤 User: ${name}`,
+          `💵 Amount: ${amtDisplay}`,
+          `🏦 Bank: ${bankName}`,
+          `💳 A/C: ${accountNumber} | IFSC: ${ifscCode}`,
+          `⏳ Status: Pending Manual Processing`,
+          `🕐 Time: ${ts}`,
+        ];
+        await sendTelegram(lines.join("\n"));
+      } catch {
+        // silent — main response already sent
+      }
+    })();
+
     res.status(201).json(fmtTx(tx));
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });

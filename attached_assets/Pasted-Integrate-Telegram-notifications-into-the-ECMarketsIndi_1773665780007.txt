@@ -1,0 +1,87 @@
+Integrate Telegram notifications into the ECMarketsIndia website backend so that important user actions trigger alerts to the admin.
+Do not rebuild the project. Extend the existing backend.
+Use the Telegram Bot API.
+
+ENVIRONMENT VARIABLES
+Use environment variables for security.
+Required secrets:
+TELEGRAM_BOT_TOKEN 8450044728:AAHGzH3_kkV3JZTRYdceoFvjLWJLfQmIcFM
+TELEGRAM_CHAT_ID 824408478
+Read them using process.env.
+Example:
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+const CHAT_ID = process.env.TELEGRAM_CHAT_ID
+
+CREATE TELEGRAM SERVICE
+Create a reusable helper function called sendTelegramNotification.
+Example logic:
+sendTelegramNotification(message)
+The function should send a POST request to:
+https://api.telegram.org/bot/8450044728:AAHGzH3_kkV3JZTRYdceoFvjLWJLfQmIcFM/sendMessage
+with parameters:
+chat_id
+text
+Use axios or fetch to send the request.
+
+TRIGGER NOTIFICATIONS FOR THESE EVENTS
+New User Signup
+When a new account is created send message:
+New User Signup
+Name: {user_name}
+Email: {email}
+Phone: {phone}
+Time: {timestamp}
+
+Deposit Request
+When a user submits a deposit form send:
+New Deposit Request
+User: {user_name}
+Amount: ₹{amount}
+Transaction ID: {transaction_id}
+Time: {timestamp}
+
+Withdrawal Request
+When a user submits a withdrawal request send:
+New Withdrawal Request
+User: {user_name}
+Amount: ₹{amount}
+Method: {withdraw_method}
+Time: {timestamp}
+
+KYC Submission
+When a user submits KYC documents send:
+New KYC Submission
+User: {user_name}
+PAN: {pan_number}
+Aadhaar: {aadhaar_number}
+Time: {timestamp}
+
+BACKEND STRUCTURE
+Create a utility file:
+utils/telegram.js
+Export the notification function.
+Import this function inside relevant API routes:
+signup route
+deposit route
+withdraw route
+kyc route
+Call sendTelegramNotification after successful submission.
+
+ERROR HANDLING
+If Telegram API fails:
+log error in server console
+do not break the user request
+User actions should still succeed.
+
+MESSAGE FORMAT
+Messages should be readable and structured.
+Use line breaks.
+Include timestamp.
+
+FINAL RESULT
+The website must automatically send Telegram notifications to the admin when:
+a new user registers
+a deposit request is submitted
+a withdrawal request is submitted
+a KYC verification is submitted
+All messages should appear instantly in the Telegram chat.
