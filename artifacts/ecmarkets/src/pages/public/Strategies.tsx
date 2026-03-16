@@ -232,42 +232,102 @@ export function Strategies() {
         </div>
       </section>
 
-      {/* COMPARISON TABLE */}
+      {/* COMPARISON TABLE — LIVE */}
       {!isLoading && allStrategies.length > 0 && (
         <section className="py-16 section-surface border-y border-[#2B3139]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 bg-[#02C076]/10 border border-[#02C076]/30 text-[#02C076] px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />
+                Live Data · Updates Every 2.8s
+              </div>
               <h2 className="text-3xl font-bold text-white mb-3">Full Strategy Comparison</h2>
-              <p className="text-[#848E9C] max-w-2xl mx-auto">Side-by-side metrics for all available strategies</p>
+              <p className="text-[#848E9C] max-w-2xl mx-auto">Side-by-side live metrics for all {allStrategies.length} active strategies</p>
+              <div className="flex items-center justify-center gap-6 mt-4 text-xs text-[#848E9C]">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F0B90B]" />Standard — 4% daily · 224.34% monthly</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#02C076]" />RazrMarket — 8% daily · 906.27% monthly</span>
+              </div>
             </div>
             <div className="card-stealth overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[#2B3139]">
-                      {['Strategy', 'Risk', 'Min Capital', 'Win Rate', 'Monthly Return', 'Max Drawdown', 'Markets'].map(h => (
-                        <th key={h} className="px-4 py-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider">{h}</th>
+                    <tr className="bg-[#2B3139] border-b border-[#2B3139]">
+                      {[
+                        { label: 'Strategy', sub: '' },
+                        { label: 'Risk', sub: '' },
+                        { label: 'Min Capital', sub: '' },
+                        { label: 'Win Rate', sub: '↻ live' },
+                        { label: 'Daily ROI', sub: '↻ live' },
+                        { label: 'Monthly ROI', sub: '30d compnd' },
+                        { label: 'Max DD', sub: '' },
+                        { label: 'Markets', sub: '' },
+                        { label: 'Status', sub: '' },
+                      ].map(h => (
+                        <th key={h.label} className="px-4 py-3.5 text-left">
+                          <span className="text-[#EAECEF] font-bold text-xs uppercase tracking-wider">{h.label}</span>
+                          {h.sub && <span className="block text-[#848E9C] text-[9px] font-normal normal-case tracking-normal mt-0.5">{h.sub}</span>}
+                        </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#2B3139]">
-                    {allStrategies.map((s: any, i: number) => (
-                      <tr key={s.id || i} className={`hover:bg-[#2B3139]/40 transition-colors ${i % 2 === 0 ? 'bg-[#0B0E11]/50' : ''}`}>
-                        <td className="px-4 py-3 font-semibold text-white text-xs">{s.name}</td>
-                        <td className="px-4 py-3">
-                          <span className="px-2 py-0.5 rounded text-xs font-bold capitalize" style={{ background: RISK_BG[s.riskProfile], color: RISK_COLORS[s.riskProfile] }}>{s.riskProfile}</span>
-                        </td>
-                        <td className="px-4 py-3 text-[#EAECEF] text-xs">₹{Number(s.minCapital).toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-3 text-[#F0B90B] text-xs font-bold">{s.winRate}%</td>
-                        <td className="px-4 py-3 text-[#02C076] text-xs font-bold">+{s.monthlyReturn}%</td>
-                        <td className="px-4 py-3 text-[#CF304A] text-xs font-bold">{s.maxDrawdown}%</td>
-                        <td className="px-4 py-3 text-[#848E9C] text-xs">{s.markets}</td>
-                      </tr>
-                    ))}
+                    {allStrategies.map((s: any, i: number) => {
+                      const live = liveStats[s.id];
+                      const isRazr = isRazrName(s.name);
+                      const dailyBase = getDailyBase(s.name);
+                      const monthly = getMonthlyCompound(s.name);
+                      const displayDailyRate = live?.dailyRate ?? dailyBase;
+                      const displayWinRate = live?.winRate ?? parseFloat(s.winRate);
+                      return (
+                        <tr key={s.id || i} className={`hover:bg-[#2B3139]/50 transition-colors ${i % 2 === 0 ? 'bg-[#0B0E11]/40' : ''}`}>
+                          <td className="px-4 py-3.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-white text-xs">{s.name}</span>
+                              {isRazr && <span className="text-[8px] font-black bg-[#F0B90B] text-black px-1.5 py-0.5 rounded uppercase tracking-wide shrink-0">FLAGSHIP</span>}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className="px-2 py-0.5 rounded text-xs font-bold capitalize" style={{ background: RISK_BG[s.riskProfile], color: RISK_COLORS[s.riskProfile] }}>{s.riskProfile}</span>
+                          </td>
+                          <td className="px-4 py-3.5 text-[#EAECEF] text-xs font-medium">
+                            ₹{Number(s.minCapital).toLocaleString('en-IN')}
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className="text-xs font-bold text-[#F0B90B] tabular-nums">
+                              {displayWinRate.toFixed(1)}%
+                            </span>
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className={`text-xs font-bold tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>
+                              +{displayDailyRate.toFixed(2)}%
+                            </span>
+                            <span className="text-[10px] text-[#848E9C] ml-1">/day</span>
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className="text-xs font-bold text-[#02C076] tabular-nums">+{monthly.toFixed(2)}%</span>
+                            <span className="text-[10px] text-[#848E9C] ml-1">/mo</span>
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className="text-xs font-bold text-[#CF304A]">{s.maxDrawdown}%</span>
+                          </td>
+                          <td className="px-4 py-3.5 text-[#848E9C] text-xs">{s.markets}</td>
+                          <td className="px-4 py-3.5">
+                            <span className="flex items-center gap-1.5 text-xs font-semibold text-[#02C076]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse" />
+                              Active
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             </div>
+            <p className="text-center text-[10px] text-[#848E9C] mt-4">
+              Win Rate and Daily ROI update live every 2.8s · Monthly ROI = compounded daily rate × 30 days
+            </p>
           </div>
         </section>
       )}
