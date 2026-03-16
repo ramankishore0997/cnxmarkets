@@ -175,9 +175,15 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                   ECMarkets<span className="text-[#F0B90B]">India</span>
                 </span>
               </Link>
-              <p className="text-[#848E9C] text-sm mb-8 leading-relaxed max-w-sm">
+              <p className="text-[#848E9C] text-sm mb-5 leading-relaxed max-w-sm">
                 Institutional-grade algorithmic trading platform for retail and professional investors. Maximize returns with high-frequency, low-latency execution.
               </p>
+              <div className="text-sm text-[#848E9C] mb-5 leading-relaxed">
+                <p className="font-semibold text-[#EAECEF] mb-1">Registered Office</p>
+                <p>2035 Sunset Lake Road, Suite B-2</p>
+                <p>Newark, Delaware 19702, United States</p>
+                <a href="mailto:support@ecmarketsindia.com" className="mt-2 block hover:text-[#F0B90B] transition-colors">support@ecmarketsindia.com</a>
+              </div>
               <div className="flex gap-4">
                 <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Globe className="w-5 h-5" />

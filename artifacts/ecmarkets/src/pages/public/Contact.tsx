@@ -43,10 +43,9 @@ export function Contact() {
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Corporate Headquarters</h3>
                   <p className="text-[#848E9C] leading-relaxed">
-                    Level 12, Tower 2, BKC<br />
-                    Bandra Kurla Complex<br />
-                    Mumbai, Maharashtra 400051<br />
-                    India
+                    2035 Sunset Lake Road, Suite B-2<br />
+                    Newark, Delaware 19702<br />
+                    United States
                   </p>
                 </div>
               </div>
@@ -57,10 +56,8 @@ export function Contact() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Email Support</h3>
-                  <p className="text-[#848E9C] text-sm mb-1">General inquiries:</p>
-                  <a href="mailto:info@ecmarketsindia.com" className="text-white hover:text-[#F0B90B] transition-colors font-medium block mb-3">info@ecmarketsindia.com</a>
-                  <p className="text-[#848E9C] text-sm mb-1">Technical support:</p>
-                  <a href="mailto:support@ecmarketsindia.com" className="text-white hover:text-[#F0B90B] transition-colors font-medium">support@ecmarketsindia.com</a>
+                  <p className="text-[#848E9C] text-sm mb-1">Support & inquiries:</p>
+                  <a href="mailto:support@ecmarketsindia.com" className="text-white hover:text-[#F0B90B] transition-colors font-medium block mb-3">support@ecmarketsindia.com</a>
                 </div>
               </div>
 

@@ -235,9 +235,20 @@ export function Dashboard() {
                 <span className="live-dot w-2 h-2 rounded-full bg-[#02C076] inline-block" />
                 <p className="text-[10px] font-bold text-[#02C076] uppercase tracking-[0.14em]">Live Profit Today</p>
               </div>
-              <p className="font-terminal text-glow-green-breathe text-4xl font-black tabular-nums leading-none">
-                +₹{liveProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
+              <div className="flex items-end gap-3 flex-wrap">
+                <p className="font-terminal text-glow-green-breathe text-4xl font-black tabular-nums leading-none">
+                  +₹{liveProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+                {totalBalance > 0 && (
+                  <span className={`mb-1 px-2.5 py-1 rounded-lg text-sm font-terminal font-bold tabular-nums border ${
+                    liveProfit >= 0
+                      ? 'bg-[#02C076]/12 border-[#02C076]/30 text-[#02C076]'
+                      : 'bg-[#CF304A]/12 border-[#CF304A]/30 text-[#CF304A]'
+                  }`}>
+                    {liveProfit >= 0 ? '+' : ''}{((liveProfit / totalBalance) * 100).toFixed(2)}% Daily Gain
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-[#4B5563] mt-2 font-medium">
                 Target:&nbsp;
                 <span className="font-terminal text-[#F8FAFC] font-bold">
