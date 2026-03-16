@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Building2, Copy, CheckCircle2, Loader2, CheckCircle, Clock, XCircle, ArrowDownLeft } from 'lucide-react';
 
 const schema = z.object({
-  amount: z.coerce.number().min(100, "Minimum deposit is $100"),
+  amount: z.coerce.number().min(100, "Minimum deposit is ₹100"),
   currency: z.string().min(1, "Currency is required"),
   paymentMethod: z.string().min(1, "Payment method is required"),
   transactionReference: z.string().optional(),

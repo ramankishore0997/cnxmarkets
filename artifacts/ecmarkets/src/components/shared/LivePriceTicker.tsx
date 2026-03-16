@@ -53,7 +53,7 @@ export function LivePriceTicker({ compact = false }: Props) {
 
   const formatPrice = (item: PriceItem) =>
     item.isCrypto
-      ? `$${item.price.toLocaleString('en-US', { minimumFractionDigits: item.decimals, maximumFractionDigits: item.decimals })}`
+      ? `₹${item.price.toLocaleString('en-US', { minimumFractionDigits: item.decimals, maximumFractionDigits: item.decimals })}`
       : item.price.toFixed(item.decimals);
 
   if (compact) {

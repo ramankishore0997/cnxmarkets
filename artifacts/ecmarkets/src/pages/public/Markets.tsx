@@ -182,13 +182,13 @@ export function Markets() {
                   </thead>
                   <tbody className="divide-y divide-[#2B3139]">
                     {[
-                      { pair:"EUR/USD", spread:"0.1", vol:"$1.3T" },
-                      { pair:"GBP/USD", spread:"0.4", vol:"$800B" },
-                      { pair:"USD/JPY", spread:"0.2", vol:"$900B" },
-                      { pair:"AUD/USD", spread:"0.3", vol:"$400B" },
-                      { pair:"USD/CAD", spread:"0.4", vol:"$350B" },
-                      { pair:"USD/CHF", spread:"0.3", vol:"$250B" },
-                      { pair:"NZD/USD", spread:"0.5", vol:"$180B" },
+                      { pair:"EUR/USD", spread:"0.1", vol:"₹1.3T" },
+                      { pair:"GBP/USD", spread:"0.4", vol:"₹800B" },
+                      { pair:"USD/JPY", spread:"0.2", vol:"₹900B" },
+                      { pair:"AUD/USD", spread:"0.3", vol:"₹400B" },
+                      { pair:"USD/CAD", spread:"0.4", vol:"₹350B" },
+                      { pair:"USD/CHF", spread:"0.3", vol:"₹250B" },
+                      { pair:"NZD/USD", spread:"0.5", vol:"₹180B" },
                     ].map(r => (
                       <tr key={r.pair} className="hover:bg-[#2B3139]/40">
                         <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>

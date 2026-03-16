@@ -149,13 +149,12 @@ router.post("/select-strategy", requireAuth, async (req: AuthRequest, res) => {
       resolvedId = strat.id;
     }
 
-    // Determine daily growth target: RazrMarket = 6-10% random, others = 4%
+    // Determine daily growth target: RazrMarket = 8% fixed, others = 4% fixed
     let dailyGrowthTarget: string | null = null;
     if (resolvedName) {
       const nameLower = resolvedName.toLowerCase();
       if (nameLower.includes('razr') || nameLower.includes('razor')) {
-        const pct = 6 + Math.random() * 4; // 6-10%
-        dailyGrowthTarget = pct.toFixed(4);
+        dailyGrowthTarget = '8.0000'; // Fixed 8% for Razor Market
       } else {
         dailyGrowthTarget = '4.0000';
       }

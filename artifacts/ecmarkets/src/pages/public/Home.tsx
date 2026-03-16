@@ -73,6 +73,41 @@ export function Home() {
 
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 
+  // Growth engine constants
+  const STANDARD_DAILY = 4.0;
+  const RAZOR_DAILY = 8.0;
+  const STANDARD_MONTHLY = parseFloat(((Math.pow(1.04, 30) - 1) * 100).toFixed(2));
+  const RAZOR_MONTHLY = parseFloat(((Math.pow(1.08, 30) - 1) * 100).toFixed(2));
+  const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
+
+  const stratTableRows = [
+    { name: "RazrMarket Strategy", trades: "1,247", wr: "73.2%" },
+    { name: "Quantum Trend",       trades: "892",   wr: "68.9%" },
+    { name: "Gold Breakout",       trades: "634",   wr: "71.5%" },
+    { name: "Momentum Alpha",      trades: "1,089", wr: "66.3%" },
+    { name: "Velocity FX",         trades: "2,341", wr: "61.8%" },
+  ];
+
+  const [liveRets, setLiveRets] = useState<Record<string, number>>(() => {
+    const init: Record<string, number> = {};
+    stratTableRows.forEach(r => { init[r.name] = isRazrName(r.name) ? RAZOR_DAILY : STANDARD_DAILY; });
+    return init;
+  });
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLiveRets(prev => {
+        const next = { ...prev };
+        stratTableRows.forEach(r => {
+          const base = isRazrName(r.name) ? RAZOR_DAILY : STANDARD_DAILY;
+          next[r.name] = parseFloat((base + (Math.random() - 0.45) * 0.06).toFixed(2));
+        });
+        return next;
+      });
+    }, 3_200);
+    return () => clearInterval(id);
+  }, []);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTestimonialIndex((prev) => (prev + 1) % testimonials.length);
@@ -540,33 +575,50 @@ export function Home() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Live Strategy Performance</h2>
-            <p className="text-[#848E9C]">Real-time performance data from active strategies across all accounts.</p>
+            <p className="text-[#848E9C]">Real-time daily &amp; compounded monthly ROI across all active strategies.</p>
+            <div className="flex items-center justify-center gap-4 mt-4 text-xs text-[#848E9C]">
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F0B90B]" />Standard — 4% daily · 224% monthly</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#02C076]" />RazrMarket — 8% daily · 906% monthly</span>
+            </div>
           </div>
           <div className="card-stealth overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-[#2B3139]">
                 <tr>
-                  {["Strategy", "Trades (MTD)", "Win Rate", "MTD Return", "Status"].map(h => (
-                    <th key={h} className="px-5 py-4 text-left text-[#EAECEF] font-bold text-xs uppercase tracking-wider">{h}</th>
+                  {["Strategy", "Trades (MTD)", "Win Rate", "Daily ROI (Live)", "Monthly ROI", "Status"].map(h => (
+                    <th key={h} className="px-4 py-4 text-left text-[#EAECEF] font-bold text-xs uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2B3139]">
-                {[
-                  { name: "RazrMarket Strategy", trades: "1,247", wr: "73.2%", ret: "+8.4%" },
-                  { name: "Quantum Trend", trades: "892", wr: "68.9%", ret: "+6.1%" },
-                  { name: "Gold Breakout", trades: "634", wr: "71.5%", ret: "+5.8%" },
-                  { name: "Momentum Alpha", trades: "1,089", wr: "66.3%", ret: "+4.9%" },
-                  { name: "Velocity FX", trades: "2,341", wr: "61.8%", ret: "+3.7%" },
-                ].map((row, i) => (
-                  <tr key={i} className="hover:bg-[#2B3139]/40 transition-colors">
-                    <td className="px-5 py-4 font-semibold text-white">{row.name}</td>
-                    <td className="px-5 py-4 text-[#EAECEF]">{row.trades}</td>
-                    <td className="px-5 py-4 text-[#F0B90B] font-bold">{row.wr}</td>
-                    <td className="px-5 py-4 text-[#02C076] font-bold">{row.ret}</td>
-                    <td className="px-5 py-4"><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />Active</span></td>
-                  </tr>
-                ))}
+                {stratTableRows.map((row, i) => {
+                  const dailyVal = liveRets[row.name] ?? (isRazrName(row.name) ? RAZOR_DAILY : STANDARD_DAILY);
+                  const monthlyVal = isRazrName(row.name) ? RAZOR_MONTHLY : STANDARD_MONTHLY;
+                  const isRazr = isRazrName(row.name);
+                  return (
+                    <tr key={i} className="hover:bg-[#2B3139]/40 transition-colors">
+                      <td className="px-4 py-4 font-semibold text-white">
+                        <div className="flex items-center gap-2">
+                          {row.name}
+                          {isRazr && <span className="text-[9px] font-black bg-[#F0B90B] text-black px-1.5 py-0.5 rounded uppercase tracking-wide">FLAGSHIP</span>}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-[#EAECEF]">{row.trades}</td>
+                      <td className="px-4 py-4 text-[#F0B90B] font-bold">{row.wr}</td>
+                      <td className="px-4 py-4">
+                        <span className={`font-bold tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>
+                          +{dailyVal.toFixed(2)}%
+                        </span>
+                        <span className="text-[10px] text-[#848E9C] ml-1">/ day</span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="font-bold text-[#02C076]">+{monthlyVal.toFixed(2)}%</span>
+                        <span className="text-[10px] text-[#848E9C] ml-1">/ mo</span>
+                      </td>
+                      <td className="px-4 py-4"><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />Active</span></td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -584,7 +636,7 @@ export function Home() {
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { end: 2.4, prefix: "$", suffix: "B+", label: "Assets Managed" },
+              { end: 2.4, prefix: "₹", suffix: "T+", label: "Assets Managed" },
               { end: 50000, prefix: "", suffix: "+", label: "Active Traders" },
               { end: 120, prefix: "", suffix: "+", label: "Countries" },
               { end: 99, prefix: "", suffix: ".99%", label: "Uptime SLA" },
@@ -711,9 +763,9 @@ export function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             {[
-              { market:"Forex", vol:"$7.5 Trillion", period:"Daily Volume", desc:"Most liquid market in the world. Tight spreads, deep order books, 24/5 access." },
-              { market:"Gold", vol:"$180 Billion", period:"Daily Volume", desc:"Safe-haven asset with high volatility potential and inverse USD correlation." },
-              { market:"Indices", vol:"$400 Billion", period:"Daily Volume", desc:"Exposure to global equity movements without individual stock risk." },
+              { market:"Forex", vol:"₹7.5 Trillion", period:"Daily Volume", desc:"Most liquid market in the world. Tight spreads, deep order books, 24/5 access." },
+              { market:"Gold", vol:"₹180 Billion", period:"Daily Volume", desc:"Safe-haven asset with high volatility potential and inverse USD correlation." },
+              { market:"Indices", vol:"₹400 Billion", period:"Daily Volume", desc:"Exposure to global equity movements without individual stock risk." },
             ].map((m, i) => (
               <div key={i} className="card-stealth p-8 text-center">
                 <h3 className="font-bold text-white text-xl mb-3">{m.market}</h3>

@@ -14,7 +14,7 @@ type Notification = {
 };
 
 const mockNotifications: Notification[] = [
-  { id: 1, title: 'Deposit Approved', message: 'Your deposit of $5,000 has been approved and added to your account.', type: 'success', isRead: false, createdAt: new Date(Date.now() - 1800000).toISOString() },
+  { id: 1, title: 'Deposit Approved', message: 'Your deposit of ₹5,000 has been approved and added to your account.', type: 'success', isRead: false, createdAt: new Date(Date.now() - 1800000).toISOString() },
   { id: 2, title: 'Strategy Update', message: 'RazrMarket strategy has been updated with improved volatility filters.', type: 'info', isRead: false, createdAt: new Date(Date.now() - 7200000).toISOString() },
   { id: 3, title: 'Market Alert', message: 'High volatility detected in EUR/USD. Risk parameters adjusted automatically.', type: 'warning', isRead: true, createdAt: new Date(Date.now() - 86400000).toISOString() },
   { id: 4, title: 'KYC Approved', message: 'Your identity verification is complete. Full trading limits are now active.', type: 'success', isRead: true, createdAt: new Date(Date.now() - 172800000).toISOString() },

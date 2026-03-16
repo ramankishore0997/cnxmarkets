@@ -9,7 +9,15 @@ import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
 
-interface LiveStat { winRate: number; livePnl: number; }
+const STANDARD_DAILY = 4.0;
+const RAZOR_DAILY = 8.0;
+const STANDARD_MONTHLY = parseFloat(((Math.pow(1.04, 30) - 1) * 100).toFixed(2));
+const RAZOR_MONTHLY = parseFloat(((Math.pow(1.08, 30) - 1) * 100).toFixed(2));
+const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
+const getDailyBase = (n: string) => isRazrName(n) ? RAZOR_DAILY : STANDARD_DAILY;
+const getMonthlyCompound = (n: string) => isRazrName(n) ? RAZOR_MONTHLY : STANDARD_MONTHLY;
+
+interface LiveStat { winRate: number; livePnl: number; dailyRate: number; }
 
 export function Strategies() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -25,10 +33,11 @@ export function Strategies() {
     allStrategies.forEach((s: any) => {
       const base = parseFloat(s.winRate);
       const cap = parseFloat(s.minCapital);
-      const monthly = parseFloat(s.monthlyReturn);
+      const daily = getDailyBase(s.name);
       initial[s.id] = {
         winRate: base,
-        livePnl: cap * (monthly / 100) * (0.9 + Math.random() * 0.2),
+        livePnl: cap * (daily / 100) * (0.9 + Math.random() * 0.2),
+        dailyRate: daily,
       };
     });
     setLiveStats(initial);
@@ -46,10 +55,11 @@ export function Strategies() {
         toUpdate.forEach((sid: number) => {
           if (!next[sid]) return;
           const s = allStrategies.find((x: any) => x.id === sid);
-          const base = parseFloat(s.winRate);
+          const dailyBase = getDailyBase(s.name);
           next[sid] = {
             winRate: Math.min(99.9, Math.max(50, next[sid].winRate + (Math.random() - 0.48) * 0.3)),
             livePnl: next[sid].livePnl * (1 + (Math.random() - 0.45) * 0.008),
+            dailyRate: parseFloat((dailyBase + (Math.random() - 0.45) * 0.06).toFixed(2)),
           };
         });
         return next;
@@ -182,11 +192,22 @@ export function Strategies() {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-3 gap-2 mb-4">
-                    <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
-                      <p className="text-sm font-bold text-[#02C076]">+{s.monthlyReturn}%</p>
-                      <p className="text-[10px] text-[#848E9C] mt-0.5">Monthly</p>
+                  {/* ROI Banner */}
+                  <div className={`flex items-center justify-between rounded-xl px-3 py-2 mb-3 border ${isRazrName(s.name) ? 'bg-[#02C076]/10 border-[#02C076]/30' : 'bg-[#F0B90B]/10 border-[#F0B90B]/30'}`}>
+                    <div className="text-center">
+                      <p className={`text-base font-black tabular-nums ${isRazrName(s.name) ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>
+                        +{liveStats[s.id] ? liveStats[s.id].dailyRate.toFixed(2) : getDailyBase(s.name).toFixed(2)}%
+                      </p>
+                      <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Daily ROI ↻</p>
                     </div>
+                    <div className="w-px h-8 bg-[#2B3139]" />
+                    <div className="text-center">
+                      <p className="text-base font-black text-[#02C076]">+{getMonthlyCompound(s.name).toFixed(2)}%</p>
+                      <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Monthly (30d)</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mb-4">
                     <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
                       <p className="text-sm font-bold text-[#F0B90B] tabular-nums">
                         {liveStats[s.id] ? liveStats[s.id].winRate.toFixed(1) : s.winRate}%

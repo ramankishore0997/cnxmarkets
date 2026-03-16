@@ -85,6 +85,19 @@ export function AdminUsers() {
 
   const riskColors: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 
+  const isRazrName = (n?: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
+  const getDailyPct = (name?: string, target?: number | null) => {
+    if (isRazrName(name)) return 8.0;
+    return target ?? 4.0;
+  };
+  const getMonthlyCompound = (dailyPct: number) =>
+    parseFloat(((Math.pow(1 + dailyPct / 100, 30) - 1) * 100).toFixed(2));
+  const getProjectedMonthly = (balance: number, stratName?: string, target?: number | null) => {
+    const daily = getDailyPct(stratName, target);
+    const monthly = getMonthlyCompound(daily);
+    return balance * (monthly / 100);
+  };
+
   if (isLoading) return (
     <AdminLayout>
       <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div>
@@ -154,7 +167,7 @@ export function AdminUsers() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                      <div className="text-right min-w-[100px]">
+                      <div className="text-right min-w-[130px]">
                         <p className="font-bold text-white text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
                         {assignedStrat ? (
                           <span className="flex items-center gap-1 text-xs text-[#F0B90B] justify-end">
@@ -162,6 +175,11 @@ export function AdminUsers() {
                           </span>
                         ) : (
                           <span className="text-xs text-[#2B3139]">No strategy</span>
+                        )}
+                        {user.totalBalance > 0 && (
+                          <span className="text-[11px] text-[#02C076] font-semibold block mt-0.5">
+                            ~₹{Math.round(getProjectedMonthly(user.totalBalance, user.assignedStrategy, user.dailyGrowthTarget)).toLocaleString('en-IN')}/mo
+                          </span>
                         )}
                       </div>
 
@@ -267,6 +285,38 @@ export function AdminUsers() {
                           Save Changes
                         </button>
                       </div>
+
+                      {/* Projected Earnings Panel */}
+                      {user.totalBalance > 0 && (() => {
+                        const dailyPct = getDailyPct(user.assignedStrategy, user.dailyGrowthTarget);
+                        const monthlyPct = getMonthlyCompound(dailyPct);
+                        const dailyAmt = user.totalBalance * (dailyPct / 100);
+                        const monthlyAmt = user.totalBalance * (monthlyPct / 100);
+                        const isRazr = isRazrName(user.assignedStrategy);
+                        return (
+                          <div className={`mt-4 p-4 rounded-xl border ${isRazr ? 'bg-[#02C076]/5 border-[#02C076]/20' : 'bg-[#F0B90B]/5 border-[#F0B90B]/20'}`}>
+                            <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: isRazr ? '#02C076' : '#F0B90B' }}>
+                              Projected Earnings ({isRazr ? 'RazrMarket 8%/day' : `Standard ${dailyPct}%/day`})
+                            </p>
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                              <div>
+                                <p className="text-lg font-black text-white">+₹{Math.round(dailyAmt).toLocaleString('en-IN')}</p>
+                                <p className="text-[10px] text-[#848E9C] font-medium">Daily</p>
+                              </div>
+                              <div>
+                                <p className="text-lg font-black" style={{ color: isRazr ? '#02C076' : '#F0B90B' }}>
+                                  +₹{Math.round(monthlyAmt / 4).toLocaleString('en-IN')}
+                                </p>
+                                <p className="text-[10px] text-[#848E9C] font-medium">Weekly (est.)</p>
+                              </div>
+                              <div>
+                                <p className="text-lg font-black text-[#02C076]">+₹{Math.round(monthlyAmt).toLocaleString('en-IN')}</p>
+                                <p className="text-[10px] text-[#848E9C] font-medium">Monthly ({monthlyPct}%)</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       <div className="mt-4 pt-4 border-t border-[#2B3139] grid grid-cols-3 gap-4 text-xs text-[#848E9C]">
                         <div>

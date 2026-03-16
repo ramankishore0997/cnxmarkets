@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowUpRight, Loader2, Banknote, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react';
 
 const schema = z.object({
-  amount: z.coerce.number().min(100, "Minimum withdrawal is $100"),
+  amount: z.coerce.number().min(100, "Minimum withdrawal is ₹100"),
   currency: z.string().min(1),
   bankName: z.string().min(2, "Bank name is required"),
   accountNumber: z.string().min(6, "Account number is required"),
@@ -177,7 +177,7 @@ export function Withdraw() {
                 <p className="text-white font-bold text-sm mb-2">Important</p>
                 <ul className="text-[#848E9C] text-xs space-y-1.5 leading-relaxed">
                   <li>• Withdrawals are only processed to verified accounts in your name</li>
-                  <li>• Minimum withdrawal amount is $100</li>
+                  <li>• Minimum withdrawal amount is ₹100</li>
                   <li>• Requests are reviewed before processing</li>
                   <li>• You will be notified once processed</li>
                 </ul>

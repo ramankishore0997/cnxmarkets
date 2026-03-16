@@ -78,7 +78,7 @@ export function Performance() {
         {/* Equity Curve */}
         <div className="card-stealth p-6 md:p-8 mb-12 border-t-4 border-t-[#F0B90B]">
           <div className="flex justify-between items-center mb-8">
-            <h3 className="text-2xl font-bold text-white">Composite Equity Curve (Initial $100k)</h3>
+            <h3 className="text-2xl font-bold text-white">Composite Equity Curve (Initial ₹10L)</h3>
             <button className="flex items-center gap-2 text-sm font-medium text-[#F0B90B] hover:bg-[#F0B90B]/10 px-4 py-2 rounded-lg transition-colors border border-[#F0B90B]/30">
               <Download className="w-4 h-4" /> Download Report
             </button>
@@ -94,11 +94,11 @@ export function Performance() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#2B3139" vertical={false} />
                 <XAxis dataKey="date" stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-                <YAxis stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${(val/1000)}k`} dx={-10} />
+                <YAxis stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${(val/1000)}k`} dx={-10} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#1E2329', borderColor: '#2B3139', borderRadius: '8px', color: '#fff' }}
                   itemStyle={{ color: '#F0B90B', fontWeight: 'bold' }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Equity']}
+                  formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, 'Equity']}
                 />
                 <Area type="monotone" dataKey="value" stroke="#F0B90B" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
               </AreaChart>

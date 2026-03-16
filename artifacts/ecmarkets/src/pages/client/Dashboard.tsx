@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
@@ -43,6 +43,34 @@ export function Dashboard() {
   const strategy = (data as any)?.assignedStrategyDetails;
   const strategyName = strategy?.name || (data as any)?.assignedStrategy;
   const dailyTarget = (data as any)?.dailyGrowthTarget;
+
+  // Live profit counter — ticks up gradually through the trading day
+  const isRazrStrategy = (n?: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
+  const dailyRatePct = isRazrStrategy(strategyName) ? 8.0 : (dailyTarget ?? 4.0);
+  const dailyTargetAmt = totalBalance > 0 ? totalBalance * (dailyRatePct / 100) : 0;
+  const monthlyCompound = parseFloat(((Math.pow(1 + dailyRatePct / 100, 30) - 1) * 100).toFixed(2));
+
+  const getISTProgress = () => {
+    const now = new Date();
+    const istMs = now.getTime() + (5.5 * 3600 * 1000);
+    const istDate = new Date(istMs);
+    const secondsSinceMidnight = (istDate.getUTCHours() * 3600) + (istDate.getUTCMinutes() * 60) + istDate.getUTCSeconds();
+    return Math.min(secondsSinceMidnight / 86400, 1);
+  };
+
+  const [liveProfit, setLiveProfit] = useState<number>(() => dailyTargetAmt * getISTProgress());
+
+  useEffect(() => {
+    if (!dailyTargetAmt) return;
+    setLiveProfit(dailyTargetAmt * getISTProgress());
+    const id = setInterval(() => {
+      setLiveProfit(prev => {
+        const increment = dailyTargetAmt * 0.0012 * (0.6 + Math.random() * 0.8);
+        return Math.min(prev + increment, dailyTargetAmt);
+      });
+    }, 4_500);
+    return () => clearInterval(id);
+  }, [dailyTargetAmt]);
 
   return (
     <DashboardLayout>
@@ -164,6 +192,52 @@ export function Dashboard() {
             <p className="text-xs text-[#848E9C]">Contact your account manager to activate an algorithmic strategy.</p>
           </div>
           <Link href="/dashboard/kyc" className="ml-auto text-xs font-bold text-[#F0B90B] hover:underline shrink-0">Complete KYC →</Link>
+        </div>
+      )}
+
+      {/* Live Profit Today Counter */}
+      {strategyName && dailyTargetAmt > 0 && (
+        <div className="card-stealth p-6 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#02C076]/5 rounded-full blur-[60px] pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />
+                  <p className="text-xs font-bold text-[#02C076] uppercase tracking-wider">Live Profit Today</p>
+                </div>
+                <p className="text-4xl font-black text-[#02C076] tabular-nums">
+                  +₹{liveProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+                <p className="text-sm text-[#848E9C] mt-1">
+                  Target: <span className="text-white font-bold">₹{dailyTargetAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="ml-2 text-[#F0B90B] font-bold">({dailyRatePct}% / day)</span>
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 md:min-w-[280px]">
+                <div className="flex justify-between text-xs font-semibold mb-1">
+                  <span className="text-[#848E9C]">Daily Progress</span>
+                  <span className="text-[#02C076]">{dailyTargetAmt > 0 ? ((liveProfit / dailyTargetAmt) * 100).toFixed(1) : 0}%</span>
+                </div>
+                <div className="w-full h-3 bg-[#2B3139] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-[#02C076] to-[#00E09E] transition-all duration-500"
+                    style={{ width: `${Math.min((liveProfit / dailyTargetAmt) * 100, 100)}%` }}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mt-1">
+                  <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                    <p className="text-sm font-bold text-[#F0B90B]">{dailyRatePct}%</p>
+                    <p className="text-[10px] text-[#848E9C]">Daily Target</p>
+                  </div>
+                  <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                    <p className="text-sm font-bold text-[#02C076]">+{monthlyCompound}%</p>
+                    <p className="text-[10px] text-[#848E9C]">Monthly (30d)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
