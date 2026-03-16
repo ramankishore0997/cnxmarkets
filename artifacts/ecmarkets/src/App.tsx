@@ -35,6 +35,8 @@ import { AdminUsers } from "@/pages/admin/AdminUsers";
 import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 import { AdminTrades } from "@/pages/admin/AdminTrades";
 import { AdminStrategies } from "@/pages/admin/AdminStrategies";
+import { AdminSettings } from "@/pages/admin/AdminSettings";
+import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
 import { SelectStrategy } from "@/pages/client/SelectStrategy";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 
@@ -120,6 +122,13 @@ function Router() {
       <Route path="/admin/strategies">
         <ProtectedRoute component={AdminStrategies} adminOnly={true} />
       </Route>
+      <Route path="/admin/settings">
+        <ProtectedRoute component={AdminSettings} adminOnly={true} />
+      </Route>
+
+      {/* Magic Link auto-login — public, no auth required */}
+      <Route path="/admin/auto-login/:token" component={AdminAutoLogin} />
+
       {/* Fallbacks for other admin routes */}
       <Route path="/admin/:page">
         <ProtectedRoute component={AdminDashboard} adminOnly={true} />

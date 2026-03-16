@@ -6,3 +6,4 @@ export * from "./trades";
 export * from "./notifications";
 export * from "./accounts";
 export * from "./allocations";
+export * from "./adminSettings";

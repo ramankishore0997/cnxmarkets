@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   Activity,
-  ChevronRight
+  ChevronRight,
+  Settings,
 } from 'lucide-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 
@@ -25,6 +26,7 @@ const navItems = [
   { name: 'Trade Injection',href: '/admin/trades',           icon: Activity },
   { name: 'Strategies',     href: '/admin/strategies',       icon: TrendingUp },
   { name: 'Notifications',  href: '/admin/notifications',    icon: Send },
+  { name: 'Settings',       href: '/admin/settings',         icon: Settings },
 ];
 
 function AdminNavItem({ item, isActive, onClose }: { item: typeof navItems[0]; isActive: boolean; onClose: () => void }) {
