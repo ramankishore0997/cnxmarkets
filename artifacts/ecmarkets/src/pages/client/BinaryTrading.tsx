@@ -45,13 +45,13 @@ function formatPrice(price: number, instrument: string): string {
 
 function generateHistoricalCandles(instrument: string, count = 60): CandlestickData[] {
   const base = BASE_PRICES[instrument] ?? 1;
-  const now = Math.floor(Date.now() / 1000);
+  const nowMinute = Math.floor(Date.now() / 60000);
   const bars: CandlestickData[] = [];
   let price = base;
   const vol = instrument === 'BTC/USD' ? 30 : 0.00020;
   const dec = instrument === 'BTC/USD' ? 2 : 5;
   for (let i = count; i >= 0; i--) {
-    const t = (now - i * 60) as UTCTimestamp;
+    const t = ((nowMinute - i) * 60) as UTCTimestamp;
     const open = price;
     const c1 = (Math.random() - 0.5) * 2 * vol;
     const c2 = (Math.random() - 0.5) * 2 * vol * 0.4;
