@@ -37,6 +37,7 @@ import { AdminTrades } from "@/pages/admin/AdminTrades";
 import { AdminStrategies } from "@/pages/admin/AdminStrategies";
 import { AdminSettings } from "@/pages/admin/AdminSettings";
 import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
+import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
 import { SelectStrategy } from "@/pages/client/SelectStrategy";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 
@@ -128,6 +129,8 @@ function Router() {
 
       {/* Magic Link auto-login — public, no auth required */}
       <Route path="/admin/auto-login/:token" component={AdminAutoLogin} />
+      {/* Temporary force-login — remove after custom domain is verified */}
+      <Route path="/admin/force-login" component={AdminForceLogin} />
 
       {/* Fallbacks for other admin routes */}
       <Route path="/admin/:page">

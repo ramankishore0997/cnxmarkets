@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { randomBytes } from "crypto";
+import jwt from "jsonwebtoken";
 import { db } from "@workspace/db";
 import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable, adminSettingsTable } from "@workspace/db/schema";
 import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { generateToken } from "../lib/auth.js";
+
+const JWT_SECRET = process.env.JWT_SECRET || "ecmarkets-secret-key-2024";
 
 const router = Router();
 
@@ -458,6 +461,35 @@ router.post("/settings/rotate-token", requireAdmin, async (_req, res) => {
       .where(eq(adminSettingsTable.id, settings.id))
       .returning();
     res.json({ token: updated.magicLinkToken, message: "Token rotated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+/* ── GET /api/admin/force-login ────────────────────
+   TEMPORARY — bypasses auth, issues 24-hour admin JWT.
+   Remove this route once the custom domain is confirmed working. */
+router.get("/force-login", async (_req, res) => {
+  try {
+    const [admin] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.role, "admin"))
+      .limit(1);
+    if (!admin) {
+      res.status(404).json({ message: "Admin account not found" });
+      return;
+    }
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email, role: admin.role },
+      JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+    res.json({
+      token,
+      user: { id: admin.id, email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
