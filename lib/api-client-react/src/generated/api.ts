@@ -1163,7 +1163,7 @@ export const useSubmitWithdrawal = <
  * @summary Client selects or changes their strategy
  */
 export const getSelectStrategyUrl = () => {
-  return `/api/select-strategy`;
+  return `/api/accounts/select-strategy`;
 };
 
 export const selectStrategy = async (

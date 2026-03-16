@@ -309,8 +309,7 @@ export function TradeHistory() {
                       {/* P&L */}
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                          {(trade.profit ?? 0) >= 0 ? '+' : ''}
-                          ₹{Math.abs(trade.profit ?? 0).toLocaleString('en-IN', {
+                          {(trade.profit ?? 0) >= 0 ? '+' : '-'}₹{Math.abs(trade.profit ?? 0).toLocaleString('en-IN', {
                             minimumFractionDigits: 2, maximumFractionDigits: 2,
                           })}
                         </span>
