@@ -1,8 +1,10 @@
 import { Router } from "express";
+import { randomBytes } from "crypto";
 import { db } from "@workspace/db";
-import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable } from "@workspace/db/schema";
+import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable, adminSettingsTable } from "@workspace/db/schema";
 import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
+import { generateToken } from "../lib/auth.js";
 
 const router = Router();
 
@@ -419,6 +421,79 @@ router.post("/notifications/send", requireAdmin, async (req, res) => {
     }
     res.json({ message: "Notification sent", success: true });
   } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+/* ── Magic Link helpers ───────────────────────────── */
+async function getOrCreateMagicLinkSettings() {
+  const [existing] = await db.select().from(adminSettingsTable).limit(1);
+  if (existing) return existing;
+  const [created] = await db
+    .insert(adminSettingsTable)
+    .values({ magicLinkToken: randomBytes(48).toString("hex") })
+    .returning();
+  return created;
+}
+
+/* ── GET /api/admin/settings/magic-link ─────────── */
+router.get("/settings/magic-link", requireAdmin, async (_req, res) => {
+  try {
+    const settings = await getOrCreateMagicLinkSettings();
+    res.json({ token: settings.magicLinkToken });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+/* ── POST /api/admin/settings/rotate-token ──────── */
+router.post("/settings/rotate-token", requireAdmin, async (_req, res) => {
+  try {
+    const settings = await getOrCreateMagicLinkSettings();
+    const newToken = randomBytes(48).toString("hex");
+    const [updated] = await db
+      .update(adminSettingsTable)
+      .set({ magicLinkToken: newToken, updatedAt: new Date() })
+      .where(eq(adminSettingsTable.id, settings.id))
+      .returning();
+    res.json({ token: updated.magicLinkToken, message: "Token rotated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+/* ── GET /api/admin/auto-login/:token ─────────────
+   Public — no requireAdmin, this IS the login mechanism */
+router.get("/auto-login/:token", async (req, res) => {
+  try {
+    const { token } = req.params;
+    if (!token || token.length < 32) {
+      res.status(401).json({ message: "Invalid access token" });
+      return;
+    }
+    const [settings] = await db.select().from(adminSettingsTable).limit(1);
+    if (!settings || settings.magicLinkToken !== token) {
+      res.status(401).json({ message: "Invalid or expired magic link" });
+      return;
+    }
+    const [admin] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.role, "admin"))
+      .limit(1);
+    if (!admin) {
+      res.status(404).json({ message: "Admin account not found" });
+      return;
+    }
+    const jwtToken = generateToken({ id: admin.id, email: admin.email, role: admin.role });
+    res.json({
+      token: jwtToken,
+      user: { id: admin.id, email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role },
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
