@@ -272,8 +272,7 @@ export function BinaryTrading() {
       crosshair: { mode: 1 },
       rightPriceScale: { borderColor: '#1F2937', scaleMargins: { top: 0.1, bottom: 0.1 } },
       timeScale: { borderColor: '#1F2937', timeVisible: true, secondsVisible: false },
-      width: chartRef.current.clientWidth,
-      height: chartRef.current.clientHeight || 320,
+      autoSize: true,
     });
     const series = chart.addSeries(CandlestickSeries, {
       upColor: '#02C076', downColor: '#CF304A',
@@ -298,15 +297,9 @@ export function BinaryTrading() {
     });
     priceLineRef.current = pl;
 
-    const ro = new ResizeObserver(() => {
-      if (chartRef.current) chart.applyOptions({ width: chartRef.current.clientWidth, height: chartRef.current.clientHeight });
-    });
-    if (chartRef.current.parentElement) ro.observe(chartRef.current.parentElement);
-
     return () => {
       priceLineRef.current = null;
       entryLinesRef.current.clear();
-      ro.disconnect();
       chart.remove();
       chartInstance.current = null;
       seriesRef.current = null;
@@ -690,7 +683,7 @@ export function BinaryTrading() {
                   ))}
                 </div>
               </div>
-              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 0 }} />
+              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: '280px' }} />
             </div>
 
             {/* Active Trades Strip */}
