@@ -11,11 +11,8 @@ const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20',
 
 const STANDARD_DAILY = 4.0;
 const RAZOR_DAILY = 8.0;
-const STANDARD_MONTHLY = parseFloat(((Math.pow(1.04, 30) - 1) * 100).toFixed(2));
-const RAZOR_MONTHLY = parseFloat(((Math.pow(1.08, 30) - 1) * 100).toFixed(2));
 const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
 const getDailyBase = (n: string) => isRazrName(n) ? RAZOR_DAILY : STANDARD_DAILY;
-const getMonthlyCompound = (n: string) => isRazrName(n) ? RAZOR_MONTHLY : STANDARD_MONTHLY;
 
 interface LiveStat { winRate: number; livePnl: number; dailyRate: number; }
 
@@ -202,7 +199,7 @@ export function Strategies() {
                     </div>
                     <div className="w-px h-8 bg-[#2B3139]" />
                     <div className="text-center">
-                      <p className="text-base font-black text-[#02C076]">+{getMonthlyCompound(s.name).toFixed(2)}%</p>
+                      <p className="text-base font-black text-[#02C076]">+{parseFloat(s.monthlyReturn).toFixed(2)}%</p>
                       <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Monthly (30d)</p>
                     </div>
                   </div>
@@ -244,8 +241,8 @@ export function Strategies() {
               <h2 className="text-3xl font-bold text-white mb-3">Full Strategy Comparison</h2>
               <p className="text-[#848E9C] max-w-2xl mx-auto">Side-by-side live metrics for all {allStrategies.length} active strategies</p>
               <div className="flex items-center justify-center gap-6 mt-4 text-xs text-[#848E9C]">
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F0B90B]" />Standard — 4% daily · 224.34% monthly</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#02C076]" />RazrMarket — 8% daily · 906.27% monthly</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F0B90B]" />Standard — 4% daily target</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#02C076]" />RazrMarket — 8% daily target</span>
               </div>
             </div>
             <div className="card-stealth overflow-hidden">
@@ -259,7 +256,7 @@ export function Strategies() {
                         { label: 'Min Capital', sub: '' },
                         { label: 'Win Rate', sub: '↻ live' },
                         { label: 'Daily ROI', sub: '↻ live' },
-                        { label: 'Monthly ROI', sub: '30d compnd' },
+                        { label: 'Monthly ROI', sub: 'from DB' },
                         { label: 'Max DD', sub: '' },
                         { label: 'Markets', sub: '' },
                         { label: 'Status', sub: '' },
@@ -276,7 +273,7 @@ export function Strategies() {
                       const live = liveStats[s.id];
                       const isRazr = isRazrName(s.name);
                       const dailyBase = getDailyBase(s.name);
-                      const monthly = getMonthlyCompound(s.name);
+                      const monthly = parseFloat(s.monthlyReturn);
                       const displayDailyRate = live?.dailyRate ?? dailyBase;
                       const displayWinRate = live?.winRate ?? parseFloat(s.winRate);
                       return (

@@ -7,3 +7,4 @@ export * from "./notifications";
 export * from "./accounts";
 export * from "./allocations";
 export * from "./adminSettings";
+export * from "./binaryTrades";
