@@ -1,17 +1,23 @@
-import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { useGetStrategies, useGetDashboard } from '@workspace/api-client-react';
+import { useGetStrategies, useGetDashboard, useSelectStrategy } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 import {
   Zap, Search, CheckCircle, Loader2, TrendingUp,
-  Shield, AlertTriangle, Target, BarChart2, Wallet, Filter
+  Shield, AlertTriangle, Target, Wallet, Filter
 } from 'lucide-react';
 
 const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
 const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
 const RISK_ICONS: Record<string, any> = { low: Shield, medium: Target, high: AlertTriangle };
+
+const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
+const getDailyRate = (n: string) => isRazrName(n) ? 8.0 : 4.0;
+const getMonthlyCompound = (n: string) => isRazrName(n)
+  ? parseFloat(((Math.pow(1.08, 30) - 1) * 100).toFixed(2))
+  : parseFloat(((Math.pow(1.04, 30) - 1) * 100).toFixed(2));
 
 export function SelectStrategy() {
   const queryClient = useQueryClient();
@@ -22,6 +28,25 @@ export function SelectStrategy() {
 
   const { data: strategies, isLoading: loadingStrats } = useGetStrategies();
   const { data: dashboard } = useGetDashboard({ ...getAuthOptions() });
+
+  const selectMutation = useSelectStrategy({
+    ...getAuthOptions(),
+    mutation: {
+      onSuccess: (_data, vars) => {
+        const stratId = (vars.data as any).strategyId;
+        toast({
+          title: stratId ? 'Strategy Activated!' : 'Strategy Removed',
+          description: stratId ? 'Your portfolio is now running this strategy.' : 'Strategy removed from your account.',
+        });
+        queryClient.invalidateQueries({ queryKey: ['/api/accounts/dashboard'] });
+        setActivating(null);
+      },
+      onError: (err: any) => {
+        toast({ title: 'Failed', description: err?.message || 'Could not update strategy.', variant: 'destructive' });
+        setActivating(null);
+      },
+    },
+  });
 
   const currentStrategyId = (dashboard as any)?.assignedStrategyId;
   const currentStrategyName = (dashboard as any)?.assignedStrategy;
@@ -35,26 +60,9 @@ export function SelectStrategy() {
     return matchesSearch && matchesRisk;
   });
 
-  const activateStrategy = async (strategyId: number | null) => {
+  const activate = (strategyId: number | null) => {
     setActivating(strategyId ?? -1);
-    try {
-      const token = localStorage.getItem('ecm_token') || '';
-      const res = await fetch('/api/accounts/select-strategy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ strategyId }),
-      });
-      if (res.ok) {
-        toast({ title: strategyId ? 'Strategy Activated!' : 'Strategy Removed', description: strategyId ? 'Your portfolio is now running this strategy.' : 'Strategy removed from your account.' });
-        queryClient.invalidateQueries({ queryKey: ['/api/accounts/dashboard'] });
-      } else {
-        const err = await res.json();
-        toast({ title: 'Failed', description: err.message || 'Could not update strategy.', variant: 'destructive' });
-      }
-    } catch {
-      toast({ title: 'Network error', variant: 'destructive' });
-    }
-    setActivating(null);
+    selectMutation.mutate({ data: { strategyId: strategyId ?? undefined } } as any);
   };
 
   if (loadingStrats) {
@@ -62,8 +70,8 @@ export function SelectStrategy() {
       <DashboardLayout>
         <div className="flex h-[60vh] items-center justify-center">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 border-4 border-[#2B3139] rounded-full"></div>
-            <div className="absolute inset-0 border-t-4 border-[#F0B90B] rounded-full animate-spin"></div>
+            <div className="absolute inset-0 border-4 border-[#2B3139] rounded-full" />
+            <div className="absolute inset-0 border-t-4 border-[#F0B90B] rounded-full animate-spin" />
           </div>
         </div>
       </DashboardLayout>
@@ -87,10 +95,17 @@ export function SelectStrategy() {
             <div>
               <p className="text-xs font-semibold text-[#F0B90B] uppercase tracking-wider mb-0.5">Currently Active</p>
               <p className="text-lg font-bold text-white">{currentStrategyName}</p>
+              <p className="text-xs text-[#848E9C] mt-0.5">
+                <span className={isRazrName(currentStrategyName) ? 'text-[#02C076] font-bold' : 'text-[#F0B90B] font-bold'}>
+                  +{getDailyRate(currentStrategyName)}% /day
+                </span>
+                {' · '}
+                <span className="text-[#02C076] font-bold">+{getMonthlyCompound(currentStrategyName).toFixed(2)}% /mo</span>
+              </p>
             </div>
           </div>
           <button
-            onClick={() => activateStrategy(null)}
+            onClick={() => activate(null)}
             disabled={activating !== null}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/30 font-bold text-sm hover:bg-[#CF304A]/30 transition-all"
           >
@@ -136,6 +151,11 @@ export function SelectStrategy() {
         </div>
       </div>
 
+      {/* Strategy Count */}
+      <p className="text-xs text-[#848E9C] mb-4 font-medium">
+        {filtered.length} of {allStrategies.length} strategies shown
+      </p>
+
       {/* Strategy Grid */}
       {filtered.length === 0 ? (
         <div className="card-stealth p-16 text-center">
@@ -149,6 +169,9 @@ export function SelectStrategy() {
             const RiskIcon = RISK_ICONS[s.riskProfile] || Target;
             const canAfford = balance >= s.minCapital;
             const isLoading = activating === s.id;
+            const isRazr = isRazrName(s.name);
+            const dailyRate = getDailyRate(s.name);
+            const monthlyRate = getMonthlyCompound(s.name);
 
             return (
               <div
@@ -160,6 +183,9 @@ export function SelectStrategy() {
                     <CheckCircle className="w-3.5 h-3.5 text-[#F0B90B]" />
                     <span className="text-[#F0B90B] text-xs font-bold">ACTIVE</span>
                   </div>
+                )}
+                {isRazr && !isActive && (
+                  <div className="absolute top-3 right-3 px-2 py-0.5 rounded-lg bg-[#F0B90B] text-black text-[9px] font-black uppercase tracking-wide">FLAGSHIP</div>
                 )}
 
                 <div className="flex items-start gap-3 mb-4">
@@ -175,27 +201,36 @@ export function SelectStrategy() {
                   </div>
                 </div>
 
-                <p className="text-sm text-[#848E9C] mb-5 leading-relaxed flex-1">{s.description}</p>
+                <p className="text-sm text-[#848E9C] mb-4 leading-relaxed flex-1">{s.description}</p>
 
-                <div className="grid grid-cols-3 gap-3 mb-5">
-                  <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
-                    <p className="text-base font-bold text-[#02C076]">+{s.monthlyReturn}%</p>
-                    <p className="text-[10px] text-[#848E9C] mt-0.5">Monthly</p>
+                {/* ROI Banner */}
+                <div className={`rounded-xl p-3 mb-4 border flex items-center justify-between ${isRazr ? 'bg-[#02C076]/10 border-[#02C076]/30' : 'bg-[#F0B90B]/10 border-[#F0B90B]/30'}`}>
+                  <div className="text-center">
+                    <p className={`text-lg font-black tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>+{dailyRate.toFixed(1)}%</p>
+                    <p className="text-[10px] text-[#848E9C]">Daily ROI</p>
                   </div>
+                  <div className="text-[#2B3139] text-lg">→</div>
+                  <div className="text-center">
+                    <p className="text-lg font-black text-[#02C076] tabular-nums">+{monthlyRate.toFixed(2)}%</p>
+                    <p className="text-[10px] text-[#848E9C]">Monthly (30d)</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
                     <p className="text-base font-bold text-[#F0B90B]">{s.winRate}%</p>
                     <p className="text-[10px] text-[#848E9C] mt-0.5">Win Rate</p>
                   </div>
                   <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
                     <p className="text-base font-bold text-[#CF304A]">{s.maxDrawdown}%</p>
-                    <p className="text-[10px] text-[#848E9C] mt-0.5">Drawdown</p>
+                    <p className="text-[10px] text-[#848E9C] mt-0.5">Max Drawdown</p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between mb-4 text-xs">
                   <div className="flex items-center gap-1.5 text-[#848E9C]">
                     <Wallet className="w-3.5 h-3.5" />
-                    <span>Min: <span className={`font-bold ${canAfford ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>₹{Number(s.minCapital).toLocaleString('en-IN')}</span></span>
+                    <span>Min Capital: <span className={`font-bold ${canAfford ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>₹{Number(s.minCapital).toLocaleString('en-IN')}</span></span>
                   </div>
                   {!canAfford && balance > 0 && (
                     <span className="text-[#CF304A] text-[10px] font-bold">Insufficient balance</span>
@@ -208,7 +243,7 @@ export function SelectStrategy() {
                   </button>
                 ) : (
                   <button
-                    onClick={() => activateStrategy(s.id)}
+                    onClick={() => activate(s.id)}
                     disabled={isLoading || activating !== null}
                     className="w-full py-3 rounded-xl bg-[#F0B90B] text-black font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#F8D33A] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   >

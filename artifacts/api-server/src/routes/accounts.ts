@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { accountsTable, tradesTable, transactionsTable, allocationsTable, strategiesTable } from "@workspace/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -28,21 +28,36 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
       }
     }
 
-    const equityCurve = balance > 0
-      ? (() => {
-          const curve = [];
-          let value = balance;
-          const now = new Date();
-          for (let i = 30; i >= 0; i--) {
-            const date = new Date(now);
-            date.setDate(date.getDate() - i);
-            const change = (Math.random() - 0.35) * value * 0.015;
-            value = Math.max(value + change, value * 0.85);
-            curve.push({ date: date.toISOString().split("T")[0], value: Math.round(value * 100) / 100 });
-          }
-          return curve;
-        })()
-      : [];
+    // Build equity curve from actual closed trades (no random values)
+    const allClosedTrades = await db
+      .select()
+      .from(tradesTable)
+      .where(and(eq(tradesTable.userId, req.user!.id), eq(tradesTable.status, "closed")))
+      .orderBy(tradesTable.closedAt);
+
+    let equityCurve: { date: string; value: number }[] = [];
+    if (balance > 0) {
+      const now = new Date();
+      // Build a date → daily profit sum map from real trades
+      const dailyProfits: Record<string, number> = {};
+      allClosedTrades.forEach(t => {
+        if (t.closedAt && t.profit) {
+          const dateStr = new Date(t.closedAt).toISOString().split("T")[0];
+          dailyProfits[dateStr] = (dailyProfits[dateStr] || 0) + parseFloat(t.profit as string);
+        }
+      });
+      // Starting value = balance minus all-time profit (i.e. original capital)
+      const totalProfitVal = account ? parseFloat(account.totalProfit as string) : 0;
+      let running = Math.max(balance - totalProfitVal, 0);
+      if (running === 0) running = balance;
+      for (let i = 30; i >= 0; i--) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split("T")[0];
+        running = Math.max(running + (dailyProfits[dateStr] || 0), 0.01);
+        equityCurve.push({ date: dateStr, value: Math.round(running * 100) / 100 });
+      }
+    }
 
     res.json({
       totalBalance: balance,

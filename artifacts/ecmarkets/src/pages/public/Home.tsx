@@ -81,7 +81,7 @@ export function Home() {
   const isRazrName = (n: string) => n.toLowerCase().includes('razr') || n.toLowerCase().includes('razor');
 
   const stratTableRows = [
-    { name: "RazrMarket Strategy", trades: "1,247", wr: "73.2%" },
+    { name: "RazrMarket Strategy", trades: "1,247", wr: "82.5%" },
     { name: "Quantum Trend",       trades: "892",   wr: "68.9%" },
     { name: "Gold Breakout",       trades: "634",   wr: "71.5%" },
     { name: "Momentum Alpha",      trades: "1,089", wr: "66.3%" },
@@ -666,7 +666,7 @@ export function Home() {
             <div className="space-y-4">
               {[
                 { label: "+847 New Clients This Month", color: "text-[#02C076]", bg: "bg-[#02C076]/10 border-[#02C076]/30" },
-                { label: "$28.4M Capital Deployed (MTD)", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
+                { label: "₹28.4Cr Capital Deployed (MTD)", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
                 { label: "Average Client Return: +7.2% MTD", color: "text-[#02C076]", bg: "bg-[#02C076]/10 border-[#02C076]/30" },
                 { label: "Strategy Approval Rating: 94.8%", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
               ].map((b, i) => (

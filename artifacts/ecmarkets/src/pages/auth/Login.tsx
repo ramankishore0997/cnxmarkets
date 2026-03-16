@@ -90,7 +90,7 @@ export function Login() {
           <div className="grid grid-cols-2 gap-4">
             {[
               { value: '94.3%', label: 'Win Rate' },
-              { value: '$2.8M+', label: 'Assets Managed' },
+              { value: '₹2.8Cr+', label: 'Assets Managed' },
               { value: '12+', label: 'Live Strategies' },
               { value: '24/7', label: 'Market Coverage' },
             ].map((stat) => (

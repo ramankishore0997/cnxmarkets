@@ -141,11 +141,11 @@ export function Performance() {
               </div>
               <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
                 <span className="text-[#848E9C] font-medium">Avg. Win Trade</span>
-                <span className="font-bold text-[#02C076]">+$425</span>
+                <span className="font-bold text-[#02C076]">+₹425</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
                 <span className="text-[#848E9C] font-medium">Avg. Loss Trade</span>
-                <span className="font-bold text-[#CF304A]">-$262</span>
+                <span className="font-bold text-[#CF304A]">-₹262</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
                 <span className="text-[#848E9C] font-medium">Max Consec. Wins</span>

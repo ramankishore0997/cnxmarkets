@@ -102,7 +102,7 @@ export function About() {
                     <div className="flex items-center justify-between space-x-2 mb-1">
                       <div className="font-bold text-[#F0B90B]">Present</div>
                     </div>
-                    <div className="text-white font-medium text-sm">Over $120M in AUM managed automatically.</div>
+                    <div className="text-white font-medium text-sm">Over ₹120Cr in AUM managed automatically.</div>
                   </div>
                 </div>
               </div>
