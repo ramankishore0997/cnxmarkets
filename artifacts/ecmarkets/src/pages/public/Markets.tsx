@@ -2,6 +2,7 @@ import { PublicLayout } from '@/components/layout/PublicLayout';
 import { TradingChartWidget } from '@/components/shared/TradingWidget';
 import { Globe, TrendingUp, Activity, Clock } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'wouter';
 
 export function Markets() {
   const [activeTab, setActiveTab] = useState('EURUSD');
