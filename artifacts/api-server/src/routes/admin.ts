@@ -242,7 +242,10 @@ router.get("/transactions", requireAdmin, async (_req, res) => {
       userName: `${user?.firstName} ${user?.lastName}`, type: tx.type,
       amount: parseFloat(tx.amount as string), currency: tx.currency, status: tx.status,
       paymentMethod: tx.paymentMethod, transactionReference: tx.transactionReference,
-      notes: tx.notes, createdAt: tx.createdAt.toISOString(),
+      notes: tx.notes,
+      bankName: tx.bankName, accountNumber: tx.accountNumber,
+      ifscCode: tx.ifscCode, accountHolderName: tx.accountHolderName,
+      createdAt: tx.createdAt.toISOString(),
     })));
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
