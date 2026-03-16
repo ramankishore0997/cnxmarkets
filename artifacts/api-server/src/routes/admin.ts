@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable } from "@workspace/db/schema";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -346,6 +346,62 @@ router.delete("/strategies/:id", requireAdmin, async (req, res) => {
     await db.delete(strategiesTable).where(eq(strategiesTable.id, stratId));
     res.json({ message: "Strategy deleted", success: true });
   } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Admin: paginated trade history for a specific user
+router.get("/trades/user/:userId", requireAdmin, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+    const offset = (page - 1) * limit;
+    const fromDate = req.query.from ? new Date(req.query.from as string) : undefined;
+    const toDate = req.query.to ? new Date(req.query.to as string) : undefined;
+
+    const conditions: any[] = [eq(tradesTable.userId, userId)];
+    if (fromDate) conditions.push(gte(tradesTable.closedAt, fromDate));
+    if (toDate) {
+      const end = new Date(toDate);
+      end.setHours(23, 59, 59, 999);
+      conditions.push(lte(tradesTable.closedAt, end));
+    }
+    const where = and(...conditions);
+
+    const [{ total }] = await db
+      .select({ total: sql<number>`count(*)::int` })
+      .from(tradesTable)
+      .where(where);
+
+    const rows = await db
+      .select()
+      .from(tradesTable)
+      .where(where)
+      .orderBy(desc(tradesTable.closedAt))
+      .limit(limit)
+      .offset(offset);
+
+    const trades = rows.map(t => ({
+      id: t.id,
+      userId: t.userId,
+      strategyId: t.strategyId,
+      market: t.market,
+      instrument: t.instrument,
+      direction: t.direction,
+      entryPrice: parseFloat(t.entryPrice as string),
+      exitPrice: t.exitPrice ? parseFloat(t.exitPrice as string) : undefined,
+      lotSize: parseFloat(t.lotSize as string),
+      profit: t.profit ? parseFloat(t.profit as string) : undefined,
+      profitPercent: t.profitPercent ? parseFloat(t.profitPercent as string) : undefined,
+      status: t.status,
+      openedAt: t.openedAt.toISOString(),
+      closedAt: t.closedAt?.toISOString(),
+    }));
+
+    res.json({ trades, total, page, pages: Math.ceil(total / limit), limit });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });

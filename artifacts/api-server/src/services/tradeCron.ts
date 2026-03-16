@@ -1,35 +1,37 @@
 import { db } from "@workspace/db";
 import { accountsTable, tradesTable } from "@workspace/db/schema";
-import { eq, and, gte } from "drizzle-orm";
+import { eq, and, gte, lt } from "drizzle-orm";
 
-// Forex pairs only — prices in native quote currency (USD/JPY etc.)
-// INR conversion rate used to derive ₹ notional for profitPercent display
 const INR_PER_USD = 83.45;
 
-const INSTRUMENTS: Array<{
+interface Instrument {
   instrument: string;
   market: string;
-  basePrice: number;   // native price
-  lotSize: number;     // standard lot or mini lot
-  quoteToInr: number;  // multiplier to get INR notional per lot
-}> = [
+  basePrice: number;
+  lotSize: number;
+  quoteToInr: number;
+  isJpy?: boolean;
+  isCrypto?: boolean;
+}
+
+const INSTRUMENTS: Instrument[] = [
   // ---- Forex Majors ----
   { instrument: "EUR/USD", market: "Forex", basePrice: 1.0923, lotSize: 100_000, quoteToInr: INR_PER_USD },
   { instrument: "GBP/USD", market: "Forex", basePrice: 1.2725, lotSize: 100_000, quoteToInr: INR_PER_USD },
-  { instrument: "USD/JPY", market: "Forex", basePrice: 155.20, lotSize: 100_000, quoteToInr: INR_PER_USD / 155.2 },
+  { instrument: "USD/JPY", market: "Forex", basePrice: 155.20, lotSize: 100_000, quoteToInr: INR_PER_USD / 155.2, isJpy: true },
   { instrument: "AUD/USD", market: "Forex", basePrice: 0.6445, lotSize: 100_000, quoteToInr: INR_PER_USD },
   { instrument: "USD/CAD", market: "Forex", basePrice: 1.3618, lotSize: 100_000, quoteToInr: INR_PER_USD },
   { instrument: "USD/CHF", market: "Forex", basePrice: 0.9012, lotSize: 100_000, quoteToInr: INR_PER_USD },
   { instrument: "NZD/USD", market: "Forex", basePrice: 0.5950, lotSize: 100_000, quoteToInr: INR_PER_USD },
   { instrument: "EUR/GBP", market: "Forex", basePrice: 0.8578, lotSize: 100_000, quoteToInr: 107.5 },
-  { instrument: "EUR/JPY", market: "Forex", basePrice: 169.42, lotSize: 100_000, quoteToInr: INR_PER_USD / 155.2 },
-  { instrument: "GBP/JPY", market: "Forex", basePrice: 197.10, lotSize: 100_000, quoteToInr: INR_PER_USD / 155.2 },
+  { instrument: "EUR/JPY", market: "Forex", basePrice: 169.42, lotSize: 100_000, quoteToInr: INR_PER_USD / 155.2, isJpy: true },
+  { instrument: "GBP/JPY", market: "Forex", basePrice: 197.10, lotSize: 100_000, quoteToInr: INR_PER_USD / 155.2, isJpy: true },
   // ---- Crypto ----
-  { instrument: "BTC/USDT", market: "Crypto", basePrice: 65_240,  lotSize: 0.01, quoteToInr: INR_PER_USD },
-  { instrument: "ETH/USDT", market: "Crypto", basePrice:  3_215,  lotSize: 0.10, quoteToInr: INR_PER_USD },
-  { instrument: "SOL/USDT", market: "Crypto", basePrice:    158,  lotSize: 1.00, quoteToInr: INR_PER_USD },
-  { instrument: "BNB/USDT", market: "Crypto", basePrice:    582,  lotSize: 0.10, quoteToInr: INR_PER_USD },
-  { instrument: "XRP/USDT", market: "Crypto", basePrice:  0.526,  lotSize: 500,  quoteToInr: INR_PER_USD },
+  { instrument: "BTC/USDT", market: "Crypto", basePrice: 65_240,  lotSize: 0.01, quoteToInr: INR_PER_USD, isCrypto: true },
+  { instrument: "ETH/USDT", market: "Crypto", basePrice:  3_215,  lotSize: 0.10, quoteToInr: INR_PER_USD, isCrypto: true },
+  { instrument: "SOL/USDT", market: "Crypto", basePrice:    158,  lotSize: 1.00, quoteToInr: INR_PER_USD, isCrypto: true },
+  { instrument: "BNB/USDT", market: "Crypto", basePrice:    582,  lotSize: 0.10, quoteToInr: INR_PER_USD, isCrypto: true },
+  { instrument: "XRP/USDT", market: "Crypto", basePrice:  0.526,  lotSize: 500,  quoteToInr: INR_PER_USD, isCrypto: true },
 ];
 
 function getTodayStartIST(): Date {
@@ -44,9 +46,45 @@ function randomBetween(min: number, max: number): number {
   return min + Math.random() * (max - min);
 }
 
+function randInt(min: number, max: number): number {
+  return Math.floor(randomBetween(min, max + 1));
+}
+
+function calcExitPrice(instr: Instrument, entryPrice: number, direction: "buy" | "sell", profitPct: number): number {
+  const sign = direction === "buy" ? 1 : -1;
+  if (instr.isCrypto) {
+    // Crypto: small percentage move (0.05% – 2.5%)
+    const movePct = Math.abs(profitPct) * 0.8 + randomBetween(0.05, 0.3);
+    return entryPrice * (1 + sign * movePct / 100);
+  }
+  // Forex: pip-based movement
+  const pipSize = instr.isJpy ? 0.01 : 0.0001;
+  const pips = randomBetween(8, 55);
+  return entryPrice + sign * pips * pipSize;
+}
+
+function formatPrice(instr: Instrument, price: number): string {
+  if (instr.isCrypto) {
+    if (price > 10_000) return price.toFixed(2);
+    if (price > 1) return price.toFixed(4);
+    return price.toFixed(5);
+  }
+  if (instr.isJpy) return price.toFixed(3);
+  return price.toFixed(5);
+}
+
+async function purgeOldTrades(): Promise<void> {
+  const twoYearsAgo = new Date(Date.now() - 2 * 365 * 24 * 60 * 60 * 1_000);
+  await db.delete(tradesTable).where(lt(tradesTable.closedAt, twoYearsAgo));
+  console.log("[TradeCron] Old trades (>2 years) purged.");
+}
+
 async function executeAutomatedTrades(): Promise<void> {
   try {
     console.log("[TradeCron] Running automated trade execution...");
+
+    // Cleanup trades older than 2 years on each cron run
+    await purgeOldTrades();
 
     const allAccounts = await db.select().from(accountsTable);
     const eligible = allAccounts.filter(
@@ -80,36 +118,67 @@ async function executeAutomatedTrades(): Promise<void> {
         }
 
         const remaining = dailyTargetAmount - todayAccumulatedProfit;
-        // Contribute 28-45% of remaining per cron run so the target is hit naturally across 3-4 runs
         const runProfit = remaining * randomBetween(0.28, 0.45);
-        const tradeCount = Math.floor(randomBetween(2, 4));
+        const tradeCount = randInt(2, 3);
+
+        // Mix winning and losing trades — ~75% win rate
+        // Losses are small (5–15% of run profit); we inflate the run budget to compensate
+        const lossCount = tradeCount > 1 && Math.random() > 0.72 ? 1 : 0;
+        const lossAmounts: number[] = [];
+        for (let i = 0; i < lossCount; i++) {
+          lossAmounts.push(runProfit * randomBetween(0.05, 0.15));
+        }
+        const totalLoss = lossAmounts.reduce((a, b) => a + b, 0);
+        // Winners must cover losses + runProfit
+        const totalWinBudget = runProfit + totalLoss;
+
         let totalInserted = 0;
+        let lossIdx = 0;
+
+        // Shuffle a flag array: which trades are losses?
+        const isLossFlags = Array.from({ length: tradeCount }, (_, i) => {
+          // Never make the last trade a loss (it must close the gap)
+          if (i === tradeCount - 1) return false;
+          return i < lossCount;
+        });
+        // Simple shuffle of the loss positions (not last)
+        for (let i = isLossFlags.length - 2; i > 0; i--) {
+          const j = randInt(0, i);
+          [isLossFlags[i], isLossFlags[j]] = [isLossFlags[j], isLossFlags[i]];
+        }
 
         for (let i = 0; i < tradeCount; i++) {
-          const instr = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
-          const direction: "buy" | "sell" = Math.random() > 0.38 ? "buy" : "sell";
+          const isLast = i === tradeCount - 1;
+          const isLoss = !isLast && isLossFlags[i];
 
-          const priceVariance = 1 + randomBetween(-0.008, 0.008);
+          // Pick a random instrument — vary between runs
+          const instr = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
+          const direction: "buy" | "sell" = Math.random() > 0.4 ? "buy" : "sell";
+
+          const priceVariance = 1 + randomBetween(-0.005, 0.005);
           const entryPrice = instr.basePrice * priceVariance;
 
-          // INR profit for this trade
-          const isLast = i === tradeCount - 1;
-          const tradeProfit = Math.max(
-            isLast ? runProfit - totalInserted : runProfit / tradeCount * randomBetween(0.75, 1.25),
-            0.01
-          );
+          let tradeProfit: number;
+          if (isLast) {
+            tradeProfit = totalWinBudget - totalInserted - totalLoss;
+            if (tradeProfit < 0.01) tradeProfit = 0.01;
+          } else if (isLoss) {
+            tradeProfit = -(lossAmounts[lossIdx++]);
+          } else {
+            const winShare = (totalWinBudget / (tradeCount - lossCount));
+            tradeProfit = winShare * randomBetween(0.75, 1.25);
+          }
 
-          // Back-calculate a realistic-looking profitPercent
           const notionalInr = entryPrice * instr.lotSize * instr.quoteToInr;
           const profitPercent = (tradeProfit / notionalInr) * 100;
 
-          const exitPriceRaw = direction === "buy"
-            ? entryPrice * (1 + Math.abs(profitPercent / 100))
-            : entryPrice * (1 - Math.abs(profitPercent / 100));
+          const exitPrice = calcExitPrice(instr, entryPrice, direction, profitPercent);
 
-          const openMsAgo = randomBetween(0, 3_600_000);
+          // Randomized trade duration: 5 min – 4 hours
+          const durationMs = randomBetween(5 * 60_000, 4 * 60 * 60_000);
+          const openMsAgo = randomBetween(durationMs, durationMs + 2 * 60 * 60_000);
           const openedAt = new Date(Date.now() - openMsAgo);
-          const closedAt = new Date(openedAt.getTime() + randomBetween(300_000, 1_800_000));
+          const closedAt = new Date(openedAt.getTime() + durationMs);
 
           await db.insert(tradesTable).values({
             userId: account.userId,
@@ -117,9 +186,9 @@ async function executeAutomatedTrades(): Promise<void> {
             market: instr.market,
             instrument: instr.instrument,
             direction,
-            entryPrice: entryPrice.toFixed(5),
-            exitPrice: exitPriceRaw.toFixed(5),
-            lotSize: instr.lotSize.toFixed(4),
+            entryPrice: formatPrice(instr, entryPrice),
+            exitPrice: formatPrice(instr, exitPrice),
+            lotSize: instr.lotSize.toFixed(2),
             profit: tradeProfit.toFixed(2),
             profitPercent: profitPercent.toFixed(4),
             status: "closed",
@@ -127,18 +196,19 @@ async function executeAutomatedTrades(): Promise<void> {
             closedAt,
           });
 
-          totalInserted += tradeProfit;
+          totalInserted += isLoss ? 0 : tradeProfit;
         }
 
-        const newBalance = balance + totalInserted;
-        const newTotalProfit = parseFloat(account.totalProfit as string) + totalInserted;
+        const netProfit = runProfit; // design guarantees net = runProfit
+        const newBalance = balance + netProfit;
+        const newTotalProfit = parseFloat(account.totalProfit as string) + netProfit;
 
         await db.update(accountsTable)
           .set({ totalBalance: newBalance.toFixed(2), totalProfit: newTotalProfit.toFixed(2), updatedAt: new Date() })
           .where(eq(accountsTable.id, account.id));
 
         console.log(
-          `[TradeCron] User ${account.userId}: ${tradeCount} trade(s), +₹${totalInserted.toFixed(2)} | Today: ₹${(todayAccumulatedProfit + totalInserted).toFixed(2)} / ₹${dailyTargetAmount.toFixed(2)} target`
+          `[TradeCron] User ${account.userId}: ${tradeCount} trade(s) (${lossCount} loss), +₹${netProfit.toFixed(2)} | Today: ₹${(todayAccumulatedProfit + netProfit).toFixed(2)} / ₹${dailyTargetAmount.toFixed(2)} target`
         );
       } catch (err) {
         console.error(`[TradeCron] Error on account ${account.id}:`, err);

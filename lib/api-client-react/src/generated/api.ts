@@ -2952,3 +2952,159 @@ export const useChangePassword = <
 > => {
   return useMutation(getChangePasswordMutationOptions(options));
 };
+
+// ============================================================
+// Trade History — paginated endpoint with date-range filtering
+// ============================================================
+export interface TradeHistoryResponse {
+  trades: Trade[];
+  total: number;
+  page: number;
+  pages: number;
+  limit: number;
+}
+
+export interface GetTradeHistoryParams {
+  from?: string;
+  to?: string;
+  page?: number;
+  limit?: number;
+}
+
+export const getGetTradeHistoryUrl = (params?: GetTradeHistoryParams): string => {
+  const search = new URLSearchParams();
+  if (params?.from) search.set("from", params.from);
+  if (params?.to) search.set("to", params.to);
+  if (params?.page) search.set("page", String(params.page));
+  if (params?.limit) search.set("limit", String(params.limit));
+  const qs = search.toString();
+  return `/api/trades/history${qs ? `?${qs}` : ""}`;
+};
+
+export const getTradeHistory = async (
+  params?: GetTradeHistoryParams,
+  options?: RequestInit,
+): Promise<TradeHistoryResponse> => {
+  return customFetch<TradeHistoryResponse>(getGetTradeHistoryUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetTradeHistoryQueryKey = (params?: GetTradeHistoryParams) => {
+  return ["/api/trades/history", params] as const;
+};
+
+export const getGetTradeHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTradeHistory>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetTradeHistoryParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getTradeHistory>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetTradeHistoryQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getTradeHistory>>> = ({ signal }) =>
+    getTradeHistory(params, { signal, ...requestOptions });
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getTradeHistory>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetTradeHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getTradeHistory>>>;
+export type GetTradeHistoryQueryError = ErrorType<unknown>;
+
+export function useGetTradeHistory<
+  TData = Awaited<ReturnType<typeof getTradeHistory>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetTradeHistoryParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getTradeHistory>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetTradeHistoryQueryOptions(params, options);
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+// ============================================================
+// Admin — trade history for a specific user
+// ============================================================
+export interface GetAdminUserTradesParams {
+  userId: number;
+  from?: string;
+  to?: string;
+  page?: number;
+  limit?: number;
+}
+
+export const getGetAdminUserTradesUrl = (params: GetAdminUserTradesParams): string => {
+  const { userId, ...rest } = params;
+  const search = new URLSearchParams();
+  if (rest.from) search.set("from", rest.from);
+  if (rest.to) search.set("to", rest.to);
+  if (rest.page) search.set("page", String(rest.page));
+  if (rest.limit) search.set("limit", String(rest.limit));
+  const qs = search.toString();
+  return `/api/admin/trades/user/${userId}${qs ? `?${qs}` : ""}`;
+};
+
+export const getAdminUserTrades = async (
+  params: GetAdminUserTradesParams,
+  options?: RequestInit,
+): Promise<TradeHistoryResponse> => {
+  return customFetch<TradeHistoryResponse>(getGetAdminUserTradesUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetAdminUserTradesQueryKey = (params: GetAdminUserTradesParams) => {
+  return [`/api/admin/trades/user/${params.userId}`, params] as const;
+};
+
+export const getGetAdminUserTradesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAdminUserTrades>>,
+  TError = ErrorType<unknown>,
+>(
+  params: GetAdminUserTradesParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getAdminUserTrades>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetAdminUserTradesQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminUserTrades>>> = ({ signal }) =>
+    getAdminUserTrades(params, { signal, ...requestOptions });
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAdminUserTrades>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAdminUserTradesQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminUserTrades>>>;
+export type GetAdminUserTradesQueryError = ErrorType<unknown>;
+
+export function useGetAdminUserTrades<
+  TData = Awaited<ReturnType<typeof getAdminUserTrades>>,
+  TError = ErrorType<unknown>,
+>(
+  params: GetAdminUserTradesParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getAdminUserTrades>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetAdminUserTradesQueryOptions(params, options);
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  return { ...query, queryKey: queryOptions.queryKey };
+}

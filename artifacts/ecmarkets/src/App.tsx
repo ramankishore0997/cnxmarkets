@@ -36,6 +36,7 @@ import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 import { AdminTrades } from "@/pages/admin/AdminTrades";
 import { AdminStrategies } from "@/pages/admin/AdminStrategies";
 import { SelectStrategy } from "@/pages/client/SelectStrategy";
+import { TradeHistory } from "@/pages/client/TradeHistory";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,9 @@ function Router() {
       </Route>
       <Route path="/dashboard/strategies">
         <ProtectedRoute component={SelectStrategy} />
+      </Route>
+      <Route path="/dashboard/trades">
+        <ProtectedRoute component={TradeHistory} />
       </Route>
 
       {/* Admin Routes */}
