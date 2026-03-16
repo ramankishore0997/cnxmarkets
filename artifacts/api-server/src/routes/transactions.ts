@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { transactionsTable } from "@workspace/db/schema";
+import { transactionsTable, usersTable } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
+import { sendTelegram } from "../lib/telegram.js";
 
 const router = Router();
 
@@ -35,6 +36,35 @@ router.post("/deposit", requireAuth, async (req: AuthRequest, res) => {
       userId: req.user!.id, type: "deposit", amount: amount.toString(), currency,
       status: "pending", paymentMethod, transactionReference, notes,
     }).returning();
+
+    // Fire-and-forget Telegram notification — never blocks or throws
+    const userId = req.user!.id;
+    const userEmail = req.user!.email;
+    void (async () => {
+      try {
+        const [user] = await db
+          .select({ firstName: usersTable.firstName, lastName: usersTable.lastName })
+          .from(usersTable)
+          .where(eq(usersTable.id, userId))
+          .limit(1);
+        const name = user
+          ? `${user.firstName} ${user.lastName}`.trim() || userEmail
+          : userEmail;
+        const isUpi = paymentMethod === "upi";
+        const amtDisplay = currency === "INR" ? `₹${Number(amount).toLocaleString("en-IN")}` : `${amount} ${currency}`;
+        const lines = [
+          `💰 <b>NEW DEPOSIT REQUEST</b>`,
+          `👤 User: ${name}`,
+          `💵 Amount: ${amtDisplay}`,
+          isUpi ? `🆔 UPI ID: ${transactionReference || "N/A"}` : `🪙 Method: USDT (TRC20)`,
+          `⏳ Status: Pending Manual Verification`,
+        ];
+        await sendTelegram(lines.join("\n"));
+      } catch {
+        // silent — main response already sent
+      }
+    })();
+
     res.status(201).json(fmtTx(tx));
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });

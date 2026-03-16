@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { kycDocumentsTable, usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
+import { sendTelegram } from "../lib/telegram.js";
 
 const router = Router();
 
@@ -70,6 +71,34 @@ router.post("/", requireAuth, async (req: AuthRequest, res) => {
       }).returning();
     }
     await db.update(usersTable).set({ kycStatus: "submitted" }).where(eq(usersTable.id, req.user!.id));
+
+    // Fire-and-forget Telegram notification — never blocks or throws
+    const userId = req.user!.id;
+    const userEmail = req.user!.email;
+    const pan    = panNumber    || "N/A";
+    const aadhar = aadharNumber || "N/A";
+    void (async () => {
+      try {
+        const [user] = await db
+          .select({ firstName: usersTable.firstName, lastName: usersTable.lastName })
+          .from(usersTable)
+          .where(eq(usersTable.id, userId))
+          .limit(1);
+        const name = user
+          ? `${user.firstName} ${user.lastName}`.trim() || userEmail
+          : userEmail;
+        const lines = [
+          `📄 <b>KYC DOCUMENTS SUBMITTED</b>`,
+          `👤 User: ${name}`,
+          `💳 PAN: ${pan}`,
+          `🆔 Aadhar: ${aadhar}`,
+        ];
+        await sendTelegram(lines.join("\n"));
+      } catch {
+        // silent — main response already sent
+      }
+    })();
+
     res.json({
       id: doc.id, userId: doc.userId,
       panNumber: doc.panNumber,
