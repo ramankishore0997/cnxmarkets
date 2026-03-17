@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { useGetStrategies } from '@workspace/api-client-react';
 import { TrendingUp, Filter, BarChart2, Shield, Cpu, Loader2, Zap, Activity } from 'lucide-react';
@@ -16,14 +16,21 @@ const getDailyBase = (n: string) => isRazrName(n) ? RAZOR_DAILY : STANDARD_DAILY
 
 interface LiveStat { winRate: number; livePnl: number; dailyRate: number; }
 
+// Deterministic pseudo-random from strategy id (no Math.random for seeding)
+function seededFrac(id: number, salt: number): number {
+  const x = Math.sin(id * 9301 + salt * 49297 + 233) * 100003;
+  return x - Math.floor(x);
+}
+
 export function Strategies() {
   const [activeFilter, setActiveFilter] = useState('All');
   const { data: strategiesRaw, isLoading } = useGetStrategies();
   const [liveStats, setLiveStats] = useState<Record<number, LiveStat>>({});
+  const tickRef = useRef(0);
 
   const allStrategies = ((strategiesRaw as any[]) || []).filter((s: any) => s.isActive);
 
-  // Initialise live stats once strategies load
+  // Initialise live stats once strategies load — deterministic per strategy id
   useEffect(() => {
     if (!allStrategies.length) return;
     const initial: Record<number, LiveStat> = {};
@@ -33,30 +40,34 @@ export function Strategies() {
       const daily = getDailyBase(s.name);
       initial[s.id] = {
         winRate: base,
-        livePnl: cap * (daily / 100) * (0.9 + Math.random() * 0.2),
+        livePnl: cap * (daily / 100) * (0.90 + seededFrac(s.id, 1) * 0.20),
         dailyRate: daily,
       };
     });
     setLiveStats(initial);
   }, [allStrategies.length]);
 
-  // Fluctuate 2-4 random strategies every 2.8 seconds
+  // Fluctuate strategies every 2.8 s using time-based sine variation (no Math.random)
   useEffect(() => {
     if (!allStrategies.length) return;
     const id = setInterval(() => {
+      tickRef.current += 1;
+      const tick = tickRef.current;
       const ids = allStrategies.map((s: any) => s.id);
-      const count = Math.floor(Math.random() * 3) + 2;
-      const toUpdate = ids.sort(() => Math.random() - 0.5).slice(0, count);
+      // Pick 2-3 strategies deterministically per tick
+      const pickCount = (tick % 2) + 2;
+      const toUpdate = ids.filter((_: number, i: number) => ((i + tick) % Math.max(1, ids.length / pickCount)) < 1);
       setLiveStats(prev => {
         const next = { ...prev };
         toUpdate.forEach((sid: number) => {
           if (!next[sid]) return;
           const s = allStrategies.find((x: any) => x.id === sid);
           const dailyBase = getDailyBase(s.name);
+          const wave = Math.sin(tick * 0.4 + sid * 1.3) * 0.5; // -0.5 to +0.5
           next[sid] = {
-            winRate: Math.min(99.9, Math.max(50, next[sid].winRate + (Math.random() - 0.48) * 0.3)),
-            livePnl: next[sid].livePnl * (1 + (Math.random() - 0.45) * 0.008),
-            dailyRate: parseFloat((dailyBase + (Math.random() - 0.45) * 0.06).toFixed(2)),
+            winRate: Math.min(99.9, Math.max(50, next[sid].winRate + wave * 0.3)),
+            livePnl: next[sid].livePnl * (1 + Math.sin(tick * 0.7 + sid) * 0.004),
+            dailyRate: parseFloat((dailyBase + Math.sin(tick * 0.5 + sid * 0.8) * 0.03).toFixed(2)),
           };
         });
         return next;

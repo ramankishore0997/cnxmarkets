@@ -186,7 +186,7 @@ export function Login() {
                 </div>
                 <h1 className="text-2xl font-bold text-white mb-2 tracking-tight">Reset Password</h1>
                 <p style={{ color: '#848E9C' }} className="text-sm leading-relaxed">
-                  Apni registered email aur naya password bharo. Submit karte hi aapki mail app khulegi — bas email bhej do.
+                  Enter your registered email and desired new password. Clicking submit will open your mail app with a pre-filled message — just hit Send.
                 </p>
               </div>
 
@@ -199,15 +199,15 @@ export function Login() {
                     <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#02C076' }} />
                     <div>
                       <p className="text-sm font-bold leading-relaxed" style={{ color: '#02C076' }}>
-                        Mail app khul gayi!
+                        Your mail app has opened!
                       </p>
                       <p className="text-xs mt-1 leading-relaxed" style={{ color: '#02C076' }}>
-                        Draft taiyaar hai — sirf Send karo. Hum 24 ghante mein aapka password reset kar denge.
+                        A draft email is ready — just press Send. Our team will reset your password within 24 hours.
                       </p>
                     </div>
                   </div>
                   <p className="text-center text-xs" style={{ color: '#848E9C' }}>
-                    Mail app nahi khuli?{' '}
+                    Mail app didn't open?{' '}
                     <a
                       href={`mailto:${SUPPORT_EMAIL}`}
                       className="underline font-semibold"
@@ -215,7 +215,7 @@ export function Login() {
                     >
                       {SUPPORT_EMAIL}
                     </a>{' '}
-                    pe manually email karo.
+                    — email us directly.
                   </p>
                   <button
                     onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
@@ -263,7 +263,7 @@ export function Login() {
                   {/* New password field */}
                   <div className="space-y-1.5">
                     <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>
-                      Naya Password
+                      New Password
                     </label>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
