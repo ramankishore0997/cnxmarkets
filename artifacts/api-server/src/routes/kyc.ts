@@ -12,17 +12,10 @@ router.get("/", requireAuth, async (req: AuthRequest, res) => {
     const [doc] = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.userId, req.user!.id)).limit(1);
     if (!doc) { res.json(null); return; }
     res.json({
-      id: doc.id, userId: doc.userId,
+      id: doc.id,
+      userId: doc.userId,
       panNumber: doc.panNumber,
       aadharNumber: doc.aadharNumber,
-      panCardFrontUrl: doc.panCardFrontUrl,
-      panCardBackUrl: doc.panCardBackUrl,
-      aadharCardFrontUrl: doc.aadharCardFrontUrl,
-      aadharCardBackUrl: doc.aadharCardBackUrl,
-      idDocumentType: doc.idDocumentType,
-      idDocumentUrl: doc.idDocumentUrl,
-      addressProofType: doc.addressProofType,
-      addressProofUrl: doc.addressProofUrl,
       status: doc.status,
       rejectionReason: doc.rejectionReason,
       submittedAt: doc.submittedAt?.toISOString(),
@@ -35,26 +28,25 @@ router.get("/", requireAuth, async (req: AuthRequest, res) => {
 
 router.post("/", requireAuth, async (req: AuthRequest, res) => {
   try {
-    const {
-      panNumber, aadharNumber,
-      panCardFrontUrl, panCardBackUrl,
-      aadharCardFrontUrl, aadharCardBackUrl,
-      idDocumentType, idDocumentUrl,
-      addressProofType, addressProofUrl,
-    } = req.body;
+    const { panNumber, aadharNumber } = req.body;
 
-    console.log(`[KYC] User ${req.user!.id} submitting — PAN: ${panNumber}, Aadhar: ${aadharNumber}, panFrontLen: ${(panCardFrontUrl||'').length}, panBackLen: ${(panCardBackUrl||'').length}, aadharFrontLen: ${(aadharCardFrontUrl||'').length}, aadharBackLen: ${(aadharCardBackUrl||'').length}`);
+    if (!panNumber || !aadharNumber) {
+      res.status(400).json({ message: "PAN number and Aadhaar number are required" });
+      return;
+    }
+
+    const pan = String(panNumber).toUpperCase().trim();
+    const aadhar = String(aadharNumber).replace(/\s/g, '').trim();
+
+    console.log(`[KYC] User ${req.user!.id} submitting — PAN: ${pan}, Aadhaar: ${aadhar}`);
 
     const existing = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.userId, req.user!.id)).limit(1);
     let doc;
     if (existing.length > 0) {
       [doc] = await db.update(kycDocumentsTable)
         .set({
-          panNumber, aadharNumber,
-          panCardFrontUrl, panCardBackUrl,
-          aadharCardFrontUrl, aadharCardBackUrl,
-          idDocumentType, idDocumentUrl,
-          addressProofType, addressProofUrl,
+          panNumber: pan,
+          aadharNumber: aadhar,
           status: "submitted",
           submittedAt: new Date(),
           rejectionReason: null,
@@ -64,22 +56,17 @@ router.post("/", requireAuth, async (req: AuthRequest, res) => {
     } else {
       [doc] = await db.insert(kycDocumentsTable).values({
         userId: req.user!.id,
-        panNumber, aadharNumber,
-        panCardFrontUrl, panCardBackUrl,
-        aadharCardFrontUrl, aadharCardBackUrl,
-        idDocumentType, idDocumentUrl,
-        addressProofType, addressProofUrl,
+        panNumber: pan,
+        aadharNumber: aadhar,
         status: "submitted",
       }).returning();
     }
-    await db.update(usersTable).set({ kycStatus: "submitted" }).where(eq(usersTable.id, req.user!.id));
-    console.log(`[KYC] Saved to DB — docId: ${doc.id}, userId: ${req.user!.id}, status: ${doc.status}`);
 
-    // Fire-and-forget Telegram notification — never blocks or throws
+    await db.update(usersTable).set({ kycStatus: "submitted" }).where(eq(usersTable.id, req.user!.id));
+    console.log(`[KYC] Saved — docId: ${doc.id}, userId: ${req.user!.id}`);
+
     const userId = req.user!.id;
     const userEmail = req.user!.email;
-    const pan    = panNumber    || "N/A";
-    const aadhar = aadharNumber || "N/A";
     void (async () => {
       try {
         const [user] = await db
@@ -87,23 +74,19 @@ router.post("/", requireAuth, async (req: AuthRequest, res) => {
           .from(usersTable)
           .where(eq(usersTable.id, userId))
           .limit(1);
-        const name = user
-          ? `${user.firstName} ${user.lastName}`.trim() || userEmail
-          : userEmail;
-        const lines = [
-          `📄 <b>KYC DOCUMENTS SUBMITTED</b>`,
+        const name = user ? `${user.firstName} ${user.lastName}`.trim() || userEmail : userEmail;
+        await sendTelegram([
+          `📄 <b>KYC SUBMITTED</b>`,
           `👤 User: ${name}`,
           `💳 PAN: ${pan}`,
-          `🆔 Aadhar: ${aadhar}`,
-        ];
-        await sendTelegram(lines.join("\n"));
-      } catch {
-        // silent — main response already sent
-      }
+          `🆔 Aadhaar: ${aadhar}`,
+        ].join("\n"));
+      } catch { /* silent */ }
     })();
 
     res.json({
-      id: doc.id, userId: doc.userId,
+      id: doc.id,
+      userId: doc.userId,
       panNumber: doc.panNumber,
       aadharNumber: doc.aadharNumber,
       status: doc.status,

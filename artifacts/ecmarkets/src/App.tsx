@@ -32,7 +32,6 @@ import { Notifications } from "@/pages/client/Notifications";
 // Admin Pages
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { AdminTransactions } from "@/pages/admin/AdminTransactions";
-import { AdminKyc } from "@/pages/admin/AdminKyc";
 import { AdminUsers } from "@/pages/admin/AdminUsers";
 import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 import { AdminTrades } from "@/pages/admin/AdminTrades";
@@ -114,9 +113,6 @@ function Router() {
       </Route>
       <Route path="/admin/transactions">
         <ProtectedRoute component={AdminTransactions} adminOnly={true} />
-      </Route>
-      <Route path="/admin/kyc">
-        <ProtectedRoute component={AdminKyc} adminOnly={true} />
       </Route>
       <Route path="/admin/users">
         <ProtectedRoute component={AdminUsers} adminOnly={true} />

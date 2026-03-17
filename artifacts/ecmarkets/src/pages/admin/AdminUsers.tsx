@@ -7,56 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Users, ShieldCheck, ShieldOff, Search, Loader2,
   ChevronDown, ChevronUp, DollarSign, TrendingUp, Target, Save, Zap,
-  KeyRound, Eye, EyeOff, Check, X, AlertTriangle, ImageIcon, CreditCard, Hash
+  KeyRound, Eye, EyeOff, Check, X, CreditCard, Hash
 } from 'lucide-react';
-
-function KycImagePreview({ url, label }: { url?: string | null; label: string }) {
-  const [open, setOpen] = useState(false);
-  const [imgError, setImgError] = useState(false);
-
-  if (!url) return (
-    <div className="bg-[#0B0E11] border border-dashed border-[#2B3139] rounded-lg p-3 flex flex-col items-center justify-center gap-1 text-[#848E9C] text-xs text-center min-h-[64px]">
-      <ImageIcon className="w-4 h-4" />
-      <span className="text-[10px]">{label}</span>
-    </div>
-  );
-
-  const openInNewTab = () => {
-    const win = window.open();
-    if (win) { win.document.write(`<img src="${url}" style="max-width:100%;height:auto" />`); win.document.close(); }
-  };
-
-  return (
-    <div className="space-y-1">
-      <p className="text-[10px] text-[#848E9C] font-semibold">{label}</p>
-      {open ? (
-        <div className="space-y-1">
-          {imgError ? (
-            <div className="bg-[#CF304A]/10 border border-[#CF304A]/30 rounded-lg p-2 text-center text-[10px] text-[#CF304A]">
-              <AlertTriangle className="w-3 h-3 mx-auto mb-0.5" />
-              <button onClick={openInNewTab} className="underline">Open in new tab</button>
-            </div>
-          ) : (
-            <img
-              src={url}
-              alt={label}
-              className="w-full rounded-lg border border-[#2B3139] max-h-32 object-contain bg-black"
-              onError={() => setImgError(true)}
-            />
-          )}
-          <div className="flex gap-1">
-            <button onClick={() => { setOpen(false); setImgError(false); }} className="flex-1 text-[9px] text-[#848E9C] border border-[#2B3139] rounded py-0.5 hover:text-white transition-colors">Close</button>
-            <button onClick={openInNewTab} className="flex-1 text-[9px] text-[#F0B90B] border border-[#F0B90B]/30 rounded py-0.5 hover:text-white transition-colors">Full</button>
-          </div>
-        </div>
-      ) : (
-        <button onClick={() => { setOpen(true); setImgError(false); }} className="w-full flex items-center justify-center gap-1.5 bg-[#0B0E11] border border-[#2B3139] rounded-lg p-2 text-[#F0B90B] text-[10px] font-medium hover:border-[#F0B90B]/40 transition-colors">
-          <Eye className="w-3 h-3" /> View
-        </button>
-      )}
-    </div>
-  );
-}
 
 export function AdminUsers() {
   const queryClient = useQueryClient();
@@ -426,162 +378,124 @@ export function AdminUsers() {
                           </span>
                         </p>
 
-                        {!userKycDoc ? (
-                          <div className="flex items-start gap-3 bg-[#1E2329] border border-[#2B3139] rounded-xl p-4">
-                            <AlertTriangle className="w-4 h-4 text-[#848E9C] mt-0.5 shrink-0" />
-                            <p className="text-xs text-[#848E9C]">
-                              {user.kycStatus === 'pending' || !user.kycStatus
-                                ? 'Client has not submitted KYC documents yet.'
-                                : 'KYC status was set manually. No documents were submitted through the portal.'}
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            {/* PAN & Aadhar details */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              <div className="bg-[#0d1117] border border-[#2B3139] rounded-xl p-4 space-y-3">
-                                <div className="flex items-center gap-2">
-                                  <CreditCard className="w-3.5 h-3.5 text-[#F0B90B]" />
-                                  <p className="text-[#F0B90B] text-xs font-bold uppercase tracking-wider">PAN Card</p>
-                                </div>
-                                {userKycDoc.panNumber && (
-                                  <div className="flex items-center gap-2">
-                                    <Hash className="w-3 h-3 text-[#848E9C]" />
-                                    <span className="text-white font-mono text-sm font-bold">{userKycDoc.panNumber}</span>
-                                  </div>
-                                )}
-                                <div className="grid grid-cols-2 gap-2">
-                                  <KycImagePreview url={userKycDoc.panCardFrontUrl} label="Front" />
-                                  <KycImagePreview url={userKycDoc.panCardBackUrl} label="Back" />
-                                </div>
-                              </div>
-
-                              <div className="bg-[#0d1117] border border-[#2B3139] rounded-xl p-4 space-y-3">
-                                <div className="flex items-center gap-2">
-                                  <CreditCard className="w-3.5 h-3.5 text-[#2a6df4]" />
-                                  <p className="text-[#2a6df4] text-xs font-bold uppercase tracking-wider">Aadhar Card</p>
-                                </div>
-                                {userKycDoc.aadharNumber && (
-                                  <div className="flex items-center gap-2">
-                                    <Hash className="w-3 h-3 text-[#848E9C]" />
-                                    <span className="text-white font-mono text-sm font-bold">{userKycDoc.aadharNumber}</span>
-                                  </div>
-                                )}
-                                <div className="grid grid-cols-2 gap-2">
-                                  <KycImagePreview url={userKycDoc.aadharCardFrontUrl} label="Front" />
-                                  <KycImagePreview url={userKycDoc.aadharCardBackUrl} label="Back" />
-                                </div>
+                        {/* PAN + Aadhar numbers */}
+                        {userKycDoc && (
+                          <div className="grid grid-cols-2 gap-3 mb-3">
+                            <div className="bg-[#0d1117] border border-[#2B3139] rounded-xl px-4 py-3 flex items-center gap-2">
+                              <CreditCard className="w-3.5 h-3.5 text-[#F0B90B] shrink-0" />
+                              <div>
+                                <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">PAN</p>
+                                <p className="text-white font-mono text-sm font-bold">{userKycDoc.panNumber || '—'}</p>
                               </div>
                             </div>
-
-                            {/* Approve / Reject actions */}
-                            {userKycDoc.status === 'submitted' && (
-                              <div className="space-y-3">
-                                {kycRej.rejecting && (
-                                  <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-[#CF304A]">Rejection Reason (required)</label>
-                                    <textarea
-                                      value={kycRej.reason}
-                                      onChange={e => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], reason: e.target.value } }))}
-                                      placeholder="Explain why the documents were rejected..."
-                                      className="input-stealth resize-none text-sm"
-                                      rows={2}
-                                    />
-                                  </div>
-                                )}
-                                <div className="flex gap-3">
-                                  <button
-                                    onClick={() => handleKycApprove(userKycDoc)}
-                                    disabled={kycProcessing === userKycDoc.id}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
-                                  >
-                                    {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                                    Approve KYC
-                                  </button>
-
-                                  {kycRej.rejecting ? (
-                                    <>
-                                      <button
-                                        onClick={() => handleKycReject(userKycDoc)}
-                                        disabled={kycProcessing === userKycDoc.id}
-                                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CF304A] text-white font-bold text-sm hover:bg-[#CF304A]/80 transition-all"
-                                      >
-                                        {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
-                                        Confirm Reject
-                                      </button>
-                                      <button
-                                        onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { reason: '', rejecting: false } }))}
-                                        className="px-4 py-2 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
-                                      >Cancel</button>
-                                    </>
-                                  ) : (
-                                    <button
-                                      onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], rejecting: true } }))}
-                                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/40 hover:bg-[#CF304A]/30 font-bold text-sm transition-all"
-                                    >
-                                      <X className="w-3.5 h-3.5" /> Reject
-                                    </button>
-                                  )}
-                                </div>
+                            <div className="bg-[#0d1117] border border-[#2B3139] rounded-xl px-4 py-3 flex items-center gap-2">
+                              <Hash className="w-3.5 h-3.5 text-[#2a6df4] shrink-0" />
+                              <div>
+                                <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">Aadhaar</p>
+                                <p className="text-white font-mono text-sm font-bold">
+                                  {userKycDoc.aadharNumber ? `XXXX XXXX ${String(userKycDoc.aadharNumber).slice(-4)}` : '—'}
+                                </p>
                               </div>
-                            )}
-
-                            {userKycDoc.status === 'approved' && (
-                              <div className="flex items-center gap-2 px-4 py-3 bg-[#02C076]/10 border border-[#02C076]/30 rounded-xl">
-                                <ShieldCheck className="w-4 h-4 text-[#02C076]" />
-                                <span className="text-sm font-bold text-[#02C076]">KYC Approved — Identity Verified</span>
-                              </div>
-                            )}
-
-                            {userKycDoc.status === 'rejected' && (
-                              <div className="space-y-2">
-                                <div className="flex items-start gap-2 px-4 py-3 bg-[#CF304A]/10 border border-[#CF304A]/30 rounded-xl">
-                                  <X className="w-4 h-4 text-[#CF304A] mt-0.5" />
-                                  <div>
-                                    <p className="text-sm font-bold text-[#CF304A]">KYC Rejected</p>
-                                    {userKycDoc.rejectionReason && <p className="text-xs text-[#848E9C] mt-0.5">{userKycDoc.rejectionReason}</p>}
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={() => handleKycApprove(userKycDoc)}
-                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
-                                >
-                                  <Check className="w-3.5 h-3.5" /> Re-approve KYC
-                                </button>
-                              </div>
-                            )}
+                            </div>
                           </div>
                         )}
 
-                        {/* Quick KYC status override (no docs) */}
-                        {!userKycDoc && user.kycStatus !== 'approved' && (
-                          <div className="mt-3 flex gap-3">
-                            <button
-                              onClick={() => {
-                                updateMutation.mutate({ id: user.id, data: { kycStatus: 'approved' } as any });
-                              }}
-                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-xs transition-all"
-                            >
-                              <Check className="w-3.5 h-3.5" /> Mark as Verified
-                            </button>
-                            {user.kycStatus !== 'pending' && (
+                        {/* Status + Actions */}
+                        {!userKycDoc ? (
+                          <div className="space-y-3">
+                            <p className="text-xs text-[#848E9C]">
+                              {user.kycStatus === 'approved'
+                                ? 'KYC was manually approved — no details submitted.'
+                                : 'Client has not submitted KYC details yet.'}
+                            </p>
+                            {user.kycStatus !== 'approved' ? (
+                              <button
+                                onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'approved' } as any })}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
+                              >
+                                <Check className="w-3.5 h-3.5" /> Manually Verify KYC
+                              </button>
+                            ) : (
                               <button
                                 onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'pending' } as any })}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white border border-[#2B3139] font-bold text-xs transition-all"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
                               >
-                                Reset to Pending
+                                <X className="w-3.5 h-3.5" /> Reset to Pending
                               </button>
                             )}
                           </div>
-                        )}
-                        {!userKycDoc && user.kycStatus === 'approved' && (
-                          <div className="mt-3">
+                        ) : userKycDoc.status === 'approved' ? (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-[#02C076]">
+                              <ShieldCheck className="w-4 h-4" />
+                              <span className="text-sm font-bold">KYC Verified</span>
+                            </div>
                             <button
                               onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'pending' } as any })}
-                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white border border-[#2B3139] font-bold text-xs transition-all"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-white text-xs font-bold transition-all"
                             >
-                              Reset Status to Pending
+                              <X className="w-3 h-3" /> Revoke
                             </button>
+                          </div>
+                        ) : userKycDoc.status === 'rejected' ? (
+                          <div className="space-y-2">
+                            <p className="text-xs text-[#CF304A] font-semibold">Rejected: {userKycDoc.rejectionReason || 'No reason given'}</p>
+                            <button
+                              onClick={() => handleKycApprove(userKycDoc)}
+                              disabled={kycProcessing === userKycDoc.id}
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
+                            >
+                              {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                              Verify KYC
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            {kycRej.rejecting && (
+                              <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-[#CF304A]">Rejection Reason (required)</label>
+                                <textarea
+                                  value={kycRej.reason}
+                                  onChange={e => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], reason: e.target.value } }))}
+                                  placeholder="Explain why KYC was rejected..."
+                                  className="input-stealth resize-none text-sm"
+                                  rows={2}
+                                />
+                              </div>
+                            )}
+                            <div className="flex gap-3">
+                              <button
+                                onClick={() => handleKycApprove(userKycDoc)}
+                                disabled={kycProcessing === userKycDoc.id}
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#02C076] text-black font-bold text-sm hover:bg-[#02C076]/80 transition-all"
+                              >
+                                {kycProcessing === userKycDoc.id && !kycRej.rejecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                                ✓ Verify KYC
+                              </button>
+                              {kycRej.rejecting ? (
+                                <>
+                                  <button
+                                    onClick={() => handleKycReject(userKycDoc)}
+                                    disabled={kycProcessing === userKycDoc.id}
+                                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A] text-white font-bold text-sm hover:bg-[#CF304A]/80 transition-all"
+                                  >
+                                    {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
+                                    Confirm Reject
+                                  </button>
+                                  <button
+                                    onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { reason: '', rejecting: false } }))}
+                                    className="px-4 py-2.5 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
+                                  >Cancel</button>
+                                </>
+                              ) : (
+                                <button
+                                  onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], rejecting: true } }))}
+                                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/30 hover:bg-[#CF304A]/20 font-bold text-sm transition-all"
+                                >
+                                  <X className="w-3.5 h-3.5" /> Reject
+                                </button>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>

@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BarChart3, 
   Users, 
-  FileCheck, 
   ArrowRightLeft, 
   TrendingUp, 
   Send,
@@ -21,7 +20,6 @@ import { useAuthState } from '@/hooks/use-auth-state';
 const navItems = [
   { name: 'Dashboard',      href: '/admin',                  icon: BarChart3 },
   { name: 'Users',          href: '/admin/users',            icon: Users },
-  { name: 'KYC Approvals',  href: '/admin/kyc',              icon: FileCheck },
   { name: 'Transactions',   href: '/admin/transactions',     icon: ArrowRightLeft },
   { name: 'Trade Injection',href: '/admin/trades',           icon: Activity },
   { name: 'Strategies',     href: '/admin/strategies',       icon: TrendingUp },
