@@ -32,7 +32,6 @@ export function PublicLayout({ children }: { children: ReactNode }) {
     { name: 'About', href: '/about' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Download App', href: '/download-app', highlight: true },
   ];
 
   return (
