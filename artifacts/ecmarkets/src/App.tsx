@@ -14,6 +14,7 @@ import { Performance } from "@/pages/public/Performance";
 import { Pricing } from "@/pages/public/Pricing";
 import { Faq } from "@/pages/public/Faq";
 import { Contact } from "@/pages/public/Contact";
+import { DownloadApp } from "@/pages/public/DownloadApp";
 
 // Auth Pages
 import { Login } from "@/pages/auth/Login";
@@ -68,6 +69,7 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/faq" component={Faq} />
       <Route path="/contact" component={Contact} />
+      <Route path="/download-app" component={DownloadApp} />
       <Route path="/legal/:page" component={Home} />
 
       {/* Auth Routes */}

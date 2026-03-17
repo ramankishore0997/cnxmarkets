@@ -32,6 +32,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
     { name: 'About', href: '/about' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Download App', href: '/download-app', highlight: true },
   ];
 
   return (
@@ -60,6 +61,22 @@ export function PublicLayout({ children }: { children: ReactNode }) {
           <nav className="hidden xl:flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = location === link.href;
+              if ((link as any).highlight) {
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="text-sm font-bold px-3 py-1.5 rounded-lg transition-all"
+                    style={{
+                      background: isActive ? 'rgba(255,184,0,0.2)' : 'rgba(255,184,0,0.08)',
+                      border: '1px solid rgba(255,184,0,0.35)',
+                      color: '#FFB800',
+                    }}
+                  >
+                    ↓ {link.name}
+                  </Link>
+                );
+              }
               return (
                 <Link 
                   key={link.name} 
@@ -119,6 +136,18 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <div className="p-4 flex flex-col gap-2">
               {navLinks.map((link) => {
                 const isActive = location === link.href;
+                if ((link as any).highlight) {
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="text-lg font-bold p-3 rounded-xl transition-colors"
+                      style={{ background: 'rgba(255,184,0,0.1)', border: '1px solid rgba(255,184,0,0.3)', color: '#FFB800' }}
+                    >
+                      ↓ {link.name}
+                    </Link>
+                  );
+                }
                 return (
                   <Link 
                     key={link.name} 
@@ -218,6 +247,11 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 <li><Link href="/strategies" className="hover:text-[#F0B90B] transition-colors">Strategies</Link></li>
                 <li><Link href="/performance" className="hover:text-[#F0B90B] transition-colors">Performance</Link></li>
                 <li><Link href="/markets" className="hover:text-[#F0B90B] transition-colors">Markets</Link></li>
+                <li>
+                  <Link href="/download-app" className="font-semibold transition-colors" style={{ color: '#FFB800' }}>
+                    ↓ Download App
+                  </Link>
+                </li>
               </ul>
             </div>
             
