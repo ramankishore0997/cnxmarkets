@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
-import { TrendingUp, Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2, AlertCircle, KeyRound, ArrowLeft, Send } from 'lucide-react';
+import { TrendingUp, Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2, AlertCircle, KeyRound, ArrowLeft, ExternalLink } from 'lucide-react';
 import { useLogin } from '@workspace/api-client-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 
@@ -14,18 +14,20 @@ const loginSchema = z.object({
 
 const forgotSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
+  newPassword: z.string().min(6, "New password must be at least 6 characters"),
 });
+
+const SUPPORT_EMAIL = 'support@ecmarketsindia.com';
 
 export function Login() {
   const [, setLocation] = useLocation();
   const { login: setAuthToken } = useAuthState();
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [showForgot, setShowForgot] = useState(false);
-  const [forgotLoading, setForgotLoading] = useState(false);
-  const [forgotSuccess, setForgotSuccess] = useState('');
-  const [forgotError, setForgotError] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -34,7 +36,7 @@ export function Login() {
 
   const forgotForm = useForm<z.infer<typeof forgotSchema>>({
     resolver: zodResolver(forgotSchema),
-    defaultValues: { email: '' }
+    defaultValues: { email: '', newPassword: '' }
   });
 
   const loginMutation = useLogin({
@@ -64,24 +66,15 @@ export function Login() {
     loginMutation.mutate({ data: { ...data, email: data.email.trim().toLowerCase() } });
   };
 
-  const onForgotSubmit = async (data: z.infer<typeof forgotSchema>) => {
-    setForgotError('');
-    setForgotSuccess('');
-    setForgotLoading(true);
-    try {
-      const res = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email.trim().toLowerCase() }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.message || 'Something went wrong');
-      setForgotSuccess('Request sent! Our team will contact you within 24 hours to help reset your password.');
-    } catch (err: any) {
-      setForgotError(err.message || 'Failed to send request. Please try again.');
-    } finally {
-      setForgotLoading(false);
-    }
+  const onForgotSubmit = (data: z.infer<typeof forgotSchema>) => {
+    const subject = encodeURIComponent('Password Reset Request — ECMarketsIndia');
+    const body = encodeURIComponent(
+      `Hello ECMarketsIndia Support,\n\nI would like to reset my account password. Please find my details below:\n\n` +
+      `Registered Email: ${data.email.trim().toLowerCase()}\nRequested New Password: ${data.newPassword}\n\n` +
+      `Kindly update my password at the earliest.\n\nThank you.`
+    );
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+    setForgotSent(true);
   };
 
   const inputStyle = (hasError: boolean) => ({
@@ -176,7 +169,7 @@ export function Login() {
           {showForgot ? (
             <div>
               <button
-                onClick={() => { setShowForgot(false); setForgotSuccess(''); setForgotError(''); forgotForm.reset(); }}
+                onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
                 className="flex items-center gap-2 text-sm font-medium mb-6 transition-colors"
                 style={{ color: '#848E9C' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#F0B90B')}
@@ -193,33 +186,51 @@ export function Login() {
                 </div>
                 <h1 className="text-2xl font-bold text-white mb-2 tracking-tight">Reset Password</h1>
                 <p style={{ color: '#848E9C' }} className="text-sm leading-relaxed">
-                  Enter your registered email address. Our team will contact you within 24 hours to help you reset your password.
+                  Apni registered email aur naya password bharo. Submit karte hi aapki mail app khulegi — bas email bhej do.
                 </p>
               </div>
 
-              {forgotSuccess ? (
-                <div
-                  className="flex items-start gap-3 p-4 rounded-xl mb-6"
-                  style={{ background: 'rgba(2,192,118,0.1)', border: '1px solid rgba(2,192,118,0.3)' }}
-                >
-                  <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#02C076' }} />
-                  <p className="text-sm font-medium leading-relaxed" style={{ color: '#02C076' }}>{forgotSuccess}</p>
+              {forgotSent ? (
+                <div className="space-y-4">
+                  <div
+                    className="flex items-start gap-3 p-4 rounded-xl"
+                    style={{ background: 'rgba(2,192,118,0.1)', border: '1px solid rgba(2,192,118,0.3)' }}
+                  >
+                    <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#02C076' }} />
+                    <div>
+                      <p className="text-sm font-bold leading-relaxed" style={{ color: '#02C076' }}>
+                        Mail app khul gayi!
+                      </p>
+                      <p className="text-xs mt-1 leading-relaxed" style={{ color: '#02C076' }}>
+                        Draft taiyaar hai — sirf Send karo. Hum 24 ghante mein aapka password reset kar denge.
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-center text-xs" style={{ color: '#848E9C' }}>
+                    Mail app nahi khuli?{' '}
+                    <a
+                      href={`mailto:${SUPPORT_EMAIL}`}
+                      className="underline font-semibold"
+                      style={{ color: '#F0B90B' }}
+                    >
+                      {SUPPORT_EMAIL}
+                    </a>{' '}
+                    pe manually email karo.
+                  </p>
+                  <button
+                    onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
+                    className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
+                    style={{ background: '#1E2329', border: '1px solid #2B3139', color: '#848E9C' }}
+                  >
+                    Back to Sign In
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={forgotForm.handleSubmit(onForgotSubmit)} className="space-y-4">
-                  {forgotError && (
-                    <div
-                      className="flex items-center gap-3 p-4 rounded-xl"
-                      style={{ background: 'rgba(207,48,74,0.1)', border: '1px solid rgba(207,48,74,0.3)' }}
-                    >
-                      <AlertCircle className="w-5 h-5 shrink-0" style={{ color: '#CF304A' }} />
-                      <p className="text-sm font-medium" style={{ color: '#CF304A' }}>{forgotError}</p>
-                    </div>
-                  )}
-
+                  {/* Email field */}
                   <div className="space-y-1.5">
                     <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>
-                      Email Address
+                      Registered Email Address
                     </label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
@@ -249,22 +260,70 @@ export function Login() {
                     )}
                   </div>
 
+                  {/* New password field */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>
+                      Naya Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
+                      <input
+                        {...forgotForm.register('newPassword')}
+                        type={showNewPass ? 'text' : 'password'}
+                        autoComplete="new-password"
+                        placeholder="Min. 6 characters"
+                        className="w-full pl-11 pr-12 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
+                        style={inputStyle(!!forgotForm.formState.errors.newPassword)}
+                        onFocus={(e) => {
+                          if (!forgotForm.formState.errors.newPassword) {
+                            e.target.style.border = '1px solid #F0B90B';
+                            e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
+                          }
+                        }}
+                        onBlur={(e) => {
+                          if (!forgotForm.formState.errors.newPassword) {
+                            e.target.style.border = '1px solid #2B3139';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPass(!showNewPass)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
+                        style={{ color: '#848E9C' }}
+                      >
+                        {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    {forgotForm.formState.errors.newPassword && (
+                      <p className="text-xs mt-1" style={{ color: '#CF304A' }}>{forgotForm.formState.errors.newPassword.message}</p>
+                    )}
+                  </div>
+
+                  {/* Info box */}
+                  <div className="flex items-start gap-2.5 p-3.5 rounded-xl"
+                    style={{ background: 'rgba(240,185,11,0.07)', border: '1px solid rgba(240,185,11,0.2)' }}>
+                    <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#F0B90B' }} />
+                    <p className="text-xs leading-relaxed" style={{ color: '#848E9C' }}>
+                      Submit karte hi aapki <span style={{ color: '#F0B90B' }}>mail app</span> ek pre-filled email ke saath khulegi —{' '}
+                      <span className="font-semibold" style={{ color: '#EAECEF' }}>{SUPPORT_EMAIL}</span>{' '}
+                      ko. Bas <span style={{ color: '#F0B90B' }}>Send</span> karein.
+                    </p>
+                  </div>
+
                   <button
                     type="submit"
-                    disabled={forgotLoading}
-                    className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 mt-2"
+                    className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200"
                     style={{
-                      background: forgotLoading ? 'rgba(240,185,11,0.5)' : 'linear-gradient(135deg, #F0B90B 0%, #d4a100 100%)',
+                      background: 'linear-gradient(135deg, #F0B90B 0%, #d4a100 100%)',
                       color: '#0B0E11',
-                      boxShadow: forgotLoading ? 'none' : '0 4px 20px rgba(240,185,11,0.3)',
-                      cursor: forgotLoading ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 4px 20px rgba(240,185,11,0.3)',
+                      cursor: 'pointer',
                     }}
                   >
-                    {forgotLoading ? (
-                      <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</>
-                    ) : (
-                      <><Send className="w-4 h-4" /> Send Reset Request</>
-                    )}
+                    <ExternalLink className="w-4 h-4" />
+                    Mail App Kholein
                   </button>
                 </form>
               )}
