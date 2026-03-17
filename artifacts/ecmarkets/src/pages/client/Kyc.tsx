@@ -10,6 +10,49 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+const MAX_IMAGE_DIMENSION = 1200;
+const JPEG_QUALITY = 0.78;
+const MAX_FILE_SIZE_MB = 5;
+
+async function compressImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      reject(new Error(`Image must be under ${MAX_FILE_SIZE_MB}MB`));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+
+        if (width > MAX_IMAGE_DIMENSION || height > MAX_IMAGE_DIMENSION) {
+          if (width > height) {
+            height = Math.round((height * MAX_IMAGE_DIMENSION) / width);
+            width = MAX_IMAGE_DIMENSION;
+          } else {
+            width = Math.round((width * MAX_IMAGE_DIMENSION) / height);
+            height = MAX_IMAGE_DIMENSION;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { reject(new Error('Canvas not supported')); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', JPEG_QUALITY));
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
 const schema = z.object({
   panNumber: z.string().min(1, 'PAN number is required'),
   aadharNumber: z.string().min(1, 'Aadhaar number is required'),
@@ -26,18 +69,38 @@ function FileUploadBox({
 }: { label: string; value: string; onChange: (v: string) => void; error?: string }) {
   const ref = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [sizeError, setSizeError] = useState('');
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+      setSizeError('Only image files are supported');
       return;
     }
+    setSizeError('');
     setLoading(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      onChange(e.target?.result as string);
+
+    if (file.type === 'application/pdf') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        onChange(e.target?.result as string);
+        setLoading(false);
+      };
+      reader.onerror = () => {
+        setSizeError('Failed to read file');
+        setLoading(false);
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    try {
+      const compressed = await compressImage(file);
+      onChange(compressed);
+    } catch (err: unknown) {
+      setSizeError(err instanceof Error ? err.message : 'Failed to process image');
+    } finally {
       setLoading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -60,7 +123,7 @@ function FileUploadBox({
           )}
           <button
             type="button"
-            onClick={() => onChange('')}
+            onClick={() => { onChange(''); setSizeError(''); }}
             className="absolute top-2 right-2 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
           >
             <X className="w-3.5 h-3.5 text-white" />
@@ -82,20 +145,24 @@ function FileUploadBox({
         onDrop={handleDrop}
         onDragOver={e => e.preventDefault()}
         className={`border-2 border-dashed rounded-xl p-5 cursor-pointer transition-all flex flex-col items-center gap-2 text-center min-h-[100px] justify-center
-          ${error ? 'border-[#CF304A]/50 bg-[#CF304A]/5 hover:border-[#CF304A]' : 'border-[#2B3139] bg-[#0B0E11] hover:border-[#F0B90B]/50 hover:bg-[#F0B90B]/5'}`}
+          ${(error || sizeError) ? 'border-[#CF304A]/50 bg-[#CF304A]/5 hover:border-[#CF304A]' : 'border-[#2B3139] bg-[#0B0E11] hover:border-[#F0B90B]/50 hover:bg-[#F0B90B]/5'}`}
       >
         {loading ? (
-          <Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" />
+          <>
+            <Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" />
+            <p className="text-xs text-[#848E9C]">Compressing...</p>
+          </>
         ) : (
           <>
-            <Upload className={`w-6 h-6 ${error ? 'text-[#CF304A]' : 'text-[#848E9C]'}`} />
+            <Upload className={`w-6 h-6 ${(error || sizeError) ? 'text-[#CF304A]' : 'text-[#848E9C]'}`} />
             <p className="text-xs text-[#848E9C]">Click or drag & drop</p>
-            <p className="text-xs text-[#2B3139]">JPG, PNG, PDF</p>
+            <p className="text-xs text-[#2B3139]">JPG, PNG (max {MAX_FILE_SIZE_MB}MB)</p>
           </>
         )}
-        <input ref={ref} type="file" accept="image/*,application/pdf" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        <input ref={ref} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
       </div>
-      {error && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{error}</p>}
+      {sizeError && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{sizeError}</p>}
+      {error && !sizeError && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{error}</p>}
     </div>
   );
 }
@@ -120,7 +187,10 @@ export function Kyc() {
         toast({ title: "KYC Submitted", description: "Your documents are under review. This usually takes 1-2 business days." });
         refetch();
       },
-      onError: () => toast({ title: "Submission failed", description: "Please try again.", variant: "destructive" })
+      onError: (err: unknown) => {
+        const msg = (err as { message?: string })?.message || 'Please try again.';
+        toast({ title: "Submission failed", description: msg, variant: "destructive" });
+      }
     }
   });
 
@@ -177,85 +247,69 @@ export function Kyc() {
               className="space-y-8"
             >
               {/* PAN Card Section */}
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-[#F0B90B]/20 flex items-center justify-center border border-[#F0B90B]/30">
-                    <CreditCard className="w-4 h-4 text-[#F0B90B]" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-white">PAN Card</h3>
-                    <p className="text-xs text-[#848E9C]">Permanent Account Number</p>
-                  </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-3 border-b border-[#2B3139]">
+                  <CreditCard className="w-5 h-5 text-[#F0B90B]" />
+                  <h2 className="text-lg font-bold text-white">PAN Card</h2>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">PAN Number <span className="text-[#CF304A]">*</span></label>
-                    <input
-                      {...register('panNumber')}
-                      placeholder="ABCDE1234F"
-                      className="input-stealth font-mono uppercase"
-                      style={{ textTransform: 'uppercase' }}
-                    />
-                    {errors.panNumber && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{errors.panNumber.message}</p>}
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-[#848E9C]">PAN Number <span className="text-[#CF304A]">*</span></label>
+                  <input
+                    {...register('panNumber')}
+                    placeholder="ABCDE1234F"
+                    className="input-stealth font-mono uppercase"
+                    style={{ textTransform: 'uppercase' }}
+                  />
+                  {errors.panNumber && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{errors.panNumber.message}</p>}
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <FileUploadBox
-                      label="Front Side *"
-                      value={panFront}
-                      onChange={v => setValue('panCardFrontUrl', v, { shouldValidate: true })}
-                      error={errors.panCardFrontUrl?.message}
-                    />
-                    <FileUploadBox
-                      label="Back Side *"
-                      value={panBack}
-                      onChange={v => setValue('panCardBackUrl', v, { shouldValidate: true })}
-                      error={errors.panCardBackUrl?.message}
-                    />
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <FileUploadBox
+                    label="Front Side *"
+                    value={panFront}
+                    onChange={v => setValue('panCardFrontUrl', v, { shouldValidate: true })}
+                    error={errors.panCardFrontUrl?.message}
+                  />
+                  <FileUploadBox
+                    label="Back Side *"
+                    value={panBack}
+                    onChange={v => setValue('panCardBackUrl', v, { shouldValidate: true })}
+                    error={errors.panCardBackUrl?.message}
+                  />
                 </div>
               </div>
 
-              <div className="border-t border-[#2B3139]"></div>
-
               {/* Aadhar Card Section */}
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-[#2a6df4]/20 flex items-center justify-center border border-[#2a6df4]/30">
-                    <CreditCard className="w-4 h-4 text-[#2a6df4]" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-white">Aadhar Card</h3>
-                    <p className="text-xs text-[#848E9C]">Unique Identification Authority of India</p>
-                  </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-3 border-b border-[#2B3139]">
+                  <CreditCard className="w-5 h-5 text-[#2a6df4]" />
+                  <h2 className="text-lg font-bold text-white">Aadhar Card</h2>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Aadhar Number <span className="text-[#CF304A]">*</span></label>
-                    <input
-                      {...register('aadharNumber')}
-                      placeholder="123456789012"
-                      className="input-stealth font-mono"
-                    />
-                    {errors.aadharNumber && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{errors.aadharNumber.message}</p>}
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-[#848E9C]">Aadhar Number <span className="text-[#CF304A]">*</span></label>
+                  <input
+                    {...register('aadharNumber')}
+                    placeholder="123456789012"
+                    className="input-stealth font-mono"
+                  />
+                  {errors.aadharNumber && <p className="text-xs text-[#CF304A] flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{errors.aadharNumber.message}</p>}
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <FileUploadBox
-                      label="Front Side *"
-                      value={aadharFront}
-                      onChange={v => setValue('aadharCardFrontUrl', v, { shouldValidate: true })}
-                      error={errors.aadharCardFrontUrl?.message}
-                    />
-                    <FileUploadBox
-                      label="Back Side *"
-                      value={aadharBack}
-                      onChange={v => setValue('aadharCardBackUrl', v, { shouldValidate: true })}
-                      error={errors.aadharCardBackUrl?.message}
-                    />
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <FileUploadBox
+                    label="Front Side *"
+                    value={aadharFront}
+                    onChange={v => setValue('aadharCardFrontUrl', v, { shouldValidate: true })}
+                    error={errors.aadharCardFrontUrl?.message}
+                  />
+                  <FileUploadBox
+                    label="Back Side *"
+                    value={aadharBack}
+                    onChange={v => setValue('aadharCardBackUrl', v, { shouldValidate: true })}
+                    error={errors.aadharCardBackUrl?.message}
+                  />
                 </div>
               </div>
 

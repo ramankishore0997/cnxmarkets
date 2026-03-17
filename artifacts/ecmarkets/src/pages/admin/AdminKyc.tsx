@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import {
   Check, X, Loader2, ShieldCheck, User, Calendar,
-  CreditCard, Hash, ImageIcon, Trash2, Eye, EyeOff
+  CreditCard, Hash, ImageIcon, Trash2, Eye, EyeOff, AlertTriangle
 } from 'lucide-react';
 
 function ImagePreview({ url, label }: { url?: string | null; label: string }) {
@@ -55,7 +55,7 @@ export function AdminKyc() {
     ...getAuthOptions(),
     mutation: {
       onSuccess: () => {
-        toast({ title: "KYC Status Updated", description: "The client has been notified." });
+        toast({ title: "KYC Status Updated", description: "The client's status has been updated." });
         queryClient.invalidateQueries({ queryKey: ['/api/admin/kyc'] });
         setProcessingId(null);
         setRejectingId(null);
@@ -142,6 +142,7 @@ export function AdminKyc() {
           <div className="space-y-4">
             {pending.map((doc: any) => {
               const isRejecting = rejectingId === doc.id;
+              const isGhost = doc.noDocuments === true;
               return (
                 <div key={doc.id} className="card-stealth-gold p-6">
                   <div className="flex flex-col gap-5">
@@ -155,57 +156,72 @@ export function AdminKyc() {
                           <p className="text-[#848E9C] text-sm">{doc.userEmail}</p>
                           <div className="flex items-center gap-1.5 text-xs text-[#848E9C] mt-1">
                             <Calendar className="w-3.5 h-3.5" />
-                            {doc.submittedAt ? new Date(doc.submittedAt).toLocaleDateString('en-IN') : 'Unknown date'}
+                            {doc.submittedAt ? new Date(doc.submittedAt).toLocaleDateString('en-IN') : 'Date unknown'}
                           </div>
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleDelete(doc.id)}
-                        disabled={deletingId === doc.id}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/20 hover:bg-[#CF304A]/20 text-xs font-bold transition-all"
-                      >
-                        {deletingId === doc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
-                        Delete
-                      </button>
+                      {!isGhost && (
+                        <button
+                          onClick={() => handleDelete(doc.id)}
+                          disabled={deletingId === doc.id}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/20 hover:bg-[#CF304A]/20 text-xs font-bold transition-all"
+                        >
+                          {deletingId === doc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                          Delete
+                        </button>
+                      )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4 space-y-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <CreditCard className="w-4 h-4 text-[#F0B90B]" />
-                          <p className="text-[#F0B90B] text-xs font-bold uppercase tracking-wider">PAN Card</p>
-                        </div>
-                        {doc.panNumber && (
-                          <div className="flex items-center gap-2">
-                            <Hash className="w-3.5 h-3.5 text-[#848E9C]" />
-                            <span className="text-white font-mono text-sm font-bold">{doc.panNumber}</span>
-                          </div>
-                        )}
-                        <div className="grid grid-cols-2 gap-2">
-                          <ImagePreview url={doc.panCardFrontUrl} label="Front" />
-                          <ImagePreview url={doc.panCardBackUrl} label="Back" />
+                    {isGhost ? (
+                      <div className="flex items-start gap-3 bg-[#F0B90B]/10 border border-[#F0B90B]/30 rounded-xl p-4">
+                        <AlertTriangle className="w-5 h-5 text-[#F0B90B] shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-bold text-[#F0B90B] mb-1">No documents uploaded via portal</p>
+                          <p className="text-xs text-[#848E9C]">
+                            This user's KYC status was marked as pending review, but no documents were submitted through the platform.
+                            Ask the client to submit documents through their dashboard KYC page, or manually approve if documents were received offline.
+                          </p>
                         </div>
                       </div>
-
-                      <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4 space-y-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <CreditCard className="w-4 h-4 text-[#2a6df4]" />
-                          <p className="text-[#2a6df4] text-xs font-bold uppercase tracking-wider">Aadhar Card</p>
-                        </div>
-                        {doc.aadharNumber && (
-                          <div className="flex items-center gap-2">
-                            <Hash className="w-3.5 h-3.5 text-[#848E9C]" />
-                            <span className="text-white font-mono text-sm font-bold">{doc.aadharNumber}</span>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4 space-y-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CreditCard className="w-4 h-4 text-[#F0B90B]" />
+                            <p className="text-[#F0B90B] text-xs font-bold uppercase tracking-wider">PAN Card</p>
                           </div>
-                        )}
-                        <div className="grid grid-cols-2 gap-2">
-                          <ImagePreview url={doc.aadharCardFrontUrl} label="Front" />
-                          <ImagePreview url={doc.aadharCardBackUrl} label="Back" />
+                          {doc.panNumber && (
+                            <div className="flex items-center gap-2">
+                              <Hash className="w-3.5 h-3.5 text-[#848E9C]" />
+                              <span className="text-white font-mono text-sm font-bold">{doc.panNumber}</span>
+                            </div>
+                          )}
+                          <div className="grid grid-cols-2 gap-2">
+                            <ImagePreview url={doc.panCardFrontUrl} label="Front" />
+                            <ImagePreview url={doc.panCardBackUrl} label="Back" />
+                          </div>
+                        </div>
+
+                        <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4 space-y-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CreditCard className="w-4 h-4 text-[#2a6df4]" />
+                            <p className="text-[#2a6df4] text-xs font-bold uppercase tracking-wider">Aadhar Card</p>
+                          </div>
+                          {doc.aadharNumber && (
+                            <div className="flex items-center gap-2">
+                              <Hash className="w-3.5 h-3.5 text-[#848E9C]" />
+                              <span className="text-white font-mono text-sm font-bold">{doc.aadharNumber}</span>
+                            </div>
+                          )}
+                          <div className="grid grid-cols-2 gap-2">
+                            <ImagePreview url={doc.aadharCardFrontUrl} label="Front" />
+                            <ImagePreview url={doc.aadharCardBackUrl} label="Back" />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
-                    {isRejecting && (
+                    {isRejecting && !isGhost && (
                       <div className="space-y-2">
                         <label className="text-sm font-semibold text-[#CF304A]">Rejection Reason (required)</label>
                         <textarea
@@ -228,27 +244,29 @@ export function AdminKyc() {
                         Approve
                       </button>
 
-                      {isRejecting ? (
-                        <>
+                      {!isGhost && (
+                        isRejecting ? (
+                          <>
+                            <button
+                              onClick={() => handleReject(doc.id)}
+                              disabled={processingId === doc.id}
+                              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#CF304A] text-white font-bold hover:bg-[#CF304A]/80 transition-all"
+                            >
+                              {processingId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+                              Confirm Reject
+                            </button>
+                            <button onClick={() => { setRejectingId(null); setRejectReason(''); }} className="px-5 py-2.5 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold transition-all text-sm">
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
                           <button
-                            onClick={() => handleReject(doc.id)}
-                            disabled={processingId === doc.id}
-                            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#CF304A] text-white font-bold hover:bg-[#CF304A]/80 transition-all"
+                            onClick={() => setRejectingId(doc.id)}
+                            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/40 hover:bg-[#CF304A]/30 font-bold transition-all"
                           >
-                            {processingId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
-                            Confirm Reject
+                            <X className="w-4 h-4" /> Reject
                           </button>
-                          <button onClick={() => { setRejectingId(null); setRejectReason(''); }} className="px-5 py-2.5 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold transition-all text-sm">
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => setRejectingId(doc.id)}
-                          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/40 hover:bg-[#CF304A]/30 font-bold transition-all"
-                        >
-                          <X className="w-4 h-4" /> Reject
-                        </button>
+                        )
                       )}
                     </div>
                   </div>
@@ -290,14 +308,16 @@ export function AdminKyc() {
                       </td>
                       <td className="px-6 py-4 text-[#848E9C] text-xs">{doc.submittedAt ? new Date(doc.submittedAt).toLocaleDateString('en-IN') : '—'}</td>
                       <td className="px-6 py-4">
-                        <button
-                          onClick={() => handleDelete(doc.id)}
-                          disabled={deletingId === doc.id}
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/20 hover:bg-[#CF304A]/20 text-xs font-bold transition-all"
-                        >
-                          {deletingId === doc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
-                          Delete
-                        </button>
+                        {!doc.noDocuments && (
+                          <button
+                            onClick={() => handleDelete(doc.id)}
+                            disabled={deletingId === doc.id}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/20 hover:bg-[#CF304A]/20 text-xs font-bold transition-all"
+                          >
+                            {deletingId === doc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                            Delete
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );

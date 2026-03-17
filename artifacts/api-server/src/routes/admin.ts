@@ -132,25 +132,64 @@ router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
 
 router.get("/kyc", requireAdmin, async (_req, res) => {
   try {
+    // Fetch all kyc_documents with user info
     const docs = await db
       .select({ doc: kycDocumentsTable, user: usersTable })
       .from(kycDocumentsTable)
       .leftJoin(usersTable, eq(kycDocumentsTable.userId, usersTable.id))
       .orderBy(desc(kycDocumentsTable.submittedAt));
-    res.json(docs.map(({ doc, user }) => ({
-      id: doc.id, userId: doc.userId,
-      userEmail: user?.email || "", userName: `${user?.firstName} ${user?.lastName}`,
-      panNumber: doc.panNumber,
-      aadharNumber: doc.aadharNumber,
-      panCardFrontUrl: doc.panCardFrontUrl,
-      panCardBackUrl: doc.panCardBackUrl,
-      aadharCardFrontUrl: doc.aadharCardFrontUrl,
-      aadharCardBackUrl: doc.aadharCardBackUrl,
-      idDocumentType: doc.idDocumentType, idDocumentUrl: doc.idDocumentUrl,
-      addressProofType: doc.addressProofType, addressProofUrl: doc.addressProofUrl,
-      status: doc.status, rejectionReason: doc.rejectionReason,
-      submittedAt: doc.submittedAt?.toISOString(),
-    })));
+
+    const docsWithUserIds = new Set(docs.map(({ doc }) => doc.userId));
+
+    // Also find users with kycStatus='submitted' who have NO document record yet
+    const submittedUsers = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.kycStatus, "submitted"));
+
+    const ghostEntries = submittedUsers
+      .filter(u => !docsWithUserIds.has(u.id))
+      .map(u => ({
+        id: -u.id,
+        userId: u.id,
+        userEmail: u.email || "",
+        userName: `${u.firstName} ${u.lastName}`,
+        panNumber: null,
+        aadharNumber: null,
+        panCardFrontUrl: null,
+        panCardBackUrl: null,
+        aadharCardFrontUrl: null,
+        aadharCardBackUrl: null,
+        idDocumentType: null,
+        idDocumentUrl: null,
+        addressProofType: null,
+        addressProofUrl: null,
+        status: "submitted",
+        rejectionReason: null,
+        submittedAt: null,
+        noDocuments: true,
+      }));
+
+    const result = [
+      ...docs.map(({ doc, user }) => ({
+        id: doc.id, userId: doc.userId,
+        userEmail: user?.email || "", userName: `${user?.firstName} ${user?.lastName}`,
+        panNumber: doc.panNumber,
+        aadharNumber: doc.aadharNumber,
+        panCardFrontUrl: doc.panCardFrontUrl,
+        panCardBackUrl: doc.panCardBackUrl,
+        aadharCardFrontUrl: doc.aadharCardFrontUrl,
+        aadharCardBackUrl: doc.aadharCardBackUrl,
+        idDocumentType: doc.idDocumentType, idDocumentUrl: doc.idDocumentUrl,
+        addressProofType: doc.addressProofType, addressProofUrl: doc.addressProofUrl,
+        status: doc.status, rejectionReason: doc.rejectionReason,
+        submittedAt: doc.submittedAt?.toISOString(),
+        noDocuments: false,
+      })),
+      ...ghostEntries,
+    ];
+
+    res.json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -159,9 +198,19 @@ router.get("/kyc", requireAdmin, async (_req, res) => {
 router.patch("/kyc/:id", requireAdmin, async (req, res) => {
   try {
     const { status, rejectionReason } = req.body;
+    const rawId = parseInt(req.params.id);
+
+    if (rawId < 0) {
+      // Ghost entry: no document record, only update user kycStatus
+      const userId = Math.abs(rawId);
+      await db.update(usersTable).set({ kycStatus: status }).where(eq(usersTable.id, userId));
+      res.json({ message: "KYC status updated successfully", success: true });
+      return;
+    }
+
     const [doc] = await db.update(kycDocumentsTable)
       .set({ status, rejectionReason, reviewedAt: new Date() })
-      .where(eq(kycDocumentsTable.id, parseInt(req.params.id))).returning();
+      .where(eq(kycDocumentsTable.id, rawId)).returning();
     await db.update(usersTable).set({ kycStatus: status }).where(eq(usersTable.id, doc.userId));
     res.json({ message: "KYC updated successfully", success: true });
   } catch (err) {
