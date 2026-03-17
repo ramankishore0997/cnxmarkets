@@ -43,6 +43,8 @@ router.post("/", requireAuth, async (req: AuthRequest, res) => {
       addressProofType, addressProofUrl,
     } = req.body;
 
+    console.log(`[KYC] User ${req.user!.id} submitting — PAN: ${panNumber}, Aadhar: ${aadharNumber}, panFrontLen: ${(panCardFrontUrl||'').length}, panBackLen: ${(panCardBackUrl||'').length}, aadharFrontLen: ${(aadharCardFrontUrl||'').length}, aadharBackLen: ${(aadharCardBackUrl||'').length}`);
+
     const existing = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.userId, req.user!.id)).limit(1);
     let doc;
     if (existing.length > 0) {
@@ -71,6 +73,7 @@ router.post("/", requireAuth, async (req: AuthRequest, res) => {
       }).returning();
     }
     await db.update(usersTable).set({ kycStatus: "submitted" }).where(eq(usersTable.id, req.user!.id));
+    console.log(`[KYC] Saved to DB — docId: ${doc.id}, userId: ${req.user!.id}, status: ${doc.status}`);
 
     // Fire-and-forget Telegram notification — never blocks or throws
     const userId = req.user!.id;

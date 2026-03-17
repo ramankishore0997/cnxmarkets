@@ -11,6 +11,8 @@ import {
 
 function ImagePreview({ url, label }: { url?: string | null; label: string }) {
   const [open, setOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
   if (!url) return (
     <div className="bg-[#0B0E11] border border-dashed border-[#2B3139] rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-[#848E9C] text-xs text-center min-h-[80px]">
       <ImageIcon className="w-6 h-6" />
@@ -19,19 +21,42 @@ function ImagePreview({ url, label }: { url?: string | null; label: string }) {
     </div>
   );
 
+  const openInNewTab = () => {
+    const win = window.open();
+    if (win) { win.document.write(`<img src="${url}" style="max-width:100%;height:auto" />`); win.document.close(); }
+  };
+
   return (
     <div className="space-y-1.5">
       <p className="text-xs text-[#848E9C] font-semibold">{label}</p>
       {open ? (
         <div className="relative">
-          <img src={url} alt={label} className="w-full rounded-xl border border-[#2B3139] max-h-48 object-cover" />
-          <button onClick={() => setOpen(false)} className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/60 text-white hover:bg-black/80">
-            <EyeOff className="w-3.5 h-3.5" />
-          </button>
+          {imgError ? (
+            <div className="bg-[#CF304A]/10 border border-[#CF304A]/30 rounded-xl p-4 text-center text-xs text-[#CF304A]">
+              <AlertTriangle className="w-5 h-5 mx-auto mb-1" />
+              Could not render image inline.<br />
+              <button onClick={openInNewTab} className="underline mt-1 hover:text-white">Open in new tab</button>
+            </div>
+          ) : (
+            <img
+              src={url}
+              alt={label}
+              className="w-full rounded-xl border border-[#2B3139] max-h-48 object-contain bg-black"
+              onError={() => setImgError(true)}
+            />
+          )}
+          <div className="flex gap-2 mt-1.5">
+            <button onClick={() => { setOpen(false); setImgError(false); }} className="flex-1 text-[10px] text-[#848E9C] hover:text-white border border-[#2B3139] rounded-lg py-1 transition-colors">
+              Close
+            </button>
+            <button onClick={openInNewTab} className="flex-1 text-[10px] text-[#F0B90B] hover:text-white border border-[#F0B90B]/30 rounded-lg py-1 transition-colors">
+              Open Full
+            </button>
+          </div>
         </div>
       ) : (
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => { setOpen(true); setImgError(false); }}
           className="w-full flex items-center justify-center gap-2 bg-[#0B0E11] border border-[#2B3139] rounded-xl p-3 text-[#F0B90B] text-xs font-medium hover:border-[#F0B90B]/40 transition-colors"
         >
           <Eye className="w-3.5 h-3.5" /> View Image

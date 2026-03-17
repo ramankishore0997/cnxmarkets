@@ -12,15 +12,9 @@ import { useToast } from '@/hooks/use-toast';
 
 const MAX_IMAGE_DIMENSION = 1200;
 const JPEG_QUALITY = 0.78;
-const MAX_FILE_SIZE_MB = 5;
 
 async function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      reject(new Error(`Image must be under ${MAX_FILE_SIZE_MB}MB`));
-      return;
-    }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
