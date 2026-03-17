@@ -3,9 +3,9 @@ import { randomBytes } from "crypto";
 import jwt from "jsonwebtoken";
 import { db } from "@workspace/db";
 import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable, adminSettingsTable, binaryTradesTable } from "@workspace/db/schema";
-import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lte, inArray } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
-import { generateToken } from "../lib/auth.js";
+import { generateToken, hashPassword } from "../lib/auth.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "ecmarkets-secret-key-2024";
 
@@ -130,6 +130,43 @@ router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
   }
 });
 
+// Change a user's password
+router.patch("/users/:id/password", requireAdmin, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const { password } = req.body;
+    if (!password || password.length < 6) {
+      res.status(400).json({ message: "Password must be at least 6 characters" });
+      return;
+    }
+    const hashed = await hashPassword(password);
+    await db.update(usersTable).set({ passwordHash: hashed, updatedAt: new Date() } as any).where(eq(usersTable.id, userId));
+    res.json({ message: "Password updated successfully", success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Get KYC document for a specific user
+router.get("/users/:id/kyc", requireAdmin, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const [doc] = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.userId, userId)).limit(1);
+    if (!doc) { res.json(null); return; }
+    res.json({
+      id: doc.id, userId: doc.userId,
+      panNumber: doc.panNumber, aadharNumber: doc.aadharNumber,
+      panCardFrontUrl: doc.panCardFrontUrl, panCardBackUrl: doc.panCardBackUrl,
+      aadharCardFrontUrl: doc.aadharCardFrontUrl, aadharCardBackUrl: doc.aadharCardBackUrl,
+      status: doc.status, rejectionReason: doc.rejectionReason,
+      submittedAt: doc.submittedAt?.toISOString(),
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/kyc", requireAdmin, async (_req, res) => {
   try {
     // Fetch all kyc_documents with user info
@@ -141,16 +178,16 @@ router.get("/kyc", requireAdmin, async (_req, res) => {
 
     const docsWithUserIds = new Set(docs.map(({ doc }) => doc.userId));
 
-    // Also find users with kycStatus='submitted' who have NO document record yet
-    const submittedUsers = await db
+    // Also find users with any non-pending kycStatus who have NO document record
+    const usersWithStatus = await db
       .select()
       .from(usersTable)
-      .where(eq(usersTable.kycStatus, "submitted"));
+      .where(inArray(usersTable.kycStatus, ["submitted", "approved", "rejected"]));
 
-    const ghostEntries = submittedUsers
+    const ghostEntries = usersWithStatus
       .filter(u => !docsWithUserIds.has(u.id))
       .map(u => ({
-        id: -u.id,
+        id: -(u.id),
         userId: u.id,
         userEmail: u.email || "",
         userName: `${u.firstName} ${u.lastName}`,
@@ -164,7 +201,7 @@ router.get("/kyc", requireAdmin, async (_req, res) => {
         idDocumentUrl: null,
         addressProofType: null,
         addressProofUrl: null,
-        status: "submitted",
+        status: u.kycStatus,
         rejectionReason: null,
         submittedAt: null,
         noDocuments: true,

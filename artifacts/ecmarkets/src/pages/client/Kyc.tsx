@@ -156,7 +156,7 @@ function FileUploadBox({
           <>
             <Upload className={`w-6 h-6 ${(error || sizeError) ? 'text-[#CF304A]' : 'text-[#848E9C]'}`} />
             <p className="text-xs text-[#848E9C]">Click or drag & drop</p>
-            <p className="text-xs text-[#2B3139]">JPG, PNG (max {MAX_FILE_SIZE_MB}MB)</p>
+            <p className="text-xs text-[#2B3139]">JPG, PNG, PDF</p>
           </>
         )}
         <input ref={ref} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
