@@ -163,64 +163,62 @@ export function Notifications() {
   return (
     <DashboardLayout>
       {/* ── Header ──────────────────────────────────────────────── */}
-      <div className="mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold text-white">Notifications</h1>
-              {unread > 0 && (
-                <span className="px-2.5 py-1 rounded-full bg-[#F0B90B] text-black text-xs font-black">
-                  {unread} new
-                </span>
-              )}
-            </div>
-            <p className="text-[#848E9C] font-medium">
-              {unread > 0
-                ? `You have ${unread} unread notification${unread !== 1 ? 's' : ''}`
-                : 'All caught up — no unread notifications'}
-            </p>
+      <div className="mb-6">
+        <div className="flex items-start justify-between gap-3 mb-1">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl md:text-3xl font-bold text-white">Notifications</h1>
+            {unread > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full bg-[#F0B90B] text-black text-xs font-black">
+                {unread} new
+              </span>
+            )}
           </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={() => refetch()}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1E2329] border border-[#2B3139] text-[#848E9C] hover:text-white hover:border-[#2B3139]/60 text-sm font-semibold transition-all"
+              className="p-2 rounded-xl bg-[#1E2329] border border-[#2B3139] text-[#848E9C] hover:text-white transition-all"
+              title="Refresh"
             >
               <RefreshCw className="w-4 h-4" />
-              Refresh
             </button>
             {unread > 0 && (
               <button
                 onClick={handleMarkAll}
                 disabled={markReadMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F0B90B]/15 border border-[#F0B90B]/30 text-[#F0B90B] hover:bg-[#F0B90B]/25 text-sm font-bold transition-all disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F0B90B]/15 border border-[#F0B90B]/30 text-[#F0B90B] hover:bg-[#F0B90B]/25 text-xs font-bold transition-all disabled:opacity-50"
               >
                 {markReadMutation.isPending
-                  ? <Loader2 className="w-4 h-4 animate-spin" />
-                  : <CheckCheck className="w-4 h-4" />}
-                Mark All as Read
+                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  : <CheckCheck className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">Mark All Read</span>
               </button>
             )}
             {rawList.length > 0 && (
               <button
                 onClick={handleClear}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A]/15 border border-[#CF304A]/30 text-[#CF304A] hover:bg-[#CF304A]/25 text-sm font-bold transition-all"
+                className="p-2 rounded-xl bg-[#CF304A]/15 border border-[#CF304A]/30 text-[#CF304A] hover:bg-[#CF304A]/25 transition-all"
+                title="Clear All"
               >
-                <Trash2 className="w-4 h-4" /> Clear All
+                <Trash2 className="w-4 h-4" />
               </button>
             )}
           </div>
         </div>
+        <p className="text-[#848E9C] text-sm font-medium mb-4">
+          {unread > 0
+            ? `You have ${unread} unread notification${unread !== 1 ? 's' : ''}`
+            : 'All caught up — no unread notifications'}
+        </p>
 
         {/* Stats pills */}
-        <div className="flex items-center gap-3 mt-5 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           {[
-            { label: 'Total',   value: rawList.length,                  color: '#F0B90B', icon: Bell },
-            { label: 'Unread',  value: unread,                          color: '#02C076', icon: Zap },
-            { label: 'Read',    value: rawList.length - unread,         color: '#848E9C', icon: CheckCheck },
+            { label: 'Total',   value: rawList.length,          color: '#F0B90B', icon: Bell },
+            { label: 'Unread',  value: unread,                  color: '#02C076', icon: Zap },
+            { label: 'Read',    value: rawList.length - unread, color: '#848E9C', icon: CheckCheck },
           ].map(({ label, value, color, icon: Icon }) => (
-            <div key={label} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1E2329] border border-[#2B3139]">
-              <Icon className="w-3.5 h-3.5" style={{ color }} />
+            <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1E2329] border border-[#2B3139]">
+              <Icon className="w-3 h-3" style={{ color }} />
               <span className="text-sm font-bold text-white">{value}</span>
               <span className="text-xs text-[#848E9C] font-medium">{label}</span>
             </div>
@@ -229,8 +227,8 @@ export function Notifications() {
       </div>
 
       {/* ── Filter Tabs ─────────────────────────────────────────── */}
-      <div className="overflow-x-auto pb-1 mb-6 -mx-1 px-1">
-        <div className="flex gap-2 min-w-max">
+      <div className="overflow-x-auto pb-1 mb-5 -mx-4 px-4 md:-mx-1 md:px-1">
+        <div className="flex gap-1.5 md:gap-2 min-w-max">
           {(Object.entries(TAB_META) as [FilterTab, typeof TAB_META[FilterTab]][]).map(([key, meta]) => {
             const count  = tabCount(key);
             const badge  = tabUnread(key);

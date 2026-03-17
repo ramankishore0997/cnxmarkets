@@ -12,7 +12,6 @@ import {
   Menu,
   ShieldCheck,
   X,
-  Activity,
   ShieldAlert,
   Zap,
   History,
@@ -20,6 +19,7 @@ import {
   ChevronRight,
   MoreHorizontal
 } from 'lucide-react';
+import { EcmLogo } from '@/components/shared/EcmLogo';
 import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
@@ -45,11 +45,8 @@ const bottomNavItems = [
 function SidebarLogo() {
   return (
     <Link href="/" className="flex items-center gap-3 group">
-      <div className="relative w-9 h-9 shrink-0">
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#FFB800] to-[#E68A00] opacity-20 blur-sm group-hover:opacity-30 transition-opacity" />
-        <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#0D1421] to-[#080D18] border border-[#FFB800]/40 flex items-center justify-center shadow-lg shadow-[#FFB800]/10">
-          <Activity className="w-5 h-5 text-[#FFB800]" />
-        </div>
+      <div className="shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.3)]">
+        <EcmLogo size={36} />
       </div>
       <div className="leading-none">
         <span className="text-lg font-black tracking-tight text-gradient-metallic">ECMarkets</span>
@@ -295,7 +292,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </button>
 
           <div className="md:hidden flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[#FFB800]" />
+            <EcmLogo size={26} />
             <span className="text-sm font-black tracking-tight text-white">ECMarkets<span className="text-[#FFB800]">India</span></span>
           </div>
 

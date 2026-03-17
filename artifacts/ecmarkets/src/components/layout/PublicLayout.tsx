@@ -1,8 +1,9 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Activity, Globe, Shield, Lock, Phone } from 'lucide-react';
+import { Menu, X, Globe, Shield, Lock, Phone } from 'lucide-react';
 import { TradingWidget } from '../shared/TradingWidget';
+import { EcmLogo } from '../shared/EcmLogo';
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
@@ -46,12 +47,12 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-[#0B0E11] border border-[#F0B90B] flex items-center justify-center shadow-[0_0_8px_rgba(240,185,11,0.4)] animate-[pulse-gold_2s_infinite]">
-              <Activity className="w-5 h-5 text-[#F0B90B]" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.35)]">
+              <EcmLogo size={34} />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
-              ECMarkets<span className="text-[#F0B90B]">India</span>
+              ECMarkets<span className="text-[#FFB800]">India</span>
             </span>
           </Link>
 
@@ -167,12 +168,12 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
             <div className="lg:col-span-2">
-              <Link href="/" className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-[#0B0E11] border border-[#F0B90B] flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-[#F0B90B]" />
+              <Link href="/" className="flex items-center gap-2.5 mb-6">
+                <div className="shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.3)]">
+                  <EcmLogo size={32} />
                 </div>
                 <span className="text-2xl font-bold tracking-tight text-white">
-                  ECMarkets<span className="text-[#F0B90B]">India</span>
+                  ECMarkets<span className="text-[#FFB800]">India</span>
                 </span>
               </Link>
               <p className="text-[#848E9C] text-sm mb-5 leading-relaxed max-w-sm">

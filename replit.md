@@ -97,9 +97,26 @@ All routes under `/api`:
   - DELETE `/admin/kyc/:id` — delete KYC record + reset user status to pending
   - POST `/admin/trades` — inject trade + auto-update account balance
 
+## Logo
+
+Custom SVG candlestick chart logo (`EcmLogo` component at `src/components/shared/EcmLogo.tsx`).
+- Shows 3 candlestick bars (red, gold, green) with uptrend line overlay
+- Used in: PublicLayout header, PublicLayout footer, DashboardLayout sidebar, DashboardLayout mobile topbar
+- Favicon: `artifacts/ecmarkets/public/favicon.svg` (same candlestick design)
+- All logos use `drop-shadow-[0_0_8px_rgba(255,184,0,0.3)]` gold glow effect
+
+## Mobile Optimisations (completed)
+
+- **BinaryTrading**: horizontal scrollable instrument chips, stacked chart+panel, tabbed Live/History
+- **Deposit**: full-width tabs on mobile, card layout for transaction history
+- **Notifications**: icon-only action buttons on mobile, compact stats pills, scrollable filter tabs
+- **Analytics**: `p-4 md:p-6` on chart cards; Strategy Details shows 2-col grid on mobile instead of table
+- **TradeHistory**: `text-xl md:text-3xl` header, horizontally scrollable filter bar, existing mobile card view
+- **PWA**: manifest.json, sw.js, PWAInstallPrompt component (iOS+Android), mobile bottom nav
+
 ## Demo Credentials
 
-- **Admin**: admin@ecmarketsindia.com / password123
+- **Admin**: admin@ecmarketsindia.com / Admin@1234
 - **Client**: demo@ecmarketsindia.com / password123
 
 ## Auth

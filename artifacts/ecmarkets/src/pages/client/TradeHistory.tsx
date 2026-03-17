@@ -113,24 +113,24 @@ export function TradeHistory() {
   return (
     <DashboardLayout>
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-1">Trade History</h1>
-        <p className="text-[#848E9C] font-medium">Complete record of all closed positions</p>
+      <div className="mb-5">
+        <h1 className="text-xl md:text-3xl font-bold text-white mb-1">Trade History</h1>
+        <p className="text-[#848E9C] text-sm font-medium">Complete record of all closed positions</p>
       </div>
 
       {/* Filter Bar */}
-      <div className="card-stealth p-4 mb-5">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[#848E9C] mr-1">
-            <Filter className="w-4 h-4" />
-            <span className="text-xs font-semibold uppercase tracking-wider">Period</span>
+      <div className="card-stealth p-3 md:p-4 mb-5">
+        <div className="flex items-center gap-2 overflow-x-auto pb-0.5 -mx-1 px-1">
+          <div className="flex items-center gap-1 text-[#848E9C] shrink-0">
+            <Filter className="w-3.5 h-3.5" />
+            <span className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap">Period</span>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-1.5 md:gap-2 shrink-0">
             {PRESETS.map(p => (
               <button
                 key={p.key}
                 onClick={() => handlePreset(p.key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
                   preset === p.key
                     ? 'bg-[#F0B90B] text-black shadow-[0_0_12px_rgba(240,185,11,0.35)]'
                     : 'bg-[#0B0E11] border border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B] hover:text-[#F0B90B]'

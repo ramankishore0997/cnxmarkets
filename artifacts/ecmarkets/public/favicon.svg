@@ -1,3 +1,17 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <rect width="180" height="180" rx="36" fill="#0B0E11"/>
+  <rect x="2" y="2" width="176" height="176" rx="34" stroke="#FFB800" stroke-width="3" stroke-opacity="0.55"/>
+  <rect x="30" y="96" width="22" height="48" rx="4" fill="#CF304A"/>
+  <rect x="39" y="80" width="4" height="17" rx="2" fill="#CF304A"/>
+  <rect x="39" y="144" width="4" height="14" rx="2" fill="#CF304A"/>
+  <rect x="66" y="60" width="22" height="54" rx="4" fill="#FFB800"/>
+  <rect x="75" y="44" width="4" height="17" rx="2" fill="#FFB800"/>
+  <rect x="75" y="114" width="4" height="15" rx="2" fill="#FFB800"/>
+  <rect x="102" y="44" width="22" height="60" rx="4" fill="#02C076"/>
+  <rect x="111" y="28" width="4" height="17" rx="2" fill="#02C076"/>
+  <rect x="111" y="104" width="4" height="15" rx="2" fill="#02C076"/>
+  <rect x="138" y="28" width="22" height="70" rx="4" fill="#FFB800"/>
+  <rect x="147" y="12" width="4" height="17" rx="2" fill="#FFB800"/>
+  <rect x="147" y="98" width="4" height="17" rx="2" fill="#FFB800"/>
+  <polyline points="24,148 77,88 113,70 148,36" stroke="#FFB800" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
 </svg>

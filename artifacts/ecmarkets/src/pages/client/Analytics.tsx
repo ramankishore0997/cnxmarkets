@@ -134,8 +134,8 @@ export function Analytics() {
       </div>
 
       {/* ── Equity Curve ─── */}
-      <div className="card-stealth p-6 mb-5">
-        <div className="flex items-center justify-between mb-5">
+      <div className="card-stealth p-4 md:p-6 mb-5">
+        <div className="flex items-center justify-between mb-4 md:mb-5">
           <div>
             <h3 className="text-base font-bold text-[#F8FAFC]">Equity Curve</h3>
             <p className="text-xs text-[#4B5563] mt-0.5">
@@ -176,7 +176,7 @@ export function Analytics() {
       </div>
 
       {/* ── Monthly Returns ─── */}
-      <div className="card-stealth p-6 mb-5">
+      <div className="card-stealth p-4 md:p-6 mb-5">
         <div className="mb-5">
           <h3 className="text-base font-bold text-[#F8FAFC]">Monthly Returns</h3>
           <p className="text-xs text-[#4B5563] mt-0.5">
@@ -239,58 +239,91 @@ export function Analytics() {
       </div>
 
       {/* ── Strategy Details ─── */}
-      <div className="card-stealth p-6 pb-8">
-        <div className="mb-5">
+      <div className="card-stealth p-4 md:p-6 pb-6 md:pb-8">
+        <div className="mb-4 md:mb-5">
           <h3 className="text-base font-bold text-[#F8FAFC]">Active Strategy Details</h3>
           <p className="text-xs text-[#4B5563] mt-0.5">Performance profile of your current algorithm</p>
         </div>
         {strategyName && strategy ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr>
-                  {['Strategy', 'Win Rate', 'Monthly Return', 'Max Drawdown', 'Risk Level', 'Markets'].map(h => (
-                    <th key={h} className="pb-4 text-left text-[#4B5563] font-bold text-[10px] uppercase tracking-[0.1em] pr-6
-                      border-b border-white/[0.05]">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="py-5 pr-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-xl icon-squircle-gold flex items-center justify-center shrink-0">
-                        <Zap className="w-4 h-4 text-[#FFB800]" />
+          <>
+            {/* Mobile card layout */}
+            <div className="md:hidden space-y-3">
+              <div className="flex items-center gap-3 pb-3 border-b border-white/[0.05]">
+                <div className="w-9 h-9 rounded-xl icon-squircle-gold flex items-center justify-center shrink-0">
+                  <Zap className="w-4 h-4 text-[#FFB800]" />
+                </div>
+                <span className="font-bold text-[#F8FAFC] text-sm">{strategy.name}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Win Rate', value: `${strategy.winRate}%`, color: '#02C076' },
+                  { label: 'Monthly Return', value: `+${monthlyRoi}%`, color: '#02C076' },
+                  { label: 'Max Drawdown', value: `${strategy.maxDrawdown}%`, color: '#CF304A' },
+                  { label: 'Markets', value: strategy.markets, color: '#F8FAFC' },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="bg-white/[0.03] rounded-xl p-3 border border-white/[0.05]">
+                    <p className="text-[10px] text-[#4B5563] font-bold uppercase tracking-wider mb-1">{label}</p>
+                    <p className="font-terminal font-bold text-sm" style={{ color }}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-[#4B5563] font-bold uppercase tracking-wider">Risk Level</span>
+                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold capitalize ${
+                  strategy.riskProfile === 'high'   ? 'bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/25' :
+                  strategy.riskProfile === 'medium' ? 'bg-[#FFB800]/15 text-[#FFB800] border border-[#FFB800]/25' :
+                  'bg-[#02C076]/15 text-[#02C076] border border-[#02C076]/25'
+                }`}>{strategy.riskProfile}</span>
+              </div>
+            </div>
+
+            {/* Desktop table layout */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    {['Strategy', 'Win Rate', 'Monthly Return', 'Max Drawdown', 'Risk Level', 'Markets'].map(h => (
+                      <th key={h} className="pb-4 text-left text-[#4B5563] font-bold text-[10px] uppercase tracking-[0.1em] pr-6 border-b border-white/[0.05]">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="py-5 pr-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl icon-squircle-gold flex items-center justify-center shrink-0">
+                          <Zap className="w-4 h-4 text-[#FFB800]" />
+                        </div>
+                        <span className="font-bold text-[#F8FAFC]">{strategy.name}</span>
                       </div>
-                      <span className="font-bold text-[#F8FAFC]">{strategy.name}</span>
-                    </div>
-                  </td>
-                  <td className="py-5 pr-6">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-white/[0.05] rounded-full h-1.5 w-20">
-                        <div className="h-full bg-[#02C076] rounded-full" style={{ width: `${strategy.winRate}%` }} />
+                    </td>
+                    <td className="py-5 pr-6">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-white/[0.05] rounded-full h-1.5 w-20">
+                          <div className="h-full bg-[#02C076] rounded-full" style={{ width: `${strategy.winRate}%` }} />
+                        </div>
+                        <span className="font-terminal font-bold text-[#F8FAFC]">{strategy.winRate}%</span>
                       </div>
-                      <span className="font-terminal font-bold text-[#F8FAFC]">{strategy.winRate}%</span>
-                    </div>
-                  </td>
-                  <td className="py-5 pr-6">
-                    <span className="font-terminal font-bold text-[#02C076]">+{monthlyRoi}%</span>
-                  </td>
-                  <td className="py-5 pr-6">
-                    <span className="font-terminal font-bold text-[#CF304A]">{strategy.maxDrawdown}%</span>
-                  </td>
-                  <td className="py-5 pr-6">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold capitalize ${
-                      strategy.riskProfile === 'high'   ? 'bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/25' :
-                      strategy.riskProfile === 'medium' ? 'bg-[#FFB800]/15 text-[#FFB800] border border-[#FFB800]/25' :
-                      'bg-[#02C076]/15 text-[#02C076] border border-[#02C076]/25'
-                    }`}>{strategy.riskProfile}</span>
-                  </td>
-                  <td className="py-5 text-[#4B5563] font-medium text-sm">{strategy.markets}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    </td>
+                    <td className="py-5 pr-6">
+                      <span className="font-terminal font-bold text-[#02C076]">+{monthlyRoi}%</span>
+                    </td>
+                    <td className="py-5 pr-6">
+                      <span className="font-terminal font-bold text-[#CF304A]">{strategy.maxDrawdown}%</span>
+                    </td>
+                    <td className="py-5 pr-6">
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-bold capitalize ${
+                        strategy.riskProfile === 'high'   ? 'bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/25' :
+                        strategy.riskProfile === 'medium' ? 'bg-[#FFB800]/15 text-[#FFB800] border border-[#FFB800]/25' :
+                        'bg-[#02C076]/15 text-[#02C076] border border-[#02C076]/25'
+                      }`}>{strategy.riskProfile}</span>
+                    </td>
+                    <td className="py-5 text-[#4B5563] font-medium text-sm">{strategy.markets}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <div className="text-center py-10">
             <Zap className="w-12 h-12 text-white/[0.05] mx-auto mb-3" />
