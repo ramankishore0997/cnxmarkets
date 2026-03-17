@@ -169,6 +169,7 @@ router.get("/users/:id/kyc", requireAdmin, async (req, res) => {
 
 router.get("/kyc", requireAdmin, async (_req, res) => {
   try {
+    console.log("[AdminKYC] GET /admin/kyc called — fetching all KYC records...");
     // Fetch all kyc_documents with user info
     const docs = await db
       .select({ doc: kycDocumentsTable, user: usersTable })
@@ -226,6 +227,7 @@ router.get("/kyc", requireAdmin, async (_req, res) => {
       ...ghostEntries,
     ];
 
+    console.log(`[AdminKYC] Returning ${result.length} entries (${docs.length} real docs + ${ghostEntries.length} ghost entries). Statuses: ${result.map(r => `${r.userId}=${r.status}(docs:${!r.noDocuments})`).join(", ")}`);
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
