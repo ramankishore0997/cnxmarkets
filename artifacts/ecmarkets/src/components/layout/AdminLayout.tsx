@@ -208,7 +208,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 p-5 lg:p-8 dashboard-content-bg min-h-0">
+        <div className="flex-1 p-4 md:p-5 lg:p-8 dashboard-content-bg min-h-0 overflow-x-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={location}

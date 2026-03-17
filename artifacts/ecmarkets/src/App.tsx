@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuthState } from "@/hooks/use-auth-state";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 // Public Pages
 import { Home } from "@/pages/public/Home";
@@ -159,6 +160,7 @@ export default function App() {
           <Router />
         </WouterRouter>
         <Toaster />
+        <PWAInstallPrompt />
       </TooltipProvider>
     </QueryClientProvider>
   );

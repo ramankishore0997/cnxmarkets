@@ -17,7 +17,8 @@ import {
   Zap,
   History,
   TrendingUp,
-  ChevronRight
+  ChevronRight,
+  MoreHorizontal
 } from 'lucide-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 
@@ -32,6 +33,13 @@ const navItems = [
   { name: 'KYC & Security',   href: '/dashboard/kyc',           icon: ShieldCheck },
   { name: 'Profile',          href: '/dashboard/profile',       icon: User },
   { name: 'Notifications',    href: '/dashboard/notifications',  icon: Bell },
+];
+
+const bottomNavItems = [
+  { name: 'Home',     href: '/dashboard',           icon: LayoutDashboard },
+  { name: 'Binary',   href: '/dashboard/binary',    icon: TrendingUp, highlight: true },
+  { name: 'Deposit',  href: '/dashboard/deposit',   icon: Wallet },
+  { name: 'Profile',  href: '/dashboard/profile',   icon: User },
 ];
 
 function SidebarLogo() {
@@ -114,12 +122,10 @@ function NavItem({ item, isActive, onClose }: { item: typeof navItems[0]; isActi
 function SidebarContent({ onClose, user, logout, location }: any) {
   return (
     <div className="flex flex-col h-full">
-      {/* Logo */}
       <div className="px-5 py-5 border-b border-white/[0.04]">
         <SidebarLogo />
       </div>
 
-      {/* User Profile */}
       <div className="px-4 py-5 border-b border-white/[0.04]">
         <div className="flex items-center gap-3 mb-3">
           <UserAvatar firstName={user?.firstName} lastName={user?.lastName} photo={(user as any)?.profilePhoto} size="lg" />
@@ -135,12 +141,10 @@ function SidebarContent({ onClose, user, logout, location }: any) {
         <KycBadge status={user?.kycStatus} />
       </div>
 
-      {/* Nav Section label */}
       <div className="px-5 pt-5 pb-1">
         <p className="text-[9px] font-bold text-[#374151] uppercase tracking-[0.14em]">Main Menu</p>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 pb-2 overflow-y-auto space-y-0.5">
         {navItems.map((item) => {
           const isActive = location === item.href ||
@@ -151,7 +155,6 @@ function SidebarContent({ onClose, user, logout, location }: any) {
         })}
       </nav>
 
-      {/* Divider + Footer */}
       <div className="px-3 pb-4 pt-2 space-y-2 border-t border-white/[0.04] mt-1">
         {user?.role === 'admin' && (
           <Link
@@ -181,6 +184,60 @@ function getPageTitle(location: string): string {
   return seg.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) || 'Dashboard';
 }
 
+function MobileBottomNav({ location, onMoreClick }: { location: string; onMoreClick: () => void }) {
+  return (
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-stretch"
+      style={{
+        background: 'rgba(11,14,17,0.97)',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(20px)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+    >
+      {bottomNavItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = location === item.href ||
+          (item.href !== '/dashboard' && location.startsWith(item.href));
+        const isHL = (item as any).highlight;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="flex-1 flex flex-col items-center justify-center py-2.5 gap-1 relative transition-all active:scale-95"
+          >
+            {isHL && !isActive && (
+              <div className="absolute inset-x-3 inset-y-1.5 rounded-xl"
+                style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.2)' }} />
+            )}
+            <Icon
+              className={`w-5 h-5 relative z-10 transition-colors ${
+                isActive ? 'text-[#FFB800]' : isHL ? 'text-[#FFB800]/70' : 'text-[#4B5563]'
+              }`}
+            />
+            <span className={`text-[10px] font-semibold relative z-10 transition-colors ${
+              isActive ? 'text-[#FFB800]' : isHL ? 'text-[#FFB800]/70' : 'text-[#4B5563]'
+            }`}>
+              {item.name}
+            </span>
+            {isActive && (
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-[#FFB800]" />
+            )}
+          </Link>
+        );
+      })}
+
+      <button
+        onClick={onMoreClick}
+        className="flex-1 flex flex-col items-center justify-center py-2.5 gap-1 active:scale-95 transition-all"
+      >
+        <MoreHorizontal className="w-5 h-5 text-[#4B5563]" />
+        <span className="text-[10px] font-semibold text-[#4B5563]">More</span>
+      </button>
+    </nav>
+  );
+}
+
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { user, logout } = useAuthState();
@@ -195,7 +252,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <SidebarContent onClose={closeMenu} user={user} logout={logout} location={location} />
       </aside>
 
-      {/* ── Mobile Overlay ─── */}
+      {/* ── Mobile Overlay Sidebar ─── */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -211,7 +268,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-              className="w-[260px] sidebar-stealth flex flex-col fixed inset-y-0 left-0 z-50 shadow-2xl md:hidden"
+              className="w-[280px] sidebar-stealth flex flex-col fixed inset-y-0 left-0 z-50 shadow-2xl md:hidden"
             >
               <button
                 onClick={closeMenu}
@@ -229,8 +286,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 md:ml-[260px] flex flex-col min-h-screen">
 
         {/* Header */}
-        <header className="h-16 header-glass sticky top-0 z-30 flex items-center justify-between px-5 lg:px-8">
-          {/* Mobile menu button */}
+        <header className="h-14 md:h-16 header-glass sticky top-0 z-30 flex items-center justify-between px-4 md:px-5 lg:px-8">
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="md:hidden p-2 rounded-lg text-[#6B7280] hover:text-white hover:bg-white/[0.05] transition-all"
@@ -238,7 +294,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Page title */}
+          <div className="md:hidden flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[#FFB800]" />
+            <span className="text-sm font-black tracking-tight text-white">ECMarkets<span className="text-[#FFB800]">India</span></span>
+          </div>
+
           <div className="hidden md:flex items-center gap-3">
             <div className="w-1 h-5 rounded-full bg-gradient-to-b from-[#FFB800] to-[#F0B90B]" />
             <h2 className="text-[15px] font-bold text-[#F8FAFC] tracking-tight">
@@ -246,13 +306,12 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             </h2>
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-2 md:gap-3 ml-auto">
             <Link
               href="/dashboard/notifications"
               className="relative p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-[#6B7280] hover:text-[#FFB800] hover:border-[#FFB800]/25 transition-all duration-200"
             >
-              <Bell className="w-4.5 h-4.5 w-[18px] h-[18px]" />
+              <Bell className="w-[18px] h-[18px]" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#CF304A] border-2 border-[#080D18] rounded-full" />
             </Link>
 
@@ -273,7 +332,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 p-5 lg:p-8 dashboard-content-bg min-h-0">
+        <div className="flex-1 p-4 md:p-5 lg:p-8 dashboard-content-bg min-h-0 pb-24 md:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={location}
@@ -287,6 +346,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </AnimatePresence>
         </div>
       </main>
+
+      {/* ── Mobile Bottom Navigation ─── */}
+      <MobileBottomNav location={location} onMoreClick={() => setMobileMenuOpen(true)} />
     </div>
   );
 }

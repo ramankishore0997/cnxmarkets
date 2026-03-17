@@ -1,0 +1,32 @@
+{
+  "name": "ECMarketsIndia",
+  "short_name": "ECMarkets",
+  "description": "Algorithmic Trading Platform — Forex, Crypto & Binary",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0B0E11",
+  "background_color": "#0B0E11",
+  "categories": ["finance", "business"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Binary Trading",
+      "url": "/dashboard/binary",
+      "description": "Live Binary Trading Terminal"
+    },
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "Portfolio Overview"
+    }
+  ]
+}

@@ -525,4 +525,22 @@
       radial-gradient(ellipse at 20% 80%, rgba(2,192,118,0.03) 0%, transparent 40%),
       transparent;
   }
+
+  /* ── Mobile / PWA safe-area helpers ───────────── */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Touch-friendly tap targets */
+  @media (max-width: 768px) {
+    button, a, [role="button"] {
+      -webkit-tap-highlight-color: transparent;
+    }
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
 }
