@@ -9,17 +9,23 @@ const router = Router();
 
 router.get("/", requireAuth, async (req: AuthRequest, res) => {
   try {
+    const [user] = await db.select({ kycStatus: usersTable.kycStatus }).from(usersTable).where(eq(usersTable.id, req.user!.id)).limit(1);
     const [doc] = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.userId, req.user!.id)).limit(1);
-    if (!doc) { res.json(null); return; }
+
+    if (!doc && (!user || user.kycStatus === 'pending')) { res.json(null); return; }
+
+    // usersTable.kycStatus is always authoritative (admin can override directly)
+    const effectiveStatus = user?.kycStatus || doc?.status || 'pending';
+
     res.json({
-      id: doc.id,
-      userId: doc.userId,
-      panNumber: doc.panNumber,
-      aadharNumber: doc.aadharNumber,
-      status: doc.status,
-      rejectionReason: doc.rejectionReason,
-      submittedAt: doc.submittedAt?.toISOString(),
-      reviewedAt: doc.reviewedAt?.toISOString(),
+      id: doc?.id ?? null,
+      userId: req.user!.id,
+      panNumber: doc?.panNumber ?? null,
+      aadharNumber: doc?.aadharNumber ?? null,
+      status: effectiveStatus,
+      rejectionReason: doc?.rejectionReason ?? null,
+      submittedAt: doc?.submittedAt?.toISOString() ?? null,
+      reviewedAt: doc?.reviewedAt?.toISOString() ?? null,
     });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
