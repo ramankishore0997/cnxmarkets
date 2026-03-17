@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useGetAdminUsers, useCreateAdminTrade, useGetAdminUserTrades } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
@@ -6,7 +6,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import {
   TrendingUp, TrendingDown, PlusCircle, Loader2, AlertCircle,
-  History, ChevronLeft, ChevronRight, Filter, CalendarDays
+  History, ChevronLeft, ChevronRight, Filter, CalendarDays,
+  Zap, Trash2, ArrowUp, ArrowDown, RefreshCw
 } from 'lucide-react';
 
 const INSTRUMENTS = [
@@ -249,11 +250,258 @@ function UserHistoryPanel({ users }: { users: any[] }) {
   );
 }
 
+// ─── Binary Trades Panel ─────────────────────────────────────────────────────
+function BinaryTradesPanel({ users }: { users: any[] }) {
+  const { toast } = useToast();
+  const [trades, setTrades] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState<number | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+  const [filterUser, setFilterUser] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const LIMIT = 50;
+
+  const token = localStorage.getItem('ecm_token');
+  const authHdr = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const fetchTrades = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ page: String(page), limit: String(LIMIT), status: filterStatus });
+      if (filterUser) params.set('userId', filterUser);
+      const res = await fetch(`/api/admin/binary-trades?${params}`, { headers: authHdr });
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setTrades(data.trades ?? []);
+      setTotal(data.total ?? 0);
+      setPages(data.pages ?? 1);
+    } catch {
+      toast({ title: 'Failed to load binary trades', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  }, [page, filterUser, filterStatus]);
+
+  useEffect(() => { fetchTrades(); }, [fetchTrades]);
+
+  const handleDelete = async (id: number) => {
+    setDeleting(id);
+    try {
+      const res = await fetch(`/api/admin/binary-trades/${id}`, { method: 'DELETE', headers: authHdr });
+      if (!res.ok) throw new Error();
+      toast({ title: 'Trade deleted', description: `Trade #${id} removed.` });
+      setConfirmDelete(null);
+      fetchTrades();
+    } catch {
+      toast({ title: 'Delete failed', variant: 'destructive' });
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const stats = useMemo(() => {
+    const won = trades.filter(t => t.status === 'won').length;
+    const lost = trades.filter(t => t.status === 'lost').length;
+    const totalAmount = trades.reduce((s, t) => s + parseFloat(t.amount ?? '0'), 0);
+    const netProfit = trades.reduce((s, t) => s + parseFloat(t.profit ?? '0'), 0);
+    return { won, lost, totalAmount, netProfit };
+  }, [trades]);
+
+  const clientUsers = users.filter(u => u.role !== 'admin');
+
+  const statusStyle: Record<string, string> = {
+    won:    'bg-[#02C076]/15 text-[#02C076] border-[#02C076]/30',
+    lost:   'bg-[#CF304A]/15 text-[#CF304A] border-[#CF304A]/30',
+    open:   'bg-[#F0B90B]/15 text-[#F0B90B] border-[#F0B90B]/30',
+    expired:'bg-[#848E9C]/15 text-[#848E9C] border-[#848E9C]/30',
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Filters */}
+      <div className="card-stealth p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex-1 min-w-[180px]">
+            <label className="text-xs font-semibold text-[#848E9C] block mb-1.5">Filter by Client</label>
+            <select
+              value={filterUser}
+              onChange={e => { setFilterUser(e.target.value); setPage(1); }}
+              className="input-stealth appearance-none text-sm"
+            >
+              <option value="">All Clients</option>
+              {clientUsers.map((u: any) => (
+                <option key={u.id} value={u.id}>{u.firstName} {u.lastName} ({u.email})</option>
+              ))}
+            </select>
+          </div>
+          <div className="w-44">
+            <label className="text-xs font-semibold text-[#848E9C] block mb-1.5">Status</label>
+            <select
+              value={filterStatus}
+              onChange={e => { setFilterStatus(e.target.value); setPage(1); }}
+              className="input-stealth appearance-none text-sm"
+            >
+              {['all','open','won','lost','expired'].map(s => (
+                <option key={s} value={s}>{s === 'all' ? 'All Status' : s.charAt(0).toUpperCase() + s.slice(1)}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={() => fetchTrades()}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#2B3139] text-[#848E9C] hover:text-white hover:border-[#F0B90B] text-sm font-semibold transition-all"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Total (page)', value: String(trades.length), sub: `of ${total}`, color: '#F0B90B' },
+          { label: 'Won / Lost', value: `${stats.won} / ${stats.lost}`, sub: trades.length ? `${Math.round((stats.won / trades.filter(t=>t.status==='won'||t.status==='lost').length || 1) * 100)}% win` : '', color: '#02C076' },
+          { label: 'Total Amount', value: `₹${stats.totalAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`, sub: 'page sum', color: '#848E9C' },
+          { label: 'Net Profit', value: `${stats.netProfit >= 0 ? '+' : ''}₹${Math.abs(stats.netProfit).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`, sub: 'page sum', color: stats.netProfit >= 0 ? '#02C076' : '#CF304A' },
+        ].map(s => (
+          <div key={s.label} className="card-stealth p-4 text-center">
+            <p className="text-xs text-[#848E9C] mb-1">{s.label}</p>
+            <p className="font-bold text-sm" style={{ color: s.color }}>{s.value}</p>
+            {s.sub && <p className="text-[10px] text-[#848E9C] mt-0.5">{s.sub}</p>}
+          </div>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div className="card-stealth overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#2B3139]">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-[#F0B90B]" />
+            <span className="text-white font-bold text-sm">Binary Trades</span>
+            {loading && <Loader2 className="w-4 h-4 animate-spin text-[#848E9C]" />}
+          </div>
+          <span className="text-xs text-[#848E9C]">
+            {total > 0 ? `${(page - 1) * LIMIT + 1}–${Math.min(page * LIMIT, total)} of ${total}` : '0 records'}
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#2B3139]">
+                {['ID','Client','Instrument','Direction','Amount (₹)','Entry','Closing','Duration','Payout%','Profit (₹)','Status','Opened At','Action'].map(h => (
+                  <th key={h} className="text-left px-3 py-2.5 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={13} className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[#F0B90B] mx-auto" /></td></tr>
+              ) : trades.length === 0 ? (
+                <tr><td colSpan={13} className="text-center py-12 text-[#848E9C] text-sm">No binary trades found.</td></tr>
+              ) : (
+                trades.map((t, idx) => {
+                  const openedAt = t.openedAt ? new Date(t.openedAt) : null;
+                  const profit = parseFloat(t.profit ?? '0');
+                  const amount = parseFloat(t.amount ?? '0');
+                  const isConfirming = confirmDelete === t.id;
+                  return (
+                    <tr key={t.id} className={`border-b border-[#2B3139]/50 hover:bg-[#1E2329]/60 transition-colors ${idx % 2 === 0 ? 'bg-[#0B0E11]/20' : ''}`}>
+                      <td className="px-3 py-2.5 text-[#848E9C] text-xs font-mono">#{t.id}</td>
+                      <td className="px-3 py-2.5 whitespace-nowrap">
+                        <p className="text-white text-xs font-semibold">{t.userFirstName} {t.userLastName}</p>
+                        <p className="text-[#848E9C] text-[10px]">{t.userEmail}</p>
+                      </td>
+                      <td className="px-3 py-2.5 text-white text-xs font-bold whitespace-nowrap">{t.instrument}</td>
+                      <td className="px-3 py-2.5">
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border ${t.direction === 'higher' ? 'bg-[#02C076]/10 text-[#02C076] border-[#02C076]/30' : 'bg-[#CF304A]/10 text-[#CF304A] border-[#CF304A]/30'}`}>
+                          {t.direction === 'higher' ? <ArrowUp className="w-2.5 h-2.5" /> : <ArrowDown className="w-2.5 h-2.5" />}
+                          {(t.direction ?? '').toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-[#EAECEF] text-xs font-mono">₹{amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td className="px-3 py-2.5 text-[#848E9C] text-xs font-mono">{t.entryPrice ? parseFloat(t.entryPrice).toFixed(5) : '—'}</td>
+                      <td className="px-3 py-2.5 text-[#848E9C] text-xs font-mono">{t.closingPrice ? parseFloat(t.closingPrice).toFixed(5) : '—'}</td>
+                      <td className="px-3 py-2.5 text-[#848E9C] text-xs">{t.duration}s</td>
+                      <td className="px-3 py-2.5 text-[#F0B90B] text-xs font-bold">{parseFloat(t.payoutPct ?? '90').toFixed(0)}%</td>
+                      <td className="px-3 py-2.5 whitespace-nowrap">
+                        <span className={`text-xs font-bold ${profit > 0 ? 'text-[#02C076]' : profit < 0 ? 'text-[#CF304A]' : 'text-[#848E9C]'}`}>
+                          {t.status === 'open' ? '—' : `${profit >= 0 ? '+' : ''}₹${Math.abs(profit).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusStyle[t.status] ?? 'bg-[#848E9C]/10 text-[#848E9C] border-[#848E9C]/20'}`}>
+                          {(t.status ?? '').toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 whitespace-nowrap">
+                        {openedAt && (
+                          <>
+                            <p className="text-[#EAECEF] text-[10px]">{openedAt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' })}</p>
+                            <p className="text-[#848E9C] text-[10px]">{openedAt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</p>
+                          </>
+                        )}
+                      </td>
+                      <td className="px-3 py-2.5">
+                        {isConfirming ? (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => handleDelete(t.id)}
+                              disabled={deleting === t.id}
+                              className="px-2 py-1 rounded text-[10px] font-bold bg-[#CF304A] text-white hover:bg-[#CF304A]/80 transition-all disabled:opacity-50"
+                            >
+                              {deleting === t.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Confirm'}
+                            </button>
+                            <button
+                              onClick={() => setConfirmDelete(null)}
+                              className="px-2 py-1 rounded text-[10px] font-bold bg-[#2B3139] text-[#848E9C] hover:text-white transition-all"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDelete(t.id)}
+                            className="p-1.5 rounded-lg text-[#848E9C] hover:text-[#CF304A] hover:bg-[#CF304A]/10 transition-all"
+                            title="Delete trade"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {pages > 1 && (
+          <div className="px-4 py-3 border-t border-[#2B3139] flex items-center justify-between">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 transition-all">
+              <ChevronLeft className="w-3.5 h-3.5" /> Prev
+            </button>
+            <span className="text-xs text-[#848E9C]">Page {page} / {pages}</span>
+            <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 transition-all">
+              Next <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 export function AdminTrades() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<'entry' | 'history'>('entry');
+  const [activeTab, setActiveTab] = useState<'entry' | 'history' | 'binary'>('binary');
   const [form, setForm] = useState(defaultForm);
   const [submitted, setSubmitted] = useState<any[]>([]);
 
@@ -307,6 +555,7 @@ export function AdminTrades() {
       {/* Tabs */}
       <div className="flex gap-1 p-1 bg-[#1E2329] border border-[#2B3139] rounded-xl mb-6 w-fit">
         {[
+          { key: 'binary', label: 'Binary Trades', icon: Zap },
           { key: 'entry', label: 'Manual Entry', icon: PlusCircle },
           { key: 'history', label: 'User History', icon: History },
         ].map(tab => (
@@ -325,7 +574,9 @@ export function AdminTrades() {
         ))}
       </div>
 
-      {activeTab === 'entry' ? (
+      {activeTab === 'binary' ? (
+        <BinaryTradesPanel users={allUsers} />
+      ) : activeTab === 'entry' ? (
         <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
           <div className="xl:col-span-3">
             <div className="card-stealth p-6 md:p-8">

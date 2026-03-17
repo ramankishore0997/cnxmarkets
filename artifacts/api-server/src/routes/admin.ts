@@ -2,7 +2,7 @@ import { Router } from "express";
 import { randomBytes } from "crypto";
 import jwt from "jsonwebtoken";
 import { db } from "@workspace/db";
-import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable, adminSettingsTable } from "@workspace/db/schema";
+import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable, adminSettingsTable, binaryTradesTable } from "@workspace/db/schema";
 import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { generateToken } from "../lib/auth.js";
@@ -547,6 +547,68 @@ router.get("/auto-login/:token", async (req, res) => {
       token: jwtToken,
       user: { id: admin.id, email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role },
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/binary-trades", requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { userId, status, page = '1', limit = '50' } = req.query;
+    const pageN = Math.max(1, parseInt(String(page)) || 1);
+    const limitN = Math.min(200, parseInt(String(limit)) || 50);
+    const offset = (pageN - 1) * limitN;
+
+    const conditions: any[] = [];
+    if (userId) conditions.push(eq(binaryTradesTable.userId, parseInt(String(userId))));
+    if (status && status !== 'all') conditions.push(eq(binaryTradesTable.status, String(status)));
+
+    const baseQuery = db
+      .select({
+        id: binaryTradesTable.id,
+        userId: binaryTradesTable.userId,
+        instrument: binaryTradesTable.instrument,
+        direction: binaryTradesTable.direction,
+        entryPrice: binaryTradesTable.entryPrice,
+        closingPrice: binaryTradesTable.closingPrice,
+        amount: binaryTradesTable.amount,
+        duration: binaryTradesTable.duration,
+        payoutPct: binaryTradesTable.payoutPct,
+        status: binaryTradesTable.status,
+        profit: binaryTradesTable.profit,
+        openedAt: binaryTradesTable.openedAt,
+        closedAt: binaryTradesTable.closedAt,
+        userEmail: usersTable.email,
+        userFirstName: usersTable.firstName,
+        userLastName: usersTable.lastName,
+      })
+      .from(binaryTradesTable)
+      .leftJoin(usersTable, eq(binaryTradesTable.userId, usersTable.id));
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+    const [allRows, trades] = await Promise.all([
+      whereClause
+        ? db.select({ id: binaryTradesTable.id }).from(binaryTradesTable).where(whereClause)
+        : db.select({ id: binaryTradesTable.id }).from(binaryTradesTable),
+      whereClause
+        ? baseQuery.where(whereClause).orderBy(desc(binaryTradesTable.openedAt)).limit(limitN).offset(offset)
+        : baseQuery.orderBy(desc(binaryTradesTable.openedAt)).limit(limitN).offset(offset),
+    ]);
+
+    res.json({ trades, total: allRows.length, pages: Math.ceil(allRows.length / limitN) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/binary-trades/:id", requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) { res.status(400).json({ message: "Invalid ID" }); return; }
+    await db.delete(binaryTradesTable).where(eq(binaryTradesTable.id, id));
+    res.json({ success: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
