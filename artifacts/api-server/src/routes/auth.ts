@@ -15,14 +15,15 @@ router.post("/register", async (req, res) => {
       res.status(400).json({ message: "Missing required fields" });
       return;
     }
-    const existing = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+    const normalizedEmail = email.trim().toLowerCase();
+    const existing = await db.select().from(usersTable).where(eq(usersTable.email, normalizedEmail)).limit(1);
     if (existing.length > 0) {
       res.status(400).json({ message: "Email already registered" });
       return;
     }
     const passwordHash = await hashPassword(password);
     const [user] = await db.insert(usersTable).values({
-      email, passwordHash, firstName, lastName, phone, country,
+      email: normalizedEmail, passwordHash, firstName, lastName, phone, country,
       role: "client", kycStatus: "pending", isActive: true,
     }).returning();
     await db.insert(accountsTable).values({ userId: user.id, totalBalance: "0", totalProfit: "0", totalDeposits: "0", totalWithdrawals: "0" });
@@ -41,6 +42,27 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ message: "Email is required" });
+      return;
+    }
+    const normalizedEmail = email.trim().toLowerCase();
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, normalizedEmail)).limit(1);
+    if (user) {
+      await sendTelegram(
+        `🔐 *Password Reset Request*\n\nA client has requested a password reset:\n\n*Name:* ${user.firstName} ${user.lastName}\n*Email:* \`${user.email}\`\n*User ID:* ${user.id}\n\nPlease reset their password from the Admin Panel → Users section.`
+      ).catch(() => {});
+    }
+    res.json({ message: "If this email is registered, our team will contact you shortly." });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -48,7 +70,8 @@ router.post("/login", async (req, res) => {
       res.status(400).json({ message: "Email and password required" });
       return;
     }
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+    const normalizedEmail = email.trim().toLowerCase();
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, normalizedEmail)).limit(1);
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
