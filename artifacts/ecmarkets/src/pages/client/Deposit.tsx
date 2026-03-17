@@ -90,13 +90,13 @@ export function Deposit() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Fund Account</h1>
-        <p className="text-[#848E9C] font-medium">Add capital to start allocating to strategies</p>
+      <div className="mb-5 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1.5">Fund Account</h1>
+        <p className="text-[#848E9C] font-medium text-sm md:text-base">Add capital to start allocating to strategies</p>
       </div>
 
       {/* Tab switcher */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-5 md:mb-6">
         {([
           { key: 'upi',  label: 'UPI India',    icon: Smartphone },
           { key: 'usdt', label: 'Crypto (USDT)', icon: Bitcoin    },
@@ -104,7 +104,7 @@ export function Deposit() {
           <button
             key={key}
             onClick={() => { setTab(key); setSuccess(null); }}
-            className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all border ${
+            className={`flex items-center gap-1.5 md:gap-2 px-4 md:px-5 py-2.5 md:py-3 rounded-xl font-bold text-sm transition-all border flex-1 md:flex-none justify-center md:justify-start ${
               tab === key
                 ? 'bg-[#F0B90B] text-black border-[#F0B90B]'
                 : 'bg-transparent text-[#848E9C] border-[#2B3139] hover:border-[#F0B90B]/50 hover:text-white'
@@ -116,10 +116,10 @@ export function Deposit() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 md:gap-8 mb-5 md:mb-8">
 
         {/* ── FORM PANEL ── */}
-        <div className="lg:col-span-3 card-stealth p-8">
+        <div className="lg:col-span-3 card-stealth p-5 md:p-8">
 
           {/* UPI TAB */}
           {tab === 'upi' && (
@@ -409,34 +409,62 @@ export function Deposit() {
             <p className="text-[#848E9C] font-medium">No deposits yet. Submit your first request above.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#2B3139]">
-                  {['Date', 'Amount', 'Method', 'UPI / Reference', 'Status'].map(h => (
-                    <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
+          <>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#2B3139]">
+                    {['Date', 'Amount', 'Method', 'UPI / Reference', 'Status'].map(h => (
+                      <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#2B3139]">
+                  {deposits.map((tx: any) => (
+                    <tr key={tx.id} className="hover:bg-[#0B0E11]/40 transition-colors">
+                      <td className="py-4 pr-6 text-[#848E9C] text-sm">{new Date(tx.createdAt).toLocaleDateString('en-IN')}</td>
+                      <td className="py-4 pr-6 font-bold text-white">
+                        {tx.currency === 'INR' ? '₹' : ''}{Number(tx.amount).toLocaleString('en-IN')}{tx.currency !== 'INR' ? ` ${tx.currency}` : ''}
+                      </td>
+                      <td className="py-4 pr-6">
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#F0B90B]/20 text-[#F0B90B]'}`}>
+                          {tx.paymentMethod === 'upi' ? 'UPI' : 'USDT'}
+                        </span>
+                      </td>
+                      <td className="py-4 pr-6 text-[#848E9C] font-mono text-xs">{tx.transactionReference || '—'}</td>
+                      <td className="py-4"><StatusBadge status={tx.status} /></td>
+                    </tr>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2B3139]">
-                {deposits.map((tx: any) => (
-                  <tr key={tx.id} className="hover:bg-[#0B0E11]/40 transition-colors">
-                    <td className="py-4 pr-6 text-[#848E9C] text-sm">{new Date(tx.createdAt).toLocaleDateString('en-IN')}</td>
-                    <td className="py-4 pr-6 font-bold text-white">
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-3">
+              {deposits.map((tx: any) => (
+                <div key={tx.id} className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-black text-white text-base">
                       {tx.currency === 'INR' ? '₹' : ''}{Number(tx.amount).toLocaleString('en-IN')}{tx.currency !== 'INR' ? ` ${tx.currency}` : ''}
-                    </td>
-                    <td className="py-4 pr-6">
+                    </span>
+                    <StatusBadge status={tx.status} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
                       <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#F0B90B]/20 text-[#F0B90B]'}`}>
                         {tx.paymentMethod === 'upi' ? 'UPI' : 'USDT'}
                       </span>
-                    </td>
-                    <td className="py-4 pr-6 text-[#848E9C] font-mono text-xs">{tx.transactionReference || '—'}</td>
-                    <td className="py-4"><StatusBadge status={tx.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      {tx.transactionReference && (
+                        <span className="text-[#848E9C] font-mono text-xs truncate max-w-[120px]">{tx.transactionReference}</span>
+                      )}
+                    </div>
+                    <span className="text-[#848E9C] text-xs">{new Date(tx.createdAt).toLocaleDateString('en-IN')}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </DashboardLayout>

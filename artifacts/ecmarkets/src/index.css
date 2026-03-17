@@ -526,6 +526,11 @@
       transparent;
   }
 
+  /* ── Binary terminal desktop height ────────────── */
+  @media (min-width: 768px) {
+    .binary-terminal-h { height: calc(100vh - 90px); }
+  }
+
   /* ── Mobile / PWA safe-area helpers ───────────── */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);

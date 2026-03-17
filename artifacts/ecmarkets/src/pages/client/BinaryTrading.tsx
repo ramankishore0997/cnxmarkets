@@ -164,6 +164,7 @@ export function BinaryTrading() {
   const [myHistory, setMyHistory] = useState<HistoryEntry[]>([]);
   const [tick, setTick] = useState(0);
   const [alltickLive, setAlltickLive] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'live' | 'history'>('live');
 
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<IChartApi | null>(null);
@@ -617,59 +618,66 @@ export function BinaryTrading() {
   return (
     <DashboardLayout>
       <div
-        className="flex flex-col"
-        style={{
-          height: 'calc(100vh - 90px)',
-          borderRadius: '16px',
-          boxShadow: screenGlow,
-          transition: 'box-shadow 0.8s ease',
-        }}
+        className="flex flex-col binary-terminal-h"
+        style={{ borderRadius: '16px', boxShadow: screenGlow, transition: 'box-shadow 0.8s ease' }}
       >
-        {/* Header Bar */}
-        <div className="flex items-center justify-between mb-3 flex-wrap gap-2 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#FFB800]" />
-              <span className="text-lg font-black text-white tracking-tight">Binary Terminal</span>
+        {/* ── Header Bar ── */}
+        <div className="flex items-center justify-between mb-2 md:mb-3 flex-wrap gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-1.5 md:gap-3 flex-wrap">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <Zap className="w-4 h-4 md:w-5 md:h-5 text-[#FFB800]" />
+              <span className="text-base md:text-lg font-black text-white tracking-tight">Binary Terminal</span>
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.15)' }}>
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.15)' }}>
               <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-[#02C076] animate-pulse' : 'bg-[#CF304A]'}`} />
               <span className={connected ? 'text-[#02C076]' : 'text-[#CF304A]'}>{connected ? 'Live' : 'Connecting'}</span>
             </div>
             {alltickLive && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(2,192,118,0.08)', border: '1px solid rgba(2,192,118,0.2)' }}>
+              <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(2,192,118,0.08)', border: '1px solid rgba(2,192,118,0.2)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse" />
                 <span className="text-[#02C076]">Alltick Live</span>
               </div>
             )}
             {activeTradeStatus !== 'none' && (
-              <div
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black animate-pulse"
-                style={{
-                  background: activeTradeStatus === 'winning' ? 'rgba(2,192,118,0.12)' : 'rgba(207,48,74,0.12)',
-                  border: `1px solid ${activeTradeStatus === 'winning' ? 'rgba(2,192,118,0.4)' : 'rgba(207,48,74,0.4)'}`,
-                  color: activeTradeStatus === 'winning' ? '#02C076' : '#CF304A',
-                }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: activeTradeStatus === 'winning' ? '#02C076' : '#CF304A' }} />
-                {activeTradeStatus === 'winning' ? '▲ In Profit' : '▼ In Loss'}
+              <div className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-black animate-pulse"
+                style={{ background: activeTradeStatus === 'winning' ? 'rgba(2,192,118,0.12)' : 'rgba(207,48,74,0.12)', border: `1px solid ${activeTradeStatus === 'winning' ? 'rgba(2,192,118,0.4)' : 'rgba(207,48,74,0.4)'}`, color: activeTradeStatus === 'winning' ? '#02C076' : '#CF304A' }}>
+                {activeTradeStatus === 'winning' ? '▲ Winning' : '▼ Losing'}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-3 text-xs text-[#6B7280]">
-            <span className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2 text-xs text-[#6B7280]">
+            <span className="flex items-center gap-1">
               <Wallet className="w-3.5 h-3.5" />
-              <span className="text-white font-bold">₹{balance.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+              <span className="text-white font-bold">₹{balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
             </span>
-            <span className="text-[#1F2937]">|</span>
-            <span className="text-[#FFB800] font-black text-sm">{payoutPct}% Payout</span>
+            <span className="text-[#FFB800] font-black">{payoutPct}% Payout</span>
           </div>
         </div>
 
-        {/* 3-Column Terminal */}
-        <div className="flex gap-2 flex-1 min-h-0">
-          {/* LEFT: Asset Sidebar */}
-          <div className="w-[175px] flex-shrink-0 flex flex-col gap-1 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+        {/* ── Mobile: Horizontal Instrument Chips ── */}
+        <div className="md:hidden flex gap-1.5 overflow-x-auto pb-2 flex-shrink-0 mb-1" style={{ scrollbarWidth: 'none' } as any}>
+          {INSTRUMENTS.map(inst => {
+            const p = prices[inst.id] ?? inst.base;
+            const ch = SEED_24H[inst.id] ?? 0;
+            const isActive = instrument === inst.id;
+            const pd = priceDir[inst.id] ?? 'up';
+            return (
+              <button key={inst.id} onClick={() => setInstrument(inst.id)}
+                className="flex-shrink-0 flex flex-col items-start px-2.5 py-1.5 rounded-xl transition-all"
+                style={{ background: isActive ? 'rgba(255,184,0,0.12)' : 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? 'rgba(255,184,0,0.35)' : 'rgba(255,255,255,0.06)'}`, minWidth: '72px' }}>
+                <span className={`text-[10px] font-black leading-tight ${isActive ? 'text-[#FFB800]' : 'text-[#9CA3AF]'}`}>{inst.label}</span>
+                <span className={`text-[9px] font-mono leading-tight ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{p.toFixed(Math.min(inst.decimals, 4))}</span>
+                <span className={`text-[8px] font-bold ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Main Terminal: stack on mobile, 3-col on desktop ── */}
+        <div className="flex flex-col md:flex-row gap-2 md:flex-1 md:min-h-0">
+
+          {/* LEFT: Asset Sidebar (desktop only) */}
+          <div className="hidden md:flex w-[175px] flex-shrink-0 flex-col gap-1 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
             {[['Forex', forex], ['Crypto', crypto]].map(([cat, items]) => (
               <div key={cat as string}>
                 <p className="text-[9px] font-black text-[#374151] uppercase tracking-[0.15em] px-2 py-1.5">{cat as string}</p>
@@ -679,26 +687,16 @@ export function BinaryTrading() {
                   const isActive = instrument === inst.id;
                   const pd = priceDir[inst.id] ?? 'up';
                   return (
-                    <button
-                      key={inst.id}
-                      onClick={() => setInstrument(inst.id)}
+                    <button key={inst.id} onClick={() => setInstrument(inst.id)}
                       className="w-full text-left px-2.5 py-2 rounded-xl transition-all mb-0.5"
-                      style={{
-                        background: isActive ? 'rgba(255,184,0,0.10)' : 'rgba(255,255,255,0.02)',
-                        border: `1px solid ${isActive ? 'rgba(255,184,0,0.30)' : 'rgba(255,255,255,0.04)'}`,
-                      }}
-                    >
+                      style={{ background: isActive ? 'rgba(255,184,0,0.10)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? 'rgba(255,184,0,0.30)' : 'rgba(255,255,255,0.04)'}` }}>
                       <div className="flex items-center justify-between mb-0.5">
                         <span className={`text-xs font-black ${isActive ? 'text-[#FFB800]' : 'text-[#9CA3AF]'}`}>{inst.label}</span>
-                        <span className={`text-[9px] font-bold ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                          {pd === 'up' ? '▲' : '▼'}
-                        </span>
+                        <span className={`text-[9px] font-bold ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{pd === 'up' ? '▲' : '▼'}</span>
                       </div>
                       <div className="flex items-end justify-between">
                         <span className="text-[10px] font-mono text-white leading-tight">{p.toFixed(inst.decimals)}</span>
-                        <span className={`text-[9px] font-bold ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                          {ch >= 0 ? '+' : ''}{ch.toFixed(2)}%
-                        </span>
+                        <span className={`text-[9px] font-bold ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
                       </div>
                     </button>
                   );
@@ -707,79 +705,55 @@ export function BinaryTrading() {
             ))}
           </div>
 
-          {/* CENTER: Chart + Active Trades + Split Feed */}
-          <div className="flex-1 flex flex-col gap-2 min-w-0 min-h-0">
+          {/* CENTER: Chart + Active Trades + (Desktop: Split Feed) */}
+          <div className="flex flex-col gap-2 md:flex-1 min-w-0 md:min-h-0">
             {/* Chart Card */}
-            <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)' }}>
-              {/* Chart Header */}
-              <div className="flex items-center justify-between px-4 py-2.5 border-b flex-shrink-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-                <div className="flex items-center gap-3">
-                  <span className="text-white font-black text-base tracking-tight">{instrument}</span>
-                  <span className={`text-xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+            <div className="flex flex-col rounded-2xl overflow-hidden md:flex-1 md:min-h-0" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)', minHeight: '220px' }}>
+              <div className="flex items-center justify-between px-3 md:px-4 py-2 border-b flex-shrink-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                <div className="flex items-center gap-2 md:gap-3">
+                  <span className="text-white font-black text-sm md:text-base tracking-tight">{instrument}</span>
+                  <span className={`text-base md:text-xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
                     {fmt(livePrice, instrument)}
                   </span>
-                  <span className={`text-xs font-bold ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                  <span className={`text-xs font-bold hidden sm:inline ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
                     {priceDirCurrent === 'up' ? '▲' : '▼'} {dir24 >= 0 ? '+' : ''}{dir24.toFixed(2)}%
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   {TIMEFRAMES.map(tf => (
-                    <button
-                      key={tf.minutes}
-                      onClick={() => setTimeframe(tf.minutes)}
-                      className="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
-                      style={{
-                        background: timeframe === tf.minutes ? '#FFB800' : 'rgba(255,255,255,0.04)',
-                        color: timeframe === tf.minutes ? '#000' : '#6B7280',
-                      }}
-                    >
+                    <button key={tf.minutes} onClick={() => setTimeframe(tf.minutes)}
+                      className="px-2 py-1 rounded-lg text-xs font-bold transition-all"
+                      style={{ background: timeframe === tf.minutes ? '#FFB800' : 'rgba(255,255,255,0.04)', color: timeframe === tf.minutes ? '#000' : '#6B7280' }}>
                       {tf.label}
                     </button>
                   ))}
                 </div>
               </div>
-              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: '280px' }} />
+              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: '200px' }} />
             </div>
 
             {/* Active Trades Strip */}
             {activeTrades.length > 0 && (
-              <div className="flex-shrink-0 rounded-xl px-3 py-2 flex gap-2 overflow-x-auto" style={{ background: 'rgba(255,184,0,0.05)', border: '1px solid rgba(255,184,0,0.15)' }}>
+              <div className="flex-shrink-0 rounded-xl px-3 py-2 flex gap-2 overflow-x-auto" style={{ background: 'rgba(255,184,0,0.05)', border: '1px solid rgba(255,184,0,0.15)', scrollbarWidth: 'none' }}>
                 {activeTrades.map(trade => {
                   const remaining = Math.max(0, Math.ceil((trade.endsAt - Date.now()) / 1000));
                   const pct = Math.min(((trade.duration - remaining) / trade.duration) * 100, 100);
                   const cp = prices[trade.instrument] ?? trade.entryPrice;
                   const winning = trade.direction === 'call' ? cp > trade.entryPrice : cp < trade.entryPrice;
-                  const pnl = winning
-                    ? Math.round(trade.amount * (trade.payoutPct / 100))
-                    : -trade.amount;
+                  const pnl = winning ? Math.round(trade.amount * (trade.payoutPct / 100)) : -trade.amount;
                   return (
-                    <div
-                      key={trade.id}
-                      className="flex-shrink-0 rounded-xl px-3 py-2 min-w-[210px] transition-all"
-                      style={{
-                        background: winning ? 'rgba(2,192,118,0.06)' : 'rgba(207,48,74,0.06)',
-                        border: `1px solid ${winning ? 'rgba(2,192,118,0.35)' : 'rgba(207,48,74,0.35)'}`,
-                        boxShadow: winning ? '0 0 12px rgba(2,192,118,0.15)' : '0 0 12px rgba(207,48,74,0.15)',
-                      }}
-                    >
+                    <div key={trade.id} className="flex-shrink-0 rounded-xl px-3 py-2 min-w-[175px] md:min-w-[210px] transition-all"
+                      style={{ background: winning ? 'rgba(2,192,118,0.06)' : 'rgba(207,48,74,0.06)', border: `1px solid ${winning ? 'rgba(2,192,118,0.35)' : 'rgba(207,48,74,0.35)'}`, boxShadow: winning ? '0 0 12px rgba(2,192,118,0.15)' : '0 0 12px rgba(207,48,74,0.15)' }}>
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-1.5">
-                          <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${trade.direction === 'call' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>
-                            {trade.direction === 'call' ? '↑ CALL' : '↓ PUT'}
-                          </span>
-                          <span className={`text-[10px] font-black ${winning ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                            {winning ? '▲ Winning' : '▼ Losing'}
-                          </span>
+                          <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${trade.direction === 'call' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>{trade.direction === 'call' ? '↑ CALL' : '↓ PUT'}</span>
+                          <span className={`text-[10px] font-black ${winning ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{winning ? '▲ Win' : '▼ Loss'}</span>
                         </div>
-                        <span className="text-[10px] font-black text-[#FFB800] flex items-center gap-1">
-                          <Clock className="w-3 h-3" />{remaining}s
-                        </span>
+                        <span className="text-[10px] font-black text-[#FFB800] flex items-center gap-1"><Clock className="w-3 h-3" />{remaining}s</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-[#848E9C]">{trade.instrument} · ₹{trade.amount.toLocaleString('en-IN')}</span>
-                        <span className={`text-xs font-black ${winning ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                          {winning ? '+' : ''}₹{Math.abs(pnl).toLocaleString('en-IN')}
-                        </span>
+                        <span className={`text-xs font-black ${winning ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{winning ? '+' : ''}₹{Math.abs(pnl).toLocaleString('en-IN')}</span>
                       </div>
                       <div className="mt-1.5 h-1 rounded-full bg-[#1F2937] overflow-hidden">
                         <div className={`h-full rounded-full transition-all duration-500 ${winning ? 'bg-[#02C076]' : 'bg-[#CF304A]'}`} style={{ width: `${pct}%` }} />
@@ -790,125 +764,59 @@ export function BinaryTrading() {
               </div>
             )}
 
-            {/* SPLIT VIEW: Global Live Trades | My Trade History */}
-            <div className="flex-shrink-0 grid grid-cols-2 gap-2" style={{ height: '200px' }}>
-              {/* Column 1: Global Live Trades */}
+            {/* Desktop: Split Feed/History */}
+            <div className="hidden md:grid grid-cols-2 gap-2 flex-shrink-0" style={{ height: '200px' }}>
               <div className="rounded-2xl overflow-hidden flex flex-col" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <Users className="w-3.5 h-3.5 text-[#FFB800]" />
-                  <span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">Global Live Trades</span>
+                  <Users className="w-3.5 h-3.5 text-[#FFB800]" /><span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">Global Live Trades</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse ml-auto flex-shrink-0" />
                 </div>
                 <div className="overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
                   {liveFeed.slice(0, 20).map(entry => (
-                    <div
-                      key={entry.key}
-                      className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02] transition-colors"
-                      style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}
-                    >
-                      <span
-                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                        style={{
-                          background: entry.status === 'won' ? '#02C076' : entry.status === 'lost' ? '#CF304A' : '#6B7280',
-                          boxShadow: entry.status === 'won' ? '0 0 6px rgba(2,192,118,0.8)' : entry.status === 'lost' ? '0 0 6px rgba(207,48,74,0.8)' : 'none',
-                          animation: entry.status === 'pending' ? 'pulse 1.5s infinite' : 'none',
-                        }}
-                      />
+                    <div key={entry.key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02]" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: entry.status === 'won' ? '#02C076' : entry.status === 'lost' ? '#CF304A' : '#6B7280' }} />
                       <span className="text-[10px] font-bold text-[#9CA3AF] w-16 truncate flex-shrink-0">{entry.user}</span>
                       <span className="text-[10px] font-bold text-white flex-1 truncate">{entry.instrument}</span>
-                      <span className={`text-[10px] font-black flex-shrink-0 ${entry.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                        {entry.direction === 'call' ? '↑' : '↓'}
-                      </span>
-                      <span className="text-[10px] text-[#6B7280] flex-shrink-0 w-14 text-right">
-                        {entry.status === 'pending' && (
-                          <span className="text-[#FFB800] font-bold flex items-center justify-end gap-0.5">
-                            <RefreshCw className="w-2 h-2 animate-spin" />Pending
-                          </span>
-                        )}
-                        {entry.status === 'won' && (
-                          <span className="text-[#02C076] font-black">
-                            +₹{entry.profit ? Math.abs(entry.profit).toLocaleString('en-IN') : (entry.amount * 0.9).toFixed(0)}
-                          </span>
-                        )}
-                        {entry.status === 'lost' && (
-                          <span className="text-[#CF304A] font-black">
-                            −₹{entry.amount.toLocaleString('en-IN')}
-                          </span>
-                        )}
+                      <span className={`text-[10px] font-black flex-shrink-0 ${entry.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{entry.direction === 'call' ? '↑' : '↓'}</span>
+                      <span className="text-[10px] flex-shrink-0 w-14 text-right">
+                        {entry.status === 'pending' && <span className="text-[#FFB800] font-bold flex items-center justify-end gap-0.5"><RefreshCw className="w-2 h-2 animate-spin" />Live</span>}
+                        {entry.status === 'won' && <span className="text-[#02C076] font-black">+₹{entry.profit ? Math.abs(entry.profit).toLocaleString('en-IN') : (entry.amount * 0.9).toFixed(0)}</span>}
+                        {entry.status === 'lost' && <span className="text-[#CF304A] font-black">−₹{entry.amount.toLocaleString('en-IN')}</span>}
                       </span>
                     </div>
                   ))}
-                  {liveFeed.length === 0 && (
-                    <div className="flex items-center justify-center h-full text-[#374151] text-xs">Waiting for trades…</div>
-                  )}
+                  {liveFeed.length === 0 && <div className="flex items-center justify-center h-full text-[#374151] text-xs">Waiting for trades…</div>}
                 </div>
               </div>
-
-              {/* Column 2: My Trade History */}
               <div className="rounded-2xl overflow-hidden flex flex-col" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <History className="w-3.5 h-3.5 text-[#FFB800]" />
-                  <span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">My Trade History</span>
-                  {myHistory.length > 0 && (
-                    <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(255,184,0,0.1)', color: '#FFB800' }}>
-                      {myHistory.length}
-                    </span>
-                  )}
+                  <History className="w-3.5 h-3.5 text-[#FFB800]" /><span className="text-xs font-black text-[#EAECEF] uppercase tracking-wide">My Trade History</span>
+                  {myHistory.length > 0 && <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(255,184,0,0.1)', color: '#FFB800' }}>{myHistory.length}</span>}
                 </div>
                 <div className="overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
-                  {myHistory.length === 0 && (
-                    <div className="flex flex-col items-center justify-center h-full gap-1">
-                      <Activity className="w-5 h-5 text-[#1F2937]" />
-                      <p className="text-[#374151] text-xs">No trades yet</p>
-                    </div>
-                  )}
-                  {myHistory.map((h, i) => {
-                    const won = h.status === 'won';
-                    const push = h.status === 'push';
-                    return (
-                      <div
-                        key={h.id ?? i}
-                        className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02] transition-colors"
-                        style={{
-                          borderBottom: '1px solid rgba(255,255,255,0.03)',
-                          borderLeft: `2px solid ${won ? '#02C076' : push ? '#FFB800' : '#CF304A'}`,
-                        }}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] font-black text-white">{h.instrument}</span>
-                            <span className={`text-[9px] font-black ${h.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                              {h.direction === 'call' ? '↑ CALL' : '↓ PUT'}
-                            </span>
-                          </div>
-                          <div className="text-[9px] text-[#4B5563] mt-0.5">
-                            {h.entryPrice != null ? fmt(h.entryPrice, h.instrument) : '—'} → {h.exitPrice != null ? fmt(h.exitPrice, h.instrument) : '—'}
-                          </div>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>
-                            {won ? `+₹${h.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${h.amount.toLocaleString('en-IN')}`}
-                          </div>
-                          <div className="flex items-center justify-end gap-1 mt-0.5">
-                            {won && <CheckCircle className="w-2.5 h-2.5 text-[#02C076]" />}
-                            {!won && !push && <XCircle className="w-2.5 h-2.5 text-[#CF304A]" />}
-                            <span className={`text-[9px] font-black uppercase ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>
-                              {h.status}
-                            </span>
-                          </div>
-                        </div>
+                  {myHistory.length === 0 && <div className="flex flex-col items-center justify-center h-full gap-1"><Activity className="w-5 h-5 text-[#1F2937]" /><p className="text-[#374151] text-xs">No trades yet</p></div>}
+                  {myHistory.map((h, i) => { const won = h.status === 'won', push = h.status === 'push'; return (
+                    <div key={h.id ?? i} className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02]" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', borderLeft: `2px solid ${won ? '#02C076' : push ? '#FFB800' : '#CF304A'}` }}>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5"><span className="text-[10px] font-black text-white">{h.instrument}</span><span className={`text-[9px] font-black ${h.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{h.direction === 'call' ? '↑ CALL' : '↓ PUT'}</span></div>
+                        <div className="text-[9px] text-[#4B5563] mt-0.5">{h.entryPrice != null ? fmt(h.entryPrice, h.instrument) : '—'} → {h.exitPrice != null ? fmt(h.exitPrice, h.instrument) : '—'}</div>
                       </div>
-                    );
-                  })}
+                      <div className="text-right flex-shrink-0">
+                        <div className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>{won ? `+₹${h.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${h.amount.toLocaleString('en-IN')}`}</div>
+                        <span className={`text-[9px] font-black uppercase ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>{h.status}</span>
+                      </div>
+                    </div>
+                  ); })}
                 </div>
               </div>
             </div>
           </div>
 
           {/* RIGHT: Trading Panel */}
-          <div className="w-[270px] flex-shrink-0 flex flex-col gap-2">
+          <div className="md:w-[270px] flex-shrink-0 flex flex-col gap-2">
             {result && (
-              <div className="rounded-2xl p-4 text-center flex-shrink-0" style={{ background: result.status === 'won' ? 'rgba(2,192,118,0.08)' : result.status === 'push' ? 'rgba(43,49,57,0.8)' : 'rgba(207,48,74,0.08)', border: `1px solid ${result.status === 'won' ? 'rgba(2,192,118,0.35)' : result.status === 'push' ? 'rgba(255,255,255,0.08)' : 'rgba(207,48,74,0.35)'}` }}>
+              <div className="rounded-2xl p-4 text-center flex-shrink-0"
+                style={{ background: result.status === 'won' ? 'rgba(2,192,118,0.08)' : result.status === 'push' ? 'rgba(43,49,57,0.8)' : 'rgba(207,48,74,0.08)', border: `1px solid ${result.status === 'won' ? 'rgba(2,192,118,0.35)' : result.status === 'push' ? 'rgba(255,255,255,0.08)' : 'rgba(207,48,74,0.35)'}` }}>
                 <div className="text-3xl mb-1">{result.status === 'won' ? '🎉' : result.status === 'push' ? '↔' : '❌'}</div>
                 <p className={`font-black text-lg ${result.status === 'won' ? 'text-[#02C076]' : result.status === 'push' ? 'text-white' : 'text-[#CF304A]'}`}>
                   {result.status === 'won' ? `+₹${result.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : result.status === 'push' ? 'Push' : `−₹${result.amount.toLocaleString('en-IN')}`}
@@ -918,17 +826,14 @@ export function BinaryTrading() {
               </div>
             )}
 
-            {/* Glassmorphism Trading Box */}
-            <div className="flex-1 rounded-2xl p-4 flex flex-col gap-3" style={{ background: 'rgba(8, 11, 22, 0.92)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,184,0,0.12)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)' }}>
+            {/* Trading Box */}
+            <div className="md:flex-1 rounded-2xl p-4 flex flex-col gap-3"
+              style={{ background: 'rgba(8, 11, 22, 0.92)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,184,0,0.12)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)' }}>
               {/* Current Price */}
               <div className="text-center py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
                 <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-widest mb-0.5">{instrument}</p>
-                <p className={`text-2xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                  {fmt(livePrice, instrument)}
-                </p>
-                <p className={`text-[10px] font-bold mt-0.5 ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                  {priceDirCurrent === 'up' ? '▲ Rising' : '▼ Falling'}
-                </p>
+                <p className={`text-2xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmt(livePrice, instrument)}</p>
+                <p className={`text-[10px] font-bold mt-0.5 ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{priceDirCurrent === 'up' ? '▲ Rising' : '▼ Falling'}</p>
               </div>
 
               {/* Amount */}
@@ -936,24 +841,15 @@ export function BinaryTrading() {
                 <label className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mb-1.5 block">Investment</label>
                 <div className="relative mb-2">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#848E9C] font-bold text-sm">₹</span>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={e => setAmount(e.target.value)}
+                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)}
                     className="w-full pl-7 pr-3 py-2.5 rounded-xl text-white font-bold text-sm focus:outline-none transition-colors"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
-                    placeholder="1000"
-                    min="100"
-                  />
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', fontSize: '16px' }}
+                    placeholder="1000" min="100" />
                 </div>
                 <div className="grid grid-cols-4 gap-1">
                   {[500, 1000, 5000, 10000].map(v => (
-                    <button
-                      key={v}
-                      onClick={() => setAmount(String(v))}
-                      className="py-1.5 rounded-lg text-[10px] font-black transition-all"
-                      style={{ background: amount === String(v) ? 'rgba(255,184,0,0.15)' : 'rgba(255,255,255,0.04)', color: amount === String(v) ? '#FFB800' : '#6B7280', border: `1px solid ${amount === String(v) ? 'rgba(255,184,0,0.3)' : 'transparent'}` }}
-                    >
+                    <button key={v} onClick={() => setAmount(String(v))} className="py-1.5 rounded-lg text-[10px] font-black transition-all"
+                      style={{ background: amount === String(v) ? 'rgba(255,184,0,0.15)' : 'rgba(255,255,255,0.04)', color: amount === String(v) ? '#FFB800' : '#6B7280', border: `1px solid ${amount === String(v) ? 'rgba(255,184,0,0.3)' : 'transparent'}` }}>
                       {v >= 1000 ? `${v / 1000}K` : v}
                     </button>
                   ))}
@@ -965,12 +861,8 @@ export function BinaryTrading() {
                 <label className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mb-1.5 block">Expiry</label>
                 <div className="grid grid-cols-4 gap-1">
                   {DURATIONS.map(d => (
-                    <button
-                      key={d.seconds}
-                      onClick={() => setDuration(d.seconds)}
-                      className="py-2 rounded-xl text-xs font-black transition-all"
-                      style={{ background: duration === d.seconds ? '#FFB800' : 'rgba(255,255,255,0.04)', color: duration === d.seconds ? '#000' : '#6B7280' }}
-                    >
+                    <button key={d.seconds} onClick={() => setDuration(d.seconds)} className="py-2 rounded-xl text-xs font-black transition-all"
+                      style={{ background: duration === d.seconds ? '#FFB800' : 'rgba(255,255,255,0.04)', color: duration === d.seconds ? '#000' : '#6B7280' }}>
                       {d.label}
                     </button>
                   ))}
@@ -979,73 +871,86 @@ export function BinaryTrading() {
 
               {/* Payout Info */}
               <div className="rounded-xl px-3 py-2.5 flex items-center justify-between" style={{ background: 'rgba(255,184,0,0.06)', border: '1px solid rgba(255,184,0,0.12)' }}>
-                <div>
-                  <p className="text-[9px] text-[#6B7280] font-semibold uppercase tracking-wider">Payout</p>
-                  <p className="text-xl font-black text-[#FFB800]">{payoutPct}%</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[9px] text-[#6B7280] font-semibold uppercase tracking-wider">Win Return</p>
-                  <p className="text-sm font-black text-[#02C076]">₹{(amtNum * (1 + payoutPct / 100)).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
-                </div>
+                <div><p className="text-[9px] text-[#6B7280] font-semibold uppercase tracking-wider">Payout</p><p className="text-xl font-black text-[#FFB800]">{payoutPct}%</p></div>
+                <div className="text-right"><p className="text-[9px] text-[#6B7280] font-semibold uppercase tracking-wider">Win Return</p><p className="text-sm font-black text-[#02C076]">₹{(amtNum * (1 + payoutPct / 100)).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p></div>
               </div>
 
-              {/* Call / Put Buttons */}
+              {/* Higher / Lower Buttons */}
               <div className="grid grid-cols-2 gap-2 mt-1">
-                <button
-                  onClick={() => handlePlace('call')}
-                  disabled={placing}
-                  onMouseEnter={() => setCallHovered(true)}
-                  onMouseLeave={() => { setCallHovered(false); setCallPressed(false); }}
-                  onPointerDown={() => setCallPressed(true)}
-                  onPointerUp={() => setCallPressed(false)}
+                <button onClick={() => handlePlace('call')} disabled={placing}
+                  onMouseEnter={() => setCallHovered(true)} onMouseLeave={() => { setCallHovered(false); setCallPressed(false); }}
+                  onPointerDown={() => setCallPressed(true)} onPointerUp={() => setCallPressed(false)}
                   className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
-                  style={{
-                    background: 'linear-gradient(135deg, #02C076 0%, #018a53 100%)',
-                    border: '1px solid rgba(2,192,118,0.4)',
-                    boxShadow: placing
-                      ? 'none'
-                      : callHovered
-                      ? '0 0 20px #10b981, 0 0 40px rgba(16,185,129,0.5), 0 0 72px rgba(16,185,129,0.2)'
-                      : '0 0 24px rgba(2,192,118,0.45), 0 0 48px rgba(2,192,118,0.2)',
-                    transform: callPressed ? 'scale(0.95)' : callHovered ? 'scale(1.05)' : 'scale(1)',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  }}
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  <span>Higher</span>
-                  <span className="text-[10px] font-semibold opacity-80">↑ CALL</span>
+                  style={{ background: 'linear-gradient(135deg, #02C076 0%, #018a53 100%)', border: '1px solid rgba(2,192,118,0.4)', boxShadow: placing ? 'none' : callHovered ? '0 0 20px #10b981, 0 0 40px rgba(16,185,129,0.5)' : '0 0 24px rgba(2,192,118,0.45)', transform: callPressed ? 'scale(0.95)' : callHovered ? 'scale(1.02)' : 'scale(1)', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}>
+                  <TrendingUp className="w-5 h-5" /><span>Higher</span><span className="text-[10px] font-semibold opacity-80">↑ CALL</span>
                 </button>
-                <button
-                  onClick={() => handlePlace('put')}
-                  disabled={placing}
-                  onMouseEnter={() => setPutHovered(true)}
-                  onMouseLeave={() => { setPutHovered(false); setPutPressed(false); }}
-                  onPointerDown={() => setPutPressed(true)}
-                  onPointerUp={() => setPutPressed(false)}
+                <button onClick={() => handlePlace('put')} disabled={placing}
+                  onMouseEnter={() => setPutHovered(true)} onMouseLeave={() => { setPutHovered(false); setPutPressed(false); }}
+                  onPointerDown={() => setPutPressed(true)} onPointerUp={() => setPutPressed(false)}
                   className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
-                  style={{
-                    background: 'linear-gradient(135deg, #CF304A 0%, #a01f36 100%)',
-                    border: '1px solid rgba(207,48,74,0.4)',
-                    boxShadow: placing
-                      ? 'none'
-                      : putHovered
-                      ? '0 0 20px #ef4444, 0 0 40px rgba(239,68,68,0.5), 0 0 72px rgba(239,68,68,0.2)'
-                      : '0 0 24px rgba(207,48,74,0.45), 0 0 48px rgba(207,48,74,0.2)',
-                    transform: putPressed ? 'scale(0.95)' : putHovered ? 'scale(1.05)' : 'scale(1)',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  }}
-                >
-                  <TrendingDown className="w-5 h-5" />
-                  <span>Lower</span>
-                  <span className="text-[10px] font-semibold opacity-80">↓ PUT</span>
+                  style={{ background: 'linear-gradient(135deg, #CF304A 0%, #a01f36 100%)', border: '1px solid rgba(207,48,74,0.4)', boxShadow: placing ? 'none' : putHovered ? '0 0 20px #ef4444, 0 0 40px rgba(239,68,68,0.5)' : '0 0 24px rgba(207,48,74,0.45)', transform: putPressed ? 'scale(0.95)' : putHovered ? 'scale(1.02)' : 'scale(1)', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}>
+                  <TrendingDown className="w-5 h-5" /><span>Lower</span><span className="text-[10px] font-semibold opacity-80">↓ PUT</span>
                 </button>
               </div>
 
-              {/* Balance Footer */}
+              {/* Balance */}
               <div className="text-center pt-1">
-                <p className="text-[10px] text-[#4B5563] font-semibold">Balance: <span className="text-white font-black">₹{balance.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span></p>
+                <p className="text-[10px] text-[#4B5563] font-semibold">Balance: <span className="text-white font-black">₹{balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span></p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* ── Mobile: Feed / History Tabs ── */}
+        <div className="md:hidden mt-2 flex-shrink-0">
+          <div className="flex gap-2 mb-2">
+            <button onClick={() => setMobileTab('live')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${mobileTab === 'live' ? 'bg-[#FFB800] text-black' : 'text-[#848E9C]'}`}
+              style={{ border: mobileTab === 'live' ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>
+              <Users className="w-3.5 h-3.5" /> Global Live
+            </button>
+            <button onClick={() => setMobileTab('history')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${mobileTab === 'history' ? 'bg-[#FFB800] text-black' : 'text-[#848E9C]'}`}
+              style={{ border: mobileTab === 'history' ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>
+              <History className="w-3.5 h-3.5" /> My History {myHistory.length > 0 && `(${myHistory.length})`}
+            </button>
+          </div>
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)', height: '200px' }}>
+            {mobileTab === 'live' ? (
+              <div className="overflow-y-auto h-full" style={{ scrollbarWidth: 'none' }}>
+                {liveFeed.slice(0, 20).map(entry => (
+                  <div key={entry.key} className="flex items-center gap-2 px-3 py-2 hover:bg-white/[0.02]" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: entry.status === 'won' ? '#02C076' : entry.status === 'lost' ? '#CF304A' : '#6B7280' }} />
+                    <span className="text-[10px] font-bold text-[#9CA3AF] w-16 truncate flex-shrink-0">{entry.user}</span>
+                    <span className="text-[10px] font-bold text-white flex-1 truncate">{entry.instrument}</span>
+                    <span className={`text-[10px] font-black flex-shrink-0 ${entry.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{entry.direction === 'call' ? '↑' : '↓'}</span>
+                    <span className="text-[10px] flex-shrink-0 w-14 text-right">
+                      {entry.status === 'pending' && <span className="text-[#FFB800] font-bold">Live</span>}
+                      {entry.status === 'won' && <span className="text-[#02C076] font-black">+₹{entry.profit ? Math.abs(entry.profit).toLocaleString('en-IN') : (entry.amount * 0.9).toFixed(0)}</span>}
+                      {entry.status === 'lost' && <span className="text-[#CF304A] font-black">−₹{entry.amount.toLocaleString('en-IN')}</span>}
+                    </span>
+                  </div>
+                ))}
+                {liveFeed.length === 0 && <div className="flex items-center justify-center h-full text-[#374151] text-xs">Waiting for trades…</div>}
+              </div>
+            ) : (
+              <div className="overflow-y-auto h-full" style={{ scrollbarWidth: 'none' }}>
+                {myHistory.length === 0 && <div className="flex flex-col items-center justify-center h-full gap-1"><Activity className="w-5 h-5 text-[#1F2937]" /><p className="text-[#374151] text-xs">No trades yet</p></div>}
+                {myHistory.map((h, i) => { const won = h.status === 'won', push = h.status === 'push'; return (
+                  <div key={h.id ?? i} className="flex items-center gap-2 px-3 py-2 hover:bg-white/[0.02]"
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', borderLeft: `2px solid ${won ? '#02C076' : push ? '#FFB800' : '#CF304A'}` }}>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5"><span className="text-[10px] font-black text-white">{h.instrument}</span><span className={`text-[9px] font-black ${h.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{h.direction === 'call' ? '↑ CALL' : '↓ PUT'}</span></div>
+                      <div className="text-[9px] text-[#4B5563] mt-0.5">{h.entryPrice != null ? fmt(h.entryPrice, h.instrument) : '—'} → {h.exitPrice != null ? fmt(h.exitPrice, h.instrument) : '—'}</div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>{won ? `+₹${h.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${h.amount.toLocaleString('en-IN')}`}</div>
+                      <span className={`text-[9px] font-black uppercase ${won ? 'text-[#02C076]' : push ? 'text-[#FFB800]' : 'text-[#CF304A]'}`}>{h.status}</span>
+                    </div>
+                  </div>
+                ); })}
+              </div>
+            )}
           </div>
         </div>
       </div>
