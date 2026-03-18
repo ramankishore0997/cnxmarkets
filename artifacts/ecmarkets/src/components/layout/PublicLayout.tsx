@@ -254,8 +254,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
                 <li><Link href="/faq" className="hover:text-[#00C274] transition-colors">FAQ</Link></li>
                 <li><Link href="/contact" className="hover:text-[#00C274] transition-colors">Support</Link></li>
-                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Documentation</Link></li>
-                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Terms of Service</Link></li>
+                <li><Link href="/terms" className="hover:text-[#00C274] transition-colors">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-[#00C274] transition-colors">Risk Disclosure</Link></li>
               </ul>
             </div>
           </div>

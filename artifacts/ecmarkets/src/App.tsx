@@ -12,6 +12,8 @@ import { About } from "@/pages/public/About";
 import { Faq } from "@/pages/public/Faq";
 import { Contact } from "@/pages/public/Contact";
 import { DownloadApp } from "@/pages/public/DownloadApp";
+import { Terms } from "@/pages/public/Terms";
+import { RiskDisclosure } from "@/pages/public/RiskDisclosure";
 
 // Auth Pages
 import { Login } from "@/pages/auth/Login";
@@ -61,7 +63,9 @@ function Router() {
       <Route path="/faq" component={Faq} />
       <Route path="/contact" component={Contact} />
       <Route path="/download-app" component={DownloadApp} />
-      <Route path="/legal/:page" component={Home} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={RiskDisclosure} />
+      <Route path="/risk-disclosure" component={RiskDisclosure} />
 
       {/* Auth Routes */}
       <Route path="/auth/login" component={Login} />
