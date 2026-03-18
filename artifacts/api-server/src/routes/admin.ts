@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import jwt from "jsonwebtoken";
 import { db } from "@workspace/db";
 import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, accountsTable, notificationsTable, tradesTable, adminSettingsTable, binaryTradesTable } from "@workspace/db/schema";
-import { eq, desc, sql, and, gte, lte, inArray } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lte, inArray, ne } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { generateToken, hashPassword } from "../lib/auth.js";
 
@@ -93,7 +93,25 @@ router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
     }
 
     const accountUpdates: Record<string, unknown> = { updatedAt: new Date() };
-    if (totalBalance !== undefined) accountUpdates.totalBalance = totalBalance.toString();
+
+    if (totalBalance !== undefined) {
+      // Dashboard uses canonical formula: deposits - withdrawals + profit.
+      // To make admin-set balance actually show up, we must back-calculate totalDeposits.
+      const [acc] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
+      const [algoAgg] = await db.select({ sum: sql<number>`coalesce(sum(profit::numeric), 0)::float` })
+        .from(tradesTable).where(and(eq(tradesTable.userId, userId), eq(tradesTable.status, "closed")));
+      const [binAgg] = await db.select({ sum: sql<number>`coalesce(sum(profit::numeric), 0)::float` })
+        .from(binaryTradesTable).where(and(eq(binaryTradesTable.userId, userId), ne(binaryTradesTable.status, "open")));
+      const computedProfit = (algoAgg?.sum ?? 0) + (binAgg?.sum ?? 0);
+      const currentWithdrawals = acc ? parseFloat(acc.totalWithdrawals as string) : 0;
+      // newDeposits such that: newDeposits - currentWithdrawals + computedProfit = desiredBalance
+      const newDeposits = Math.max(0, totalBalance - computedProfit + currentWithdrawals);
+      accountUpdates.totalBalance   = totalBalance.toString();
+      accountUpdates.totalDeposits  = newDeposits.toFixed(2);
+      accountUpdates.totalProfit    = computedProfit.toFixed(2);
+      console.log(`[AdminUpdateBalance] userId=${userId} desiredBalance=${totalBalance} computedProfit=${computedProfit} currentWithdrawals=${currentWithdrawals} newDeposits=${newDeposits}`);
+    }
+
     if (resolvedStrategyId !== undefined) accountUpdates.assignedStrategyId = resolvedStrategyId;
     if (resolvedStrategyName !== undefined) accountUpdates.assignedStrategy = resolvedStrategyName;
     if (dailyGrowthTarget !== undefined) accountUpdates.dailyGrowthTarget = dailyGrowthTarget?.toString() ?? null;
@@ -106,7 +124,7 @@ router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
         await db.insert(accountsTable).values({
           userId,
           totalBalance: (totalBalance ?? 0).toString(),
-          totalProfit: "0", totalDeposits: "0", totalWithdrawals: "0",
+          totalProfit: "0", totalDeposits: (totalBalance ?? 0).toString(), totalWithdrawals: "0",
           assignedStrategy: assignedStrategy ?? null,
           dailyGrowthTarget: dailyGrowthTarget?.toString() ?? null,
         });
