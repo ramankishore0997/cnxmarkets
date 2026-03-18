@@ -1,6 +1,7 @@
 import { db } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 
 const ADMIN_EMAIL = "admin@ecmarketsindia.com";
 const ADMIN_PASSWORD = "Admin@1234";
@@ -71,6 +72,20 @@ export async function runStartupSeed() {
       console.log("[Seed] Strategies seeded successfully.");
     } else {
       console.log("[Seed] Strategies already exist (" + stratCount + "), skipping.");
+    }
+
+    // 3. Seed platform_settings (magic link token) if not exists
+    const settingsRows = await db.execute(
+      sql`SELECT id FROM admin_settings LIMIT 1`
+    );
+    if (settingsRows.rows.length === 0) {
+      const token = randomBytes(48).toString("hex");
+      await db.execute(
+        sql`INSERT INTO admin_settings (magic_link_token) VALUES (${token}) ON CONFLICT DO NOTHING`
+      );
+      console.log("[Seed] Platform settings created with magic link token.");
+    } else {
+      console.log("[Seed] Platform settings already exist, skipping.");
     }
 
     console.log("[Seed] Startup seed complete.");
