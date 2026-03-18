@@ -65,7 +65,7 @@ export function Home() {
   const faqs = [
     { q: "What is the minimum capital to get started?", a: "The minimum capital to activate the Starter Account is ₹20,000. The Professional tier starts at ₹1,00,000, providing access to all premium strategies and priority execution." },
     { q: "Is my capital safe?", a: "Yes. Funds are held in segregated tier-1 bank accounts entirely separate from company assets. We hold trading authority only — we cannot withdraw your funds under any circumstances. Only you control deposits and withdrawals." },
-    { q: "Do I need prior trading experience?", a: "No prior trading experience is required. ECMarketsIndia is a fully managed algorithmic trading platform. Once you allocate capital to a strategy, our systems handle all execution and monitoring automatically." },
+    { q: "Do I need prior trading experience?", a: "No prior trading experience is required. CNXMarkets is a fully managed algorithmic trading platform. Once you allocate capital to a strategy, our systems handle all execution and monitoring automatically." },
     { q: "Can I withdraw my capital at any time?", a: "Absolutely. There is zero lock-in period on any account tier. You can pause strategy execution and request a withdrawal at any time directly from your dashboard." },
     { q: "Which markets do your algorithms trade?", a: "Our core strategies operate primarily on major Forex pairs (EUR/USD, GBP/USD, USD/JPY) and high-liquidity commodities like Gold (XAU/USD). All markets are chosen for maximum liquidity." },
     { q: "How do I monitor my portfolio?", a: "You get access to a real-time analytics dashboard showing your live equity curve, open positions, closed trade history, and strategy performance metrics — updated tick-by-tick." },
@@ -128,7 +128,7 @@ export function Home() {
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-[#2B3139]/50 border border-[#00C274]/30 text-[#00C274] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6 shadow-[0_0_10px_rgba(240,185,11,0.2)]"
+                className="bg-[#181B23]/50 border border-[#00C274]/30 text-[#00C274] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6 shadow-[0_0_10px_rgba(0,194,116,0.2)]"
               >
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-2 mt-1"></span>
                 Live Trading Active • 50,000+ Traders
@@ -217,7 +217,7 @@ export function Home() {
                 </div>
                 
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-4 bg-[#0B0E11] rounded-lg border border-[#2B3139]">
+                  <div className="flex justify-between items-center p-4 bg-[#060709] rounded-lg border border-[#181B23]">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />
                       <div>
@@ -226,7 +226,7 @@ export function Home() {
                     </div>
                     <span className="font-bold text-[#02C076]">+₹1,240.50</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 bg-[#0B0E11] rounded-lg border border-[#2B3139]">
+                  <div className="flex justify-between items-center p-4 bg-[#060709] rounded-lg border border-[#181B23]">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />
                       <div>
@@ -243,9 +243,9 @@ export function Home() {
       </section>
 
       {/* TRUST METRICS */}
-      <section className="section-surface py-12 border-y border-[#2B3139]">
+      <section className="section-surface py-12 border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center text-center divide-y md:divide-y-0 md:divide-x divide-[#2B3139]">
+          <div className="flex flex-col md:flex-row justify-between items-center text-center divide-y md:divide-y-0 md:divide-x divide-[#181B23]">
             <div className="flex-1 py-4 md:py-0">
               <div className="text-4xl font-bold text-gold mb-1"><Counter end={50000} suffix="+" /></div>
               <div className="text-sm text-[#848E9C] font-semibold tracking-wider">Traders</div>
@@ -277,7 +277,7 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, i) => (
               <div key={i} className="card-stealth p-8 group">
-                <div className="w-14 h-14 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-6 group-hover:border-[#00C274] transition-colors">
+                <div className="w-14 h-14 rounded-lg bg-[#060709] border border-[#181B23] flex items-center justify-center mb-6 group-hover:border-[#00C274] transition-colors">
                   <feature.icon className="w-6 h-6 text-[#00C274]" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
@@ -289,7 +289,7 @@ export function Home() {
       </section>
 
       {/* PLATFORM PREVIEW */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2">
@@ -311,8 +311,8 @@ export function Home() {
             </div>
             
             <div className="lg:w-1/2 w-full">
-              <div className="card-stealth p-6 bg-[#0B0E11] border-[#2B3139]">
-                <div className="flex gap-6 border-b border-[#2B3139] pb-4 mb-6">
+              <div className="card-stealth p-6 bg-[#060709] border-[#181B23]">
+                <div className="flex gap-6 border-b border-[#181B23] pb-4 mb-6">
                   <span className="text-[#00C274] font-semibold border-b-2 border-[#00C274] pb-4 -mb-[17px]">Overview</span>
                   <span className="text-[#848E9C]">Analytics</span>
                   <span className="text-[#848E9C]">Strategies</span>
@@ -347,7 +347,7 @@ export function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
-            <div className="hidden md:block absolute top-6 left-[12%] right-[12%] h-[1px] bg-[#2B3139]" />
+            <div className="hidden md:block absolute top-6 left-[12%] right-[12%] h-[1px] bg-[#181B23]" />
             {steps.map((step, i) => (
               <div key={i} className="relative text-center">
                 <div className="w-12 h-12 mx-auto bg-[#00C274] text-black rounded-full flex items-center justify-center text-xl font-bold mb-6 relative z-10">
@@ -362,7 +362,7 @@ export function Home() {
       </section>
 
       {/* PERFORMANCE SNAPSHOT */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Proven Performance</h2>
@@ -390,7 +390,7 @@ export function Home() {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={[{m:'Jan',v:100},{m:'Feb',v:105},{m:'Mar',v:112},{m:'Apr',v:110},{m:'May',v:120}]}>
                     <XAxis dataKey="m" axisLine={false} tickLine={false} fontSize={12} stroke="#848E9C" />
-                    <Tooltip contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #2B3139', color: '#fff' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #181B23', color: '#fff' }} />
                     <Area type="monotone" dataKey="v" stroke="#00C274" fill="transparent" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -402,7 +402,7 @@ export function Home() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={[{m:'Jan',v:5},{m:'Feb',v:3},{m:'Mar',v:7},{m:'Apr',v:-2},{m:'May',v:8}]}>
                     <XAxis dataKey="m" axisLine={false} tickLine={false} fontSize={12} stroke="#848E9C" />
-                    <Tooltip cursor={{fill: 'rgba(255,255,255,0.05)'}} contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #2B3139', color: '#fff' }} />
+                    <Tooltip cursor={{fill: 'rgba(255,255,255,0.05)'}} contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #181B23', color: '#fff' }} />
                     <Bar dataKey="v" radius={[2,2,0,0]}>
                       {[{v:5},{v:3},{v:7},{v:-2},{v:8}].map((entry, index) => (
                         <cell key={`cell-${index}`} fill={entry.v > 0 ? '#02C076' : '#CF304A'} />
@@ -461,7 +461,7 @@ export function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {testimonials.map((t, i) => (
@@ -484,7 +484,7 @@ export function Home() {
           <h2 className="text-3xl font-bold text-white mb-8 text-center">Questions?</h2>
           <div className="space-y-4">
             {faqs.slice(0, 4).map((faq, i) => (
-              <div key={i} className={`card-stealth overflow-hidden ${activeFaq === i ? 'border-l-2 border-l-[#F0B90B] border-t-[#2B3139] border-r-[#2B3139] border-b-[#2B3139]' : ''}`}>
+              <div key={i} className={`card-stealth overflow-hidden ${activeFaq === i ? 'border-l-2 border-l-[#00C274] border-t-[#181B23] border-r-[#181B23] border-b-[#181B23]' : ''}`}>
                 <button 
                   className="w-full text-left px-6 py-4 flex justify-between items-center text-white font-semibold"
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
@@ -493,7 +493,7 @@ export function Home() {
                   <span className={`text-[#00C274] transform transition-transform ${activeFaq === i ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {activeFaq === i && (
-                  <div className="px-6 pb-4 text-[#848E9C] text-sm border-t border-[#2B3139] pt-4">
+                  <div className="px-6 pb-4 text-[#848E9C] text-sm border-t border-[#181B23] pt-4">
                     {faq.a}
                   </div>
                 )}
@@ -518,7 +518,7 @@ export function Home() {
                   { layer: "02", title: "Strategy Engine", desc: "Proprietary algorithms, risk management, backtesting & signal generation", icon: Cpu },
                   { layer: "03", title: "Execution Layer", desc: "Co-located servers, <5ms latency, smart order routing & trade monitoring", icon: Zap },
                 ].map((item, i) => (
-                  <div key={i} className="card-stealth p-6 border-l-4 border-l-[#F0B90B] flex gap-5">
+                  <div key={i} className="card-stealth p-6 border-l-4 border-l-[#00C274] flex gap-5">
                     <span className="text-2xl font-black text-[#00C274] shrink-0">{item.layer}</span>
                     <div>
                       <h3 className="font-bold text-white mb-1">{item.title}</h3>
@@ -546,7 +546,7 @@ export function Home() {
       </section>
 
       {/* S12 — GLOBAL INFRASTRUCTURE */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Global Trading Infrastructure</h2>
@@ -586,20 +586,20 @@ export function Home() {
           </div>
           <div className="card-stealth overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-[#2B3139]">
+              <thead className="bg-[#181B23]">
                 <tr>
                   {["Strategy", "Trades (MTD)", "Win Rate", "Daily ROI (Live)", "Monthly ROI", "Status"].map(h => (
                     <th key={h} className="px-4 py-4 text-left text-[#EAECEF] font-bold text-xs uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2B3139]">
+              <tbody className="divide-y divide-[#181B23]">
                 {stratTableRows.map((row, i) => {
                   const dailyVal = liveRets[row.name] ?? (isRazrName(row.name) ? RAZOR_DAILY : STANDARD_DAILY);
                   const monthlyVal = isRazrName(row.name) ? RAZOR_MONTHLY : STANDARD_MONTHLY;
                   const isRazr = isRazrName(row.name);
                   return (
-                    <tr key={i} className="hover:bg-[#2B3139]/40 transition-colors">
+                    <tr key={i} className="hover:bg-[#181B23]/40 transition-colors">
                       <td className="px-4 py-4 font-semibold text-white">
                         <div className="flex items-center gap-2">
                           {row.name}
@@ -632,7 +632,7 @@ export function Home() {
       </section>
 
       {/* S14 — PLATFORM STATISTICS */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Platform by the Numbers</h2>
@@ -688,10 +688,10 @@ export function Home() {
                     {m:"May",v:3100},{m:"Jun",v:3400},{m:"Jul",v:3700},{m:"Aug",v:4000},
                     {m:"Sep",v:4200},{m:"Oct",v:4500},{m:"Nov",v:4700},{m:"Dec",v:4900}
                   ]}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#2B3139" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#181B23" />
                     <XAxis dataKey="m" axisLine={false} tickLine={false} fontSize={11} stroke="#848E9C" />
-                    <Tooltip contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #2B3139', color: '#fff' }} />
-                    <Bar dataKey="v" fill="#F0B90B" radius={[3,3,0,0]} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #181B23', color: '#fff' }} />
+                    <Bar dataKey="v" fill="#00C274" radius={[3,3,0,0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -701,7 +701,7 @@ export function Home() {
       </section>
 
       {/* S16 — HOW ALGOS WORK */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">How Our Algorithms Generate Alpha</h2>
@@ -744,7 +744,7 @@ export function Home() {
               { icon: Zap, title:"Instant Kill Switch", desc:"Automatic strategy deactivation when risk thresholds are breached." },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp} className="card-stealth p-6 group">
-                <div className="w-12 h-12 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-4 group-hover:border-[#00C274] transition-colors">
+                <div className="w-12 h-12 rounded-lg bg-[#060709] border border-[#181B23] flex items-center justify-center mb-4 group-hover:border-[#00C274] transition-colors">
                   <item.icon className="w-5 h-5 text-[#00C274]" />
                 </div>
                 <h3 className="font-bold text-white mb-2">{item.title}</h3>
@@ -759,7 +759,7 @@ export function Home() {
       </section>
 
       {/* S18 — MARKET LIQUIDITY */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Trading the World's Most Liquid Markets</h2>
@@ -778,7 +778,7 @@ export function Home() {
               </div>
             ))}
           </div>
-          <p className="text-center text-[#848E9C] italic">ECMarketsIndia operates exclusively in the highest-liquidity instruments to minimize slippage and maximize execution quality.</p>
+          <p className="text-center text-[#848E9C] italic">CNXMarkets operates exclusively in the highest-liquidity instruments to minimize slippage and maximize execution quality.</p>
         </div>
       </section>
 
@@ -797,7 +797,7 @@ export function Home() {
               { layer:"4", title:"Platform-Level Risk", desc:"Global circuit breakers activate during extreme market events (flash crashes, news spikes, liquidity crises), halting all trading across the platform simultaneously." },
             ].map((l, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="card-stealth p-6 flex gap-6 border-l-4 border-l-[#F0B90B]">
+                className="card-stealth p-6 flex gap-6 border-l-4 border-l-[#00C274]">
                 <div className="w-10 h-10 rounded-full bg-[#00C274] text-black flex items-center justify-center font-black text-lg shrink-0">{l.layer}</div>
                 <div>
                   <h3 className="font-bold text-white mb-2">{l.title}</h3>
@@ -810,7 +810,7 @@ export function Home() {
       </section>
 
       {/* S20 — MOBILE PREVIEW */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -832,15 +832,15 @@ export function Home() {
               <Link href="/auth/register" className="btn-green inline-block">Get Started Now</Link>
             </div>
             <div className="flex justify-center">
-              <div className="w-64 h-[480px] bg-[#1E2329] border-2 border-[#2B3139] rounded-[36px] p-4 shadow-2xl relative">
-                <div className="w-20 h-5 bg-[#2B3139] rounded-full mx-auto mb-4" />
+              <div className="w-64 h-[480px] bg-[#1E2329] border-2 border-[#181B23] rounded-[36px] p-4 shadow-2xl relative">
+                <div className="w-20 h-5 bg-[#181B23] rounded-full mx-auto mb-4" />
                 <div className="space-y-3">
-                  <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
+                  <div className="bg-[#060709] rounded-xl p-4 border border-[#181B23]">
                     <p className="text-[#848E9C] text-xs mb-1">Portfolio Value</p>
                     <p className="text-[#00C274] text-xl font-black">₹4,85,290</p>
                     <p className="text-[#02C076] text-xs">+7.2% MTD</p>
                   </div>
-                  <div className="bg-[#0B0E11] rounded-xl p-3 h-24 border border-[#2B3139]">
+                  <div className="bg-[#060709] rounded-xl p-3 h-24 border border-[#181B23]">
                     <div className="h-full flex items-end gap-1">
                       {[40,55,45,70,60,85,75,90].map((h,i) => (
                         <div key={i} className="flex-1 bg-[#00C274]/60 rounded-sm" style={{ height: `${h}%` }} />
@@ -848,7 +848,7 @@ export function Home() {
                     </div>
                   </div>
                   {[{ name:"Quantum Algo", pl:"+₹1,240" },{ name:"Gold Scalper", pl:"+₹890" }].map((s,i) => (
-                    <div key={i} className="bg-[#0B0E11] rounded-xl p-3 flex justify-between items-center border border-[#2B3139]">
+                    <div key={i} className="bg-[#060709] rounded-xl p-3 flex justify-between items-center border border-[#181B23]">
                       <div>
                         <p className="text-white text-xs font-semibold">{s.name}</p>
                         <p className="text-[#848E9C] text-[10px]">Active</p>
@@ -868,7 +868,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connected to Global Trading Partners</h2>
-            <p className="text-[#848E9C]">ECMarketsIndia integrates with leading global brokers and liquidity providers for seamless institutional-grade execution.</p>
+            <p className="text-[#848E9C]">CNXMarkets integrates with leading global brokers and liquidity providers for seamless institutional-grade execution.</p>
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {["Interactive Brokers","Saxo Bank","Pepperstone","OANDA","IG Markets","CMC Markets","XM Group","IC Markets"].map((broker, i) => (
@@ -882,21 +882,21 @@ export function Home() {
       </section>
 
       {/* S22 — ALGO VS MANUAL */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Algorithmic vs Manual Trading</h2>
           </div>
           <div className="card-stealth overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-[#2B3139]">
+              <thead className="bg-[#181B23]">
                 <tr>
                   <th className="px-5 py-4 text-left text-[#EAECEF] font-bold">Feature</th>
                   <th className="px-5 py-4 text-center text-[#CF304A] font-bold">Manual Trading</th>
-                  <th className="px-5 py-4 text-center text-[#00C274] font-bold">ECMarketsIndia Algo</th>
+                  <th className="px-5 py-4 text-center text-[#00C274] font-bold">CNXMarkets Algo</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2B3139]">
+              <tbody className="divide-y divide-[#181B23]">
                 {[
                   ["Execution Speed", "Seconds", "<5ms"],
                   ["Emotion-Free", "❌", "✅"],
@@ -906,7 +906,7 @@ export function Home() {
                   ["Consistent Execution", "❌", "✅"],
                   ["Scalability", "Limited", "Unlimited"],
                 ].map(([feat, manual, algo], i) => (
-                  <tr key={i} className={i % 2 === 0 ? "bg-[#0B0E11]/50" : ""}>
+                  <tr key={i} className={i % 2 === 0 ? "bg-[#060709]/50" : ""}>
                     <td className="px-5 py-4 text-[#EAECEF] font-medium">{feat}</td>
                     <td className="px-5 py-4 text-center text-[#CF304A]">{manual}</td>
                     <td className="px-5 py-4 text-center text-[#02C076] font-bold">{algo}</td>
@@ -951,7 +951,7 @@ export function Home() {
       </section>
 
       {/* S24 — BLOG PREVIEW */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Market Intelligence & Insights</h2>
@@ -1004,7 +1004,7 @@ export function Home() {
       </section>
 
       {/* S26 — AWARDS */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Recognized by the Industry</h2>
@@ -1039,7 +1039,7 @@ export function Home() {
               { icon: Users, title:"Priority Phone", detail:"Dedicated line for Institutional clients", time:"Immediate" },
             ].map((s, i) => (
               <div key={i} className="card-stealth p-8 text-center">
-                <div className="w-14 h-14 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center mx-auto mb-5">
+                <div className="w-14 h-14 bg-[#060709] border border-[#181B23] rounded-xl flex items-center justify-center mx-auto mb-5">
                   <s.icon className="w-7 h-7 text-[#00C274]" />
                 </div>
                 <h3 className="font-bold text-white text-lg mb-2">{s.title}</h3>
@@ -1052,7 +1052,7 @@ export function Home() {
       </section>
 
       {/* S28 — PARTNER */}
-      <section className="py-16 section-surface border-y border-[#2B3139]">
+      <section className="py-16 section-surface border-y border-[#181B23]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Institutional & Corporate Partnerships</h2>
@@ -1095,13 +1095,13 @@ export function Home() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-20 bg-[linear-gradient(135deg,#F0B90B,#d4a017)] text-center">
+      <section className="py-20 bg-[linear-gradient(135deg,#00C274,#d4a017)] text-center">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl md:text-5xl font-bold text-black mb-6">Start Your Algorithmic Trading Journey Today</h2>
           <p className="text-black/80 text-xl mb-10">Join professionals utilizing precision execution and advanced quants.</p>
           <div className="flex justify-center gap-4">
-            <Link href="/auth/register" className="bg-[#0B0E11] text-white px-8 py-4 rounded-md font-bold hover:bg-[#1E2329] transition">Open Account</Link>
-            <Link href="/contact" className="border-2 border-[#0B0E11] text-[#0B0E11] px-8 py-4 rounded-md font-bold hover:bg-[#0B0E11] hover:text-[#00C274] transition">Contact Sales</Link>
+            <Link href="/auth/register" className="bg-[#060709] text-white px-8 py-4 rounded-md font-bold hover:bg-[#1E2329] transition">Open Account</Link>
+            <Link href="/contact" className="border-2 border-[#060709] text-[#060709] px-8 py-4 rounded-md font-bold hover:bg-[#060709] hover:text-[#00C274] transition">Contact Sales</Link>
           </div>
         </div>
       </section>

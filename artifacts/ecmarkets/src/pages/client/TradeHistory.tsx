@@ -132,8 +132,8 @@ export function TradeHistory() {
                 onClick={() => handlePreset(p.key)}
                 className={`px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
                   preset === p.key
-                    ? 'bg-[#F0B90B] text-black shadow-[0_0_12px_rgba(240,185,11,0.35)]'
-                    : 'bg-[#0B0E11] border border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B] hover:text-[#F0B90B]'
+                    ? 'bg-[#00C274] text-black shadow-[0_0_12px_rgba(0,194,116,0.35)]'
+                    : 'bg-[#060709] border border-[#181B23] text-[#848E9C] hover:border-[#00C274] hover:text-[#00C274]'
                 }`}
               >
                 {p.label}
@@ -169,7 +169,7 @@ export function TradeHistory() {
             value: total.toLocaleString('en-IN'),
             sub: `${stats.wins}W / ${stats.losses}L (this page)`,
             icon: Search,
-            color: '#F0B90B',
+            color: '#00C274',
           },
           {
             label: 'Win Rate',
@@ -190,7 +190,7 @@ export function TradeHistory() {
             value: `₹${stats.best.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
             sub: 'From current page',
             icon: Trophy,
-            color: '#F0B90B',
+            color: '#00C274',
           },
         ].map(s => (
           <div key={s.label} className="card-stealth p-4 flex items-center gap-3">
@@ -199,7 +199,7 @@ export function TradeHistory() {
             </div>
             <div className="min-w-0">
               <p className="text-xs text-[#848E9C] font-medium truncate">{s.label}</p>
-              <p className="text-lg font-bold text-white leading-tight" style={{ color: s.color === '#F0B90B' ? undefined : s.color === '#02C076' || s.color === '#CF304A' ? s.color : undefined }}>
+              <p className="text-lg font-bold text-white leading-tight" style={{ color: s.color === '#00C274' ? undefined : s.color === '#02C076' || s.color === '#CF304A' ? s.color : undefined }}>
                 {s.value}
               </p>
               <p className="text-[10px] text-[#848E9C] truncate">{s.sub}</p>
@@ -210,9 +210,9 @@ export function TradeHistory() {
 
       {/* Table */}
       <div className="card-stealth overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2B3139]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#181B23]">
           <div className="flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-[#F0B90B]" />
+            <CalendarDays className="w-4 h-4 text-[#00C274]" />
             <span className="text-white font-bold text-sm">Closed Trades</span>
             {(isLoading || isFetching) && <Loader2 className="w-4 h-4 animate-spin text-[#848E9C] ml-1" />}
           </div>
@@ -225,7 +225,7 @@ export function TradeHistory() {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#2B3139]">
+              <tr className="border-b border-[#181B23]">
                 {['Date & Time', 'Instrument', 'Type', 'Entry', 'Exit', 'Lot', 'P&L (₹)', 'Duration', 'Result'].map(h => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">
                     {h}
@@ -237,14 +237,14 @@ export function TradeHistory() {
               {isLoading ? (
                 <tr>
                   <td colSpan={9} className="text-center py-16">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#F0B90B] mx-auto" />
+                    <Loader2 className="w-8 h-8 animate-spin text-[#00C274] mx-auto" />
                     <p className="text-[#848E9C] text-sm mt-3">Loading trades…</p>
                   </td>
                 </tr>
               ) : trades.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="text-center py-16">
-                    <AlertCircle className="w-10 h-10 text-[#2B3139] mx-auto mb-3" />
+                    <AlertCircle className="w-10 h-10 text-[#181B23] mx-auto mb-3" />
                     <p className="text-[#848E9C] text-sm">No trades found for the selected period.</p>
                   </td>
                 </tr>
@@ -255,8 +255,8 @@ export function TradeHistory() {
                   return (
                     <tr
                       key={trade.id}
-                      className={`border-b border-[#2B3139]/60 transition-colors hover:bg-[#1E2329]/60 ${
-                        idx % 2 === 0 ? 'bg-[#0B0E11]/40' : ''
+                      className={`border-b border-[#181B23]/60 transition-colors hover:bg-[#1E2329]/60 ${
+                        idx % 2 === 0 ? 'bg-[#060709]/40' : ''
                       }`}
                     >
                       {/* Date & Time */}
@@ -339,15 +339,15 @@ export function TradeHistory() {
         </div>
 
         {/* Mobile cards */}
-        <div className="md:hidden divide-y divide-[#2B3139]">
+        <div className="md:hidden divide-y divide-[#181B23]">
           {isLoading ? (
             <div className="flex flex-col items-center py-12 gap-3">
-              <Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#00C274]" />
               <p className="text-[#848E9C] text-sm">Loading trades…</p>
             </div>
           ) : trades.length === 0 ? (
             <div className="text-center py-12">
-              <AlertCircle className="w-10 h-10 text-[#2B3139] mx-auto mb-3" />
+              <AlertCircle className="w-10 h-10 text-[#181B23] mx-auto mb-3" />
               <p className="text-[#848E9C] text-sm">No trades found.</p>
             </div>
           ) : (
@@ -385,11 +385,11 @@ export function TradeHistory() {
 
         {/* Pagination */}
         {pages > 1 && (
-          <div className="px-5 py-4 border-t border-[#2B3139] flex items-center justify-between">
+          <div className="px-5 py-4 border-t border-[#181B23] flex items-center justify-between">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="w-4 h-4" /> Prev
             </button>
@@ -403,8 +403,8 @@ export function TradeHistory() {
                     onClick={() => setPage(pg)}
                     className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
                       pg === page
-                        ? 'bg-[#F0B90B] text-black'
-                        : 'text-[#848E9C] hover:bg-[#2B3139] hover:text-white'
+                        ? 'bg-[#00C274] text-black'
+                        : 'text-[#848E9C] hover:bg-[#181B23] hover:text-white'
                     }`}
                   >
                     {pg}
@@ -416,7 +416,7 @@ export function TradeHistory() {
             <button
               onClick={() => setPage(p => Math.min(pages, p + 1))}
               disabled={page >= pages}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>

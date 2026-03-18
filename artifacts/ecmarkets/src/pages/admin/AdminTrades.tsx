@@ -127,8 +127,8 @@ function UserHistoryPanel({ users }: { users: any[] }) {
                   onClick={() => { setPreset(p); setPage(1); }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     preset === p
-                      ? 'bg-[#F0B90B] text-black'
-                      : 'bg-[#0B0E11] border border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B] hover:text-[#F0B90B]'
+                      ? 'bg-[#00C274] text-black'
+                      : 'bg-[#060709] border border-[#181B23] text-[#848E9C] hover:border-[#00C274] hover:text-[#00C274]'
                   }`}
                 >
                   {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === 'all' ? 'All Time' : p.charAt(0).toUpperCase() + p.slice(1)}
@@ -147,7 +147,7 @@ function UserHistoryPanel({ users }: { users: any[] }) {
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: 'Total', value: total.toLocaleString('en-IN'), color: '#F0B90B' },
+              { label: 'Total', value: total.toLocaleString('en-IN'), color: '#00C274' },
               { label: `${stats.wins}W / ${stats.losses}L`, value: trades.length ? `${((stats.wins / trades.length) * 100).toFixed(0)}% Win` : '0% Win', color: '#02C076' },
               { label: 'Net P&L (page)', value: `${stats.pnl >= 0 ? '+' : ''}₹${Math.abs(stats.pnl).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, color: stats.pnl >= 0 ? '#02C076' : '#CF304A' },
             ].map(s => (
@@ -160,9 +160,9 @@ function UserHistoryPanel({ users }: { users: any[] }) {
 
           {/* Table */}
           <div className="card-stealth overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#2B3139]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#181B23]">
               <div className="flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-[#F0B90B]" />
+                <CalendarDays className="w-4 h-4 text-[#00C274]" />
                 <span className="text-white font-bold text-sm">Trade History</span>
                 {(isLoading || isFetching) && <Loader2 className="w-4 h-4 animate-spin text-[#848E9C]" />}
               </div>
@@ -174,7 +174,7 @@ function UserHistoryPanel({ users }: { users: any[] }) {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#2B3139]">
+                  <tr className="border-b border-[#181B23]">
                     {['Date/Time','Instrument','Type','Entry','Exit','Lot','P&L (₹)','Duration','Result'].map(h => (
                       <th key={h} className="text-left px-3 py-2.5 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
                     ))}
@@ -182,7 +182,7 @@ function UserHistoryPanel({ users }: { users: any[] }) {
                 </thead>
                 <tbody>
                   {isLoading ? (
-                    <tr><td colSpan={9} className="text-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#F0B90B] mx-auto" /></td></tr>
+                    <tr><td colSpan={9} className="text-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#00C274] mx-auto" /></td></tr>
                   ) : trades.length === 0 ? (
                     <tr><td colSpan={9} className="text-center py-10 text-[#848E9C] text-sm">No trades found.</td></tr>
                   ) : (
@@ -190,7 +190,7 @@ function UserHistoryPanel({ users }: { users: any[] }) {
                       const isWin = (t.profit ?? 0) >= 0;
                       const d = new Date(t.closedAt ?? t.openedAt);
                       return (
-                        <tr key={t.id} className={`border-b border-[#2B3139]/50 hover:bg-[#1E2329]/50 ${idx % 2 === 0 ? 'bg-[#0B0E11]/30' : ''}`}>
+                        <tr key={t.id} className={`border-b border-[#181B23]/50 hover:bg-[#1E2329]/50 ${idx % 2 === 0 ? 'bg-[#060709]/30' : ''}`}>
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             <p className="text-[#EAECEF] text-xs">{d.toLocaleDateString('en-IN', { day:'2-digit', month:'short' })}</p>
                             <p className="text-[#848E9C] text-[10px]">{d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:false })}</p>
@@ -226,12 +226,12 @@ function UserHistoryPanel({ users }: { users: any[] }) {
             </div>
 
             {pages > 1 && (
-              <div className="px-4 py-3 border-t border-[#2B3139] flex items-center justify-between">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 transition-all">
+              <div className="px-4 py-3 border-t border-[#181B23] flex items-center justify-between">
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 transition-all">
                   <ChevronLeft className="w-3.5 h-3.5" /> Prev
                 </button>
                 <span className="text-xs text-[#848E9C]">Page {page} / {pages}</span>
-                <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 transition-all">
+                <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 transition-all">
                   Next <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -242,7 +242,7 @@ function UserHistoryPanel({ users }: { users: any[] }) {
 
       {!selectedUserId && (
         <div className="card-stealth p-12 text-center">
-          <History className="w-12 h-12 text-[#2B3139] mx-auto mb-4" />
+          <History className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
           <p className="text-[#848E9C] text-sm">Select a client above to view their trade history.</p>
         </div>
       )}
@@ -315,7 +315,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
   const statusStyle: Record<string, string> = {
     won:    'bg-[#02C076]/15 text-[#02C076] border-[#02C076]/30',
     lost:   'bg-[#CF304A]/15 text-[#CF304A] border-[#CF304A]/30',
-    open:   'bg-[#F0B90B]/15 text-[#F0B90B] border-[#F0B90B]/30',
+    open:   'bg-[#00C274]/15 text-[#00C274] border-[#00C274]/30',
     expired:'bg-[#848E9C]/15 text-[#848E9C] border-[#848E9C]/30',
   };
 
@@ -352,7 +352,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
           <button
             onClick={() => fetchTrades()}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#2B3139] text-[#848E9C] hover:text-white hover:border-[#F0B90B] text-sm font-semibold transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#181B23] text-[#848E9C] hover:text-white hover:border-[#00C274] text-sm font-semibold transition-all"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -363,7 +363,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Total (page)', value: String(trades.length), sub: `of ${total}`, color: '#F0B90B' },
+          { label: 'Total (page)', value: String(trades.length), sub: `of ${total}`, color: '#00C274' },
           { label: 'Won / Lost', value: `${stats.won} / ${stats.lost}`, sub: trades.length ? `${Math.round((stats.won / trades.filter(t=>t.status==='won'||t.status==='lost').length || 1) * 100)}% win` : '', color: '#02C076' },
           { label: 'Total Amount', value: `₹${stats.totalAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`, sub: 'page sum', color: '#848E9C' },
           { label: 'Net Profit', value: `${stats.netProfit >= 0 ? '+' : ''}₹${Math.abs(stats.netProfit).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`, sub: 'page sum', color: stats.netProfit >= 0 ? '#02C076' : '#CF304A' },
@@ -378,9 +378,9 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
 
       {/* Table */}
       <div className="card-stealth overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#2B3139]">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#181B23]">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-[#F0B90B]" />
+            <Zap className="w-4 h-4 text-[#00C274]" />
             <span className="text-white font-bold text-sm">Binary Trades</span>
             {loading && <Loader2 className="w-4 h-4 animate-spin text-[#848E9C]" />}
           </div>
@@ -392,7 +392,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#2B3139]">
+              <tr className="border-b border-[#181B23]">
                 {['ID','Client','Instrument','Direction','Amount (₹)','Entry','Closing','Duration','Payout%','Profit (₹)','Status','Opened At','Action'].map(h => (
                   <th key={h} className="text-left px-3 py-2.5 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
@@ -400,7 +400,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={13} className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[#F0B90B] mx-auto" /></td></tr>
+                <tr><td colSpan={13} className="text-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[#00C274] mx-auto" /></td></tr>
               ) : trades.length === 0 ? (
                 <tr><td colSpan={13} className="text-center py-12 text-[#848E9C] text-sm">No binary trades found.</td></tr>
               ) : (
@@ -410,7 +410,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
                   const amount = parseFloat(t.amount ?? '0');
                   const isConfirming = confirmDelete === t.id;
                   return (
-                    <tr key={t.id} className={`border-b border-[#2B3139]/50 hover:bg-[#1E2329]/60 transition-colors ${idx % 2 === 0 ? 'bg-[#0B0E11]/20' : ''}`}>
+                    <tr key={t.id} className={`border-b border-[#181B23]/50 hover:bg-[#1E2329]/60 transition-colors ${idx % 2 === 0 ? 'bg-[#060709]/20' : ''}`}>
                       <td className="px-3 py-2.5 text-[#848E9C] text-xs font-mono">#{t.id}</td>
                       <td className="px-3 py-2.5 whitespace-nowrap">
                         <p className="text-white text-xs font-semibold">{t.userFirstName} {t.userLastName}</p>
@@ -427,7 +427,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
                       <td className="px-3 py-2.5 text-[#848E9C] text-xs font-mono">{t.entryPrice ? parseFloat(t.entryPrice).toFixed(5) : '—'}</td>
                       <td className="px-3 py-2.5 text-[#848E9C] text-xs font-mono">{t.closingPrice ? parseFloat(t.closingPrice).toFixed(5) : '—'}</td>
                       <td className="px-3 py-2.5 text-[#848E9C] text-xs">{t.duration}s</td>
-                      <td className="px-3 py-2.5 text-[#F0B90B] text-xs font-bold">{parseFloat(t.payoutPct ?? '90').toFixed(0)}%</td>
+                      <td className="px-3 py-2.5 text-[#00C274] text-xs font-bold">{parseFloat(t.payoutPct ?? '90').toFixed(0)}%</td>
                       <td className="px-3 py-2.5 whitespace-nowrap">
                         <span className={`text-xs font-bold ${profit > 0 ? 'text-[#02C076]' : profit < 0 ? 'text-[#CF304A]' : 'text-[#848E9C]'}`}>
                           {t.status === 'open' ? '—' : `${profit >= 0 ? '+' : ''}₹${Math.abs(profit).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -458,7 +458,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
                             </button>
                             <button
                               onClick={() => setConfirmDelete(null)}
-                              className="px-2 py-1 rounded text-[10px] font-bold bg-[#2B3139] text-[#848E9C] hover:text-white transition-all"
+                              className="px-2 py-1 rounded text-[10px] font-bold bg-[#181B23] text-[#848E9C] hover:text-white transition-all"
                             >
                               Cancel
                             </button>
@@ -482,12 +482,12 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
         </div>
 
         {pages > 1 && (
-          <div className="px-4 py-3 border-t border-[#2B3139] flex items-center justify-between">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 transition-all">
+          <div className="px-4 py-3 border-t border-[#181B23] flex items-center justify-between">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 transition-all">
               <ChevronLeft className="w-3.5 h-3.5" /> Prev
             </button>
             <span className="text-xs text-[#848E9C]">Page {page} / {pages}</span>
-            <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#2B3139] disabled:opacity-40 transition-all">
+            <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="flex items-center gap-1 px-2 py-1.5 rounded text-xs font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 transition-all">
               Next <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -553,7 +553,7 @@ export function AdminTrades() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-[#1E2329] border border-[#2B3139] rounded-xl mb-6 w-fit">
+      <div className="flex gap-1 p-1 bg-[#1E2329] border border-[#181B23] rounded-xl mb-6 w-fit">
         {[
           { key: 'binary', label: 'Binary Trades', icon: Zap },
           { key: 'entry', label: 'Manual Entry', icon: PlusCircle },
@@ -564,7 +564,7 @@ export function AdminTrades() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
               activeTab === tab.key
-                ? 'bg-[#F0B90B] text-black shadow-sm'
+                ? 'bg-[#00C274] text-black shadow-sm'
                 : 'text-[#848E9C] hover:text-white'
             }`}
           >
@@ -615,7 +615,7 @@ export function AdminTrades() {
                           className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border font-bold text-sm transition-all ${
                             form.direction === d
                               ? d === 'buy' ? 'bg-[#02C076]/20 border-[#02C076] text-[#02C076]' : 'bg-[#CF304A]/20 border-[#CF304A] text-[#CF304A]'
-                              : 'bg-[#1E2329] border-[#2B3139] text-[#848E9C] hover:border-[#848E9C]'
+                              : 'bg-[#1E2329] border-[#181B23] text-[#848E9C] hover:border-[#848E9C]'
                           }`}>
                           {d === 'buy' ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                           {d.toUpperCase()}
@@ -695,13 +695,13 @@ export function AdminTrades() {
               <h2 className="text-lg font-bold text-white mb-4">Recent Entries</h2>
               {submitted.length === 0 ? (
                 <div className="text-center py-12">
-                  <TrendingUp className="w-12 h-12 text-[#2B3139] mx-auto mb-4" />
+                  <TrendingUp className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
                   <p className="text-[#848E9C] text-sm">Trades you add this session will appear here.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {submitted.map((t: any, i) => (
-                    <div key={i} className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4">
+                    <div key={i} className="bg-[#060709] border border-[#181B23] rounded-xl p-4">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-white text-sm">{t.instrument}</span>
                         <span className={`text-xs font-bold px-2 py-0.5 rounded ${t.direction === 'buy' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#CF304A]/20 text-[#CF304A]'}`}>
@@ -725,9 +725,9 @@ export function AdminTrades() {
             <div className="card-stealth p-5">
               <h3 className="text-sm font-bold text-[#848E9C] uppercase tracking-wider mb-3">Quick Tips</h3>
               <ul className="space-y-2 text-xs text-[#848E9C]">
-                <li className="flex items-start gap-2"><span className="text-[#F0B90B] mt-0.5">•</span>Positive profit increases the client's balance automatically.</li>
-                <li className="flex items-start gap-2"><span className="text-[#F0B90B] mt-0.5">•</span>Leave exit price empty for open trades.</li>
-                <li className="flex items-start gap-2"><span className="text-[#F0B90B] mt-0.5">•</span>Forex prices: 5 decimals. JPY: 3 decimals. Crypto: 2–4 decimals.</li>
+                <li className="flex items-start gap-2"><span className="text-[#00C274] mt-0.5">•</span>Positive profit increases the client's balance automatically.</li>
+                <li className="flex items-start gap-2"><span className="text-[#00C274] mt-0.5">•</span>Leave exit price empty for open trades.</li>
+                <li className="flex items-start gap-2"><span className="text-[#00C274] mt-0.5">•</span>Forex prices: 5 decimals. JPY: 3 decimals. Crypto: 2–4 decimals.</li>
               </ul>
             </div>
           </div>

@@ -79,7 +79,7 @@ export function LivePriceTicker({ compact = false }: Props) {
   }
 
   return (
-    <div className="w-full bg-[#0B0E11] border border-[#2B3139] rounded-2xl p-4 overflow-hidden">
+    <div className="w-full bg-[#060709] border border-[#181B23] rounded-2xl p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />
@@ -92,11 +92,11 @@ export function LivePriceTicker({ compact = false }: Props) {
         {items.map(item => (
           <div
             key={item.symbol}
-            className="bg-[#1E2329] border border-[#2B3139] rounded-xl p-3 transition-all hover:border-[#F0B90B]/30"
+            className="bg-[#1E2329] border border-[#181B23] rounded-xl p-3 transition-all hover:border-[#00C274]/30"
           >
             <div className="flex items-center justify-between mb-1">
               <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide ${
-                item.isCrypto ? 'bg-[#F0B90B]/15 text-[#F0B90B]' : 'bg-[#02C076]/15 text-[#02C076]'
+                item.isCrypto ? 'bg-[#00C274]/15 text-[#00C274]' : 'bg-[#02C076]/15 text-[#02C076]'
               }`}>
                 {item.isCrypto ? 'CRYPTO' : 'FX'}
               </span>

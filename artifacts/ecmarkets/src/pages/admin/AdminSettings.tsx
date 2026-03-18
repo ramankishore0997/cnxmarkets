@@ -83,7 +83,7 @@ export function AdminSettings() {
         <div className="flex justify-center items-center h-64">
           <div className="relative w-12 h-12">
             <div className="absolute inset-0 border-4 border-white/[0.06] rounded-full" />
-            <div className="absolute inset-0 border-t-4 border-[#F0B90B] rounded-full animate-spin" />
+            <div className="absolute inset-0 border-t-4 border-[#00C274] rounded-full animate-spin" />
           </div>
         </div>
       </AdminLayout>
@@ -102,13 +102,13 @@ export function AdminSettings() {
         {/* ── Magic Link Card ──────────────────────── */}
         <div className="card-stealth overflow-hidden">
           {/* Gold header bar */}
-          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #FFB800, #F0B90B, #c8960c)' }} />
+          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #00C274, #00C274, #c8960c)' }} />
 
           <div className="p-7">
             {/* Title row */}
             <div className="flex items-center gap-3 mb-6">
               <div className="w-11 h-11 rounded-xl icon-squircle-gold flex items-center justify-center shrink-0">
-                <Link2 className="w-5 h-5 text-[#FFB800]" />
+                <Link2 className="w-5 h-5 text-[#00C274]" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-white">Magic Login Link</h2>
@@ -121,8 +121,8 @@ export function AdminSettings() {
             </div>
 
             {/* Info box */}
-            <div className="flex gap-3 p-4 rounded-xl bg-[#FFB800]/06 border border-[#FFB800]/18 mb-6">
-              <Info className="w-4 h-4 text-[#FFB800] shrink-0 mt-0.5" />
+            <div className="flex gap-3 p-4 rounded-xl bg-[#00C274]/06 border border-[#00C274]/18 mb-6">
+              <Info className="w-4 h-4 text-[#00C274] shrink-0 mt-0.5" />
               <div className="text-sm text-[#848E9C] leading-relaxed space-y-1">
                 <p>This link logs you into the Admin Panel instantly without a password. Keep it <strong className="text-[#EAECEF]">strictly private</strong>.</p>
                 <p>Visiting the link creates a new authenticated session and redirects to the dashboard.</p>
@@ -134,14 +134,14 @@ export function AdminSettings() {
               <label className="block text-xs font-bold text-[#4B5563] uppercase tracking-[0.1em] mb-2">
                 Your Magic Link
               </label>
-              <div className="flex items-center gap-2 p-3.5 rounded-xl bg-[#0B0E11] border border-white/[0.07] group">
+              <div className="flex items-center gap-2 p-3.5 rounded-xl bg-[#060709] border border-white/[0.07] group">
                 <Lock className="w-4 h-4 text-[#374151] shrink-0" />
                 <code className="font-terminal text-xs text-[#848E9C] flex-1 truncate select-all leading-relaxed">
                   {revealed ? magicUrl : maskedUrl}
                 </code>
                 <button
                   onClick={() => setRevealed(v => !v)}
-                  className="p-1.5 rounded-lg text-[#4B5563] hover:text-[#FFB800] hover:bg-[#FFB800]/10 transition-all shrink-0"
+                  className="p-1.5 rounded-lg text-[#4B5563] hover:text-[#00C274] hover:bg-[#00C274]/10 transition-all shrink-0"
                   title={revealed ? 'Hide' : 'Reveal'}
                 >
                   {revealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

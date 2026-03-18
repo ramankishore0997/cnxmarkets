@@ -67,9 +67,9 @@ export function Login() {
   };
 
   const onForgotSubmit = (data: z.infer<typeof forgotSchema>) => {
-    const subject = encodeURIComponent('Password Reset Request — ECMarketsIndia');
+    const subject = encodeURIComponent('Password Reset Request — CNXMarkets');
     const body = encodeURIComponent(
-      `Hello ECMarketsIndia Support,\n\nI would like to reset my account password. Please find my details below:\n\n` +
+      `Hello CNXMarkets Support,\n\nI would like to reset my account password. Please find my details below:\n\n` +
       `Registered Email: ${data.email.trim().toLowerCase()}\nRequested New Password: ${data.newPassword}\n\n` +
       `Kindly update my password at the earliest.\n\nThank you.`
     );
@@ -79,17 +79,17 @@ export function Login() {
 
   const inputStyle = (hasError: boolean) => ({
     background: '#1E2329',
-    border: `1px solid ${hasError ? '#CF304A' : '#2B3139'}`,
+    border: `1px solid ${hasError ? '#CF304A' : '#181B23'}`,
     color: '#EAECEF',
     boxShadow: hasError ? '0 0 0 3px rgba(207,48,74,0.1)' : 'none',
   });
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#0B0E11' }}>
+    <div className="min-h-screen flex" style={{ background: '#060709' }}>
       {/* Left panel (desktop only) */}
       <div
         className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0B0E11 0%, #1a1f28 50%, #0B0E11 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #060709 0%, #1a1f28 50%, #060709 100%)' }}
       >
         <div
           className="absolute inset-0 opacity-20"
@@ -103,11 +103,11 @@ export function Login() {
             <div className="flex items-center gap-3 cursor-pointer">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 0 20px rgba(240,185,11,0.3)' }}
+                style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 0 20px rgba(0,194,116,0.3)' }}
               >
                 <TrendingUp className="w-5 h-5 text-black" />
               </div>
-              <span className="text-white font-bold text-xl tracking-tight">ECMarketsIndia</span>
+              <span className="text-white font-bold text-xl tracking-tight">CNXMarkets</span>
             </div>
           </Link>
         </div>
@@ -141,7 +141,7 @@ export function Login() {
         </div>
         <div className="relative z-10">
           <p className="text-sm" style={{ color: '#848E9C' }}>
-            © 2025 ECMarketsIndia. Regulated algorithmic trading platform.
+            © 2025 CNXMarkets. Regulated algorithmic trading platform.
           </p>
         </div>
       </div>
@@ -160,7 +160,7 @@ export function Login() {
                 >
                   <TrendingUp className="w-4 h-4 text-black" />
                 </div>
-                <span className="text-white font-bold text-lg">ECMarketsIndia</span>
+                <span className="text-white font-bold text-lg">CNXMarkets</span>
               </div>
             </Link>
           </div>
@@ -181,7 +181,7 @@ export function Login() {
 
               <div className="mb-7">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ background: 'rgba(240,185,11,0.12)', border: '1px solid rgba(240,185,11,0.25)' }}>
+                  style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.25)' }}>
                   <KeyRound className="w-6 h-6" style={{ color: '#00C274' }} />
                 </div>
                 <h1 className="text-2xl font-bold text-white mb-2 tracking-tight">Reset Password</h1>
@@ -220,7 +220,7 @@ export function Login() {
                   <button
                     onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
                     className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
-                    style={{ background: '#1E2329', border: '1px solid #2B3139', color: '#848E9C' }}
+                    style={{ background: '#1E2329', border: '1px solid #181B23', color: '#848E9C' }}
                   >
                     Back to Sign In
                   </button>
@@ -244,12 +244,12 @@ export function Login() {
                         onFocus={(e) => {
                           if (!forgotForm.formState.errors.email) {
                             e.target.style.border = '1px solid #00C274';
-                            e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
+                            e.target.style.boxShadow = '0 0 0 3px rgba(0,194,116,0.1)';
                           }
                         }}
                         onBlur={(e) => {
                           if (!forgotForm.formState.errors.email) {
-                            e.target.style.border = '1px solid #2B3139';
+                            e.target.style.border = '1px solid #181B23';
                             e.target.style.boxShadow = 'none';
                           }
                         }}
@@ -277,12 +277,12 @@ export function Login() {
                         onFocus={(e) => {
                           if (!forgotForm.formState.errors.newPassword) {
                             e.target.style.border = '1px solid #00C274';
-                            e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
+                            e.target.style.boxShadow = '0 0 0 3px rgba(0,194,116,0.1)';
                           }
                         }}
                         onBlur={(e) => {
                           if (!forgotForm.formState.errors.newPassword) {
-                            e.target.style.border = '1px solid #2B3139';
+                            e.target.style.border = '1px solid #181B23';
                             e.target.style.boxShadow = 'none';
                           }
                         }}
@@ -303,7 +303,7 @@ export function Login() {
 
                   {/* Info box */}
                   <div className="flex items-start gap-2.5 p-3.5 rounded-xl"
-                    style={{ background: 'rgba(240,185,11,0.07)', border: '1px solid rgba(240,185,11,0.2)' }}>
+                    style={{ background: 'rgba(0,194,116,0.07)', border: '1px solid rgba(0,194,116,0.2)' }}>
                     <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#00C274' }} />
                     <p className="text-xs leading-relaxed" style={{ color: '#848E9C' }}>
                       Submit karte hi aapki <span style={{ color: '#00C274' }}>mail app</span> ek pre-filled email ke saath khulegi —{' '}
@@ -317,8 +317,8 @@ export function Login() {
                     className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200"
                     style={{
                       background: 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)',
-                      color: '#0B0E11',
-                      boxShadow: '0 4px 20px rgba(240,185,11,0.3)',
+                      color: '#060709',
+                      boxShadow: '0 4px 20px rgba(0,194,116,0.3)',
                       cursor: 'pointer',
                     }}
                   >
@@ -374,12 +374,12 @@ export function Login() {
                       onFocus={(e) => {
                         if (!form.formState.errors.email) {
                           e.target.style.border = '1px solid #00C274';
-                          e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
+                          e.target.style.boxShadow = '0 0 0 3px rgba(0,194,116,0.1)';
                         }
                       }}
                       onBlur={(e) => {
                         if (!form.formState.errors.email) {
-                          e.target.style.border = '1px solid #2B3139';
+                          e.target.style.border = '1px solid #181B23';
                           e.target.style.boxShadow = 'none';
                         }
                       }}
@@ -405,12 +405,12 @@ export function Login() {
                       onFocus={(e) => {
                         if (!form.formState.errors.password) {
                           e.target.style.border = '1px solid #00C274';
-                          e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
+                          e.target.style.boxShadow = '0 0 0 3px rgba(0,194,116,0.1)';
                         }
                       }}
                       onBlur={(e) => {
                         if (!form.formState.errors.password) {
-                          e.target.style.border = '1px solid #2B3139';
+                          e.target.style.border = '1px solid #181B23';
                           e.target.style.boxShadow = 'none';
                         }
                       }}
@@ -435,10 +435,10 @@ export function Login() {
                   className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 mt-2"
                   style={{
                     background: loginMutation.isPending
-                      ? 'rgba(240,185,11,0.5)'
+                      ? 'rgba(0,194,116,0.5)'
                       : 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)',
-                    color: '#0B0E11',
-                    boxShadow: loginMutation.isPending ? 'none' : '0 4px 20px rgba(240,185,11,0.3)',
+                    color: '#060709',
+                    boxShadow: loginMutation.isPending ? 'none' : '0 4px 20px rgba(0,194,116,0.3)',
                     cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
                   }}
                 >
@@ -466,7 +466,7 @@ export function Login() {
                 Access your trading dashboard securely.
               </p>
 
-              <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid #2B3139' }}>
+              <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid #181B23' }}>
                 <p style={{ color: '#848E9C' }} className="text-sm">
                   Don't have an account?{' '}
                   <Link href="/auth/register" className="font-semibold hover:underline transition-colors" style={{ color: '#00C274' }}>

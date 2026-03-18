@@ -1,8 +1,8 @@
-# ECMarketsIndia Workspace
+# CNXMarkets Workspace
 
 ## Overview
 
-Full-stack fintech trading platform — ECMarketsIndia.com — a premium global forex/algo trading platform with dark modern UI. Built as a pnpm monorepo with TypeScript.
+Full-stack fintech trading platform — CNXMarkets — a premium global forex/algo trading platform with deep black dark UI. Built as a pnpm monorepo with TypeScript.
 
 ## Stack
 

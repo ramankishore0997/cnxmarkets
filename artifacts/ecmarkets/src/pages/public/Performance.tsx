@@ -39,7 +39,7 @@ export function Performance() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 section-dark border-b border-[#2B3139]">
+      <div className="pt-24 pb-16 section-dark border-b border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -64,7 +64,7 @@ export function Performance() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
           {[
             { label: "Total Return (15mo)", value: "+71.4%", color: "text-[#02C076]" },
-            { label: "Win Rate", value: "68.2%", color: "text-[#F0B90B]" },
+            { label: "Win Rate", value: "68.2%", color: "text-[#00C274]" },
             { label: "Max Drawdown", value: "8.3%", color: "text-[#CF304A]" },
             { label: "Sharpe Ratio", value: "1.87", color: "text-white" },
           ].map((stat, i) => (
@@ -76,10 +76,10 @@ export function Performance() {
         </div>
 
         {/* Equity Curve */}
-        <div className="card-stealth p-6 md:p-8 mb-12 border-t-4 border-t-[#F0B90B]">
+        <div className="card-stealth p-6 md:p-8 mb-12 border-t-4 border-t-[#00C274]">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-2xl font-bold text-white">Composite Equity Curve (Initial ₹10L)</h3>
-            <button className="flex items-center gap-2 text-sm font-medium text-[#F0B90B] hover:bg-[#F0B90B]/10 px-4 py-2 rounded-lg transition-colors border border-[#F0B90B]/30">
+            <button className="flex items-center gap-2 text-sm font-medium text-[#00C274] hover:bg-[#00C274]/10 px-4 py-2 rounded-lg transition-colors border border-[#00C274]/30">
               <Download className="w-4 h-4" /> Download Report
             </button>
           </div>
@@ -88,19 +88,19 @@ export function Performance() {
               <AreaChart data={equityData}>
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F0B90B" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#F0B90B" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#00C274" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#00C274" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2B3139" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#181B23" vertical={false} />
                 <XAxis dataKey="date" stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} dy={10} />
                 <YAxis stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${(val/1000)}k`} dx={-10} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#1E2329', borderColor: '#2B3139', borderRadius: '8px', color: '#fff' }}
-                  itemStyle={{ color: '#F0B90B', fontWeight: 'bold' }}
+                  contentStyle={{ backgroundColor: '#1E2329', borderColor: '#181B23', borderRadius: '8px', color: '#fff' }}
+                  itemStyle={{ color: '#00C274', fontWeight: 'bold' }}
                   formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, 'Equity']}
                 />
-                <Area type="monotone" dataKey="value" stroke="#F0B90B" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
+                <Area type="monotone" dataKey="value" stroke="#00C274" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -113,13 +113,13 @@ export function Performance() {
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyReturns}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2B3139" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#181B23" vertical={false} />
                   <XAxis dataKey="month" stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} dy={10} />
                   <YAxis stroke="#848E9C" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} dx={-10} />
                   <Tooltip 
                     cursor={{fill: 'rgba(255,255,255,0.05)'}}
-                    contentStyle={{ backgroundColor: '#1E2329', borderColor: '#2B3139', borderRadius: '8px', color: '#fff' }}
-                    itemStyle={{ color: '#F0B90B', fontWeight: 'bold' }}
+                    contentStyle={{ backgroundColor: '#1E2329', borderColor: '#181B23', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#00C274', fontWeight: 'bold' }}
                     formatter={(value: number) => [`${value}%`, 'Return']}
                   />
                   <Bar dataKey="return" radius={[4, 4, 0, 0]}>
@@ -135,23 +135,23 @@ export function Performance() {
           <div className="card-stealth p-6">
             <h3 className="text-xl font-bold text-white mb-6">Risk Statistics</h3>
             <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
+              <div className="flex justify-between items-center py-3 border-b border-[#181B23]">
                 <span className="text-[#848E9C] font-medium">Profit Factor</span>
                 <span className="font-bold text-white">1.62</span>
               </div>
-              <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
+              <div className="flex justify-between items-center py-3 border-b border-[#181B23]">
                 <span className="text-[#848E9C] font-medium">Avg. Win Trade</span>
                 <span className="font-bold text-[#02C076]">+₹425</span>
               </div>
-              <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
+              <div className="flex justify-between items-center py-3 border-b border-[#181B23]">
                 <span className="text-[#848E9C] font-medium">Avg. Loss Trade</span>
                 <span className="font-bold text-[#CF304A]">-₹262</span>
               </div>
-              <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
+              <div className="flex justify-between items-center py-3 border-b border-[#181B23]">
                 <span className="text-[#848E9C] font-medium">Max Consec. Wins</span>
                 <span className="font-bold text-white">14</span>
               </div>
-              <div className="flex justify-between items-center py-3 border-b border-[#2B3139]">
+              <div className="flex justify-between items-center py-3 border-b border-[#181B23]">
                 <span className="text-[#848E9C] font-medium">Max Consec. Losses</span>
                 <span className="font-bold text-white">4</span>
               </div>
@@ -168,7 +168,7 @@ export function Performance() {
           <h3 className="text-xl font-bold text-white mb-6">Historical Monthly Performance (%)</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-[#2B3139] text-[#EAECEF] font-semibold">
+              <thead className="bg-[#181B23] text-[#EAECEF] font-semibold">
                 <tr>
                   <th className="px-4 py-3">Year</th>
                   <th className="px-4 py-3">Jan</th>
@@ -183,11 +183,11 @@ export function Performance() {
                   <th className="px-4 py-3">Oct</th>
                   <th className="px-4 py-3">Nov</th>
                   <th className="px-4 py-3">Dec</th>
-                  <th className="px-4 py-3 text-[#F0B90B] font-bold">YTD</th>
+                  <th className="px-4 py-3 text-[#00C274] font-bold">YTD</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2B3139] bg-[#1E2329]">
-                <tr className="hover:bg-[#2B3139]/50 transition-colors">
+              <tbody className="divide-y divide-[#181B23] bg-[#1E2329]">
+                <tr className="hover:bg-[#181B23]/50 transition-colors">
                   <td className="px-4 py-3 font-bold text-white">2024</td>
                   <td className="px-4 py-3 text-[#02C076] font-medium">4.2</td>
                   <td className="px-4 py-3 text-[#02C076] font-medium">4.9</td>
@@ -201,9 +201,9 @@ export function Performance() {
                   <td className="px-4 py-3 text-[#848E9C]">-</td>
                   <td className="px-4 py-3 text-[#848E9C]">-</td>
                   <td className="px-4 py-3 text-[#848E9C]">-</td>
-                  <td className="px-4 py-3 text-[#F0B90B] font-bold">15.6%</td>
+                  <td className="px-4 py-3 text-[#00C274] font-bold">15.6%</td>
                 </tr>
-                <tr className="hover:bg-[#2B3139]/50 transition-colors">
+                <tr className="hover:bg-[#181B23]/50 transition-colors">
                   <td className="px-4 py-3 font-bold text-white">2023</td>
                   <td className="px-4 py-3 text-[#02C076] font-medium">4.5</td>
                   <td className="px-4 py-3 text-[#02C076] font-medium">3.2</td>
@@ -217,14 +217,14 @@ export function Performance() {
                   <td className="px-4 py-3 text-[#02C076] font-medium">4.2</td>
                   <td className="px-4 py-3 text-[#02C076] font-medium">5.8</td>
                   <td className="px-4 py-3 text-[#02C076] font-medium">6.1</td>
-                  <td className="px-4 py-3 text-[#F0B90B] font-bold">56.2%</td>
+                  <td className="px-4 py-3 text-[#00C274] font-bold">56.2%</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <div className="mt-12 text-center text-sm text-[#848E9C] p-6 rounded-xl bg-[#0B0E11] border border-[#2B3139]">
+        <div className="mt-12 text-center text-sm text-[#848E9C] p-6 rounded-xl bg-[#060709] border border-[#181B23]">
           <strong className="text-white">Disclaimer:</strong> Past performance is not indicative of future results. The performance data presented represents the composite returns of our master algorithms. Individual account returns may vary due to timing of deposits, slippage, and broker spreads.
         </div>
       </div>

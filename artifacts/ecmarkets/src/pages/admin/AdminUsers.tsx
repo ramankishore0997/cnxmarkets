@@ -137,12 +137,12 @@ export function AdminUsers() {
 
   const kycColor = (status: string) => {
     if (status === 'approved') return { color: '#02C076', label: 'Verified' };
-    if (status === 'submitted') return { color: '#F0B90B', label: 'Pending' };
+    if (status === 'submitted') return { color: '#00C274', label: 'Pending' };
     if (status === 'rejected') return { color: '#CF304A', label: 'Rejected' };
     return { color: '#848E9C', label: 'Not Submitted' };
   };
 
-  const riskColors: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
+  const riskColors: Record<string, string> = { low: '#02C076', medium: '#00C274', high: '#CF304A' };
 
   const isRazrName = (n?: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
   const getDailyPct = (name?: string, target?: number | null) => {
@@ -154,7 +154,7 @@ export function AdminUsers() {
 
   if (isLoading) return (
     <AdminLayout>
-      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div>
+      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
     </AdminLayout>
   );
 
@@ -178,10 +178,10 @@ export function AdminUsers() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Users', value: allUsers.length, color: '#F0B90B' },
+          { label: 'Total Users', value: allUsers.length, color: '#00C274' },
           { label: 'Active', value: allUsers.filter((u: any) => u.isActive).length, color: '#02C076' },
           { label: 'KYC Verified', value: allUsers.filter((u: any) => u.kycStatus === 'approved').length, color: '#2a6df4' },
-          { label: 'With Strategy', value: allUsers.filter((u: any) => u.assignedStrategyId).length, color: '#F0B90B' },
+          { label: 'With Strategy', value: allUsers.filter((u: any) => u.assignedStrategyId).length, color: '#00C274' },
         ].map((s, i) => (
           <div key={i} className="card-stealth p-5">
             <p className="text-2xl font-bold mb-1" style={{ color: s.color }}>{s.value}</p>
@@ -193,11 +193,11 @@ export function AdminUsers() {
       <div className="card-stealth overflow-hidden">
         {filtered.length === 0 ? (
           <div className="p-16 text-center">
-            <Users className="w-16 h-16 text-[#2B3139] mx-auto mb-6" />
+            <Users className="w-16 h-16 text-[#181B23] mx-auto mb-6" />
             <p className="text-[#848E9C] font-medium">{search ? 'No users match your search.' : 'No users yet.'}</p>
           </div>
         ) : (
-          <div className="divide-y divide-[#2B3139]">
+          <div className="divide-y divide-[#181B23]">
             {filtered.map((user: any) => {
               const kyc = kycColor(user.kycStatus);
               const isExpanded = expandedId === user.id;
@@ -210,11 +210,11 @@ export function AdminUsers() {
               return (
                 <div key={user.id}>
                   <div
-                    className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-[#2B3139]/40 transition-colors cursor-pointer"
+                    className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-[#181B23]/40 transition-colors cursor-pointer"
                     onClick={() => toggleExpand(user)}
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-9 h-9 rounded-full bg-[#F0B90B] flex items-center justify-center font-bold text-black text-sm shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-[#00C274] flex items-center justify-center font-bold text-black text-sm shrink-0">
                         {user.firstName?.[0] || '?'}{user.lastName?.[0] || ''}
                       </div>
                       <div className="min-w-0">
@@ -227,11 +227,11 @@ export function AdminUsers() {
                       <div className="text-right min-w-[130px]">
                         <p className="font-bold text-white text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
                         {assignedStrat ? (
-                          <span className="flex items-center gap-1 text-xs text-[#F0B90B] justify-end">
+                          <span className="flex items-center gap-1 text-xs text-[#00C274] justify-end">
                             <Zap className="w-3 h-3" />{assignedStrat.name}
                           </span>
                         ) : (
-                          <span className="text-xs text-[#2B3139]">No strategy</span>
+                          <span className="text-xs text-[#181B23]">No strategy</span>
                         )}
                       </div>
 
@@ -251,7 +251,7 @@ export function AdminUsers() {
                           {processingId === user.id ? <Loader2 className="w-3 h-3 animate-spin" /> : (user.isActive ? <ShieldOff className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />)}
                           {user.isActive ? 'Deactivate' : 'Activate'}
                         </button>
-                        <button className="p-1.5 rounded-lg hover:bg-[#2B3139] text-[#848E9C] hover:text-white transition-colors">
+                        <button className="p-1.5 rounded-lg hover:bg-[#181B23] text-[#848E9C] hover:text-white transition-colors">
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
                       </div>
@@ -259,7 +259,7 @@ export function AdminUsers() {
                   </div>
 
                   {isExpanded && (
-                    <div className="bg-[#0B0E11] border-t border-[#2B3139] px-6 py-5 space-y-6">
+                    <div className="bg-[#060709] border-t border-[#181B23] px-6 py-5 space-y-6">
 
                       {/* ── Account Settings ── */}
                       <div>
@@ -267,7 +267,7 @@ export function AdminUsers() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
-                              <DollarSign className="w-4 h-4 text-[#F0B90B]" /> Account Balance (₹)
+                              <DollarSign className="w-4 h-4 text-[#00C274]" /> Account Balance (₹)
                             </label>
                             <input
                               type="number"
@@ -298,13 +298,13 @@ export function AdminUsers() {
                             {state.strategyId && (() => {
                               const sel = allStrategies.find((s: any) => s.id === parseInt(state.strategyId));
                               return sel ? (
-                                <div className="flex items-center gap-2 px-3 py-2 bg-[#1E2329] border border-[#2B3139] rounded-lg">
+                                <div className="flex items-center gap-2 px-3 py-2 bg-[#1E2329] border border-[#181B23] rounded-lg">
                                   <span className="text-xs font-bold capitalize" style={{ color: riskColors[sel.riskProfile] || '#848E9C' }}>
                                     {sel.riskProfile} risk
                                   </span>
-                                  <span className="text-[#2B3139]">·</span>
+                                  <span className="text-[#181B23]">·</span>
                                   <span className="text-xs text-[#02C076] font-semibold">+{sel.monthlyReturn}%/mo</span>
-                                  <span className="text-[#2B3139]">·</span>
+                                  <span className="text-[#181B23]">·</span>
                                   <span className="text-xs text-[#848E9C]">{sel.winRate}% win rate</span>
                                 </div>
                               ) : null;
@@ -330,7 +330,7 @@ export function AdminUsers() {
                           <button
                             onClick={() => saveAccountSettings(user)}
                             disabled={processingId === user.id}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F0B90B] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00C274] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all"
                           >
                             {processingId === user.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Save Changes
@@ -344,8 +344,8 @@ export function AdminUsers() {
                           const monthlyAmt = user.totalBalance * (monthlyPct / 100);
                           const isRazr = isRazrName(user.assignedStrategy);
                           return (
-                            <div className={`mt-4 p-4 rounded-xl border ${isRazr ? 'bg-[#02C076]/5 border-[#02C076]/20' : 'bg-[#F0B90B]/5 border-[#F0B90B]/20'}`}>
-                              <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: isRazr ? '#02C076' : '#F0B90B' }}>
+                            <div className={`mt-4 p-4 rounded-xl border ${isRazr ? 'bg-[#02C076]/5 border-[#02C076]/20' : 'bg-[#00C274]/5 border-[#00C274]/20'}`}>
+                              <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: isRazr ? '#02C076' : '#00C274' }}>
                                 Projected Earnings ({isRazr ? 'RazrMarket 8%/day' : `Standard ${dailyPct}%/day`})
                               </p>
                               <div className="grid grid-cols-3 gap-4 text-center">
@@ -354,7 +354,7 @@ export function AdminUsers() {
                                   <p className="text-[10px] text-[#848E9C] font-medium">Daily</p>
                                 </div>
                                 <div>
-                                  <p className="text-lg font-black" style={{ color: isRazr ? '#02C076' : '#F0B90B' }}>
+                                  <p className="text-lg font-black" style={{ color: isRazr ? '#02C076' : '#00C274' }}>
                                     +₹{Math.round(monthlyAmt / 4).toLocaleString('en-IN')}
                                   </p>
                                   <p className="text-[10px] text-[#848E9C] font-medium">Weekly (est.)</p>
@@ -370,7 +370,7 @@ export function AdminUsers() {
                       </div>
 
                       {/* ── KYC Verification ── */}
-                      <div className="border-t border-[#2B3139] pt-5">
+                      <div className="border-t border-[#181B23] pt-5">
                         <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4 flex items-center gap-2">
                           <ShieldCheck className="w-3.5 h-3.5" /> KYC Verification
                           <span className="ml-auto px-2 py-0.5 rounded-md text-[10px] font-bold" style={{ background: `${kycColor(user.kycStatus).color}20`, color: kycColor(user.kycStatus).color }}>
@@ -381,14 +381,14 @@ export function AdminUsers() {
                         {/* PAN + Aadhar numbers */}
                         {userKycDoc && (
                           <div className="grid grid-cols-2 gap-3 mb-3">
-                            <div className="bg-[#0d1117] border border-[#2B3139] rounded-xl px-4 py-3 flex items-center gap-2">
-                              <CreditCard className="w-3.5 h-3.5 text-[#F0B90B] shrink-0" />
+                            <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
+                              <CreditCard className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
                               <div>
                                 <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">PAN</p>
                                 <p className="text-white font-mono text-sm font-bold">{userKycDoc.panNumber || '—'}</p>
                               </div>
                             </div>
-                            <div className="bg-[#0d1117] border border-[#2B3139] rounded-xl px-4 py-3 flex items-center gap-2">
+                            <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
                               <Hash className="w-3.5 h-3.5 text-[#2a6df4] shrink-0" />
                               <div>
                                 <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">Aadhaar</p>
@@ -418,7 +418,7 @@ export function AdminUsers() {
                             ) : (
                               <button
                                 onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'pending' } as any })}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#181B23] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
                               >
                                 <X className="w-3.5 h-3.5" /> Reset to Pending
                               </button>
@@ -432,7 +432,7 @@ export function AdminUsers() {
                             </div>
                             <button
                               onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'pending' } as any })}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-white text-xs font-bold transition-all"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white text-xs font-bold transition-all"
                             >
                               <X className="w-3 h-3" /> Revoke
                             </button>
@@ -484,7 +484,7 @@ export function AdminUsers() {
                                   </button>
                                   <button
                                     onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { reason: '', rejecting: false } }))}
-                                    className="px-4 py-2.5 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
+                                    className="px-4 py-2.5 rounded-xl bg-[#181B23] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
                                   >Cancel</button>
                                 </>
                               ) : (
@@ -501,7 +501,7 @@ export function AdminUsers() {
                       </div>
 
                       {/* ── Change Password ── */}
-                      <div className="border-t border-[#2B3139] pt-5">
+                      <div className="border-t border-[#181B23] pt-5">
                         <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4 flex items-center gap-2">
                           <KeyRound className="w-3.5 h-3.5" /> Change Password
                         </p>
@@ -534,7 +534,7 @@ export function AdminUsers() {
                       </div>
 
                       {/* ── User Details ── */}
-                      <div className="border-t border-[#2B3139] pt-4 grid grid-cols-3 gap-4 text-xs text-[#848E9C]">
+                      <div className="border-t border-[#181B23] pt-4 grid grid-cols-3 gap-4 text-xs text-[#848E9C]">
                         <div>
                           <span className="block font-semibold text-[#EAECEF]">Joined</span>
                           {new Date(user.createdAt).toLocaleDateString('en-IN')}

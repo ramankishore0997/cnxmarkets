@@ -9,8 +9,8 @@ import {
   Loader2, X, BarChart2, Target, Shield, Zap, Search
 } from 'lucide-react';
 
-const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
-const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
+const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#00C274', high: '#CF304A' };
+const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#00C27420', high: '#CF304A20' };
 
 const emptyForm = { name: '', description: '', riskProfile: 'medium', minCapital: '', winRate: '', maxDrawdown: '', monthlyReturn: '', markets: '', isActive: true };
 
@@ -104,7 +104,7 @@ export function AdminStrategies() {
 
   if (isLoading) return (
     <AdminLayout>
-      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div>
+      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
     </AdminLayout>
   );
 
@@ -128,7 +128,7 @@ export function AdminStrategies() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total', value: allStrats.length, color: '#F0B90B', icon: TrendingUp },
+          { label: 'Total', value: allStrats.length, color: '#00C274', icon: TrendingUp },
           { label: 'Active', value: allStrats.filter((s: any) => s.isActive).length, color: '#02C076', icon: CheckCircle },
           { label: 'Low Risk', value: allStrats.filter((s: any) => s.riskProfile === 'low').length, color: '#02C076', icon: Shield },
           { label: 'High Risk', value: allStrats.filter((s: any) => s.riskProfile === 'high').length, color: '#CF304A', icon: Zap },
@@ -149,20 +149,20 @@ export function AdminStrategies() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2B3139]">
+              <tr className="border-b border-[#181B23]">
                 {['Strategy', 'Markets', 'Risk', 'Min Capital', 'Win Rate', 'Monthly Return', 'Drawdown', 'Status', 'Actions'].map(h => (
                   <th key={h} className="px-5 py-4 text-left text-[#848E9C] text-xs font-semibold uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2B3139]">
+            <tbody className="divide-y divide-[#181B23]">
               {filtered.length === 0 ? (
                 <tr><td colSpan={9} className="px-5 py-16 text-center text-[#848E9C]">
-                  <TrendingUp className="w-12 h-12 text-[#2B3139] mx-auto mb-3" />
+                  <TrendingUp className="w-12 h-12 text-[#181B23] mx-auto mb-3" />
                   {search ? 'No matching strategies.' : 'No strategies yet.'}
                 </td></tr>
               ) : filtered.map((s: any) => (
-                <tr key={s.id} className="hover:bg-[#2B3139]/30 transition-colors">
+                <tr key={s.id} className="hover:bg-[#181B23]/30 transition-colors">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: RISK_BG[s.riskProfile], border: `1px solid ${RISK_COLORS[s.riskProfile]}40` }}>
@@ -179,7 +179,7 @@ export function AdminStrategies() {
                     <span className="px-2.5 py-1 rounded-lg text-xs font-bold capitalize" style={{ background: RISK_BG[s.riskProfile], color: RISK_COLORS[s.riskProfile] }}>{s.riskProfile}</span>
                   </td>
                   <td className="px-5 py-4 text-[#EAECEF] text-sm font-medium">₹{Number(s.minCapital).toLocaleString('en-IN')}</td>
-                  <td className="px-5 py-4 text-[#F0B90B] font-bold text-sm">{s.winRate}%</td>
+                  <td className="px-5 py-4 text-[#00C274] font-bold text-sm">{s.winRate}%</td>
                   <td className="px-5 py-4 text-[#02C076] font-bold text-sm">+{s.monthlyReturn}%</td>
                   <td className="px-5 py-4 text-[#CF304A] font-bold text-sm">{s.maxDrawdown}%</td>
                   <td className="px-5 py-4">
@@ -190,10 +190,10 @@ export function AdminStrategies() {
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => openEdit(s)} className="p-1.5 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-[#F0B90B] hover:bg-[#F0B90B]/10 transition-all">
+                      <button onClick={() => openEdit(s)} className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-[#00C274] hover:bg-[#00C274]/10 transition-all">
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button onClick={() => openDelete(s)} className="p-1.5 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-[#CF304A] hover:bg-[#CF304A]/10 transition-all">
+                      <button onClick={() => openDelete(s)} className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-[#CF304A] hover:bg-[#CF304A]/10 transition-all">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -208,10 +208,10 @@ export function AdminStrategies() {
       {/* Create / Edit Modal */}
       {(modal?.type === 'create' || modal?.type === 'edit') && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1E2329] border border-[#2B3139] rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-[#2B3139]">
+          <div className="bg-[#1E2329] border border-[#181B23] rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-[#181B23]">
               <h2 className="text-xl font-bold text-white">{modal.type === 'create' ? 'Add New Strategy' : 'Edit Strategy'}</h2>
-              <button onClick={() => setModal(null)} className="p-2 text-[#848E9C] hover:text-white rounded-xl hover:bg-[#2B3139] transition-colors">
+              <button onClick={() => setModal(null)} className="p-2 text-[#848E9C] hover:text-white rounded-xl hover:bg-[#181B23] transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -257,7 +257,7 @@ export function AdminStrategies() {
                 </div>
                 <div className="flex items-end pb-1">
                   <label className="flex items-center gap-3 cursor-pointer">
-                    <div className={`w-12 h-6 rounded-full transition-colors relative ${form.isActive ? 'bg-[#02C076]' : 'bg-[#2B3139]'}`} onClick={() => setForm(p => ({ ...p, isActive: !p.isActive }))}>
+                    <div className={`w-12 h-6 rounded-full transition-colors relative ${form.isActive ? 'bg-[#02C076]' : 'bg-[#181B23]'}`} onClick={() => setForm(p => ({ ...p, isActive: !p.isActive }))}>
                       <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all ${form.isActive ? 'right-0.5' : 'left-0.5'}`} />
                     </div>
                     <span className="text-sm font-semibold text-[#EAECEF]">{form.isActive ? 'Active' : 'Inactive'}</span>
@@ -265,7 +265,7 @@ export function AdminStrategies() {
                 </div>
               </div>
             </div>
-            <div className="flex justify-end gap-3 p-6 border-t border-[#2B3139]">
+            <div className="flex justify-end gap-3 p-6 border-t border-[#181B23]">
               <button onClick={() => setModal(null)} className="btn-ghost">Cancel</button>
               <button onClick={handleSubmit} disabled={saving} className="btn-gold flex items-center gap-2">
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <TrendingUp className="w-4 h-4" />}

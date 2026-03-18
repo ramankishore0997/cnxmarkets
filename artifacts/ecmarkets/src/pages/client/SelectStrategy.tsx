@@ -147,8 +147,8 @@ export function SelectStrategy() {
           </button>
         </div>
       ) : (
-        <div className="mb-6 p-4 rounded-2xl flex items-center gap-3 border border-dashed border-[#2B3139]">
-          <div className="w-9 h-9 rounded-xl bg-[#1A1F2E] flex items-center justify-center shrink-0">
+        <div className="mb-6 p-4 rounded-2xl flex items-center gap-3 border border-dashed border-[#181B23]">
+          <div className="w-9 h-9 rounded-xl bg-[#0C0E15] flex items-center justify-center shrink-0">
             <Zap className="w-4 h-4 text-[#4B5563]" />
           </div>
           <div>
@@ -181,7 +181,7 @@ export function SelectStrategy() {
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border"
               style={riskFilter === f.key
                 ? { background: `${f.color}18`, borderColor: `${f.color}50`, color: f.color }
-                : { background: 'transparent', borderColor: '#2B3139', color: '#4B5563' }}
+                : { background: 'transparent', borderColor: '#181B23', color: '#4B5563' }}
             >
               <Filter className="w-3 h-3" />
               {f.label}
@@ -253,7 +253,7 @@ export function SelectStrategy() {
                     <p className="text-base font-black tabular-nums text-[#00C274]">+{dailyRate.toFixed(1)}%</p>
                     <p className="text-[10px] text-[#4B5563]">Daily ROI</p>
                   </div>
-                  <div className="text-[#2B3139] font-bold">→</div>
+                  <div className="text-[#181B23] font-bold">→</div>
                   <div className="text-center">
                     <p className="text-base font-black tabular-nums text-[#00C274]">+{(dailyRate * 30).toFixed(0)}%</p>
                     <p className="text-[10px] text-[#4B5563]">Monthly</p>
@@ -301,7 +301,7 @@ export function SelectStrategy() {
                       ? { background: 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)', color: '#000' }
                       : btn.variant === 'balance'
                       ? { background: 'rgba(207,48,74,0.1)', border: '1px solid rgba(207,48,74,0.3)', color: '#CF304A' }
-                      : { background: '#1A1F2E', border: '1px solid #2B3139', color: '#4B5563' }}
+                      : { background: '#0C0E15', border: '1px solid #181B23', color: '#4B5563' }}
                   >
                     {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <BtnIcon className="w-4 h-4" />}
                     {isLoading ? 'Activating...' : btn.label}

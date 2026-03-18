@@ -35,15 +35,15 @@ function AdminNavItem({ item, isActive, onClose }: { item: typeof navItems[0]; i
       onClick={onClose}
       className={`flex items-center gap-3 py-3 pr-4 text-sm font-semibold transition-all duration-200 group
         ${isActive
-          ? 'nav-item-active text-[#FFB800] pl-[13px]'
+          ? 'nav-item-active text-[#00C274] pl-[13px]'
           : 'nav-item-hover text-[#6B7280] hover:text-[#F8FAFC] pl-4'
         }`}
     >
       <Icon className={`w-[18px] h-[18px] shrink-0 transition-all duration-200 ${
-        isActive ? 'text-[#FFB800]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
+        isActive ? 'text-[#00C274]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
       }`} />
       <span className="flex-1 truncate">{item.name}</span>
-      {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#FFB800]/60 shrink-0" />}
+      {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#00C274]/60 shrink-0" />}
     </Link>
   );
 }
@@ -133,7 +133,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0E11] text-[#F8FAFC] flex">
+    <div className="min-h-screen bg-[#060709] text-[#F8FAFC] flex">
 
       {/* ── Desktop Sidebar ─── */}
       <aside className="w-[260px] sidebar-stealth hidden md:flex flex-col fixed inset-y-0 left-0 z-20">

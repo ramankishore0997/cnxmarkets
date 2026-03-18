@@ -14,7 +14,7 @@ const UPI_HANDLE = 'ecmarkets@upi';
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { icon: any; color: string }> = {
     approved: { icon: CheckCircle, color: '#02C076' },
-    pending:  { icon: Clock,        color: '#F0B90B' },
+    pending:  { icon: Clock,        color: '#00C274' },
     rejected: { icon: XCircle,      color: '#CF304A' },
   };
   const s = map[status] || map.pending;
@@ -106,8 +106,8 @@ export function Deposit() {
             onClick={() => { setTab(key); setSuccess(null); }}
             className={`flex items-center gap-1.5 md:gap-2 px-4 md:px-5 py-2.5 md:py-3 rounded-xl font-bold text-sm transition-all border flex-1 md:flex-none justify-center md:justify-start ${
               tab === key
-                ? 'bg-[#F0B90B] text-black border-[#F0B90B]'
-                : 'bg-transparent text-[#848E9C] border-[#2B3139] hover:border-[#F0B90B]/50 hover:text-white'
+                ? 'bg-[#00C274] text-black border-[#00C274]'
+                : 'bg-transparent text-[#848E9C] border-[#181B23] hover:border-[#00C274]/50 hover:text-white'
             }`}
           >
             <Icon className="w-4 h-4" />
@@ -138,25 +138,25 @@ export function Deposit() {
                 <div className="flex flex-col items-center py-8 text-center">
                   {/* Animated waiting indicator */}
                   <div className="relative mb-5">
-                    <div className="w-20 h-20 rounded-full border-4 border-[#F0B90B]/20 flex items-center justify-center">
-                      <Loader2 className="w-8 h-8 text-[#F0B90B] animate-spin absolute" />
-                      <Smartphone className="w-8 h-8 text-[#F0B90B]" />
+                    <div className="w-20 h-20 rounded-full border-4 border-[#00C274]/20 flex items-center justify-center">
+                      <Loader2 className="w-8 h-8 text-[#00C274] animate-spin absolute" />
+                      <Smartphone className="w-8 h-8 text-[#00C274]" />
                     </div>
-                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F0B90B] flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#00C274] flex items-center justify-center">
                       <Clock className="w-3 h-3 text-black" />
                     </span>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F0B90B]/20 border border-[#F0B90B]/40 mb-4">
-                    <span className="w-2 h-2 rounded-full bg-[#F0B90B] animate-pulse" />
-                    <span className="text-xs font-bold text-[#F0B90B] uppercase tracking-wider">Waiting for Payment</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00C274]/20 border border-[#00C274]/40 mb-4">
+                    <span className="w-2 h-2 rounded-full bg-[#00C274] animate-pulse" />
+                    <span className="text-xs font-bold text-[#00C274] uppercase tracking-wider">Waiting for Payment</span>
                   </div>
 
                   <h4 className="text-xl font-black text-white mb-3">Payment Request Sent!</h4>
 
-                  <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-5 text-left max-w-sm mb-5">
+                  <div className="bg-[#060709] border border-[#181B23] rounded-xl p-5 text-left max-w-sm mb-5">
                     <p className="text-[#EAECEF] text-sm leading-relaxed">
-                      Please check your UPI app <span className="text-[#F0B90B] font-semibold">(PhonePe, Google Pay, etc.)</span>.
+                      Please check your UPI app <span className="text-[#00C274] font-semibold">(PhonePe, Google Pay, etc.)</span>.
                       You have received a payment request for the entered amount.
                     </p>
                     <p className="text-[#EAECEF] text-sm leading-relaxed mt-3 font-semibold">
@@ -166,7 +166,7 @@ export function Deposit() {
 
                   <div className="flex items-center gap-2 text-xs text-[#848E9C]">
                     <CheckCircle className="w-3.5 h-3.5 text-[#02C076]" />
-                    Request logged · Status: <span className="font-bold text-[#F0B90B]">Pending</span>
+                    Request logged · Status: <span className="font-bold text-[#00C274]">Pending</span>
                   </div>
 
                   <button onClick={() => setSuccess(null)} className="mt-5 text-sm font-bold text-[#848E9C] hover:text-white transition-colors">
@@ -180,8 +180,8 @@ export function Deposit() {
                     <label className="block text-sm font-semibold text-[#EAECEF] mb-2">
                       Deposit Amount <span className="text-[#CF304A]">*</span>
                     </label>
-                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#2B3139] bg-[#0B0E11] focus-within:border-[#F0B90B]/60 transition-colors">
-                      <span className="flex items-center px-4 text-[#F0B90B] font-black text-lg bg-[#F0B90B]/10 border-r border-[#2B3139] select-none shrink-0">
+                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#181B23] bg-[#060709] focus-within:border-[#00C274]/60 transition-colors">
+                      <span className="flex items-center px-4 text-[#00C274] font-black text-lg bg-[#00C274]/10 border-r border-[#181B23] select-none shrink-0">
                         ₹
                       </span>
                       <input
@@ -207,8 +207,8 @@ export function Deposit() {
                     <label className="block text-sm font-semibold text-[#EAECEF] mb-2">
                       Your UPI ID <span className="text-[#CF304A]">*</span>
                     </label>
-                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#2B3139] bg-[#0B0E11] focus-within:border-[#F0B90B]/60 transition-colors">
-                      <span className="flex items-center px-4 text-[#02C076] font-black text-base bg-[#02C076]/10 border-r border-[#2B3139] select-none shrink-0">
+                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#181B23] bg-[#060709] focus-within:border-[#00C274]/60 transition-colors">
+                      <span className="flex items-center px-4 text-[#02C076] font-black text-base bg-[#02C076]/10 border-r border-[#181B23] select-none shrink-0">
                         @
                       </span>
                       <input
@@ -248,8 +248,8 @@ export function Deposit() {
           {tab === 'usdt' && (
             <>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-11 h-11 rounded-xl bg-[#F0B90B]/20 border border-[#F0B90B]/30 flex items-center justify-center">
-                  <Bitcoin className="w-5 h-5 text-[#F0B90B]" />
+                <div className="w-11 h-11 rounded-xl bg-[#00C274]/20 border border-[#00C274]/30 flex items-center justify-center">
+                  <Bitcoin className="w-5 h-5 text-[#00C274]" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">USDT Deposit (TRC20)</h3>
@@ -266,19 +266,19 @@ export function Deposit() {
                   <p className="text-[#848E9C] text-sm max-w-sm leading-relaxed">
                     Verification in progress. Your balance will be credited once confirmed by our team.
                   </p>
-                  <button onClick={() => setSuccess(null)} className="mt-6 text-sm font-bold text-[#F0B90B] hover:underline">
+                  <button onClick={() => setSuccess(null)} className="mt-6 text-sm font-bold text-[#00C274] hover:underline">
                     Submit another deposit →
                   </button>
                 </div>
               ) : (
                 <div className="space-y-5">
                   {/* Wallet address */}
-                  <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
+                  <div className="bg-[#060709] rounded-xl p-4 border border-[#181B23]">
                     <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-2">USDT (TRC20) Wallet Address</p>
                     <p className="font-mono text-[#EAECEF] text-xs break-all mb-3 leading-relaxed">{USDT_ADDRESS}</p>
                     <button
                       onClick={() => copyText(USDT_ADDRESS)}
-                      className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg bg-[#2B3139] text-[#848E9C] hover:text-white transition-colors font-semibold"
+                      className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white transition-colors font-semibold"
                     >
                       {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-[#02C076]" /> : <Copy className="w-3.5 h-3.5" />}
                       {copied ? 'Copied!' : 'Copy Address'}
@@ -286,19 +286,19 @@ export function Deposit() {
                   </div>
 
                   {/* QR Code */}
-                  <div className="flex flex-col items-center py-6 bg-[#0B0E11] rounded-xl border border-[#2B3139]">
-                    <div className="w-48 h-48 bg-white rounded-xl flex items-center justify-center p-2 mb-3 shadow-[0_0_24px_rgba(240,185,11,0.15)]">
+                  <div className="flex flex-col items-center py-6 bg-[#060709] rounded-xl border border-[#181B23]">
+                    <div className="w-48 h-48 bg-white rounded-xl flex items-center justify-center p-2 mb-3 shadow-[0_0_24px_rgba(0,194,116,0.15)]">
                       <img
                         src="/usdt-qr.jpg"
                         alt="USDT TRC20 QR Code"
                         className="w-full h-full object-contain rounded-lg"
                       />
                     </div>
-                    <p className="text-xs font-bold text-[#F0B90B] uppercase tracking-wider">Scan to Send USDT</p>
+                    <p className="text-xs font-bold text-[#00C274] uppercase tracking-wider">Scan to Send USDT</p>
                     <p className="text-xs text-[#848E9C] mt-1">TRC20 (Tron) Network Only</p>
                   </div>
 
-                  <div className="bg-[#F0B90B]/10 border border-[#F0B90B]/30 rounded-xl p-3 text-xs text-[#F0B90B] font-semibold">
+                  <div className="bg-[#00C274]/10 border border-[#00C274]/30 rounded-xl p-3 text-xs text-[#00C274] font-semibold">
                     ⚠ Only send USDT on the TRC20 (Tron) network. Sending on other networks will result in permanent loss of funds.
                   </div>
 
@@ -347,7 +347,7 @@ export function Deposit() {
                 { step: '4', text: 'Balance is credited — usually within 1 hour.' },
               ].map(({ step, text }) => (
                 <li key={step} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#F0B90B] text-black text-xs font-black flex items-center justify-center shrink-0 mt-0.5">{step}</span>
+                  <span className="w-6 h-6 rounded-full bg-[#00C274] text-black text-xs font-black flex items-center justify-center shrink-0 mt-0.5">{step}</span>
                   <p className="text-sm text-[#848E9C]">{text}</p>
                 </li>
               ))}
@@ -360,7 +360,7 @@ export function Deposit() {
               {[
                 { label: 'UPI (INR)',            value: 'Within 1 hour',  color: '#02C076' },
                 { label: 'USDT (TRC20)',         value: '1–3 hours',     color: '#02C076' },
-                { label: 'Weekends / Holidays',  value: 'Up to 24 hours',color: '#F0B90B' },
+                { label: 'Weekends / Holidays',  value: 'Up to 24 hours',color: '#00C274' },
               ].map(({ label, value, color }) => (
                 <div key={label} className="flex justify-between">
                   <span className="text-[#848E9C]">{label}</span>
@@ -401,11 +401,11 @@ export function Deposit() {
 
         {txLoading ? (
           <div className="flex justify-center py-10">
-            <Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#00C274]" />
           </div>
         ) : deposits.length === 0 ? (
           <div className="text-center py-12">
-            <ArrowDownLeft className="w-12 h-12 text-[#2B3139] mx-auto mb-4" />
+            <ArrowDownLeft className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
             <p className="text-[#848E9C] font-medium">No deposits yet. Submit your first request above.</p>
           </div>
         ) : (
@@ -414,21 +414,21 @@ export function Deposit() {
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#2B3139]">
+                  <tr className="border-b border-[#181B23]">
                     {['Date', 'Amount', 'Method', 'UPI / Reference', 'Status'].map(h => (
                       <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#2B3139]">
+                <tbody className="divide-y divide-[#181B23]">
                   {deposits.map((tx: any) => (
-                    <tr key={tx.id} className="hover:bg-[#0B0E11]/40 transition-colors">
+                    <tr key={tx.id} className="hover:bg-[#060709]/40 transition-colors">
                       <td className="py-4 pr-6 text-[#848E9C] text-sm">{new Date(tx.createdAt).toLocaleDateString('en-IN')}</td>
                       <td className="py-4 pr-6 font-bold text-white">
                         {tx.currency === 'INR' ? '₹' : ''}{Number(tx.amount).toLocaleString('en-IN')}{tx.currency !== 'INR' ? ` ${tx.currency}` : ''}
                       </td>
                       <td className="py-4 pr-6">
-                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#F0B90B]/20 text-[#F0B90B]'}`}>
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#00C274]/20 text-[#00C274]'}`}>
                           {tx.paymentMethod === 'upi' ? 'UPI' : 'USDT'}
                         </span>
                       </td>
@@ -443,7 +443,7 @@ export function Deposit() {
             {/* Mobile cards */}
             <div className="md:hidden space-y-3">
               {deposits.map((tx: any) => (
-                <div key={tx.id} className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4">
+                <div key={tx.id} className="bg-[#060709] border border-[#181B23] rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-black text-white text-base">
                       {tx.currency === 'INR' ? '₹' : ''}{Number(tx.amount).toLocaleString('en-IN')}{tx.currency !== 'INR' ? ` ${tx.currency}` : ''}
@@ -452,7 +452,7 @@ export function Deposit() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#F0B90B]/20 text-[#F0B90B]'}`}>
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tx.paymentMethod === 'upi' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#00C274]/20 text-[#00C274]'}`}>
                         {tx.paymentMethod === 'upi' ? 'UPI' : 'USDT'}
                       </span>
                       {tx.transactionReference && (

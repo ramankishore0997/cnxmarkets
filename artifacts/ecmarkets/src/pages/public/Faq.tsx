@@ -18,12 +18,12 @@ export function Faq() {
     {
       category: 'General',
       q: "Do I need trading experience?",
-      a: "No prior trading experience is required. ECMarketsIndia is a fully managed quantitative solution. Once you deposit funds and allocate them to a strategy, our systems handle 100% of the analysis, execution, and risk management."
+      a: "No prior trading experience is required. CNXMarkets is a fully managed quantitative solution. Once you deposit funds and allocate them to a strategy, our systems handle 100% of the analysis, execution, and risk management."
     },
     {
       category: 'General',
-      q: "How does ECMarketsIndia protect client funds?",
-      a: "ECMarketsIndia maintains strict AML (Anti-Money Laundering) policies and rigorous KYC verification for all clients. All client funds are held in segregated tier-1 bank accounts entirely separate from company operating capital. We have trading authority only — we cannot move or withdraw client funds. For jurisdiction-specific compliance queries, please contact our compliance team."
+      q: "How does CNXMarkets protect client funds?",
+      a: "CNXMarkets maintains strict AML (Anti-Money Laundering) policies and rigorous KYC verification for all clients. All client funds are held in segregated tier-1 bank accounts entirely separate from company operating capital. We have trading authority only — we cannot move or withdraw client funds. For jurisdiction-specific compliance queries, please contact our compliance team."
     },
     {
       category: 'General',
@@ -37,8 +37,8 @@ export function Faq() {
     },
     {
       category: 'General',
-      q: "Can I use ECMarketsIndia alongside manual trading?",
-      a: "Absolutely. Many of our clients use ECMarketsIndia as a passive algorithmic income stream alongside their existing manual trading or investment portfolios. The accounts are completely independent."
+      q: "Can I use CNXMarkets alongside manual trading?",
+      a: "Absolutely. Many of our clients use CNXMarkets as a passive algorithmic income stream alongside their existing manual trading or investment portfolios. The accounts are completely independent."
     },
     {
       category: 'Accounts',
@@ -122,7 +122,7 @@ export function Faq() {
     },
     {
       category: 'Security',
-      q: "What happens if ECMarketsIndia shuts down?",
+      q: "What happens if CNXMarkets shuts down?",
       a: "Client funds are completely segregated from company operating funds in separate tier-1 bank accounts. In the unlikely event of company closure, client funds are fully protected and returned immediately. We are also fully insured against operational risk."
     },
     {
@@ -141,7 +141,7 @@ export function Faq() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 text-center section-dark border-b border-[#2B3139]">
+      <div className="pt-24 pb-16 text-center section-dark border-b border-[#181B23]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Frequently Asked <span className="text-gradient-gold">Questions</span></h1>
           <p className="text-xl text-[#848E9C] mb-8">
@@ -169,7 +169,7 @@ export function Faq() {
                   onClick={() => { setActiveCategory(cat); setOpenIndex(0); }}
                   className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     activeCategory === cat 
-                      ? 'bg-[#1E2329] text-[#F0B90B] border-l-2 border-[#F0B90B]' 
+                      ? 'bg-[#1E2329] text-[#00C274] border-l-2 border-[#00C274]' 
                       : 'text-[#848E9C] hover:bg-[#1E2329] hover:text-white'
                   }`}
                 >
@@ -185,7 +185,7 @@ export function Faq() {
           {filteredFaqs.length > 0 ? filteredFaqs.map((faq, i) => (
             <div 
               key={i} 
-              className={`card-stealth overflow-hidden transition-colors ${openIndex === i ? 'border-l-2 border-l-[#F0B90B]' : ''}`}
+              className={`card-stealth overflow-hidden transition-colors ${openIndex === i ? 'border-l-2 border-l-[#00C274]' : ''}`}
             >
               <button
                 className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
@@ -193,7 +193,7 @@ export function Faq() {
               >
                 <span className={`font-semibold text-lg pr-8 ${openIndex === i ? 'text-white' : 'text-[#848E9C]'}`}>{faq.q}</span>
                 <ChevronDown 
-                  className={`w-5 h-5 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-[#F0B90B]' : 'text-[#848E9C]'}`} 
+                  className={`w-5 h-5 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-[#00C274]' : 'text-[#848E9C]'}`} 
                 />
               </button>
               <AnimatePresence>
@@ -204,7 +204,7 @@ export function Faq() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <div className="px-6 pb-5 text-[#848E9C] leading-relaxed border-t border-[#2B3139] pt-4">
+                    <div className="px-6 pb-5 text-[#848E9C] leading-relaxed border-t border-[#181B23] pt-4">
                       {faq.a}
                     </div>
                   </motion.div>

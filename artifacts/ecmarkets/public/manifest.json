@@ -1,13 +1,13 @@
 {
-  "name": "ECMarketsIndia",
-  "short_name": "ECMarkets",
+  "name": "CNXMarkets",
+  "short_name": "CNXMarkets",
   "description": "Algorithmic Trading Platform — Forex, Crypto & Binary",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#0B0E11",
-  "background_color": "#0B0E11",
+  "theme_color": "#060709",
+  "background_color": "#060709",
   "categories": ["finance", "business"],
   "icons": [
     {

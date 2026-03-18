@@ -434,7 +434,7 @@ export function Dashboard() {
                     </p>
                     <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block mt-1 ${
                       tx.status === 'approved' ? 'bg-[#00C274]/12 text-[#00C274] border border-[#00C274]/25' :
-                      tx.status === 'pending'  ? 'bg-[#F0B90B]/12 text-[#F0B90B] border border-[#F0B90B]/25' :
+                      tx.status === 'pending'  ? 'bg-[#00C274]/12 text-[#00C274] border border-[#00C274]/25' :
                       'bg-[#CF304A]/12 text-[#CF304A] border border-[#CF304A]/25'
                     }`}>
                       {tx.status}

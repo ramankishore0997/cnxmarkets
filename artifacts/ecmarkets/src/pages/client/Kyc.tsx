@@ -38,7 +38,7 @@ export function Kyc() {
 
   if (isLoading) return (
     <DashboardLayout>
-      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div>
+      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
     </DashboardLayout>
   );
 
@@ -55,8 +55,8 @@ export function Kyc() {
 
         {isSubmitted ? (
           <div className="card-stealth p-12 text-center">
-            <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center ${kycDoc.status === 'approved' ? 'bg-[#02C076]/20' : 'bg-[#F0B90B]/20'}`}>
-              <ShieldCheck className={`w-10 h-10 ${kycDoc.status === 'approved' ? 'text-[#02C076]' : 'text-[#F0B90B]'}`} />
+            <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center ${kycDoc.status === 'approved' ? 'bg-[#02C076]/20' : 'bg-[#00C274]/20'}`}>
+              <ShieldCheck className={`w-10 h-10 ${kycDoc.status === 'approved' ? 'text-[#02C076]' : 'text-[#00C274]'}`} />
             </div>
             <h2 className="text-2xl font-bold text-white mb-3">
               {kycDoc.status === 'approved' ? 'Verification Complete' : 'Under Review'}
@@ -68,14 +68,14 @@ export function Kyc() {
             </p>
             <div className="flex flex-col gap-3 items-center">
               {kycDoc.panNumber && (
-                <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#2B3139] rounded-xl px-5 py-3">
-                  <CreditCard className="w-4 h-4 text-[#F0B90B]" />
+                <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#181B23] rounded-xl px-5 py-3">
+                  <CreditCard className="w-4 h-4 text-[#00C274]" />
                   <span className="text-sm text-[#848E9C]">PAN:</span>
                   <span className="text-sm font-mono font-bold text-white">{kycDoc.panNumber}</span>
                 </div>
               )}
               {kycDoc.aadharNumber && (
-                <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#2B3139] rounded-xl px-5 py-3">
+                <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#181B23] rounded-xl px-5 py-3">
                   <Hash className="w-4 h-4 text-[#2a6df4]" />
                   <span className="text-sm text-[#848E9C]">Aadhaar:</span>
                   <span className="text-sm font-mono font-bold text-white">XXXX XXXX {String(kycDoc.aadharNumber).slice(-4)}</span>
@@ -106,7 +106,7 @@ export function Kyc() {
             >
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-[#EAECEF]">
-                  <CreditCard className="w-4 h-4 text-[#F0B90B]" />
+                  <CreditCard className="w-4 h-4 text-[#00C274]" />
                   PAN Number <span className="text-[#CF304A]">*</span>
                 </label>
                 <input

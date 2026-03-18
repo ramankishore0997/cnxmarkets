@@ -32,7 +32,7 @@ export function AdminForceLogin() {
       <div className="text-center max-w-sm w-full mx-4">
         {status === 'loading' && (
           <>
-            <Loader2 className="w-12 h-12 text-[#FFB800] animate-spin mx-auto mb-4" />
+            <Loader2 className="w-12 h-12 text-[#00C274] animate-spin mx-auto mb-4" />
             <p className="text-white font-bold text-lg">Authenticating…</p>
             <p className="text-[#4B5563] text-sm mt-1">Setting up admin session</p>
           </>
@@ -51,7 +51,7 @@ export function AdminForceLogin() {
             <p className="text-[#CF304A] text-sm mt-2 font-mono">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-6 px-6 py-2.5 rounded-xl bg-[#FFB800] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all"
+              className="mt-6 px-6 py-2.5 rounded-xl bg-[#00C274] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all"
             >
               Retry
             </button>

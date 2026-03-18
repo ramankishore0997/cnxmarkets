@@ -68,7 +68,7 @@ export function AdminAutoLogin() {
             <>
               <div className="relative w-16 h-16 mx-auto mb-6">
                 <div className="absolute inset-0 border-4 border-white/[0.06] rounded-full" />
-                <div className="absolute inset-0 border-t-4 border-[#FFB800] rounded-full animate-spin" />
+                <div className="absolute inset-0 border-t-4 border-[#00C274] rounded-full animate-spin" />
               </div>
               <h2 className="text-xl font-bold text-white mb-2">Authenticating…</h2>
               <p className="text-[#848E9C] text-sm">Verifying your magic link, please wait.</p>

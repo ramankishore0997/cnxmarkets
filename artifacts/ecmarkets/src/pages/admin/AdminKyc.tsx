@@ -23,9 +23,9 @@ function DocThumbnail({ url, label }: { url?: string | null; label: string }) {
   if (!url) {
     return (
       <div className="flex flex-col items-center gap-1">
-        <div className="w-full h-16 bg-[#0B0E11] border border-dashed border-[#2B3139] rounded-lg flex flex-col items-center justify-center gap-1">
-          <ImageIcon className="w-4 h-4 text-[#2B3139]" />
-          <span className="text-[9px] text-[#2B3139]">Not uploaded</span>
+        <div className="w-full h-16 bg-[#060709] border border-dashed border-[#181B23] rounded-lg flex flex-col items-center justify-center gap-1">
+          <ImageIcon className="w-4 h-4 text-[#181B23]" />
+          <span className="text-[9px] text-[#181B23]">Not uploaded</span>
         </div>
         <span className="text-[10px] text-[#848E9C] font-medium text-center">{label}</span>
       </div>
@@ -36,7 +36,7 @@ function DocThumbnail({ url, label }: { url?: string | null; label: string }) {
     <div className="flex flex-col items-center gap-1">
       <button
         onClick={openFull}
-        className="group relative w-full h-16 rounded-lg overflow-hidden border border-[#2B3139] hover:border-[#F0B90B]/60 transition-all"
+        className="group relative w-full h-16 rounded-lg overflow-hidden border border-[#181B23] hover:border-[#00C274]/60 transition-all"
         title={`Click to open ${label} in full screen`}
       >
         <img
@@ -63,7 +63,7 @@ function DocThumbnail({ url, label }: { url?: string | null; label: string }) {
 function DocCount({ doc }: { doc: any }) {
   const fields = [doc.panCardFrontUrl, doc.panCardBackUrl, doc.aadharCardFrontUrl, doc.aadharCardBackUrl];
   const count = fields.filter(f => f && f.length > 50).length;
-  const color = count === 4 ? '#02C076' : count > 0 ? '#F0B90B' : '#CF304A';
+  const color = count === 4 ? '#02C076' : count > 0 ? '#00C274' : '#CF304A';
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold" style={{ background: `${color}20`, color }}>
       <FileText className="w-3 h-3" />
@@ -135,7 +135,7 @@ export function AdminKyc() {
 
   if (isLoading) return (
     <AdminLayout>
-      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div>
+      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
     </AdminLayout>
   );
 
@@ -149,7 +149,7 @@ export function AdminKyc() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-5 mb-8">
         {[
-          { label: 'Pending Review', value: pending.length, color: '#F0B90B' },
+          { label: 'Pending Review', value: pending.length, color: '#00C274' },
           { label: 'Approved', value: allDocs.filter((d: any) => d.status === 'approved').length, color: '#02C076' },
           { label: 'Rejected', value: allDocs.filter((d: any) => d.status === 'rejected').length, color: '#CF304A' },
         ].map((s, i) => (
@@ -164,9 +164,9 @@ export function AdminKyc() {
       {pending.length > 0 && (
         <div className="mb-10">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#F0B90B] animate-pulse inline-block" />
+            <span className="w-2 h-2 rounded-full bg-[#00C274] animate-pulse inline-block" />
             Pending Review
-            <span className="ml-1 px-2 py-0.5 rounded-full bg-[#F0B90B]/20 text-[#F0B90B] text-xs font-bold">{pending.length}</span>
+            <span className="ml-1 px-2 py-0.5 rounded-full bg-[#00C274]/20 text-[#00C274] text-xs font-bold">{pending.length}</span>
           </h2>
           <div className="space-y-5">
             {pending.map((doc: any) => {
@@ -175,12 +175,12 @@ export function AdminKyc() {
               const isProcessing = processingId === doc.id;
 
               return (
-                <div key={doc.id} className="rounded-2xl border border-[#F0B90B]/30 bg-[#0d1117] overflow-hidden">
+                <div key={doc.id} className="rounded-2xl border border-[#00C274]/30 bg-[#0d1117] overflow-hidden">
                   {/* Header row */}
-                  <div className="flex items-start justify-between gap-4 p-5 border-b border-[#2B3139]">
+                  <div className="flex items-start justify-between gap-4 p-5 border-b border-[#181B23]">
                     <div className="flex items-start gap-4">
-                      <div className="w-11 h-11 rounded-xl bg-[#F0B90B]/20 flex items-center justify-center shrink-0">
-                        <User className="w-5 h-5 text-[#F0B90B]" />
+                      <div className="w-11 h-11 rounded-xl bg-[#00C274]/20 flex items-center justify-center shrink-0">
+                        <User className="w-5 h-5 text-[#00C274]" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -209,10 +209,10 @@ export function AdminKyc() {
                   {/* Body */}
                   <div className="p-5 space-y-5">
                     {isGhost ? (
-                      <div className="flex items-start gap-3 bg-[#F0B90B]/10 border border-[#F0B90B]/30 rounded-xl p-4">
-                        <AlertTriangle className="w-5 h-5 text-[#F0B90B] shrink-0 mt-0.5" />
+                      <div className="flex items-start gap-3 bg-[#00C274]/10 border border-[#00C274]/30 rounded-xl p-4">
+                        <AlertTriangle className="w-5 h-5 text-[#00C274] shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm font-bold text-[#F0B90B] mb-1">No documents uploaded via portal</p>
+                          <p className="text-sm font-bold text-[#00C274] mb-1">No documents uploaded via portal</p>
                           <p className="text-xs text-[#848E9C]">
                             This client's KYC was marked as pending manually but no documents were uploaded through the dashboard.
                             Ask the client to submit their PAN & Aadhar via their dashboard KYC page, or manually approve if documents were received offline.
@@ -224,13 +224,13 @@ export function AdminKyc() {
                         {/* Document thumbnails — always visible, no click required */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {/* PAN Card */}
-                          <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4">
+                          <div className="bg-[#060709] border border-[#181B23] rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-3">
-                              <CreditCard className="w-4 h-4 text-[#F0B90B]" />
-                              <p className="text-[#F0B90B] text-xs font-bold uppercase tracking-wider">PAN Card</p>
+                              <CreditCard className="w-4 h-4 text-[#00C274]" />
+                              <p className="text-[#00C274] text-xs font-bold uppercase tracking-wider">PAN Card</p>
                               {doc.panNumber && (
-                                <div className="ml-auto flex items-center gap-1.5 bg-[#F0B90B]/10 px-2 py-0.5 rounded-lg">
-                                  <Hash className="w-3 h-3 text-[#F0B90B]" />
+                                <div className="ml-auto flex items-center gap-1.5 bg-[#00C274]/10 px-2 py-0.5 rounded-lg">
+                                  <Hash className="w-3 h-3 text-[#00C274]" />
                                   <span className="text-white font-mono text-xs font-bold">{doc.panNumber}</span>
                                 </div>
                               )}
@@ -242,7 +242,7 @@ export function AdminKyc() {
                           </div>
 
                           {/* Aadhar Card */}
-                          <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4">
+                          <div className="bg-[#060709] border border-[#181B23] rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-3">
                               <CreditCard className="w-4 h-4 text-[#2a6df4]" />
                               <p className="text-[#2a6df4] text-xs font-bold uppercase tracking-wider">Aadhar Card</p>
@@ -284,7 +284,7 @@ export function AdminKyc() {
                     )}
 
                     {/* Action buttons — BIG and prominent */}
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-[#2B3139]">
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-[#181B23]">
                       <button
                         onClick={() => handleApprove(doc.id)}
                         disabled={isProcessing}
@@ -307,7 +307,7 @@ export function AdminKyc() {
                             </button>
                             <button
                               onClick={() => { setRejectingId(null); setRejectReason(''); }}
-                              className="px-5 py-3 rounded-xl bg-[#2B3139] text-[#848E9C] hover:text-white font-bold transition-all"
+                              className="px-5 py-3 rounded-xl bg-[#181B23] text-[#848E9C] hover:text-white font-bold transition-all"
                             >
                               Cancel
                             </button>
@@ -337,13 +337,13 @@ export function AdminKyc() {
           <div className="card-stealth overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#2B3139]">
+                <tr className="border-b border-[#181B23]">
                   {['Client', 'PAN Number', 'Aadhar', 'Docs', 'Status', 'Date', 'Actions'].map((h) => (
                     <th key={h} className="px-5 py-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2B3139]">
+              <tbody className="divide-y divide-[#181B23]">
                 {reviewed.map((doc: any) => {
                   const statusStyles: Record<string, { color: string; bg: string; label: string }> = {
                     approved: { color: '#02C076', bg: '#02C07620', label: 'Approved' },
@@ -354,14 +354,14 @@ export function AdminKyc() {
                   const docCount = [doc.panCardFrontUrl, doc.panCardBackUrl, doc.aadharCardFrontUrl, doc.aadharCardBackUrl].filter(f => f && f.length > 50).length;
 
                   return (
-                    <tr key={doc.id} className="hover:bg-[#2B3139]/40 transition-colors">
+                    <tr key={doc.id} className="hover:bg-[#181B23]/40 transition-colors">
                       <td className="px-5 py-4">
                         <p className="font-bold text-white">{doc.userName}</p>
                         <p className="text-xs text-[#848E9C]">{doc.userEmail}</p>
                       </td>
-                      <td className="px-5 py-4 font-mono text-[#EAECEF] text-sm">{doc.panNumber || <span className="text-[#2B3139]">—</span>}</td>
+                      <td className="px-5 py-4 font-mono text-[#EAECEF] text-sm">{doc.panNumber || <span className="text-[#181B23]">—</span>}</td>
                       <td className="px-5 py-4 font-mono text-[#EAECEF] text-sm">
-                        {doc.aadharNumber ? `XXXX ${String(doc.aadharNumber).replace(/\s/g,'').slice(-4)}` : <span className="text-[#2B3139]">—</span>}
+                        {doc.aadharNumber ? `XXXX ${String(doc.aadharNumber).replace(/\s/g,'').slice(-4)}` : <span className="text-[#181B23]">—</span>}
                       </td>
                       <td className="px-5 py-4">
                         {doc.noDocuments ? (
@@ -382,7 +382,7 @@ export function AdminKyc() {
                                   <ExternalLink className="w-3 h-3 text-[#02C076]" />
                                 </button>
                               ) : (
-                                <div key={i} className="w-7 h-7 rounded bg-[#2B3139] flex items-center justify-center">
+                                <div key={i} className="w-7 h-7 rounded bg-[#181B23] flex items-center justify-center">
                                   <ImageIcon className="w-3 h-3 text-[#848E9C]" />
                                 </div>
                               )
@@ -434,7 +434,7 @@ export function AdminKyc() {
 
       {allDocs.length === 0 && (
         <div className="card-stealth p-16 text-center">
-          <ShieldCheck className="w-16 h-16 text-[#2B3139] mx-auto mb-6" />
+          <ShieldCheck className="w-16 h-16 text-[#181B23] mx-auto mb-6" />
           <h3 className="text-xl font-bold text-white mb-2">No KYC submissions yet</h3>
           <p className="text-[#848E9C]">Client documents will appear here as soon as they submit their PAN & Aadhar through the dashboard.</p>
         </div>

@@ -6,8 +6,8 @@ import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 
-const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#F0B90B', high: '#CF304A' };
-const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#F0B90B20', high: '#CF304A20' };
+const RISK_COLORS: Record<string, string> = { low: '#02C076', medium: '#00C274', high: '#CF304A' };
+const RISK_BG: Record<string, string> = { low: '#02C07620', medium: '#00C27420', high: '#CF304A20' };
 
 const STANDARD_DAILY = 4.0;
 const RAZOR_DAILY = 8.0;
@@ -93,7 +93,7 @@ export function Strategies() {
       {/* HERO */}
       <section className="animated-bg py-20 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#2B3139]/50 border border-[#00C274]/30 text-[#00C274] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#181B23]/50 border border-[#00C274]/30 text-[#00C274] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6">
             <span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse mr-2 mt-1"></span>
             {isLoading ? '...' : `${allStrategies.length} Active Strategies Available`}
           </motion.div>
@@ -111,7 +111,7 @@ export function Strategies() {
       </section>
 
       {/* STATS BAR */}
-      <section className="section-surface border-y border-[#2B3139] py-6">
+      <section className="section-surface border-y border-[#181B23] py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             {[
@@ -149,7 +149,7 @@ export function Strategies() {
                 <button
                   key={f}
                   onClick={() => setActiveFilter(f)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold transition-all border ${activeFilter === f ? 'bg-[#00C274] text-black border-[#00C274]' : 'border-[#2B3139] text-[#848E9C] hover:border-[#00C274]/50 hover:text-white'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold transition-all border ${activeFilter === f ? 'bg-[#00C274] text-black border-[#00C274]' : 'border-[#181B23] text-[#848E9C] hover:border-[#00C274]/50 hover:text-white'}`}
                 >
                   <Filter className="w-3.5 h-3.5" /> {filterLabels[f] || f}
                 </button>
@@ -163,7 +163,7 @@ export function Strategies() {
             </div>
           ) : filteredStrategies.length === 0 ? (
             <div className="text-center py-20">
-              <TrendingUp className="w-16 h-16 text-[#2B3139] mx-auto mb-4" />
+              <TrendingUp className="w-16 h-16 text-[#181B23] mx-auto mb-4" />
               <p className="text-[#848E9C] font-medium">No strategies match this filter.</p>
             </div>
           ) : (
@@ -192,7 +192,7 @@ export function Strategies() {
 
                   {/* Live P&L strip */}
                   {liveStats[s.id] && (
-                    <div className="flex items-center justify-between bg-[#0B0E11] border border-[#02C076]/20 rounded-xl px-3 py-2 mb-3">
+                    <div className="flex items-center justify-between bg-[#060709] border border-[#02C076]/20 rounded-xl px-3 py-2 mb-3">
                       <span className="text-[10px] font-semibold text-[#848E9C] uppercase tracking-wide">Live P&amp;L Today</span>
                       <span className="text-sm font-bold text-[#02C076]">
                         +₹{liveStats[s.id].livePnl.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
@@ -208,7 +208,7 @@ export function Strategies() {
                       </p>
                       <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Daily ROI ↻</p>
                     </div>
-                    <div className="w-px h-8 bg-[#2B3139]" />
+                    <div className="w-px h-8 bg-[#181B23]" />
                     <div className="text-center">
                       <p className="text-base font-black text-[#02C076]">+{(getDailyBase(s.name) * 30).toFixed(0)}%</p>
                       <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Monthly (30d)</p>
@@ -216,13 +216,13 @@ export function Strategies() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 mb-4">
-                    <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                    <div className="bg-[#060709] rounded-xl p-3 text-center border border-[#181B23]">
                       <p className="text-sm font-bold text-[#00C274] tabular-nums">
                         {liveStats[s.id] ? liveStats[s.id].winRate.toFixed(1) : s.winRate}%
                       </p>
                       <p className="text-[10px] text-[#848E9C] mt-0.5">Win Rate ↻</p>
                     </div>
-                    <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
+                    <div className="bg-[#060709] rounded-xl p-3 text-center border border-[#181B23]">
                       <p className="text-sm font-bold text-white">
                         ₹{s.minCapital >= 100000 ? `${(s.minCapital / 100000).toFixed(0)}L` : `${(s.minCapital / 1000).toFixed(0)}K`}
                       </p>
@@ -242,7 +242,7 @@ export function Strategies() {
 
       {/* COMPARISON TABLE — LIVE */}
       {!isLoading && allStrategies.length > 0 && (
-        <section className="py-16 section-surface border-y border-[#2B3139]">
+        <section className="py-16 section-surface border-y border-[#181B23]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 bg-[#02C076]/10 border border-[#02C076]/30 text-[#02C076] px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
@@ -260,7 +260,7 @@ export function Strategies() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#2B3139] border-b border-[#2B3139]">
+                    <tr className="bg-[#181B23] border-b border-[#181B23]">
                       {[
                         { label: 'Strategy', sub: '' },
                         { label: 'Risk', sub: '' },
@@ -279,7 +279,7 @@ export function Strategies() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2B3139]">
+                  <tbody className="divide-y divide-[#181B23]">
                     {allStrategies.map((s: any, i: number) => {
                       const live = liveStats[s.id];
                       const isRazr = isRazrName(s.name);
@@ -288,7 +288,7 @@ export function Strategies() {
                       const displayDailyRate = live?.dailyRate ?? dailyBase;
                       const displayWinRate = live?.winRate ?? parseFloat(s.winRate);
                       return (
-                        <tr key={s.id || i} className={`hover:bg-[#2B3139]/50 transition-colors ${i % 2 === 0 ? 'bg-[#0B0E11]/40' : ''}`}>
+                        <tr key={s.id || i} className={`hover:bg-[#181B23]/50 transition-colors ${i % 2 === 0 ? 'bg-[#060709]/40' : ''}`}>
                           <td className="px-4 py-3.5">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-white text-xs">{s.name}</span>
@@ -341,7 +341,7 @@ export function Strategies() {
       )}
 
       {/* EDUCATION */}
-      <section className="py-20 section-surface border-t border-[#2B3139]">
+      <section className="py-20 section-surface border-t border-[#181B23]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-3">What is Algorithmic Trading?</h2>
@@ -352,10 +352,10 @@ export function Strategies() {
               { icon: Cpu, title: 'The Science Behind Algo Trading', body: 'Algorithmic trading uses mathematical models and statistical analysis to identify market inefficiencies and execute trades at optimal prices. Unlike human traders, algorithms can process thousands of data points simultaneously and react in microseconds — eliminating emotional bias and execution delays.' },
               { icon: BarChart2, title: 'Backtesting & Validation', body: 'Before any strategy goes live, it is rigorously backtested against 5+ years of historical data. We use walk-forward optimization to prevent overfitting, and all strategies must pass a strict out-of-sample validation period on a live demo account before managing real client capital.' },
               { icon: Shield, title: 'Risk-Adjusted Returns', body: 'Raw returns mean nothing without context. We focus on Sharpe Ratio, Sortino Ratio, and Maximum Drawdown. A strategy that returns 50% with 40% drawdown is far inferior to one returning 30% with only 8% drawdown — we optimize for the latter.' },
-              { icon: TrendingUp, title: 'Why Institutions Use Algos', body: 'Hedge funds, investment banks, and proprietary trading firms have used algorithmic trading for decades. The edge? Speed, consistency, and the ability to trade 24/5 without emotion. ECMarketsIndia brings this institutional-grade technology to retail investors.' },
+              { icon: TrendingUp, title: 'Why Institutions Use Algos', body: 'Hedge funds, investment banks, and proprietary trading firms have used algorithmic trading for decades. The edge? Speed, consistency, and the ability to trade 24/5 without emotion. CNXMarkets brings this institutional-grade technology to retail investors.' },
             ].map((card, i) => (
               <div key={i} className="card-stealth p-8 flex gap-5">
-                <div className="w-12 h-12 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-[#060709] border border-[#181B23] rounded-xl flex items-center justify-center shrink-0">
                   <card.icon className="w-6 h-6 text-[#00C274]" />
                 </div>
                 <div>
@@ -369,7 +369,7 @@ export function Strategies() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 section-dark text-center border-t border-[#2B3139]">
+      <section className="py-16 section-dark text-center border-t border-[#181B23]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Activate a Strategy?</h2>
           <p className="text-[#848E9C] mb-8">Open your account in minutes. No trading experience required.</p>

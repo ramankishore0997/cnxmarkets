@@ -81,7 +81,7 @@ export function Register() {
 
   const inputBaseStyle = (hasError: boolean): React.CSSProperties => ({
     background: '#1E2329',
-    border: `1px solid ${hasError ? '#CF304A' : '#2B3139'}`,
+    border: `1px solid ${hasError ? '#CF304A' : '#181B23'}`,
     color: '#EAECEF',
     boxShadow: hasError ? '0 0 0 3px rgba(207,48,74,0.1)' : 'none'
   });
@@ -95,7 +95,7 @@ export function Register() {
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>, hasError: boolean) => {
     if (!hasError) {
-      e.target.style.border = '1px solid #2B3139';
+      e.target.style.border = '1px solid #181B23';
       e.target.style.boxShadow = 'none';
     }
   };
@@ -108,10 +108,10 @@ export function Register() {
   ];
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#0B0E11' }}>
+    <div className="min-h-screen flex" style={{ background: '#060709' }}>
       <div
         className="hidden lg:flex lg:w-5/12 flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0B0E11 0%, #1a1f28 50%, #0B0E11 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #060709 0%, #1a1f28 50%, #060709 100%)' }}
       >
         <div
           className="absolute inset-0 opacity-20"
@@ -129,7 +129,7 @@ export function Register() {
               >
                 <TrendingUp className="w-5 h-5 text-black" />
               </div>
-              <span className="text-white font-bold text-xl tracking-tight">ECMarketsIndia</span>
+              <span className="text-white font-bold text-xl tracking-tight">CNXMarkets</span>
             </div>
           </Link>
         </div>
@@ -140,7 +140,7 @@ export function Register() {
               <span style={{ color: '#00C274' }}>Smarter Today</span>
             </h2>
             <p style={{ color: '#848E9C' }} className="text-lg leading-relaxed">
-              Join thousands of traders using ECMarketsIndia's algorithmic platform to grow their wealth.
+              Join thousands of traders using CNXMarkets's algorithmic platform to grow their wealth.
             </p>
           </div>
           <div className="space-y-4">
@@ -159,7 +159,7 @@ export function Register() {
         </div>
         <div className="relative z-10">
           <p className="text-sm" style={{ color: '#848E9C' }}>
-            © 2024 ECMarketsIndia. Regulated algorithmic trading platform.
+            © 2024 CNXMarkets. Regulated algorithmic trading platform.
           </p>
         </div>
       </div>
@@ -175,7 +175,7 @@ export function Register() {
                 >
                   <TrendingUp className="w-4 h-4 text-black" />
                 </div>
-                <span className="text-white font-bold text-lg">ECMarketsIndia</span>
+                <span className="text-white font-bold text-lg">CNXMarkets</span>
               </div>
             </Link>
           </div>
@@ -300,7 +300,7 @@ export function Register() {
                       <div
                         key={i}
                         className="h-1 flex-1 rounded-full transition-all duration-300"
-                        style={{ background: i <= strength.score ? strength.color : '#2B3139' }}
+                        style={{ background: i <= strength.score ? strength.color : '#181B23' }}
                       />
                     ))}
                   </div>
@@ -350,7 +350,7 @@ export function Register() {
                 background: registerMutation.isPending
                   ? 'rgba(0,194,116,0.5)'
                   : 'linear-gradient(135deg, #00C274 0%, #00a863 100%)',
-                color: '#0B0E11',
+                color: '#060709',
                 boxShadow: registerMutation.isPending ? 'none' : '0 4px 20px rgba(0,194,116,0.3)',
                 cursor: registerMutation.isPending ? 'not-allowed' : 'pointer'
               }}
@@ -385,7 +385,7 @@ export function Register() {
             Create your account to access the trading dashboard.
           </p>
 
-          <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid #2B3139' }}>
+          <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid #181B23' }}>
             <p style={{ color: '#848E9C' }} className="text-sm">
               Already have an account?{' '}
               <Link href="/auth/login" className="font-semibold hover:underline transition-colors" style={{ color: '#00C274' }}>

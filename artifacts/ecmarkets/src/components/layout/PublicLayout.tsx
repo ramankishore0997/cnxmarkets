@@ -36,22 +36,22 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
       {/* Ticker bar at the very top */}
-      <div className="bg-[#1E2329] border-b border-[#2B3139] text-[#EAECEF]">
+      <div className="bg-[#1E2329] border-b border-[#181B23] text-[#EAECEF]">
         <TradingWidget />
       </div>
       
       <header 
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-          scrolled ? 'bg-[#0B0E11]/90 backdrop-blur-md shadow-lg border-b border-[#00C274]/30 py-3' : 'bg-[#0B0E11] border-b border-[#2B3139] py-5'
+          scrolled ? 'bg-[#060709]/90 backdrop-blur-md shadow-lg border-b border-[#00C274]/30 py-3' : 'bg-[#060709] border-b border-[#181B23] py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.35)]">
+            <div className="shrink-0 drop-shadow-[0_0_8px_rgba(0,194,116,0.35)]">
               <EcmLogo size={34} />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
-              ECMarkets<span className="text-[#00C274]">India</span>
+              CNX<span className="text-[#00C274]">Markets</span>
             </span>
           </Link>
 
@@ -66,9 +66,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                     href={link.href}
                     className="text-sm font-bold px-3 py-1.5 rounded-lg transition-all"
                     style={{
-                      background: isActive ? 'rgba(255,184,0,0.2)' : 'rgba(255,184,0,0.08)',
-                      border: '1px solid rgba(255,184,0,0.35)',
-                      color: '#FFB800',
+                      background: isActive ? 'rgba(0,194,116,0.2)' : 'rgba(0,194,116,0.08)',
+                      border: '1px solid rgba(0,194,116,0.35)',
+                      color: '#00C274',
                     }}
                   >
                     ↓ {link.name}
@@ -129,7 +129,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="xl:hidden bg-[#1E2329] border-b border-[#2B3139] shadow-lg absolute top-[100px] left-0 right-0 z-40"
+            className="xl:hidden bg-[#1E2329] border-b border-[#181B23] shadow-lg absolute top-[100px] left-0 right-0 z-40"
           >
             <div className="p-4 flex flex-col gap-2">
               {navLinks.map((link) => {
@@ -140,7 +140,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                       key={link.name}
                       href={link.href}
                       className="text-lg font-bold p-3 rounded-xl transition-colors"
-                      style={{ background: 'rgba(255,184,0,0.1)', border: '1px solid rgba(255,184,0,0.3)', color: '#FFB800' }}
+                      style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.3)', color: '#00C274' }}
                     >
                       ↓ {link.name}
                     </Link>
@@ -151,14 +151,14 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                     key={link.name} 
                     href={link.href}
                     className={`text-lg font-medium p-3 rounded-xl transition-colors ${
-                      isActive ? 'bg-[#2B3139] text-[#00C274]' : 'text-[#EAECEF] hover:bg-[#2B3139]'
+                      isActive ? 'bg-[#181B23] text-[#00C274]' : 'text-[#EAECEF] hover:bg-[#181B23]'
                     }`}
                   >
                     {link.name}
                   </Link>
                 );
               })}
-              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-[#2B3139]">
+              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-[#181B23]">
                 <Link 
                   href="/auth/login"
                   className="w-full text-center py-3 font-medium btn-ghost rounded-xl"
@@ -191,16 +191,16 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         </AnimatePresence>
       </main>
 
-      <footer className="bg-[#1E2329] border-t border-[#2B3139] pt-16 pb-0 mt-auto relative">
+      <footer className="bg-[#1E2329] border-t border-[#181B23] pt-16 pb-0 mt-auto relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
             <div className="lg:col-span-2">
               <Link href="/" className="flex items-center gap-2.5 mb-6">
-                <div className="shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.3)]">
+                <div className="shrink-0 drop-shadow-[0_0_8px_rgba(0,194,116,0.3)]">
                   <EcmLogo size={32} />
                 </div>
                 <span className="text-2xl font-bold tracking-tight text-white">
-                  ECMarkets<span className="text-[#00C274]">India</span>
+                  CNX<span className="text-[#00C274]">Markets</span>
                 </span>
               </Link>
               <p className="text-[#848E9C] text-sm mb-5 leading-relaxed max-w-sm">
@@ -213,16 +213,16 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 <a href="mailto:support@ecmarketsindia.com" className="mt-2 block hover:text-[#00C274] transition-colors">support@ecmarketsindia.com</a>
               </div>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#181B23] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Globe className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#181B23] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Shield className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#181B23] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Lock className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#181B23] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Phone className="w-5 h-5" />
                 </a>
               </div>
@@ -245,7 +245,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 <li><Link href="/performance" className="hover:text-[#00C274] transition-colors">Performance</Link></li>
                 <li><Link href="/markets" className="hover:text-[#00C274] transition-colors">Markets</Link></li>
                 <li>
-                  <Link href="/download-app" className="font-semibold transition-colors" style={{ color: '#FFB800' }}>
+                  <Link href="/download-app" className="font-semibold transition-colors" style={{ color: '#00C274' }}>
                     ↓ Download App
                   </Link>
                 </li>
@@ -263,9 +263,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
         </div>
-        <div className="bg-[#0B0E11] py-6 border-t border-[#2B3139]">
+        <div className="bg-[#060709] py-6 border-t border-[#181B23]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p className="text-[#848E9C]">&copy; {new Date().getFullYear()} ECMarketsIndia. All rights reserved.</p>
+            <p className="text-[#848E9C]">&copy; {new Date().getFullYear()} CNXMarkets. All rights reserved.</p>
             <p className="text-[#CF304A] font-medium">Trading in financial markets involves significant risk and may not be suitable for all investors. Past performance does not guarantee future results.</p>
           </div>
         </div>

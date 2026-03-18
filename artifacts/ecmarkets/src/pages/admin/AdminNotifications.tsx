@@ -10,7 +10,7 @@ type NotifType = 'info' | 'success' | 'warning' | 'error';
 const typeOptions: { value: NotifType; label: string; icon: any; color: string }[] = [
   { value: 'info', label: 'Info', icon: Info, color: '#2a6df4' },
   { value: 'success', label: 'Success', icon: CheckCircle, color: '#02C076' },
-  { value: 'warning', label: 'Warning', icon: AlertTriangle, color: '#F0B90B' },
+  { value: 'warning', label: 'Warning', icon: AlertTriangle, color: '#00C274' },
   { value: 'error', label: 'Alert', icon: AlertTriangle, color: '#CF304A' },
 ];
 
@@ -80,7 +80,7 @@ export function AdminNotifications() {
           ) : (
             <>
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <Bell className="w-5 h-5 text-[#F0B90B]" /> Compose Notification
+                <Bell className="w-5 h-5 text-[#00C274]" /> Compose Notification
               </h3>
 
               <div className="space-y-5">
@@ -95,11 +95,11 @@ export function AdminNotifications() {
                       <button
                         key={opt.value}
                         onClick={() => setTarget(opt.value as 'all' | 'user')}
-                        className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${target === opt.value ? 'border-[#F0B90B] bg-[#F0B90B]/10' : 'border-[#2B3139] bg-[#0B0E11] hover:border-[#F0B90B]/40'}`}
+                        className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${target === opt.value ? 'border-[#00C274] bg-[#00C274]/10' : 'border-[#181B23] bg-[#060709] hover:border-[#00C274]/40'}`}
                       >
-                        <opt.icon className={`w-5 h-5 ${target === opt.value ? 'text-[#F0B90B]' : 'text-[#848E9C]'}`} />
+                        <opt.icon className={`w-5 h-5 ${target === opt.value ? 'text-[#00C274]' : 'text-[#848E9C]'}`} />
                         <div>
-                          <p className={`font-bold text-sm ${target === opt.value ? 'text-[#F0B90B]' : 'text-white'}`}>{opt.label}</p>
+                          <p className={`font-bold text-sm ${target === opt.value ? 'text-[#00C274]' : 'text-white'}`}>{opt.label}</p>
                           <p className="text-[#848E9C] text-xs">{opt.desc}</p>
                         </div>
                       </button>
@@ -127,7 +127,7 @@ export function AdminNotifications() {
                       <button
                         key={opt.value}
                         onClick={() => setType(opt.value)}
-                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${type === opt.value ? 'border-opacity-80' : 'border-[#2B3139] bg-[#0B0E11] hover:border-opacity-40'}`}
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${type === opt.value ? 'border-opacity-80' : 'border-[#181B23] bg-[#060709] hover:border-opacity-40'}`}
                         style={type === opt.value ? { borderColor: opt.color, background: `${opt.color}15` } : {}}
                       >
                         <opt.icon className="w-4 h-4" style={{ color: type === opt.value ? opt.color : '#848E9C' }} />
@@ -172,7 +172,7 @@ export function AdminNotifications() {
         <div className="space-y-5">
           <div className="card-stealth p-6">
             <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Preview</h3>
-            <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-4">
+            <div className="bg-[#060709] border border-[#181B23] rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${selectedType.color}20` }}>
                   <selectedType.icon className="w-5 h-5" style={{ color: selectedType.color }} />
@@ -180,13 +180,13 @@ export function AdminNotifications() {
                 <div>
                   <p className="font-bold text-white text-sm mb-1">{title || 'Notification Title'}</p>
                   <p className="text-[#848E9C] text-xs leading-relaxed">{message || 'Your notification message will appear here...'}</p>
-                  <p className="text-[#2B3139] text-xs mt-2 font-medium">Just now</p>
+                  <p className="text-[#181B23] text-xs mt-2 font-medium">Just now</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="card-stealth p-6 border-l-4 border-l-[#F0B90B]">
+          <div className="card-stealth p-6 border-l-4 border-l-[#00C274]">
             <h3 className="text-sm font-bold text-white mb-3">Quick Templates</h3>
             <div className="space-y-2">
               {[
@@ -198,9 +198,9 @@ export function AdminNotifications() {
                 <button
                   key={i}
                   onClick={() => { setTitle(tpl.t); setMessage(tpl.m); }}
-                  className="w-full text-left p-3 rounded-lg bg-[#0B0E11] border border-[#2B3139] hover:border-[#F0B90B]/40 transition-all group"
+                  className="w-full text-left p-3 rounded-lg bg-[#060709] border border-[#181B23] hover:border-[#00C274]/40 transition-all group"
                 >
-                  <p className="text-white text-xs font-bold group-hover:text-[#F0B90B] transition-colors">{tpl.t}</p>
+                  <p className="text-white text-xs font-bold group-hover:text-[#00C274] transition-colors">{tpl.t}</p>
                   <p className="text-[#848E9C] text-xs mt-0.5 truncate">{tpl.m}</p>
                 </button>
               ))}

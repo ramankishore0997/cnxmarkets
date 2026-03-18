@@ -47,8 +47,8 @@ function SidebarLogo() {
         <EcmLogo size={36} />
       </div>
       <div className="leading-none">
-        <span className="text-lg font-black tracking-tight text-gradient-metallic">ECMarkets</span>
-        <span className="text-lg font-black tracking-tight text-[#00C274]">India</span>
+        <span className="text-lg font-black tracking-tight text-gradient-metallic">CNX</span>
+        <span className="text-lg font-black tracking-tight text-[#00C274]">Markets</span>
       </div>
     </Link>
   );
@@ -77,9 +77,9 @@ function KycBadge({ status }: { status?: string }) {
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
       approved
         ? 'bg-[#02C076]/10 text-[#02C076] border-[#02C076]/25'
-        : 'bg-[#FFB800]/10 text-[#FFB800] border-[#FFB800]/25'
+        : 'bg-[#00C274]/10 text-[#00C274] border-[#00C274]/25'
     }`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${approved ? 'bg-[#02C076]' : 'bg-[#FFB800] animate-pulse'}`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${approved ? 'bg-[#02C076]' : 'bg-[#00C274] animate-pulse'}`} />
       {approved ? 'KYC Verified' : 'KYC Pending'}
     </span>
   );
@@ -155,7 +155,7 @@ function SidebarContent({ onClose, user, logout, location }: any) {
           <Link
             href="/admin"
             onClick={onClose}
-            className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#FFB800]/20 to-[#F0B90B]/10 text-[#FFB800] border border-[#FFB800]/25 font-bold text-sm hover:from-[#FFB800]/30 hover:to-[#F0B90B]/20 transition-all duration-200 shadow-sm shadow-[#FFB800]/10"
+            className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#00C274]/20 to-[#00C274]/10 text-[#00C274] border border-[#00C274]/25 font-bold text-sm hover:from-[#00C274]/30 hover:to-[#00C274]/20 transition-all duration-200 shadow-sm shadow-[#00C274]/10"
           >
             <ShieldAlert className="w-4 h-4" />
             Admin Panel
@@ -240,7 +240,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <div className="min-h-screen bg-[#0B0E11] text-[#F8FAFC] flex">
+    <div className="min-h-screen bg-[#060709] text-[#F8FAFC] flex">
 
       {/* ── Desktop Sidebar ─── */}
       <aside className="w-[260px] sidebar-stealth hidden md:flex flex-col fixed inset-y-0 left-0 z-20">
@@ -291,7 +291,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
           <div className="md:hidden flex items-center gap-2">
             <EcmLogo size={26} />
-            <span className="text-sm font-black tracking-tight text-white">ECMarkets<span className="text-[#00C274]">India</span></span>
+            <span className="text-sm font-black tracking-tight text-white">CNX<span className="text-[#00C274]">Markets</span></span>
           </div>
 
           <div className="hidden md:flex items-center gap-3">

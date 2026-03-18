@@ -13,7 +13,7 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } }
 function FeaturePill({ icon: Icon, text }: { icon: any; text: string }) {
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
-      style={{ background: 'rgba(255,184,0,0.1)', border: '1px solid rgba(255,184,0,0.2)', color: '#FFB800' }}>
+      style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)', color: '#00C274' }}>
       <Icon className="w-3.5 h-3.5" />
       {text}
     </div>
@@ -23,7 +23,7 @@ function FeaturePill({ icon: Icon, text }: { icon: any; text: string }) {
 function StepBadge({ n }: { n: number }) {
   return (
     <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-      style={{ background: 'linear-gradient(135deg, #FFB800, #E68A00)', color: '#0B0E11' }}>
+      style={{ background: 'linear-gradient(135deg, #00C274, #E68A00)', color: '#060709' }}>
       {n}
     </div>
   );
@@ -65,14 +65,14 @@ export function DownloadApp() {
         <section className="pt-24 pb-16 px-4 text-center">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-3xl mx-auto">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-8"
-              style={{ background: 'rgba(255,184,0,0.1)', border: '1px solid rgba(255,184,0,0.25)', color: '#FFB800' }}>
+              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)', color: '#00C274' }}>
               <Zap className="w-3.5 h-3.5" />
               Free · No App Store Required
             </motion.div>
 
             <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-              ECMarketsIndia
-              <span className="block" style={{ color: '#FFB800' }}>App Download</span>
+              CNXMarkets
+              <span className="block" style={{ color: '#00C274' }}>App Download</span>
             </motion.h1>
 
             <motion.p variants={fadeUp} className="text-lg text-[#848E9C] max-w-xl mx-auto mb-10 leading-relaxed">
@@ -96,20 +96,20 @@ export function DownloadApp() {
             {/* ── PC / DESKTOP CARD ─────────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-              className={`rounded-3xl p-8 flex flex-col ${!isMobile ? 'ring-2 ring-[#FFB800]/40' : ''}`}
+              className={`rounded-3xl p-8 flex flex-col ${!isMobile ? 'ring-2 ring-[#00C274]/40' : ''}`}
               style={{ background: 'linear-gradient(135deg, #0F1923 0%, #111923 100%)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
               {!isMobile && (
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full mb-5 self-start"
-                  style={{ background: 'rgba(255,184,0,0.15)', color: '#FFB800', border: '1px solid rgba(255,184,0,0.3)' }}>
+                  style={{ background: 'rgba(0,194,116,0.15)', color: '#00C274', border: '1px solid rgba(0,194,116,0.3)' }}>
                   ✦ Your Device
                 </div>
               )}
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #1E2D4A, #162540)', border: '1px solid rgba(255,184,0,0.2)' }}>
-                  <Monitor className="w-7 h-7" style={{ color: '#FFB800' }} />
+                  style={{ background: 'linear-gradient(135deg, #1E2D4A, #162540)', border: '1px solid rgba(0,194,116,0.2)' }}>
+                  <Monitor className="w-7 h-7" style={{ color: '#00C274' }} />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-white">PC / Laptop</h2>
@@ -118,7 +118,7 @@ export function DownloadApp() {
               </div>
 
               <p className="text-[#848E9C] text-sm leading-relaxed mb-8">
-                Install ECMarketsIndia as a desktop app directly from your browser. Works on Chrome, Edge, and Brave. No download from any store required.
+                Install CNXMarkets as a desktop app directly from your browser. Works on Chrome, Edge, and Brave. No download from any store required.
               </p>
 
               {/* Steps */}
@@ -153,9 +153,9 @@ export function DownloadApp() {
                     disabled={installing}
                     className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98]"
                     style={{
-                      background: installing ? 'rgba(255,184,0,0.5)' : 'linear-gradient(135deg, #FFB800 0%, #E68A00 100%)',
-                      color: '#0B0E11',
-                      boxShadow: installing ? 'none' : '0 8px 32px rgba(255,184,0,0.35)',
+                      background: installing ? 'rgba(0,194,116,0.5)' : 'linear-gradient(135deg, #00C274 0%, #E68A00 100%)',
+                      color: '#060709',
+                      boxShadow: installing ? 'none' : '0 8px 32px rgba(0,194,116,0.35)',
                     }}
                   >
                     {installing ? (
@@ -173,8 +173,8 @@ export function DownloadApp() {
                 ) : (
                   <div className="space-y-3">
                     <div className="flex items-center justify-center gap-2 py-4 rounded-2xl font-semibold text-sm"
-                      style={{ background: 'rgba(255,184,0,0.07)', border: '1px solid rgba(255,184,0,0.2)', color: '#848E9C' }}>
-                      <Globe className="w-4 h-4 text-[#FFB800]" />
+                      style={{ background: 'rgba(0,194,116,0.07)', border: '1px solid rgba(0,194,116,0.2)', color: '#848E9C' }}>
+                      <Globe className="w-4 h-4 text-[#00C274]" />
                       Open in Chrome or Edge to install
                     </div>
                     <p className="text-center text-xs text-[#848E9C]">
@@ -188,12 +188,12 @@ export function DownloadApp() {
             {/* ── MOBILE CARD ───────────────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-              className={`rounded-3xl p-8 flex flex-col ${isMobile ? 'ring-2 ring-[#FFB800]/40' : ''}`}
+              className={`rounded-3xl p-8 flex flex-col ${isMobile ? 'ring-2 ring-[#00C274]/40' : ''}`}
               style={{ background: 'linear-gradient(135deg, #0F1923 0%, #111923 100%)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
               {isMobile && (
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full mb-5 self-start"
-                  style={{ background: 'rgba(255,184,0,0.15)', color: '#FFB800', border: '1px solid rgba(255,184,0,0.3)' }}>
+                  style={{ background: 'rgba(0,194,116,0.15)', color: '#00C274', border: '1px solid rgba(0,194,116,0.3)' }}>
                   ✦ Your Device
                 </div>
               )}
@@ -210,7 +210,7 @@ export function DownloadApp() {
               </div>
 
               <p className="text-[#848E9C] text-sm leading-relaxed mb-8">
-                Add ECMarketsIndia to your home screen for a full-screen, app-like experience. Instant access with one tap — just like a native app.
+                Add CNXMarkets to your home screen for a full-screen, app-like experience. Instant access with one tap — just like a native app.
               </p>
 
               {/* Android Steps */}
@@ -240,7 +240,7 @@ export function DownloadApp() {
 
               {/* iOS Steps */}
               {(!isMobile || isIOS) && (
-                <div className={!isMobile || isAndroid ? 'pt-6 border-t border-[#2B3139]' : ''}>
+                <div className={!isMobile || isAndroid ? 'pt-6 border-t border-[#181B23]' : ''}>
                   {!isMobile && (
                     <div className="flex items-center gap-2 mb-4">
                       <Apple className="w-5 h-5" style={{ color: '#EAECEF' }} />
@@ -257,7 +257,7 @@ export function DownloadApp() {
                     {[
                       'Open ecmarketsindia.com in Safari browser',
                       { text: 'Tap the Share button', icon: Share2, iconColor: '#007AFF' },
-                      { text: 'Scroll down and tap "Add to Home Screen"', icon: Plus, iconColor: '#FFB800' },
+                      { text: 'Scroll down and tap "Add to Home Screen"', icon: Plus, iconColor: '#00C274' },
                       'Tap "Add" — app icon appears on your home screen',
                     ].map((step, i) => (
                       <div key={i} className="flex items-start gap-3">
@@ -330,10 +330,10 @@ export function DownloadApp() {
           <motion.div
             initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto text-center rounded-3xl p-10"
-            style={{ background: 'linear-gradient(135deg, #0F172A, #111923)', border: '1px solid rgba(255,184,0,0.15)' }}
+            style={{ background: 'linear-gradient(135deg, #0F172A, #111923)', border: '1px solid rgba(0,194,116,0.15)' }}
           >
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-              style={{ background: 'linear-gradient(135deg, #FFB800, #E68A00)' }}>
+              style={{ background: 'linear-gradient(135deg, #00C274, #E68A00)' }}>
               <span className="text-black font-black text-2xl">EC</span>
             </div>
             <h3 className="text-2xl font-black text-white mb-3">Questions? We're here to help.</h3>
@@ -343,7 +343,7 @@ export function DownloadApp() {
             <a
               href="mailto:support@ecmarketsindia.com"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
-              style={{ background: 'rgba(255,184,0,0.1)', border: '1px solid rgba(255,184,0,0.3)', color: '#FFB800' }}
+              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.3)', color: '#00C274' }}
             >
               support@ecmarketsindia.com
             </a>

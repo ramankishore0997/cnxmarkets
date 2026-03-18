@@ -9,7 +9,7 @@ export function AdminDashboard() {
   });
 
   if (isLoading) {
-    return <AdminLayout><div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" /></div></AdminLayout>;
+    return <AdminLayout><div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div></AdminLayout>;
   }
 
   return (
@@ -35,7 +35,7 @@ export function AdminDashboard() {
           </div>
           <p className="text-[#848E9C] font-semibold uppercase tracking-wider text-sm mb-2">Total Deposits</p>
           <p className="text-4xl font-bold text-white">₹{Number(stats?.totalDeposits || 0).toLocaleString('en-IN')}</p>
-          <p className="text-sm text-[#F0B90B] font-medium mt-2">{stats?.pendingDeposits || 0} pending</p>
+          <p className="text-sm text-[#00C274] font-medium mt-2">{stats?.pendingDeposits || 0} pending</p>
         </div>
 
         <div className="card-stealth p-6 relative overflow-hidden">
@@ -44,14 +44,14 @@ export function AdminDashboard() {
           </div>
           <p className="text-[#848E9C] font-semibold uppercase tracking-wider text-sm mb-2">Total Withdrawals</p>
           <p className="text-4xl font-bold text-white">₹{Number(stats?.totalWithdrawals || 0).toLocaleString('en-IN')}</p>
-          <p className="text-sm text-[#F0B90B] font-medium mt-2">{stats?.pendingWithdrawals || 0} pending</p>
+          <p className="text-sm text-[#00C274] font-medium mt-2">{stats?.pendingWithdrawals || 0} pending</p>
         </div>
 
         <div className="card-stealth-gold p-6 relative overflow-hidden">
           <div className="absolute -right-4 -bottom-4 opacity-10">
-            <FileCheck className="w-32 h-32 text-[#F0B90B]" />
+            <FileCheck className="w-32 h-32 text-[#00C274]" />
           </div>
-          <p className="text-[#F0B90B] font-semibold uppercase tracking-wider text-sm mb-2">Pending KYC</p>
+          <p className="text-[#00C274] font-semibold uppercase tracking-wider text-sm mb-2">Pending KYC</p>
           <p className="text-4xl font-bold text-white">{stats?.pendingKyc || 0}</p>
           <p className="text-sm text-[#848E9C] font-medium mt-2">Requires review</p>
         </div>

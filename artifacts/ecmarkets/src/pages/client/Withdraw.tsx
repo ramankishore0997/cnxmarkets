@@ -11,7 +11,7 @@ import { ArrowUpRight, Loader2, Banknote, CheckCircle, Clock, XCircle, AlertCirc
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { icon: any; color: string }> = {
     approved: { icon: CheckCircle, color: '#02C076' },
-    pending:  { icon: Clock,        color: '#F0B90B' },
+    pending:  { icon: Clock,        color: '#00C274' },
     rejected: { icon: XCircle,      color: '#CF304A' },
   };
   const s = map[status] || map.pending;
@@ -97,7 +97,7 @@ export function Withdraw() {
               </p>
               <button
                 onClick={() => setSubmitted(false)}
-                className="mt-8 px-6 py-3 rounded-xl bg-[#1E2329] border border-[#2B3139] text-[#848E9C] hover:text-white hover:border-[#F0B90B]/40 transition-colors text-sm font-semibold"
+                className="mt-8 px-6 py-3 rounded-xl bg-[#1E2329] border border-[#181B23] text-[#848E9C] hover:text-white hover:border-[#00C274]/40 transition-colors text-sm font-semibold"
               >
                 Submit Another Request
               </button>
@@ -105,7 +105,7 @@ export function Withdraw() {
           ) : (
             <>
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-[#F0B90B]" /> Bank Transfer Details
+                <Building2 className="w-5 h-5 text-[#00C274]" /> Bank Transfer Details
               </h3>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 {/* Account Holder + Bank Name */}
@@ -228,10 +228,10 @@ export function Withdraw() {
           </div>
 
           {/* Info */}
-          <div className="card-stealth p-6 border-l-4 border-l-[#F0B90B]">
+          <div className="card-stealth p-6 border-l-4 border-l-[#00C274]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#F0B90B]/20 flex items-center justify-center">
-                <Banknote className="w-5 h-5 text-[#F0B90B]" />
+              <div className="w-10 h-10 rounded-xl bg-[#00C274]/20 flex items-center justify-center">
+                <Banknote className="w-5 h-5 text-[#00C274]" />
               </div>
               <h3 className="font-bold text-white">Processing Info</h3>
             </div>
@@ -253,7 +253,7 @@ export function Withdraw() {
           {/* Warning */}
           <div className="card-stealth p-6">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-[#F0B90B] shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-[#00C274] shrink-0 mt-0.5" />
               <div>
                 <p className="text-white font-bold text-sm mb-2">Important</p>
                 <ul className="text-[#848E9C] text-xs space-y-1.5 leading-relaxed">
@@ -272,31 +272,31 @@ export function Withdraw() {
       <div className="card-stealth p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Hash className="w-4 h-4 text-[#F0B90B]" /> Withdrawal History
+            <Hash className="w-4 h-4 text-[#00C274]" /> Withdrawal History
           </h3>
           <span className="text-[#848E9C] text-sm">{withdrawals.length} request{withdrawals.length !== 1 ? 's' : ''}</span>
         </div>
 
         {txLoading ? (
-          <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#F0B90B]" /></div>
+          <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#00C274]" /></div>
         ) : withdrawals.length === 0 ? (
           <div className="text-center py-12">
-            <ArrowUpRight className="w-12 h-12 text-[#2B3139] mx-auto mb-4" />
+            <ArrowUpRight className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
             <p className="text-[#848E9C] font-medium">No withdrawal requests yet</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#2B3139]">
+                <tr className="border-b border-[#181B23]">
                   {['Date', 'Amount', 'Bank', 'Account No.', 'IFSC', 'Status'].map((h) => (
                     <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#2B3139]">
+              <tbody className="divide-y divide-[#181B23]">
                 {withdrawals.map((tx: any) => (
-                  <tr key={tx.id} className="hover:bg-[#0B0E11]/40 transition-colors">
+                  <tr key={tx.id} className="hover:bg-[#060709]/40 transition-colors">
                     <td className="py-4 pr-6 text-[#848E9C] text-sm whitespace-nowrap">
                       {new Date(tx.createdAt).toLocaleDateString('en-IN')}
                     </td>
