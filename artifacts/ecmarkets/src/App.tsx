@@ -32,7 +32,6 @@ import { AdminTransactions } from "@/pages/admin/AdminTransactions";
 import { AdminUsers } from "@/pages/admin/AdminUsers";
 import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 import { AdminTrades } from "@/pages/admin/AdminTrades";
-import { AdminStrategies } from "@/pages/admin/AdminStrategies";
 import { AdminSettings } from "@/pages/admin/AdminSettings";
 import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
 import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
@@ -112,9 +111,6 @@ function Router() {
       </Route>
       <Route path="/admin/trades">
         <ProtectedRoute component={AdminTrades} adminOnly={true} />
-      </Route>
-      <Route path="/admin/strategies">
-        <ProtectedRoute component={AdminStrategies} adminOnly={true} />
       </Route>
       <Route path="/admin/settings">
         <ProtectedRoute component={AdminSettings} adminOnly={true} />
