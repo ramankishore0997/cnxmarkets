@@ -9,8 +9,6 @@ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { Home } from "@/pages/public/Home";
 import { Markets } from "@/pages/public/Markets";
 import { About } from "@/pages/public/About";
-import { Performance } from "@/pages/public/Performance";
-import { Pricing } from "@/pages/public/Pricing";
 import { Faq } from "@/pages/public/Faq";
 import { Contact } from "@/pages/public/Contact";
 import { DownloadApp } from "@/pages/public/DownloadApp";
@@ -61,8 +59,6 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/markets" component={Markets} />
       <Route path="/about" component={About} />
-      <Route path="/performance" component={Performance} />
-      <Route path="/pricing" component={Pricing} />
       <Route path="/faq" component={Faq} />
       <Route path="/contact" component={Contact} />
       <Route path="/download-app" component={DownloadApp} />

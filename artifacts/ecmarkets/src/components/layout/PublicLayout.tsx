@@ -26,8 +26,6 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Markets', href: '/markets' },
-    { name: 'Performance', href: '/performance' },
-    { name: 'Pricing', href: '/pricing' },
     { name: 'About', href: '/about' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
@@ -242,7 +240,6 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <h4 className="text-white font-semibold mb-6">Platform</h4>
               <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
                 <li><Link href="/dashboard" className="hover:text-[#00C274] transition-colors">Dashboard</Link></li>
-                <li><Link href="/performance" className="hover:text-[#00C274] transition-colors">Performance</Link></li>
                 <li><Link href="/markets" className="hover:text-[#00C274] transition-colors">Markets</Link></li>
                 <li>
                   <Link href="/download-app" className="font-semibold transition-colors" style={{ color: '#00C274' }}>

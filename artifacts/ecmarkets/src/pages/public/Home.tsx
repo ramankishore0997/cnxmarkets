@@ -162,8 +162,8 @@ export function Home() {
                 <Link href="/auth/register" className="btn-green text-lg py-4 px-8 text-center">
                   Start Trading Now
                 </Link>
-                <Link href="/performance" className="btn-ghost text-lg py-4 px-8 text-center">
-                  View Performance
+                <Link href="/markets" className="btn-ghost text-lg py-4 px-8 text-center">
+                  Explore Markets
                 </Link>
               </motion.div>
               
@@ -626,7 +626,7 @@ export function Home() {
             </table>
           </div>
           <div className="text-center mt-6">
-            <Link href="/performance" className="text-[#00C274] hover:underline font-semibold">View Performance →</Link>
+            <Link href="/markets" className="text-[#00C274] hover:underline font-semibold">Explore Markets →</Link>
           </div>
         </div>
       </section>
