@@ -341,11 +341,11 @@ export function DownloadApp() {
               If you face any issues during installation, reach out to our support team and we'll guide you step by step.
             </p>
             <a
-              href="mailto:support@ecmarketsindia.com"
+              href="mailto:support@cnxmarkets.com"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
               style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.3)', color: '#00C274' }}
             >
-              support@ecmarketsindia.com
+              support@cnxmarkets.com
             </a>
           </motion.div>
         </section>

@@ -17,7 +17,7 @@ const forgotSchema = z.object({
   newPassword: z.string().min(6, "New password must be at least 6 characters"),
 });
 
-const SUPPORT_EMAIL = 'support@ecmarketsindia.com';
+const SUPPORT_EMAIL = 'support@cnxmarkets.com';
 
 export function Login() {
   const [, setLocation] = useLocation();
@@ -123,9 +123,9 @@ export function Login() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { value: '94.3%', label: 'Win Rate' },
-              { value: '₹2.8Cr+', label: 'Assets Managed' },
-              { value: '5,000+', label: 'Active Traders' },
+              { value: '10+ Yrs', label: 'In the Market' },
+              { value: '₹1.2L Cr+', label: 'Assets Managed' },
+              { value: '10 Lakh+', label: 'Active Traders' },
               { value: '24/7', label: 'Market Coverage' },
             ].map((stat) => (
               <div

@@ -93,11 +93,11 @@ function Counter({ end, suffix = '', prefix = '', decimals = 0 }: { end: number;
 
 // --- FAQ ---
 const FAQS = [
-  { q: 'Minimum deposit kitna hai?', a: 'CNXMarkets pe aap sirf ₹20,000 se start kar sakte hain. Koi hidden fees nahi.' },
-  { q: 'Paise withdraw karne mein kitna time lagta hai?', a: 'Withdrawal requests 24 ghante ke andar process ho jaate hain. Amount directly aapke bank account mein aata hai.' },
-  { q: 'Algorithmic trading kya hoti hai?', a: 'Algorithms pre-programmed rules ke basis pe automatically trade execute karte hain — bina emotional bias ke, 24/7.' },
-  { q: 'Kya mujhe trading experience chahiye?', a: 'Nahi. Hamari platform beginners ke liye bhi design ki gayi hai. Strategy select karo aur system baaki kaam karta hai.' },
-  { q: 'Mere funds safe hain?', a: 'Haan. Client funds segregated accounts mein rakhe jaate hain aur platform 256-bit SSL encryption use karti hai.' },
+  { q: 'How long does it take to process a withdrawal?', a: 'Withdrawal requests are processed within 24 hours. The amount is transferred directly to your registered bank account.' },
+  { q: 'What is algorithmic trading?', a: 'Algorithmic trading uses pre-programmed rules to automatically execute trades — eliminating emotional bias and operating 24/7 with precision.' },
+  { q: 'Do I need any trading experience?', a: 'Not at all. Our platform is designed for beginners and professionals alike. Simply select a strategy and let the system handle the rest.' },
+  { q: 'Are my funds safe?', a: 'Yes. Client funds are held in segregated accounts and the platform uses 256-bit SSL encryption to protect all data and transactions.' },
+  { q: 'How do I get started?', a: 'Register an account, complete your KYC verification, make a deposit, and activate your preferred trading strategy — it takes just a few minutes.' },
 ];
 
 export function Home() {
@@ -134,7 +134,7 @@ export function Home() {
               </motion.h1>
 
               <motion.p variants={fadeUp} className="text-lg text-[#848E9C] mb-8 max-w-md leading-relaxed">
-                Institutional-grade algorithmic trading — automated, precise, and built for consistent returns. Start with just ₹20,000.
+                Driven by precision algorithms, built to grow your wealth consistently. No trading experience required.
               </motion.p>
 
               <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-8">
@@ -153,7 +153,7 @@ export function Home() {
               <motion.div variants={fadeUp} className="flex flex-wrap gap-5">
                 {[
                   'No trading experience needed',
-                  'Withdraw anytime',
+                  '100% secure & transparent',
                   'Segregated client funds',
                 ].map(t => (
                   <span key={t} className="flex items-center gap-1.5 text-[13px] text-[#848E9C]">
@@ -189,7 +189,7 @@ export function Home() {
                   {[
                     { label: "Today's Profit", value: '+₹2,840', green: true },
                     { label: 'Active Strategy', value: 'Quantum Algo', green: true },
-                    { label: 'Win Rate (MTD)', value: '71.4%', green: false },
+                    { label: 'Monthly ROI', value: '+8.3%', green: true },
                     { label: 'Status', value: '● Live', green: true },
                   ].map(s => (
                     <div key={s.label} className="rounded-xl bg-[#060709] p-3">
@@ -207,17 +207,14 @@ export function Home() {
       {/* ── PLATFORM STATS ── */}
       <section className="bg-[#0C0E15] border-y border-[#1A1D27] py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-3 gap-8 text-center">
             {[
-              { val: 12000, suffix: '+', label: 'Active Traders' },
-              { val: 2.8, suffix: 'Cr+', prefix: '₹', label: 'Assets Managed', decimals: 1 },
-              { val: 94.3, suffix: '%', label: 'Avg Win Rate', decimals: 1 },
-              { val: 5, suffix: ' Yrs', label: 'In the Market' },
+              { display: '10 Lakh+', label: 'Active Traders' },
+              { display: '₹1.2 Lakh Cr+', label: 'Assets Managed' },
+              { display: '10 Years', label: 'In the Market' },
             ].map(s => (
               <div key={s.label}>
-                <p className="text-3xl md:text-4xl font-black text-[#00C274]">
-                  <Counter end={s.val} suffix={s.suffix} prefix={s.prefix} decimals={s.decimals} />
-                </p>
+                <p className="text-3xl md:text-4xl font-black text-[#00C274]">{s.display}</p>
                 <p className="text-sm text-[#848E9C] mt-1 font-medium">{s.label}</p>
               </div>
             ))}
@@ -468,7 +465,7 @@ export function Home() {
               Ready to Let Your <span className="text-[#00C274]">Money Work</span> for You?
             </motion.h2>
             <motion.p variants={fadeUp} className="text-[#848E9C] mb-8 text-lg">
-              Join 12,000+ traders already growing with CNXMarkets.
+              Join 10 Lakh+ traders already growing with CNXMarkets.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center">
               <Link href="/register">
@@ -483,7 +480,7 @@ export function Home() {
               </Link>
             </motion.div>
             <motion.p variants={fadeUp} className="mt-5 text-xs text-[#848E9C]">
-              No lock-in period · Withdraw anytime · ₹20,000 minimum deposit
+              No lock-in period · Segregated client funds · 24/7 automated trading
             </motion.p>
           </motion.div>
         </div>

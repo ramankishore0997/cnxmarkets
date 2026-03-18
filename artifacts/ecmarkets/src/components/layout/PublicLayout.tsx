@@ -208,7 +208,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 <p className="font-semibold text-[#EAECEF] mb-1">Registered Office</p>
                 <p>2035 Sunset Lake Road, Suite B-2</p>
                 <p>Newark, Delaware 19702, United States</p>
-                <a href="mailto:support@ecmarketsindia.com" className="mt-2 block hover:text-[#00C274] transition-colors">support@ecmarketsindia.com</a>
+                <a href="mailto:support@cnxmarkets.com" className="mt-2 block hover:text-[#00C274] transition-colors">support@cnxmarkets.com</a>
               </div>
               <div className="flex gap-4">
                 <a href="#" className="w-10 h-10 rounded-full bg-[#181B23] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
@@ -230,9 +230,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <h4 className="text-white font-semibold mb-6">Company</h4>
               <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
                 <li><Link href="/about" className="hover:text-[#00C274] transition-colors">About Us</Link></li>
-                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Careers</Link></li>
-                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Blog</Link></li>
-                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Press</Link></li>
+                <li><Link href="/contact" className="hover:text-[#00C274] transition-colors">Contact Us</Link></li>
+                <li><Link href="/terms" className="hover:text-[#00C274] transition-colors">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-[#00C274] transition-colors">Risk Disclosure</Link></li>
               </ul>
             </div>
 

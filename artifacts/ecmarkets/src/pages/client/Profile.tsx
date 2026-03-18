@@ -657,7 +657,7 @@ export function Profile() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
             <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
               <p className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider mb-1">API Endpoint</p>
-              <p className="font-terminal text-xs text-[#F8FAFC] truncate">api.ecmarketsindia.com/v1</p>
+              <p className="font-terminal text-xs text-[#F8FAFC] truncate">api.cnxmarkets.com/v1</p>
             </div>
             <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
               <p className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider mb-1">Rate Limit</p>
