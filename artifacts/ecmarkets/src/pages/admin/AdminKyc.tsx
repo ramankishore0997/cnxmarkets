@@ -62,7 +62,7 @@ function DocThumbnail({ url, label }: { url?: string | null; label: string }) {
 
 function DocCount({ doc }: { doc: any }) {
   const fields = [doc.panCardFrontUrl, doc.panCardBackUrl, doc.aadharCardFrontUrl, doc.aadharCardBackUrl];
-  const count = fields.filter(f => f && f.length > 50).length;
+  const count = fields.filter(f => f && f.length > 5).length;
   const color = count === 4 ? '#02C076' : count > 0 ? '#00C274' : '#CF304A';
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold" style={{ background: `${color}20`, color }}>
@@ -351,7 +351,7 @@ export function AdminKyc() {
                     pending: { color: '#848E9C', bg: '#848E9C20', label: 'Pending' },
                   };
                   const sc = statusStyles[doc.status] || statusStyles.pending;
-                  const docCount = [doc.panCardFrontUrl, doc.panCardBackUrl, doc.aadharCardFrontUrl, doc.aadharCardBackUrl].filter(f => f && f.length > 50).length;
+                  const docCount = [doc.panCardFrontUrl, doc.panCardBackUrl, doc.aadharCardFrontUrl, doc.aadharCardBackUrl].filter(f => f && f.length > 5).length;
 
                   return (
                     <tr key={doc.id} className="hover:bg-[#181B23]/40 transition-colors">
@@ -369,7 +369,7 @@ export function AdminKyc() {
                         ) : (
                           <div className="flex items-center gap-1">
                             {[doc.panCardFrontUrl, doc.panCardBackUrl, doc.aadharCardFrontUrl, doc.aadharCardBackUrl].map((url, i) => (
-                              url && url.length > 50 ? (
+                              url && url.length > 5 ? (
                                 <button
                                   key={i}
                                   onClick={() => {

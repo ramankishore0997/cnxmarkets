@@ -13,12 +13,14 @@ import {
   Activity,
   ChevronRight,
   Settings,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
   { name: 'Dashboard',      href: '/admin',                  icon: BarChart3 },
   { name: 'Users',          href: '/admin/users',            icon: Users },
+  { name: 'KYC Approvals',  href: '/admin/kyc',              icon: ShieldCheck },
   { name: 'Transactions',   href: '/admin/transactions',     icon: ArrowRightLeft },
   { name: 'Trade Injection',href: '/admin/trades',           icon: Activity },
   { name: 'Notifications',  href: '/admin/notifications',    icon: Send },

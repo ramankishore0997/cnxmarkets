@@ -37,6 +37,7 @@ import { AdminTrades } from "@/pages/admin/AdminTrades";
 import { AdminSettings } from "@/pages/admin/AdminSettings";
 import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
 import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
+import { AdminKyc } from "@/pages/admin/AdminKyc";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 import { BinaryTrading } from "@/pages/client/BinaryTrading";
 
@@ -118,6 +119,9 @@ function Router() {
       </Route>
       <Route path="/admin/settings">
         <ProtectedRoute component={AdminSettings} adminOnly={true} />
+      </Route>
+      <Route path="/admin/kyc">
+        <ProtectedRoute component={AdminKyc} adminOnly={true} />
       </Route>
 
       {/* Magic Link auto-login — public, no auth required */}
