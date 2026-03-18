@@ -16,23 +16,21 @@ import {
   History,
   TrendingUp,
   ChevronRight,
-  MoreHorizontal,
-  Bot
+  MoreHorizontal
 } from 'lucide-react';
 import { EcmLogo } from '@/components/shared/EcmLogo';
 import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
-  { name: 'Overview',         href: '/dashboard',                   icon: LayoutDashboard },
-  { name: 'Binary Trading',   href: '/dashboard/binary',            icon: TrendingUp, highlight: true },
-  { name: 'Strategies',       href: '/dashboard/strategies',        icon: Bot },
-  { name: 'Analytics',        href: '/dashboard/analytics',         icon: LineChart },
-  { name: 'Trade History',    href: '/dashboard/trades',            icon: History },
-  { name: 'Deposit',          href: '/dashboard/deposit',           icon: Wallet },
-  { name: 'Withdraw',         href: '/dashboard/withdraw',          icon: ArrowDownUp },
-  { name: 'KYC & Security',   href: '/dashboard/kyc',               icon: ShieldCheck },
-  { name: 'Profile',          href: '/dashboard/profile',           icon: User },
-  { name: 'Notifications',    href: '/dashboard/notifications',     icon: Bell },
+  { name: 'Overview',         href: '/dashboard',                 icon: LayoutDashboard },
+  { name: 'Binary Trading',   href: '/dashboard/binary',          icon: TrendingUp, highlight: true },
+  { name: 'Analytics',        href: '/dashboard/analytics',       icon: LineChart },
+  { name: 'Trade History',    href: '/dashboard/trades',          icon: History },
+  { name: 'Deposit',          href: '/dashboard/deposit',         icon: Wallet },
+  { name: 'Withdraw',         href: '/dashboard/withdraw',        icon: ArrowDownUp },
+  { name: 'KYC & Security',   href: '/dashboard/kyc',             icon: ShieldCheck },
+  { name: 'Profile',          href: '/dashboard/profile',         icon: User },
+  { name: 'Notifications',    href: '/dashboard/notifications',   icon: Bell },
 ];
 
 const bottomNavItems = [
