@@ -499,6 +499,40 @@ router.get("/trades/user/:userId", requireAdmin, async (req, res) => {
   }
 });
 
+router.get("/live-trades", requireAdmin, async (_req, res) => {
+  try {
+    const rows = await db
+      .select({
+        id:          tradesTable.id,
+        userId:      tradesTable.userId,
+        market:      tradesTable.market,
+        instrument:  tradesTable.instrument,
+        direction:   tradesTable.direction,
+        entryPrice:  tradesTable.entryPrice,
+        lotSize:     tradesTable.lotSize,
+        status:      tradesTable.status,
+        openedAt:    tradesTable.openedAt,
+        firstName:   usersTable.firstName,
+        lastName:    usersTable.lastName,
+        email:       usersTable.email,
+      })
+      .from(tradesTable)
+      .innerJoin(usersTable, eq(tradesTable.userId, usersTable.id))
+      .where(eq(tradesTable.status, "open"))
+      .orderBy(desc(tradesTable.openedAt));
+
+    res.json(rows.map(r => ({
+      ...r,
+      entryPrice: parseFloat(r.entryPrice as string),
+      lotSize:    parseFloat(r.lotSize as string),
+      openedAt:   r.openedAt.toISOString(),
+    })));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/notifications/send", requireAdmin, async (req, res) => {
   try {
     const { title, message, type, targetUserId } = req.body;

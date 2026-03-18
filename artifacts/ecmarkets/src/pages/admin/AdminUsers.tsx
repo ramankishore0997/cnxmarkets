@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { useGetAdminUsers, useUpdateAdminUser, useGetStrategies, useGetAdminKyc, useUpdateAdminKyc } from '@workspace/api-client-react';
+import { useGetAdminUsers, useUpdateAdminUser, useGetAdminKyc, useUpdateAdminKyc } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import {
   Users, ShieldCheck, ShieldOff, Search, Loader2,
-  ChevronDown, ChevronUp, DollarSign, TrendingUp, Target, Save, Zap,
-  KeyRound, Eye, EyeOff, Check, X, CreditCard, Hash
+  ChevronDown, ChevronUp, DollarSign, Target, Save,
+  KeyRound, Eye, EyeOff, Check, X, CreditCard, Hash, TrendingUp
 } from 'lucide-react';
 
 export function AdminUsers() {
@@ -16,16 +16,14 @@ export function AdminUsers() {
   const [search, setSearch] = useState('');
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [editState, setEditState] = useState<Record<number, { balance: string; strategyId: string; growth: string }>>({});
+  const [editState, setEditState] = useState<Record<number, { balance: string; growth: string }>>({});
   const [pwState, setPwState] = useState<Record<number, { value: string; show: boolean; loading: boolean }>>({});
   const [kycRejectState, setKycRejectState] = useState<Record<number, { reason: string; rejecting: boolean }>>({});
   const [kycProcessing, setKycProcessing] = useState<number | null>(null);
 
   const { data: users, isLoading } = useGetAdminUsers({ ...getAuthOptions() });
-  const { data: strategies } = useGetStrategies();
   const { data: allKycDocs } = useGetAdminKyc({ ...getAuthOptions() });
 
-  const allStrategies = (strategies as any[]) || [];
   const kycDocsList = (allKycDocs as any[]) || [];
 
   const updateMutation = useUpdateAdminUser({
@@ -67,7 +65,6 @@ export function AdminUsers() {
       id: user.id,
       data: {
         totalBalance: state.balance !== '' ? parseFloat(state.balance) : undefined,
-        assignedStrategyId: state.strategyId !== '' ? parseInt(state.strategyId) : (state.strategyId === '' ? 0 : undefined),
         dailyGrowthTarget: state.growth !== '' ? parseFloat(state.growth) : undefined,
       } as any,
     });
@@ -121,8 +118,7 @@ export function AdminUsers() {
         ...prev,
         [user.id]: {
           balance: user.totalBalance != null ? String(user.totalBalance) : '0',
-          strategyId: user.assignedStrategyId != null ? String(user.assignedStrategyId) : '',
-          growth: user.dailyGrowthTarget != null ? String(user.dailyGrowthTarget) : '',
+          growth:  user.dailyGrowthTarget != null ? String(user.dailyGrowthTarget) : '',
         }
       }));
     }
@@ -142,13 +138,6 @@ export function AdminUsers() {
     return { color: '#848E9C', label: 'Not Submitted' };
   };
 
-  const riskColors: Record<string, string> = { low: '#02C076', medium: '#00C274', high: '#CF304A' };
-
-  const isRazrName = (n?: string) => n?.toLowerCase().includes('razr') || n?.toLowerCase().includes('razor');
-  const getDailyPct = (name?: string, target?: number | null) => {
-    if (isRazrName(name)) return 8.0;
-    return target ?? 4.0;
-  };
   const getMonthlyCompound = (dailyPct: number) =>
     parseFloat(((Math.pow(1 + dailyPct / 100, 30) - 1) * 100).toFixed(2));
 
@@ -178,10 +167,10 @@ export function AdminUsers() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Users', value: allUsers.length, color: '#00C274' },
-          { label: 'Active', value: allUsers.filter((u: any) => u.isActive).length, color: '#02C076' },
-          { label: 'KYC Verified', value: allUsers.filter((u: any) => u.kycStatus === 'approved').length, color: '#2a6df4' },
-          { label: 'With Strategy', value: allUsers.filter((u: any) => u.assignedStrategyId).length, color: '#00C274' },
+          { label: 'Total Users',      value: allUsers.length,                                              color: '#00C274' },
+          { label: 'Active',           value: allUsers.filter((u: any) => u.isActive).length,               color: '#02C076' },
+          { label: 'KYC Verified',     value: allUsers.filter((u: any) => u.kycStatus === 'approved').length, color: '#2a6df4' },
+          { label: 'Growth Active',    value: allUsers.filter((u: any) => u.dailyGrowthTarget).length,       color: '#00C274' },
         ].map((s, i) => (
           <div key={i} className="card-stealth p-5">
             <p className="text-2xl font-bold mb-1" style={{ color: s.color }}>{s.value}</p>
@@ -199,12 +188,11 @@ export function AdminUsers() {
         ) : (
           <div className="divide-y divide-[#181B23]">
             {filtered.map((user: any) => {
-              const kyc = kycColor(user.kycStatus);
+              const kyc   = kycColor(user.kycStatus);
               const isExpanded = expandedId === user.id;
-              const state = editState[user.id] || { balance: '', strategyId: '', growth: '' };
-              const assignedStrat = allStrategies.find((s: any) => s.id === user.assignedStrategyId);
+              const state = editState[user.id] || { balance: '', growth: '' };
               const userKycDoc = kycDocsList.find((d: any) => d.userId === user.id) || null;
-              const pwS = pwState[user.id] || { value: '', show: false, loading: false };
+              const pwS   = pwState[user.id] || { value: '', show: false, loading: false };
               const kycRej = kycRejectState[user.id] || { reason: '', rejecting: false };
 
               return (
@@ -224,14 +212,14 @@ export function AdminUsers() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                      <div className="text-right min-w-[130px]">
+                      <div className="text-right min-w-[140px]">
                         <p className="font-bold text-white text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
-                        {assignedStrat ? (
+                        {user.dailyGrowthTarget ? (
                           <span className="flex items-center gap-1 text-xs text-[#00C274] justify-end">
-                            <Zap className="w-3 h-3" />{assignedStrat.name}
+                            <TrendingUp className="w-3 h-3" />+{user.dailyGrowthTarget}%/day
                           </span>
                         ) : (
-                          <span className="text-xs text-[#181B23]">No strategy</span>
+                          <span className="text-xs text-[#3d4450]">No growth target</span>
                         )}
                       </div>
 
@@ -264,7 +252,7 @@ export function AdminUsers() {
                       {/* ── Account Settings ── */}
                       <div>
                         <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4">Account Settings</p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
                               <DollarSign className="w-4 h-4 text-[#00C274]" /> Account Balance (₹)
@@ -281,48 +269,17 @@ export function AdminUsers() {
 
                           <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
-                              <TrendingUp className="w-4 h-4 text-[#02C076]" /> Assign Strategy
-                            </label>
-                            <select
-                              value={state.strategyId}
-                              onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], strategyId: e.target.value } }))}
-                              className="input-stealth appearance-none"
-                            >
-                              <option value="">— None —</option>
-                              {allStrategies.map((s: any) => (
-                                <option key={s.id} value={s.id}>
-                                  {s.name} ({s.riskProfile} risk · {s.monthlyReturn}%/mo)
-                                </option>
-                              ))}
-                            </select>
-                            {state.strategyId && (() => {
-                              const sel = allStrategies.find((s: any) => s.id === parseInt(state.strategyId));
-                              return sel ? (
-                                <div className="flex items-center gap-2 px-3 py-2 bg-[#1E2329] border border-[#181B23] rounded-lg">
-                                  <span className="text-xs font-bold capitalize" style={{ color: riskColors[sel.riskProfile] || '#848E9C' }}>
-                                    {sel.riskProfile} risk
-                                  </span>
-                                  <span className="text-[#181B23]">·</span>
-                                  <span className="text-xs text-[#02C076] font-semibold">+{sel.monthlyReturn}%/mo</span>
-                                  <span className="text-[#181B23]">·</span>
-                                  <span className="text-xs text-[#848E9C]">{sel.winRate}% win rate</span>
-                                </div>
-                              ) : null;
-                            })()}
-                          </div>
-
-                          <div className="space-y-2">
-                            <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
                               <Target className="w-4 h-4 text-[#2a6df4]" /> Daily Growth Target (%)
                             </label>
                             <input
                               type="number"
                               value={state.growth}
                               onChange={e => setEditState(prev => ({ ...prev, [user.id]: { ...prev[user.id], growth: e.target.value } }))}
-                              placeholder="e.g. 1.5"
+                              placeholder="e.g. 4"
                               className="input-stealth"
                               min="0" max="100" step="0.1"
                             />
+                            <p className="text-xs text-[#848E9C]">Actual daily return will vary ±1% around this target (e.g. 4% → 3–5%/day)</p>
                           </div>
                         </div>
 
@@ -330,23 +287,22 @@ export function AdminUsers() {
                           <button
                             onClick={() => saveAccountSettings(user)}
                             disabled={processingId === user.id}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00C274] text-black font-bold text-sm hover:bg-[#F8D33A] transition-all"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00C274] text-black font-bold text-sm hover:bg-[#02C076] transition-all"
                           >
                             {processingId === user.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Save Changes
                           </button>
                         </div>
 
-                        {user.totalBalance > 0 && (() => {
-                          const dailyPct = getDailyPct(user.assignedStrategy, user.dailyGrowthTarget);
+                        {user.totalBalance > 0 && user.dailyGrowthTarget && (() => {
+                          const dailyPct   = parseFloat(user.dailyGrowthTarget);
                           const monthlyPct = getMonthlyCompound(dailyPct);
-                          const dailyAmt = user.totalBalance * (dailyPct / 100);
+                          const dailyAmt   = user.totalBalance * (dailyPct / 100);
                           const monthlyAmt = user.totalBalance * (monthlyPct / 100);
-                          const isRazr = isRazrName(user.assignedStrategy);
                           return (
-                            <div className={`mt-4 p-4 rounded-xl border ${isRazr ? 'bg-[#02C076]/5 border-[#02C076]/20' : 'bg-[#00C274]/5 border-[#00C274]/20'}`}>
-                              <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: isRazr ? '#02C076' : '#00C274' }}>
-                                Projected Earnings ({isRazr ? 'RazrMarket 8%/day' : `Standard ${dailyPct}%/day`})
+                            <div className="mt-4 p-4 rounded-xl border bg-[#00C274]/5 border-[#00C274]/20">
+                              <p className="text-xs font-bold uppercase tracking-wider mb-3 text-[#00C274]">
+                                Projected Earnings ({dailyPct}%/day target)
                               </p>
                               <div className="grid grid-cols-3 gap-4 text-center">
                                 <div>
@@ -354,9 +310,7 @@ export function AdminUsers() {
                                   <p className="text-[10px] text-[#848E9C] font-medium">Daily</p>
                                 </div>
                                 <div>
-                                  <p className="text-lg font-black" style={{ color: isRazr ? '#02C076' : '#00C274' }}>
-                                    +₹{Math.round(monthlyAmt / 4).toLocaleString('en-IN')}
-                                  </p>
+                                  <p className="text-lg font-black text-[#00C274]">+₹{Math.round(monthlyAmt / 4).toLocaleString('en-IN')}</p>
                                   <p className="text-[10px] text-[#848E9C] font-medium">Weekly (est.)</p>
                                 </div>
                                 <div>
@@ -378,7 +332,6 @@ export function AdminUsers() {
                           </span>
                         </p>
 
-                        {/* PAN + Aadhar numbers */}
                         {userKycDoc && (
                           <div className="grid grid-cols-2 gap-3 mb-3">
                             <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
@@ -400,7 +353,6 @@ export function AdminUsers() {
                           </div>
                         )}
 
-                        {/* Status + Actions */}
                         {!userKycDoc ? (
                           <div className="space-y-3">
                             <p className="text-xs text-[#848E9C]">
@@ -438,63 +390,51 @@ export function AdminUsers() {
                             </button>
                           </div>
                         ) : userKycDoc.status === 'rejected' ? (
-                          <div className="space-y-2">
-                            <p className="text-xs text-[#CF304A] font-semibold">Rejected: {userKycDoc.rejectionReason || 'No reason given'}</p>
-                            <button
-                              onClick={() => handleKycApprove(userKycDoc)}
-                              disabled={kycProcessing === userKycDoc.id}
-                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
-                            >
-                              {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                              Verify KYC
-                            </button>
-                          </div>
-                        ) : (
                           <div className="space-y-3">
-                            {kycRej.rejecting && (
-                              <div className="space-y-1.5">
-                                <label className="text-xs font-semibold text-[#CF304A]">Rejection Reason (required)</label>
-                                <textarea
-                                  value={kycRej.reason}
-                                  onChange={e => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], reason: e.target.value } }))}
-                                  placeholder="Explain why KYC was rejected..."
-                                  className="input-stealth resize-none text-sm"
-                                  rows={2}
-                                />
-                              </div>
-                            )}
-                            <div className="flex gap-3">
+                            <p className="text-xs text-[#CF304A] font-medium">
+                              Rejected: {userKycDoc.rejectionReason || 'No reason provided'}
+                            </p>
+                            <div className="flex gap-2">
                               <button
                                 onClick={() => handleKycApprove(userKycDoc)}
                                 disabled={kycProcessing === userKycDoc.id}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#02C076] text-black font-bold text-sm hover:bg-[#02C076]/80 transition-all"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
                               >
-                                {kycProcessing === userKycDoc.id && !kycRej.rejecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                                ✓ Verify KYC
+                                {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                                Approve
                               </button>
-                              {kycRej.rejecting ? (
-                                <>
-                                  <button
-                                    onClick={() => handleKycReject(userKycDoc)}
-                                    disabled={kycProcessing === userKycDoc.id}
-                                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A] text-white font-bold text-sm hover:bg-[#CF304A]/80 transition-all"
-                                  >
-                                    {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
-                                    Confirm Reject
-                                  </button>
-                                  <button
-                                    onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { reason: '', rejecting: false } }))}
-                                    className="px-4 py-2.5 rounded-xl bg-[#181B23] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
-                                  >Cancel</button>
-                                </>
-                              ) : (
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            <p className="text-xs text-[#848E9C]">KYC documents submitted. Review and approve or reject.</p>
+                            <div className="flex flex-col gap-2">
+                              <div className="flex gap-2">
                                 <button
-                                  onClick={() => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], rejecting: true } }))}
-                                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A]/10 text-[#CF304A] border border-[#CF304A]/30 hover:bg-[#CF304A]/20 font-bold text-sm transition-all"
+                                  onClick={() => handleKycApprove(userKycDoc)}
+                                  disabled={kycProcessing === userKycDoc.id}
+                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
                                 >
-                                  <X className="w-3.5 h-3.5" /> Reject
+                                  {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                                  Approve KYC
                                 </button>
-                              )}
+                              </div>
+                              <div className="flex gap-2">
+                                <input
+                                  value={kycRej.reason}
+                                  onChange={e => setKycRejectState(p => ({ ...p, [user.id]: { ...p[user.id], reason: e.target.value } }))}
+                                  placeholder="Rejection reason..."
+                                  className="input-stealth flex-1 text-sm"
+                                />
+                                <button
+                                  onClick={() => handleKycReject(userKycDoc)}
+                                  disabled={kycProcessing === userKycDoc.id}
+                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/40 hover:bg-[#CF304A]/30 font-bold text-sm transition-all"
+                                >
+                                  {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
+                                  Reject
+                                </button>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -505,18 +445,18 @@ export function AdminUsers() {
                         <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4 flex items-center gap-2">
                           <KeyRound className="w-3.5 h-3.5" /> Change Password
                         </p>
-                        <div className="flex gap-3 items-start max-w-md">
+                        <div className="flex gap-2 max-w-sm">
                           <div className="relative flex-1">
                             <input
                               type={pwS.show ? 'text' : 'password'}
                               value={pwS.value}
                               onChange={e => setPwState(p => ({ ...p, [user.id]: { ...p[user.id], value: e.target.value } }))}
-                              placeholder="Enter new password (min 6 chars)"
-                              className="input-stealth pr-10 text-sm"
+                              placeholder="New password..."
+                              className="input-stealth pr-10 w-full"
                             />
                             <button
                               type="button"
-                              onClick={() => setPwState(p => ({ ...p, [user.id]: { ...p[user.id], show: !pwS.show } }))}
+                              onClick={() => setPwState(p => ({ ...p, [user.id]: { ...p[user.id], show: !p[user.id]?.show } }))}
                               className="absolute right-3 top-3 text-[#848E9C] hover:text-white"
                             >
                               {pwS.show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -524,30 +464,15 @@ export function AdminUsers() {
                           </div>
                           <button
                             onClick={() => handleChangePassword(user.id)}
-                            disabled={pwS.loading || !pwS.value}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2a6df4]/20 text-[#2a6df4] border border-[#2a6df4]/40 hover:bg-[#2a6df4]/30 font-bold text-sm transition-all shrink-0"
+                            disabled={pwS.loading}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#181B23] text-white hover:bg-[#1A1D27] font-bold text-sm transition-all border border-[#2d3340]"
                           >
                             {pwS.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
-                            Set Password
+                            Set
                           </button>
                         </div>
                       </div>
 
-                      {/* ── User Details ── */}
-                      <div className="border-t border-[#181B23] pt-4 grid grid-cols-3 gap-4 text-xs text-[#848E9C]">
-                        <div>
-                          <span className="block font-semibold text-[#EAECEF]">Joined</span>
-                          {new Date(user.createdAt).toLocaleDateString('en-IN')}
-                        </div>
-                        <div>
-                          <span className="block font-semibold text-[#EAECEF]">Phone</span>
-                          {user.phone || '—'}
-                        </div>
-                        <div>
-                          <span className="block font-semibold text-[#EAECEF]">Country</span>
-                          {user.country || '—'}
-                        </div>
-                      </div>
                     </div>
                   )}
                 </div>
