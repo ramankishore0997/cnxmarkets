@@ -337,7 +337,7 @@ export function Markets() {
       <div className="py-16 bg-[#1E2329] border-t border-[#2B3139] text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Access All 50+ Instruments</h2>
         <p className="text-[#848E9C] mb-6">Activate any strategy and let our algorithms do the trading.</p>
-        <Link href="/auth/register" className="btn-gold inline-block font-bold">Open Your Account</Link>
+        <Link href="/auth/register" className="btn-green inline-block font-bold">Open Your Account</Link>
       </div>
 
     </PublicLayout>

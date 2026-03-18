@@ -176,6 +176,12 @@
     -webkit-text-fill-color: transparent; 
     background-clip: text; 
   }
+  .text-gradient-green {
+    background: linear-gradient(135deg, #00C274 0%, #33d494 50%, #00A85E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   .text-gradient-metallic {
     background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 40%, #cbd5e1 100%);
     -webkit-background-clip: text;

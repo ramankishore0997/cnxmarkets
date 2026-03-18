@@ -36,9 +36,15 @@ artifacts-monorepo/
 
 ## Application Structure
 
+### Design System
+- **Primary color**: `#00C274` (Olymp Trade green) — used for all buttons, active states, charts, highlights
+- **Dark background**: `#0B0E11` / `#1A1F2E`
+- **CSS classes**: `.btn-green` (gradient green), `.text-gradient-green`, `.nav-item-active` (green left border)
+- All gold (`#FFB800` / `#F0B90B`) removed from client and public pages
+
 ### Public Website Pages (no auth)
-- `/` — Home with hero, stats, features, TradingView chart, testimonials
-- `/strategies` — Algo strategy cards with performance metrics (from DB)
+- `/` — Home with hero, stats, features, live chart, testimonials (all green theme)
+- `/strategies` — Algo strategy cards with live performance metrics (from DB — 25 strategies)
 - `/performance` — Performance analytics
 - `/markets` — Forex, Gold, Indices with TradingView widgets
 - `/about` — Company overview
@@ -51,10 +57,13 @@ artifacts-monorepo/
 
 ### Client Dashboard (requires JWT auth)
 - `/dashboard` — Balance, equity curve, recent trades/transactions
-- `/dashboard/kyc` — KYC document submission
-- `/dashboard/analytics` — Performance analytics with Recharts
+- `/dashboard/binary` — Binary Trading (Up/Down options)
+- `/dashboard/strategies` — Auto Trading strategy browser (activate from 25 DB strategies)
+- `/dashboard/analytics` — Performance analytics: equity curve, win/loss donut, monthly P&L, instrument breakdown (all real DB data)
+- `/dashboard/trades` — Trade history
 - `/dashboard/deposit` — Deposit request form
 - `/dashboard/withdraw` — Withdrawal request form
+- `/dashboard/kyc` — KYC document submission
 - `/dashboard/profile` — Profile & change password
 - `/dashboard/notifications` — Notification center
 

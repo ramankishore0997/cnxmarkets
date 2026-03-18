@@ -43,7 +43,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       
       <header 
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-          scrolled ? 'bg-[#0B0E11]/90 backdrop-blur-md shadow-lg border-b border-[#F0B90B]/30 py-3' : 'bg-[#0B0E11] border-b border-[#2B3139] py-5'
+          scrolled ? 'bg-[#0B0E11]/90 backdrop-blur-md shadow-lg border-b border-[#00C274]/30 py-3' : 'bg-[#0B0E11] border-b border-[#2B3139] py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -52,7 +52,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <EcmLogo size={34} />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
-              ECMarkets<span className="text-[#FFB800]">India</span>
+              ECMarkets<span className="text-[#00C274]">India</span>
             </span>
           </Link>
 
@@ -81,14 +81,14 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                   key={link.name} 
                   href={link.href}
                   className={`text-sm font-medium transition-all relative py-1 ${
-                    isActive ? 'text-[#F0B90B]' : 'text-[#848E9C] hover:text-[#EAECEF]'
+                    isActive ? 'text-[#00C274]' : 'text-[#848E9C] hover:text-[#EAECEF]'
                   }`}
                 >
                   {link.name}
                   {isActive && (
                     <motion.div 
                       layoutId="activeNavIndicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#F0B90B]"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#00C274]"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -107,7 +107,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             </Link>
             <Link 
               href="/auth/register"
-              className="btn-gold"
+              className="btn-green"
             >
               Open Account
             </Link>
@@ -152,7 +152,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                     key={link.name} 
                     href={link.href}
                     className={`text-lg font-medium p-3 rounded-xl transition-colors ${
-                      isActive ? 'bg-[#2B3139] text-[#F0B90B]' : 'text-[#EAECEF] hover:bg-[#2B3139]'
+                      isActive ? 'bg-[#2B3139] text-[#00C274]' : 'text-[#EAECEF] hover:bg-[#2B3139]'
                     }`}
                   >
                     {link.name}
@@ -168,7 +168,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 </Link>
                 <Link 
                   href="/auth/register"
-                  className="w-full text-center py-3 btn-gold font-medium rounded-xl"
+                  className="w-full text-center py-3 btn-green font-medium rounded-xl"
                 >
                   Open Account
                 </Link>
@@ -201,7 +201,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                   <EcmLogo size={32} />
                 </div>
                 <span className="text-2xl font-bold tracking-tight text-white">
-                  ECMarkets<span className="text-[#FFB800]">India</span>
+                  ECMarkets<span className="text-[#00C274]">India</span>
                 </span>
               </Link>
               <p className="text-[#848E9C] text-sm mb-5 leading-relaxed max-w-sm">
@@ -211,19 +211,19 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 <p className="font-semibold text-[#EAECEF] mb-1">Registered Office</p>
                 <p>2035 Sunset Lake Road, Suite B-2</p>
                 <p>Newark, Delaware 19702, United States</p>
-                <a href="mailto:support@ecmarketsindia.com" className="mt-2 block hover:text-[#F0B90B] transition-colors">support@ecmarketsindia.com</a>
+                <a href="mailto:support@ecmarketsindia.com" className="mt-2 block hover:text-[#00C274] transition-colors">support@ecmarketsindia.com</a>
               </div>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Globe className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Shield className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Lock className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#F0B90B] hover:text-[#000] transition-all text-[#EAECEF]">
+                <a href="#" className="w-10 h-10 rounded-full bg-[#2B3139] shadow-sm flex items-center justify-center hover:bg-[#00C274] hover:text-[#000] transition-all text-[#EAECEF]">
                   <Phone className="w-5 h-5" />
                 </a>
               </div>
@@ -232,20 +232,20 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <div>
               <h4 className="text-white font-semibold mb-6">Company</h4>
               <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
-                <li><Link href="/about" className="hover:text-[#F0B90B] transition-colors">About Us</Link></li>
-                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Careers</Link></li>
-                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Blog</Link></li>
-                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Press</Link></li>
+                <li><Link href="/about" className="hover:text-[#00C274] transition-colors">About Us</Link></li>
+                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Careers</Link></li>
+                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Blog</Link></li>
+                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Press</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-semibold mb-6">Platform</h4>
               <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
-                <li><Link href="/dashboard" className="hover:text-[#F0B90B] transition-colors">Dashboard</Link></li>
-                <li><Link href="/strategies" className="hover:text-[#F0B90B] transition-colors">Strategies</Link></li>
-                <li><Link href="/performance" className="hover:text-[#F0B90B] transition-colors">Performance</Link></li>
-                <li><Link href="/markets" className="hover:text-[#F0B90B] transition-colors">Markets</Link></li>
+                <li><Link href="/dashboard" className="hover:text-[#00C274] transition-colors">Dashboard</Link></li>
+                <li><Link href="/strategies" className="hover:text-[#00C274] transition-colors">Strategies</Link></li>
+                <li><Link href="/performance" className="hover:text-[#00C274] transition-colors">Performance</Link></li>
+                <li><Link href="/markets" className="hover:text-[#00C274] transition-colors">Markets</Link></li>
                 <li>
                   <Link href="/download-app" className="font-semibold transition-colors" style={{ color: '#FFB800' }}>
                     ↓ Download App
@@ -257,10 +257,10 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <div>
               <h4 className="text-white font-semibold mb-6">Resources & Legal</h4>
               <ul className="flex flex-col gap-3 text-sm text-[#848E9C]">
-                <li><Link href="/faq" className="hover:text-[#F0B90B] transition-colors">FAQ</Link></li>
-                <li><Link href="/contact" className="hover:text-[#F0B90B] transition-colors">Support</Link></li>
-                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Documentation</Link></li>
-                <li><Link href="#" className="hover:text-[#F0B90B] transition-colors">Terms of Service</Link></li>
+                <li><Link href="/faq" className="hover:text-[#00C274] transition-colors">FAQ</Link></li>
+                <li><Link href="/contact" className="hover:text-[#00C274] transition-colors">Support</Link></li>
+                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Documentation</Link></li>
+                <li><Link href="#" className="hover:text-[#00C274] transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>

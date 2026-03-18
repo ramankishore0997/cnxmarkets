@@ -152,7 +152,7 @@ export function Contact() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="btn-gold w-full py-4 flex justify-center items-center gap-2 text-lg"
+                  className="btn-green w-full py-4 flex justify-center items-center gap-2 text-lg"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

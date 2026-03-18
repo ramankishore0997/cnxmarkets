@@ -95,12 +95,15 @@ export function Home() {
   });
 
   useEffect(() => {
+    let tick = 0;
     const id = setInterval(() => {
+      tick++;
       setLiveRets(prev => {
         const next = { ...prev };
-        stratTableRows.forEach(r => {
+        stratTableRows.forEach((r, i) => {
           const base = isRazrName(r.name) ? RAZOR_DAILY : STANDARD_DAILY;
-          next[r.name] = parseFloat((base + (Math.random() - 0.45) * 0.06).toFixed(2));
+          const wave = Math.sin(tick * 0.5 + i * 1.7) * 0.03;
+          next[r.name] = parseFloat((base + wave).toFixed(2));
         });
         return next;
       });
@@ -125,7 +128,7 @@ export function Home() {
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-[#2B3139]/50 border border-[#F0B90B]/30 text-[#F0B90B] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6 shadow-[0_0_10px_rgba(240,185,11,0.2)]"
+                className="bg-[#2B3139]/50 border border-[#00C274]/30 text-[#00C274] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6 shadow-[0_0_10px_rgba(240,185,11,0.2)]"
               >
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-2 mt-1"></span>
                 Live Trading Active • 50,000+ Traders
@@ -138,7 +141,7 @@ export function Home() {
                 className="text-5xl md:text-6xl lg:text-[64px] font-bold text-white leading-[1.1] mb-6 tracking-tight"
               >
                 Trade the Global Markets<br />
-                <span className="text-gradient-gold">with Precision</span>
+                <span className="text-gradient-green">with Precision</span>
               </motion.h1>
               
               <motion.p 
@@ -156,7 +159,7 @@ export function Home() {
                 transition={{ delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-4 mb-10"
               >
-                <Link href="/auth/register" className="btn-gold text-lg py-4 px-8 text-center">
+                <Link href="/auth/register" className="btn-green text-lg py-4 px-8 text-center">
                   Start Trading Now
                 </Link>
                 <Link href="/strategies" className="btn-ghost text-lg py-4 px-8 text-center">
@@ -191,7 +194,7 @@ export function Home() {
                     </div>
                     <p className="text-3xl font-bold text-white mb-1">Total Equity: ₹4,85,290.00</p>
                   </div>
-                  <div className="bg-[#F0B90B]/10 border border-[#F0B90B]/30 text-[#F0B90B] flex items-center gap-1 text-sm font-bold px-3 py-1 rounded-md">
+                  <div className="bg-[#00C274]/10 border border-[#00C274]/30 text-[#00C274] flex items-center gap-1 text-sm font-bold px-3 py-1 rounded-md">
                     +12.4% MTD
                   </div>
                 </div>
@@ -203,12 +206,12 @@ export function Home() {
                       {val: 490}, {val: 480}, {val: 520}
                     ]}>
                       <defs>
-                        <linearGradient id="colorGold" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#F0B90B" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#F0B90B" stopOpacity={0}/>
+                        <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#00C274" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#00C274" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <Area type="monotone" dataKey="val" stroke="#F0B90B" strokeWidth={3} fillOpacity={1} fill="url(#colorGold)" />
+                      <Area type="monotone" dataKey="val" stroke="#00C274" strokeWidth={3} fillOpacity={1} fill="url(#colorGreen)" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -274,8 +277,8 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, i) => (
               <div key={i} className="card-stealth p-8 group">
-                <div className="w-14 h-14 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-6 group-hover:border-[#F0B90B] transition-colors">
-                  <feature.icon className="w-6 h-6 text-[#F0B90B]" />
+                <div className="w-14 h-14 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-6 group-hover:border-[#00C274] transition-colors">
+                  <feature.icon className="w-6 h-6 text-[#00C274]" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
                 <p className="text-[#848E9C] leading-relaxed">{feature.description}</p>
@@ -304,13 +307,13 @@ export function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="btn-gold inline-block">View Platform</Link>
+              <Link href="/dashboard" className="btn-green inline-block">View Platform</Link>
             </div>
             
             <div className="lg:w-1/2 w-full">
               <div className="card-stealth p-6 bg-[#0B0E11] border-[#2B3139]">
                 <div className="flex gap-6 border-b border-[#2B3139] pb-4 mb-6">
-                  <span className="text-[#F0B90B] font-semibold border-b-2 border-[#F0B90B] pb-4 -mb-[17px]">Overview</span>
+                  <span className="text-[#00C274] font-semibold border-b-2 border-[#00C274] pb-4 -mb-[17px]">Overview</span>
                   <span className="text-[#848E9C]">Analytics</span>
                   <span className="text-[#848E9C]">Strategies</span>
                 </div>
@@ -326,7 +329,7 @@ export function Home() {
                 <div className="h-40 w-full mb-6">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={[{v:20},{v:25},{v:22},{v:30},{v:28},{v:35}]}>
-                      <Area type="monotone" dataKey="v" stroke="#F0B90B" fill="transparent" strokeWidth={2} />
+                      <Area type="monotone" dataKey="v" stroke="#00C274" fill="transparent" strokeWidth={2} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -347,7 +350,7 @@ export function Home() {
             <div className="hidden md:block absolute top-6 left-[12%] right-[12%] h-[1px] bg-[#2B3139]" />
             {steps.map((step, i) => (
               <div key={i} className="relative text-center">
-                <div className="w-12 h-12 mx-auto bg-[#F0B90B] text-black rounded-full flex items-center justify-center text-xl font-bold mb-6 relative z-10">
+                <div className="w-12 h-12 mx-auto bg-[#00C274] text-black rounded-full flex items-center justify-center text-xl font-bold mb-6 relative z-10">
                   {step.num}
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
@@ -374,7 +377,7 @@ export function Home() {
               { label: "Avg Monthly", val: "3.8%" }
             ].map((stat, i) => (
               <div key={i} className="card-stealth p-6 text-center">
-                <p className="text-2xl font-bold text-[#F0B90B] mb-1">{stat.val}</p>
+                <p className="text-2xl font-bold text-[#00C274] mb-1">{stat.val}</p>
                 <p className="text-xs text-[#848E9C] uppercase tracking-wider">{stat.label}</p>
               </div>
             ))}
@@ -388,7 +391,7 @@ export function Home() {
                   <AreaChart data={[{m:'Jan',v:100},{m:'Feb',v:105},{m:'Mar',v:112},{m:'Apr',v:110},{m:'May',v:120}]}>
                     <XAxis dataKey="m" axisLine={false} tickLine={false} fontSize={12} stroke="#848E9C" />
                     <Tooltip contentStyle={{ backgroundColor: '#1E2329', border: '1px solid #2B3139', color: '#fff' }} />
-                    <Area type="monotone" dataKey="v" stroke="#F0B90B" fill="transparent" strokeWidth={2} />
+                    <Area type="monotone" dataKey="v" stroke="#00C274" fill="transparent" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -424,7 +427,7 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
             <div className="card-stealth p-8 text-center border-white/20">
               <h3 className="text-xl font-bold text-white mb-2">Starter</h3>
-              <div className="text-3xl font-bold text-[#F0B90B] mb-6">₹20,000</div>
+              <div className="text-3xl font-bold text-[#00C274] mb-6">₹20,000</div>
               <ul className="space-y-3 mb-8 text-sm text-[#848E9C] text-left">
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> Basic Algorithms</li>
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> Standard Execution</li>
@@ -433,20 +436,20 @@ export function Home() {
             </div>
             
             <div className="card-stealth-gold p-10 text-center scale-105 z-10 relative">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#F0B90B] text-black text-xs font-bold px-3 py-1 rounded-full">POPULAR</div>
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#00C274] text-black text-xs font-bold px-3 py-1 rounded-full">POPULAR</div>
               <h3 className="text-xl font-bold text-white mb-2">Professional</h3>
-              <div className="text-4xl font-bold text-[#F0B90B] mb-6">₹1,00,000</div>
+              <div className="text-4xl font-bold text-[#00C274] mb-6">₹1,00,000</div>
               <ul className="space-y-3 mb-8 text-sm text-[#EAECEF] text-left">
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> All Premium Algos</li>
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> Low Latency</li>
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> Priority Support</li>
               </ul>
-              <Link href="/auth/register" className="btn-gold w-full block text-center">Select Pro</Link>
+              <Link href="/auth/register" className="btn-green w-full block text-center">Select Pro</Link>
             </div>
             
             <div className="card-stealth p-8 text-center border-white/20">
               <h3 className="text-xl font-bold text-white mb-2">Institutional</h3>
-              <div className="text-3xl font-bold text-[#F0B90B] mb-6">₹5,00,000</div>
+              <div className="text-3xl font-bold text-[#00C274] mb-6">₹5,00,000</div>
               <ul className="space-y-3 mb-8 text-sm text-[#848E9C] text-left">
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> FIX API Access</li>
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#02C076]" /> Custom Risk Limits</li>
@@ -463,11 +466,11 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {testimonials.map((t, i) => (
               <div key={i} className="card-stealth p-8">
-                <div className="flex text-[#F0B90B] mb-4">★★★★★</div>
+                <div className="flex text-[#00C274] mb-4">★★★★★</div>
                 <p className="text-[#848E9C] mb-6">"{t.text}"</p>
                 <div>
                   <p className="text-white font-bold">{t.name}</p>
-                  <p className="text-[#F0B90B] text-sm">{t.loc}</p>
+                  <p className="text-[#00C274] text-sm">{t.loc}</p>
                 </div>
               </div>
             ))}
@@ -487,7 +490,7 @@ export function Home() {
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                 >
                   {faq.q}
-                  <span className={`text-[#F0B90B] transform transition-transform ${activeFaq === i ? 'rotate-180' : ''}`}>▼</span>
+                  <span className={`text-[#00C274] transform transition-transform ${activeFaq === i ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {activeFaq === i && (
                   <div className="px-6 pb-4 text-[#848E9C] text-sm border-t border-[#2B3139] pt-4">
@@ -516,7 +519,7 @@ export function Home() {
                   { layer: "03", title: "Execution Layer", desc: "Co-located servers, <5ms latency, smart order routing & trade monitoring", icon: Zap },
                 ].map((item, i) => (
                   <div key={i} className="card-stealth p-6 border-l-4 border-l-[#F0B90B] flex gap-5">
-                    <span className="text-2xl font-black text-[#F0B90B] shrink-0">{item.layer}</span>
+                    <span className="text-2xl font-black text-[#00C274] shrink-0">{item.layer}</span>
                     <div>
                       <h3 className="font-bold text-white mb-1">{item.title}</h3>
                       <p className="text-[#848E9C] text-sm">{item.desc}</p>
@@ -532,7 +535,7 @@ export function Home() {
                   { val: "10M+", label: "Signals / Day" },
                 ].map((s, i) => (
                   <motion.div key={i} variants={fadeUp} className="card-stealth p-6 text-center">
-                    <p className="text-2xl font-black text-[#F0B90B] mb-1">{s.val}</p>
+                    <p className="text-2xl font-black text-[#00C274] mb-1">{s.val}</p>
                     <p className="text-xs text-[#848E9C] uppercase tracking-wider">{s.label}</p>
                   </motion.div>
                 ))}
@@ -558,14 +561,14 @@ export function Home() {
             ].map((loc, i) => (
               <motion.div key={i} variants={fadeUp} className="card-stealth p-6 text-center">
                 <span className="text-4xl mb-3 block">{loc.flag}</span>
-                <h3 className="font-bold text-[#F0B90B] text-lg mb-1">{loc.city}</h3>
+                <h3 className="font-bold text-[#00C274] text-lg mb-1">{loc.city}</h3>
                 <p className="text-white text-sm font-semibold mb-1">{loc.role}</p>
                 <p className="text-[#848E9C] text-xs">{loc.detail}</p>
               </motion.div>
             ))}
           </motion.div>
-          <div className="text-center card-stealth py-4 px-8 inline-block mx-auto rounded-full border-[#F0B90B]/40 border">
-            <span className="text-[#F0B90B] font-bold">⚡ Average latency to exchange: &lt;2ms</span>
+          <div className="text-center card-stealth py-4 px-8 inline-block mx-auto rounded-full border-[#00C274]/40 border">
+            <span className="text-[#00C274] font-bold">⚡ Average latency to exchange: &lt;2ms</span>
           </div>
         </div>
       </section>
@@ -577,7 +580,7 @@ export function Home() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Live Strategy Performance</h2>
             <p className="text-[#848E9C]">Real-time daily &amp; compounded monthly ROI across all active strategies.</p>
             <div className="flex items-center justify-center gap-4 mt-4 text-xs text-[#848E9C]">
-              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F0B90B]" />Standard — 4% daily · 224% monthly</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#00C274]" />Standard — 4% daily · 224% monthly</span>
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#02C076]" />RazrMarket — 8% daily · 906% monthly</span>
             </div>
           </div>
@@ -600,13 +603,13 @@ export function Home() {
                       <td className="px-4 py-4 font-semibold text-white">
                         <div className="flex items-center gap-2">
                           {row.name}
-                          {isRazr && <span className="text-[9px] font-black bg-[#F0B90B] text-black px-1.5 py-0.5 rounded uppercase tracking-wide">FLAGSHIP</span>}
+                          {isRazr && <span className="text-[9px] font-black bg-[#00C274] text-black px-1.5 py-0.5 rounded uppercase tracking-wide">FLAGSHIP</span>}
                         </div>
                       </td>
                       <td className="px-4 py-4 text-[#EAECEF]">{row.trades}</td>
-                      <td className="px-4 py-4 text-[#F0B90B] font-bold">{row.wr}</td>
+                      <td className="px-4 py-4 text-[#00C274] font-bold">{row.wr}</td>
                       <td className="px-4 py-4">
-                        <span className={`font-bold tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>
+                        <span className={`font-bold tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#00C274]'}`}>
                           +{dailyVal.toFixed(2)}%
                         </span>
                         <span className="text-[10px] text-[#848E9C] ml-1">/ day</span>
@@ -623,7 +626,7 @@ export function Home() {
             </table>
           </div>
           <div className="text-center mt-6">
-            <Link href="/strategies" className="text-[#F0B90B] hover:underline font-semibold">View All Strategies →</Link>
+            <Link href="/strategies" className="text-[#00C274] hover:underline font-semibold">View All Strategies →</Link>
           </div>
         </div>
       </section>
@@ -646,7 +649,7 @@ export function Home() {
               { end: 24, prefix: "", suffix: "/7", label: "Support" },
             ].map((s, i) => (
               <motion.div key={i} variants={fadeUp} className="card-stealth p-6 text-center">
-                <p className="text-3xl font-black text-[#F0B90B] mb-2">
+                <p className="text-3xl font-black text-[#00C274] mb-2">
                   <Counter prefix={s.prefix} end={s.end} suffix={s.suffix} />
                 </p>
                 <p className="text-xs text-[#848E9C] uppercase tracking-wider font-semibold">{s.label}</p>
@@ -666,9 +669,9 @@ export function Home() {
             <div className="space-y-4">
               {[
                 { label: "+847 New Clients This Month", color: "text-[#02C076]", bg: "bg-[#02C076]/10 border-[#02C076]/30" },
-                { label: "₹28.4Cr Capital Deployed (MTD)", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
+                { label: "₹28.4Cr Capital Deployed (MTD)", color: "text-[#00C274]", bg: "bg-[#00C274]/10 border-[#00C274]/30" },
                 { label: "Average Client Return: +7.2% MTD", color: "text-[#02C076]", bg: "bg-[#02C076]/10 border-[#02C076]/30" },
-                { label: "Strategy Approval Rating: 94.8%", color: "text-[#F0B90B]", bg: "bg-[#F0B90B]/10 border-[#F0B90B]/30" },
+                { label: "Strategy Approval Rating: 94.8%", color: "text-[#00C274]", bg: "bg-[#00C274]/10 border-[#00C274]/30" },
               ].map((b, i) => (
                 <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                   className={`border rounded-xl px-6 py-4 font-bold ${b.color} ${b.bg}`}>
@@ -712,10 +715,10 @@ export function Home() {
               { num:"05", icon: Eye, title:"Monitoring", desc:"24/7 continuous P&L tracking and circuit breakers" },
             ].map((step, i) => (
               <div key={i} className="flex lg:flex-col items-start lg:items-center gap-4 flex-1">
-                {i > 0 && <div className="hidden lg:block w-full h-px bg-[#F0B90B]/30 -mt-10 -mx-4" />}
+                {i > 0 && <div className="hidden lg:block w-full h-px bg-[#00C274]/30 -mt-10 -mx-4" />}
                 <div className="card-stealth p-6 text-center w-full">
-                  <div className="text-3xl font-black text-[#F0B90B] mb-3">{step.num}</div>
-                  <step.icon className="w-8 h-8 text-[#F0B90B] mx-auto mb-3" />
+                  <div className="text-3xl font-black text-[#00C274] mb-3">{step.num}</div>
+                  <step.icon className="w-8 h-8 text-[#00C274] mx-auto mb-3" />
                   <h3 className="font-bold text-white mb-2 text-sm">{step.title}</h3>
                   <p className="text-[#848E9C] text-xs leading-relaxed">{step.desc}</p>
                 </div>
@@ -741,8 +744,8 @@ export function Home() {
               { icon: Zap, title:"Instant Kill Switch", desc:"Automatic strategy deactivation when risk thresholds are breached." },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp} className="card-stealth p-6 group">
-                <div className="w-12 h-12 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-4 group-hover:border-[#F0B90B] transition-colors">
-                  <item.icon className="w-5 h-5 text-[#F0B90B]" />
+                <div className="w-12 h-12 rounded-lg bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center mb-4 group-hover:border-[#00C274] transition-colors">
+                  <item.icon className="w-5 h-5 text-[#00C274]" />
                 </div>
                 <h3 className="font-bold text-white mb-2">{item.title}</h3>
                 <p className="text-[#848E9C] text-sm leading-relaxed">{item.desc}</p>
@@ -750,7 +753,7 @@ export function Home() {
             ))}
           </motion.div>
           <div className="text-center card-stealth-gold p-4 rounded-xl">
-            <p className="text-[#F0B90B] font-bold">🔐 Your capital is protected by institutional-grade security systems. We never have withdrawal authority over your funds.</p>
+            <p className="text-[#00C274] font-bold">🔐 Your capital is protected by institutional-grade security systems. We never have withdrawal authority over your funds.</p>
           </div>
         </div>
       </section>
@@ -769,7 +772,7 @@ export function Home() {
             ].map((m, i) => (
               <div key={i} className="card-stealth p-8 text-center">
                 <h3 className="font-bold text-white text-xl mb-3">{m.market}</h3>
-                <p className="text-4xl font-black text-[#F0B90B] mb-1">{m.vol}</p>
+                <p className="text-4xl font-black text-[#00C274] mb-1">{m.vol}</p>
                 <p className="text-[#848E9C] text-xs uppercase tracking-wider mb-4">{m.period}</p>
                 <p className="text-[#848E9C] text-sm">{m.desc}</p>
               </div>
@@ -795,7 +798,7 @@ export function Home() {
             ].map((l, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="card-stealth p-6 flex gap-6 border-l-4 border-l-[#F0B90B]">
-                <div className="w-10 h-10 rounded-full bg-[#F0B90B] text-black flex items-center justify-center font-black text-lg shrink-0">{l.layer}</div>
+                <div className="w-10 h-10 rounded-full bg-[#00C274] text-black flex items-center justify-center font-black text-lg shrink-0">{l.layer}</div>
                 <div>
                   <h3 className="font-bold text-white mb-2">{l.title}</h3>
                   <p className="text-[#848E9C] text-sm leading-relaxed">{l.desc}</p>
@@ -826,7 +829,7 @@ export function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/auth/register" className="btn-gold inline-block">Get Started Now</Link>
+              <Link href="/auth/register" className="btn-green inline-block">Get Started Now</Link>
             </div>
             <div className="flex justify-center">
               <div className="w-64 h-[480px] bg-[#1E2329] border-2 border-[#2B3139] rounded-[36px] p-4 shadow-2xl relative">
@@ -834,13 +837,13 @@ export function Home() {
                 <div className="space-y-3">
                   <div className="bg-[#0B0E11] rounded-xl p-4 border border-[#2B3139]">
                     <p className="text-[#848E9C] text-xs mb-1">Portfolio Value</p>
-                    <p className="text-[#F0B90B] text-xl font-black">₹4,85,290</p>
+                    <p className="text-[#00C274] text-xl font-black">₹4,85,290</p>
                     <p className="text-[#02C076] text-xs">+7.2% MTD</p>
                   </div>
                   <div className="bg-[#0B0E11] rounded-xl p-3 h-24 border border-[#2B3139]">
                     <div className="h-full flex items-end gap-1">
                       {[40,55,45,70,60,85,75,90].map((h,i) => (
-                        <div key={i} className="flex-1 bg-[#F0B90B]/60 rounded-sm" style={{ height: `${h}%` }} />
+                        <div key={i} className="flex-1 bg-[#00C274]/60 rounded-sm" style={{ height: `${h}%` }} />
                       ))}
                     </div>
                   </div>
@@ -890,7 +893,7 @@ export function Home() {
                 <tr>
                   <th className="px-5 py-4 text-left text-[#EAECEF] font-bold">Feature</th>
                   <th className="px-5 py-4 text-center text-[#CF304A] font-bold">Manual Trading</th>
-                  <th className="px-5 py-4 text-center text-[#F0B90B] font-bold">ECMarketsIndia Algo</th>
+                  <th className="px-5 py-4 text-center text-[#00C274] font-bold">ECMarketsIndia Algo</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2B3139]">
@@ -931,7 +934,7 @@ export function Home() {
             ].map((course, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="card-stealth p-6 flex gap-5">
-                <BookOpen className="w-8 h-8 text-[#F0B90B] shrink-0 mt-1" />
+                <BookOpen className="w-8 h-8 text-[#00C274] shrink-0 mt-1" />
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="tag-medium text-xs">{course.level}</span>
@@ -939,7 +942,7 @@ export function Home() {
                   </div>
                   <h3 className="font-bold text-white mb-2">{course.title}</h3>
                   <p className="text-[#848E9C] text-sm mb-3">{course.desc}</p>
-                  <Link href="/auth/register" className="text-[#F0B90B] text-sm font-semibold hover:underline">Start Learning →</Link>
+                  <Link href="/auth/register" className="text-[#00C274] text-sm font-semibold hover:underline">Start Learning →</Link>
                 </div>
               </motion.div>
             ))}
@@ -961,12 +964,12 @@ export function Home() {
             ].map((post, i) => (
               <div key={i} className="card-stealth p-6 flex flex-col">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="bg-[#F0B90B]/10 text-[#F0B90B] border border-[#F0B90B]/30 rounded-full px-3 py-0.5 text-xs font-bold">{post.tag}</span>
+                  <span className="bg-[#00C274]/10 text-[#00C274] border border-[#00C274]/30 rounded-full px-3 py-0.5 text-xs font-bold">{post.tag}</span>
                   <span className="text-[#848E9C] text-xs">{post.date}</span>
                 </div>
                 <h3 className="font-bold text-white mb-3 leading-snug">{post.title}</h3>
                 <p className="text-[#848E9C] text-sm flex-1 mb-4">{post.excerpt}</p>
-                <Link href="/contact" className="text-[#F0B90B] text-sm font-semibold hover:underline">Read More →</Link>
+                <Link href="/contact" className="text-[#00C274] text-sm font-semibold hover:underline">Read More →</Link>
               </div>
             ))}
           </div>
@@ -988,7 +991,7 @@ export function Home() {
               { city:"Chennai", invested:"₹5,00,000", current:"₹6,92,000", pct:"+38.4%" },
             ].map((r, i) => (
               <div key={i} className="card-stealth p-6 text-center">
-                <p className="text-[#F0B90B] font-bold mb-4">{r.city}</p>
+                <p className="text-[#00C274] font-bold mb-4">{r.city}</p>
                 <p className="text-[#848E9C] text-xs mb-1">Invested</p>
                 <p className="text-white font-bold mb-3">{r.invested}</p>
                 <p className="text-[#848E9C] text-xs mb-1">Current Value</p>
@@ -1014,7 +1017,7 @@ export function Home() {
               { award:"Client's Choice Award", org:"Trustpilot" },
             ].map((a, i) => (
               <div key={i} className="card-stealth p-6 text-center">
-                <Star className="w-8 h-8 text-[#F0B90B] mx-auto mb-4" />
+                <Star className="w-8 h-8 text-[#00C274] mx-auto mb-4" />
                 <h3 className="font-bold text-white mb-2 text-sm leading-snug">{a.award}</h3>
                 <p className="text-[#848E9C] text-xs">{a.org}</p>
               </div>
@@ -1037,7 +1040,7 @@ export function Home() {
             ].map((s, i) => (
               <div key={i} className="card-stealth p-8 text-center">
                 <div className="w-14 h-14 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center mx-auto mb-5">
-                  <s.icon className="w-7 h-7 text-[#F0B90B]" />
+                  <s.icon className="w-7 h-7 text-[#00C274]" />
                 </div>
                 <h3 className="font-bold text-white text-lg mb-2">{s.title}</h3>
                 <p className="text-[#848E9C] text-sm mb-4">{s.detail}</p>
@@ -1056,13 +1059,13 @@ export function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="card-stealth-gold p-8">
-              <Building2 className="w-8 h-8 text-[#F0B90B] mb-4" />
+              <Building2 className="w-8 h-8 text-[#00C274] mb-4" />
               <h3 className="text-xl font-bold text-white mb-3">White-Label Solution</h3>
               <p className="text-[#848E9C] mb-6 text-sm">For brokers who want to offer algorithmic trading to their existing client base under their own brand.</p>
               <Link href="/contact" className="btn-ghost inline-block text-sm font-bold">Contact Partnership Team →</Link>
             </div>
             <div className="card-stealth-gold p-8">
-              <TrendingUp className="w-8 h-8 text-[#F0B90B] mb-4" />
+              <TrendingUp className="w-8 h-8 text-[#00C274] mb-4" />
               <h3 className="text-xl font-bold text-white mb-3">Fund Manager Access</h3>
               <p className="text-[#848E9C] mb-6 text-sm">For portfolio managers seeking institutional-grade algorithmic execution with custom risk parameters.</p>
               <Link href="/contact" className="btn-ghost inline-block text-sm font-bold">Schedule a Call →</Link>
@@ -1078,7 +1081,7 @@ export function Home() {
             <h2 className="text-3xl font-bold text-white mb-4">Built on a Foundation of Trust & Security</h2>
           </div>
           <div className="card-stealth-gold p-6 mb-8 text-center">
-            <p className="text-[#F0B90B] font-semibold text-sm">⚠️ Trading in financial markets involves significant risk and may not be suitable for all investors. Past performance does not guarantee future results. Only invest capital you can afford to risk.</p>
+            <p className="text-[#00C274] font-semibold text-sm">⚠️ Trading in financial markets involves significant risk and may not be suitable for all investors. Past performance does not guarantee future results. Only invest capital you can afford to risk.</p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {["AML Policy","KYC Verification","Segregated Funds","Data Security"].map((item, i) => (
@@ -1098,7 +1101,7 @@ export function Home() {
           <p className="text-black/80 text-xl mb-10">Join professionals utilizing precision execution and advanced quants.</p>
           <div className="flex justify-center gap-4">
             <Link href="/auth/register" className="bg-[#0B0E11] text-white px-8 py-4 rounded-md font-bold hover:bg-[#1E2329] transition">Open Account</Link>
-            <Link href="/contact" className="border-2 border-[#0B0E11] text-[#0B0E11] px-8 py-4 rounded-md font-bold hover:bg-[#0B0E11] hover:text-[#F0B90B] transition">Contact Sales</Link>
+            <Link href="/contact" className="border-2 border-[#0B0E11] text-[#0B0E11] px-8 py-4 rounded-md font-bold hover:bg-[#0B0E11] hover:text-[#00C274] transition">Contact Sales</Link>
           </div>
         </div>
       </section>

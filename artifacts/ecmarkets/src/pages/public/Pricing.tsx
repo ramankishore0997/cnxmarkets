@@ -130,7 +130,7 @@ export function Pricing() {
               <Link
                 href="/auth/register"
                 className={`w-full py-3.5 rounded-xl font-bold text-center transition-all ${
-                  plan.popular ? 'btn-gold' : 'btn-ghost'
+                  plan.popular ? 'btn-green' : 'btn-ghost'
                 }`}
               >
                 {plan.cta}

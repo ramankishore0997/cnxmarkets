@@ -93,18 +93,18 @@ export function Strategies() {
       {/* HERO */}
       <section className="animated-bg py-20 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#2B3139]/50 border border-[#F0B90B]/30 text-[#F0B90B] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[#2B3139]/50 border border-[#00C274]/30 text-[#00C274] px-4 py-1.5 rounded-full inline-flex text-sm font-semibold mb-6">
             <span className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse mr-2 mt-1"></span>
             {isLoading ? '...' : `${allStrategies.length} Active Strategies Available`}
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Institutional Algo<br /><span className="text-gradient-gold">Strategy Catalogue</span>
+            Institutional Algo<br /><span className="text-gradient-green">Strategy Catalogue</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-lg text-[#848E9C] max-w-2xl mx-auto mb-8">
             Browse our full library of battle-tested quantitative strategies. From low-risk systematic approaches to high-frequency momentum — there's a strategy for every risk profile.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register" className="btn-gold text-lg py-4 px-8">Start Trading</Link>
+            <Link href="/auth/register" className="btn-green text-lg py-4 px-8">Start Trading</Link>
             <Link href="/auth/login" className="btn-ghost text-lg py-4 px-8">Client Portal</Link>
           </motion.div>
         </div>
@@ -121,8 +121,8 @@ export function Strategies() {
               { label: 'Avg Monthly Return', value: isLoading ? null : (allStrategies.length ? `+${(allStrategies.reduce((sum: number, s: any) => sum + getDailyBase(s.name) * 30, 0) / allStrategies.length).toFixed(0)}%` : '—') },
             ].map((s, i) => (
               <div key={i} className="py-2">
-                <p className="text-2xl font-bold text-[#F0B90B]">
-                  {s.value === null ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#F0B90B]" /> : s.value}
+                <p className="text-2xl font-bold text-[#00C274]">
+                  {s.value === null ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#00C274]" /> : s.value}
                 </p>
                 <p className="text-sm text-[#848E9C] font-medium mt-1">{s.label}</p>
               </div>
@@ -149,7 +149,7 @@ export function Strategies() {
                 <button
                   key={f}
                   onClick={() => setActiveFilter(f)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold transition-all border ${activeFilter === f ? 'bg-[#F0B90B] text-black border-[#F0B90B]' : 'border-[#2B3139] text-[#848E9C] hover:border-[#F0B90B]/50 hover:text-white'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold transition-all border ${activeFilter === f ? 'bg-[#00C274] text-black border-[#00C274]' : 'border-[#2B3139] text-[#848E9C] hover:border-[#00C274]/50 hover:text-white'}`}
                 >
                   <Filter className="w-3.5 h-3.5" /> {filterLabels[f] || f}
                 </button>
@@ -159,7 +159,7 @@ export function Strategies() {
 
           {isLoading ? (
             <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-10 h-10 animate-spin text-[#F0B90B]" />
+              <Loader2 className="w-10 h-10 animate-spin text-[#00C274]" />
             </div>
           ) : filteredStrategies.length === 0 ? (
             <div className="text-center py-20">
@@ -169,7 +169,7 @@ export function Strategies() {
           ) : (
             <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredStrategies.map((s: any, i: number) => (
-                <motion.div key={s.id || i} variants={fadeUp} className="card-stealth p-6 flex flex-col hover:border-[#F0B90B]/30 transition-all group">
+                <motion.div key={s.id || i} variants={fadeUp} className="card-stealth p-6 flex flex-col hover:border-[#00C274]/30 transition-all group">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: RISK_BG[s.riskProfile], border: `1px solid ${RISK_COLORS[s.riskProfile]}40` }}>
                       <Zap className="w-5 h-5" style={{ color: RISK_COLORS[s.riskProfile] }} />
@@ -201,9 +201,9 @@ export function Strategies() {
                   )}
 
                   {/* ROI Banner */}
-                  <div className={`flex items-center justify-between rounded-xl px-3 py-2 mb-3 border ${isRazrName(s.name) ? 'bg-[#02C076]/10 border-[#02C076]/30' : 'bg-[#F0B90B]/10 border-[#F0B90B]/30'}`}>
+                  <div className={`flex items-center justify-between rounded-xl px-3 py-2 mb-3 border ${isRazrName(s.name) ? 'bg-[#02C076]/10 border-[#02C076]/30' : 'bg-[#00C274]/10 border-[#00C274]/30'}`}>
                     <div className="text-center">
-                      <p className={`text-base font-black tabular-nums ${isRazrName(s.name) ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>
+                      <p className={`text-base font-black tabular-nums ${isRazrName(s.name) ? 'text-[#02C076]' : 'text-[#00C274]'}`}>
                         +{liveStats[s.id] ? liveStats[s.id].dailyRate.toFixed(2) : getDailyBase(s.name).toFixed(2)}%
                       </p>
                       <p className="text-[9px] text-[#848E9C] font-semibold uppercase tracking-wide">Daily ROI ↻</p>
@@ -217,7 +217,7 @@ export function Strategies() {
 
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     <div className="bg-[#0B0E11] rounded-xl p-3 text-center border border-[#2B3139]">
-                      <p className="text-sm font-bold text-[#F0B90B] tabular-nums">
+                      <p className="text-sm font-bold text-[#00C274] tabular-nums">
                         {liveStats[s.id] ? liveStats[s.id].winRate.toFixed(1) : s.winRate}%
                       </p>
                       <p className="text-[10px] text-[#848E9C] mt-0.5">Win Rate ↻</p>
@@ -230,7 +230,7 @@ export function Strategies() {
                     </div>
                   </div>
 
-                  <Link href="/auth/register" className="btn-gold text-sm py-2.5 text-center w-full block">
+                  <Link href="/auth/register" className="btn-green text-sm py-2.5 text-center w-full block">
                     Get Started
                   </Link>
                 </motion.div>
@@ -252,7 +252,7 @@ export function Strategies() {
               <h2 className="text-3xl font-bold text-white mb-3">Full Strategy Comparison</h2>
               <p className="text-[#848E9C] max-w-2xl mx-auto">Side-by-side live metrics for all {allStrategies.length} active strategies</p>
               <div className="flex items-center justify-center gap-6 mt-4 text-xs text-[#848E9C]">
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F0B90B]" />Standard — 4% daily target</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#00C274]" />Standard — 4% daily target</span>
                 <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#02C076]" />RazrMarket — 8% daily target</span>
               </div>
             </div>
@@ -292,7 +292,7 @@ export function Strategies() {
                           <td className="px-4 py-3.5">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-white text-xs">{s.name}</span>
-                              {isRazr && <span className="text-[8px] font-black bg-[#F0B90B] text-black px-1.5 py-0.5 rounded uppercase tracking-wide shrink-0">FLAGSHIP</span>}
+                              {isRazr && <span className="text-[8px] font-black bg-[#00C274] text-black px-1.5 py-0.5 rounded uppercase tracking-wide shrink-0">FLAGSHIP</span>}
                             </div>
                           </td>
                           <td className="px-4 py-3.5">
@@ -302,12 +302,12 @@ export function Strategies() {
                             ₹{Number(s.minCapital).toLocaleString('en-IN')}
                           </td>
                           <td className="px-4 py-3.5">
-                            <span className="text-xs font-bold text-[#F0B90B] tabular-nums">
+                            <span className="text-xs font-bold text-[#00C274] tabular-nums">
                               {displayWinRate.toFixed(1)}%
                             </span>
                           </td>
                           <td className="px-4 py-3.5">
-                            <span className={`text-xs font-bold tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#F0B90B]'}`}>
+                            <span className={`text-xs font-bold tabular-nums ${isRazr ? 'text-[#02C076]' : 'text-[#00C274]'}`}>
                               +{displayDailyRate.toFixed(2)}%
                             </span>
                             <span className="text-[10px] text-[#848E9C] ml-1">/day</span>
@@ -356,7 +356,7 @@ export function Strategies() {
             ].map((card, i) => (
               <div key={i} className="card-stealth p-8 flex gap-5">
                 <div className="w-12 h-12 bg-[#0B0E11] border border-[#2B3139] rounded-xl flex items-center justify-center shrink-0">
-                  <card.icon className="w-6 h-6 text-[#F0B90B]" />
+                  <card.icon className="w-6 h-6 text-[#00C274]" />
                 </div>
                 <div>
                   <h3 className="font-bold text-white mb-3">{card.title}</h3>
@@ -374,7 +374,7 @@ export function Strategies() {
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Activate a Strategy?</h2>
           <p className="text-[#848E9C] mb-8">Open your account in minutes. No trading experience required.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register" className="btn-gold text-lg py-4 px-8">Create Account</Link>
+            <Link href="/auth/register" className="btn-green text-lg py-4 px-8">Create Account</Link>
             <Link href="/auth/login" className="btn-ghost text-lg py-4 px-8">Login to Portal</Link>
           </div>
         </div>

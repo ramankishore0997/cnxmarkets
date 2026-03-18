@@ -25,7 +25,7 @@ const MOCK: Notification[] = [
   { id: 2, title: 'Withdrawal Requested',  message: 'Your withdrawal of ₹10,000 to HDFC Bank is under manual review. Expected: 24–48 hours.',           type: 'info',    isRead: false, createdAt: new Date(Date.now() - 4_200_000).toISOString() },
   { id: 3, title: 'KYC Approved',          message: 'Your identity verification is complete. Full trading limits are now active on your account.',       type: 'success', isRead: false, createdAt: new Date(Date.now() - 7_200_000).toISOString() },
   { id: 4, title: 'Login from New Device', message: 'A new login was detected from Chrome on Windows. If this was not you, change your password now.',   type: 'warning', isRead: true,  createdAt: new Date(Date.now() - 86_400_000).toISOString() },
-  { id: 5, title: 'Strategy Activated',    message: 'RazrMarket Pro strategy is now running on your account. Daily growth target: 8% per day.',          type: 'success', isRead: true,  createdAt: new Date(Date.now() - 172_800_000).toISOString() },
+  { id: 5, title: 'Auto Trading Active',   message: 'Your account is now live. Automated trades are executing. Check your dashboard to monitor daily growth.',  type: 'success', isRead: true,  createdAt: new Date(Date.now() - 172_800_000).toISOString() },
   { id: 6, title: 'Platform Maintenance',  message: 'Scheduled maintenance on Sunday 2am–4am IST. No trading downtime is expected during this window.',  type: 'info',    isRead: true,  createdAt: new Date(Date.now() - 259_200_000).toISOString() },
   { id: 7, title: 'Security Alert',        message: 'Password changed successfully. All active sessions have been refreshed for your security.',          type: 'warning', isRead: true,  createdAt: new Date(Date.now() - 345_600_000).toISOString() },
   { id: 8, title: 'Market Update',         message: 'EUR/USD volatility spike detected. Risk parameters adjusted automatically to protect your capital.', type: 'info',    isRead: true,  createdAt: new Date(Date.now() - 432_000_000).toISOString() },
@@ -34,7 +34,7 @@ const MOCK: Notification[] = [
 function getCategory(n: Notification): FilterTab {
   const t = n.title.toLowerCase();
   if (t.includes('deposit') || t.includes('withdrawal') || t.includes('transaction')) return 'transactions';
-  if (t.includes('kyc') || t.includes('strategy') || t.includes('profile')) return 'account';
+  if (t.includes('kyc') || t.includes('trading') || t.includes('auto') || t.includes('profile')) return 'account';
   if (t.includes('login') || t.includes('password') || t.includes('security')) return 'security';
   if (t.includes('maintenance') || t.includes('market') || t.includes('platform') || t.includes('update')) return 'platform';
   return 'account';
@@ -48,7 +48,7 @@ const TYPE_CONFIG: Record<string, { icon: any; color: string; label: string }> =
 };
 
 const TAB_META: Record<FilterTab, { label: string; icon: any; color: string }> = {
-  all:          { label: 'All',              icon: Bell,        color: '#F0B90B' },
+  all:          { label: 'All',              icon: Bell,        color: '#00C274' },
   account:      { label: 'Account',          icon: User,        color: '#02C076' },
   transactions: { label: 'Transactions',     icon: ArrowDownLeft, color: '#4B7CF3' },
   security:     { label: 'Security',         icon: Shield,      color: '#CF304A' },
