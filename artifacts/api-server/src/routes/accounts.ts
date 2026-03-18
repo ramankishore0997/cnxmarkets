@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { accountsTable, tradesTable, transactionsTable, allocationsTable, strategiesTable, usersTable } from "@workspace/db/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { accountsTable, tradesTable, transactionsTable, allocationsTable, strategiesTable, usersTable, binaryTradesTable } from "@workspace/db/schema";
+import { eq, desc, and, ne, sql } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
 
 const RAZR_MIN_BALANCE = 20_000;
@@ -18,12 +18,29 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
 
     const rawDeposits    = account ? parseFloat(account.totalDeposits    as string) : 0;
     const rawWithdrawals = account ? parseFloat(account.totalWithdrawals as string) : 0;
-    const rawProfit      = account ? parseFloat(account.totalProfit      as string) : 0;
-    // Canonical balance = net deposited + net profit (prevents drift from incremental updates)
-    const balance = rawDeposits - rawWithdrawals + rawProfit;
-    // Auto-repair stored totalBalance if it drifted
-    if (account && Math.abs(parseFloat(account.totalBalance as string) - balance) > 0.01) {
-      await db.update(accountsTable).set({ totalBalance: balance.toFixed(2), updatedAt: new Date() }).where(eq(accountsTable.userId, req.user!.id));
+
+    // Compute total profit from actual trade records (algo + binary) — source of truth
+    const [algoAgg] = await db.select({
+      sum: sql<number>`coalesce(sum(profit::numeric), 0)::float`,
+    }).from(tradesTable).where(and(eq(tradesTable.userId, req.user!.id), eq(tradesTable.status, "closed")));
+
+    const [binAgg] = await db.select({
+      sum: sql<number>`coalesce(sum(profit::numeric), 0)::float`,
+    }).from(binaryTradesTable).where(and(
+      eq(binaryTradesTable.userId, req.user!.id),
+      ne(binaryTradesTable.status, "open"),
+    ));
+
+    const computedTotalProfit = (algoAgg?.sum ?? 0) + (binAgg?.sum ?? 0);
+    const balance = rawDeposits - rawWithdrawals + computedTotalProfit;
+
+    // Sync stored values if they drifted
+    if (account && Math.abs(parseFloat(account.totalProfit as string) - computedTotalProfit) > 0.01) {
+      await db.update(accountsTable).set({
+        totalProfit:  computedTotalProfit.toFixed(2),
+        totalBalance: Math.max(0, balance).toFixed(2),
+        updatedAt:    new Date(),
+      }).where(eq(accountsTable.userId, req.user!.id));
     }
 
     let assignedStrategyDetails = null;
@@ -58,9 +75,8 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
           dailyProfits[dateStr] = (dailyProfits[dateStr] || 0) + parseFloat(t.profit as string);
         }
       });
-      // Starting value = balance minus all-time profit (i.e. original capital)
-      const totalProfitVal = account ? parseFloat(account.totalProfit as string) : 0;
-      let running = Math.max(balance - totalProfitVal, 0);
+      // Starting value = deposits − withdrawals (original capital)
+      let running = Math.max(rawDeposits - rawWithdrawals, 0);
       if (running === 0) running = balance;
       for (let i = 30; i >= 0; i--) {
         const date = new Date(now);
@@ -73,9 +89,9 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
 
     res.json({
       totalBalance: balance,
-      totalProfit: account ? parseFloat(account.totalProfit as string) : 0,
-      totalDeposits: account ? parseFloat(account.totalDeposits as string) : 0,
-      totalWithdrawals: account ? parseFloat(account.totalWithdrawals as string) : 0,
+      totalProfit: computedTotalProfit,
+      totalDeposits: rawDeposits,
+      totalWithdrawals: rawWithdrawals,
       activeStrategies: allocations.length,
       assignedStrategyId: account?.assignedStrategyId ?? null,
       assignedStrategy: account?.assignedStrategy ?? null,
@@ -108,37 +124,55 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
 
 router.get("/performance", requireAuth, async (req: AuthRequest, res) => {
   try {
-    const trades = await db.select().from(tradesTable).where(eq(tradesTable.userId, req.user!.id));
-    const closed = trades.filter(t => t.status === "closed");
-    const winning = closed.filter(t => t.profit && parseFloat(t.profit as string) > 0);
-    const losing = closed.filter(t => t.profit && parseFloat(t.profit as string) <= 0);
+    const uid = req.user!.id;
 
+    // Algo closed trades
+    const algoTrades  = await db.select().from(tradesTable).where(and(eq(tradesTable.userId, uid), eq(tradesTable.status, "closed")));
+    const algoWinning = algoTrades.filter(t => t.profit && parseFloat(t.profit as string) > 0);
+    const algoLosing  = algoTrades.filter(t => t.profit && parseFloat(t.profit as string) <= 0);
+    const algoProfit  = algoTrades.reduce((s, t) => s + (t.profit ? parseFloat(t.profit as string) : 0), 0);
+
+    // Binary settled trades
+    const binTrades   = await db.select().from(binaryTradesTable).where(and(eq(binaryTradesTable.userId, uid), ne(binaryTradesTable.status, "open")));
+    const binWinning  = binTrades.filter(t => t.profit && parseFloat(t.profit as string) > 0);
+    const binLosing   = binTrades.filter(t => t.profit && parseFloat(t.profit as string) <= 0);
+    const binProfit   = binTrades.reduce((s, t) => s + (t.profit ? parseFloat(t.profit as string) : 0), 0);
+
+    const totalClosedTrades = algoTrades.length + binTrades.length;
+    const totalWins         = algoWinning.length + binWinning.length;
+    const totalLosses       = algoLosing.length + binLosing.length;
+    const totalProfit       = algoProfit + binProfit;
+    const winRate  = totalClosedTrades > 0 ? (totalWins   / totalClosedTrades) * 100 : 0;
+    const lossRate = totalClosedTrades > 0 ? (totalLosses / totalClosedTrades) * 100 : 0;
+
+    // Monthly returns (algo + binary combined)
     const monthlyReturnMap: Record<string, number> = {};
-    closed.forEach(t => {
+    [...algoTrades, ...binTrades].forEach((t: any) => {
       if (t.closedAt && t.profit) {
         const month = new Date(t.closedAt).toLocaleString("default", { month: "short" });
         monthlyReturnMap[month] = (monthlyReturnMap[month] || 0) + parseFloat(t.profit as string);
       }
     });
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const monthlyReturns = months.map(m => ({ month: m, return: monthlyReturnMap[m] || 0 }));
 
-    const winRate = closed.length > 0 ? (winning.length / closed.length) * 100 : 0;
-    const lossRate = closed.length > 0 ? (losing.length / closed.length) * 100 : 0;
-    const totalProfit = closed.reduce((s, t) => s + (t.profit ? parseFloat(t.profit as string) : 0), 0);
+    const grossWin  = [...algoTrades, ...binTrades].filter((t: any) => t.profit && parseFloat(t.profit as string) > 0).reduce((s: number, t: any) => s + parseFloat(t.profit as string), 0);
+    const grossLoss = Math.abs([...algoTrades, ...binTrades].filter((t: any) => t.profit && parseFloat(t.profit as string) < 0).reduce((s: number, t: any) => s + parseFloat(t.profit as string), 0));
 
     res.json({
       monthlyReturns,
-      winRate,
-      lossRate,
-      maxDrawdown: 0,
-      sharpeRatio: 0,
-      totalTrades: trades.length,
-      winningTrades: winning.length,
-      losingTrades: losing.length,
+      winRate, lossRate,
+      maxDrawdown: 0, sharpeRatio: 0,
+      totalTrades:   totalClosedTrades,
+      winningTrades: totalWins,
+      losingTrades:  totalLosses,
       totalProfit,
+      grossWin, grossLoss,
+      algoTrades:   algoTrades.length,
+      binaryTrades: binTrades.length,
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });

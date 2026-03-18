@@ -82,7 +82,12 @@ router.post("/place", requireAuth, async (req: AuthRequest, res) => {
       .where(eq(accountsTable.userId, userId))
       .limit(1);
 
-    if (!account || parseFloat(account.totalBalance as string) < amt) {
+    // Canonical balance check: deposits − withdrawals + profit
+    const canonicalBal =
+      parseFloat(account.totalDeposits    as string) -
+      parseFloat(account.totalWithdrawals as string) +
+      parseFloat(account.totalProfit      as string);
+    if (canonicalBal < amt) {
       res.status(400).json({ message: "Insufficient balance" });
       return;
     }
@@ -91,10 +96,12 @@ router.post("/place", requireAuth, async (req: AuthRequest, res) => {
     const payoutPct = settings ? parseFloat(settings.binaryPayoutPct as string) : 90;
     const houseEdge = settings?.houseEdgeEnabled ?? false;
 
-    const newBalance = parseFloat(account.totalBalance as string) - amt;
+    // Deduct investment via totalProfit so canonical formula stays in sync
+    const newTotalProfit = parseFloat(account.totalProfit as string) - amt;
+    const newBalance = canonicalBal - amt;
     await db
       .update(accountsTable)
-      .set({ totalBalance: newBalance.toFixed(2), updatedAt: new Date() })
+      .set({ totalBalance: Math.max(0, newBalance).toFixed(2), totalProfit: newTotalProfit.toFixed(2), updatedAt: new Date() })
       .where(eq(accountsTable.userId, userId));
 
     const entryPrice = getCurrentPrice(instrument);
@@ -159,21 +166,26 @@ router.post("/place", requireAuth, async (req: AuthRequest, res) => {
           })
           .where(eq(binaryTradesTable.id, tradeId));
 
-        if (payout > 0) {
+        // Always update account with canonical formula (wins AND losses)
+        {
           const [acc] = await db
             .select()
             .from(accountsTable)
             .where(eq(accountsTable.userId, userId))
             .limit(1);
           if (acc) {
-            const bal = parseFloat(acc.totalBalance as string) + payout;
-            const totalProfit = parseFloat(acc.totalProfit as string) + Math.max(profit, 0);
+            // Investment was already deducted from totalProfit on placement;
+            // now add back payout (0 for loss, amt+profit for win, amt for push)
+            const newTotalProfit = parseFloat(acc.totalProfit as string) + payout;
+            const deposits    = parseFloat(acc.totalDeposits    as string);
+            const withdrawals = parseFloat(acc.totalWithdrawals as string);
+            const newBalance  = deposits - withdrawals + newTotalProfit;
             await db
               .update(accountsTable)
               .set({
-                totalBalance: bal.toFixed(2),
-                totalProfit: totalProfit.toFixed(2),
-                updatedAt: new Date(),
+                totalBalance: Math.max(0, newBalance).toFixed(2),
+                totalProfit:  newTotalProfit.toFixed(2),
+                updatedAt:    new Date(),
               })
               .where(eq(accountsTable.userId, userId));
           }

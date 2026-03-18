@@ -1,5 +1,5 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { useGetDashboard, useGetTrades } from '@workspace/api-client-react';
+import { useGetDashboard, useGetPerformance } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import {
   Loader2, TrendingUp, TrendingDown, BarChart3, Target,
@@ -39,67 +39,40 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 
 export function Analytics() {
   const { data: dashboard, isLoading } = useGetDashboard({ ...getAuthOptions() });
-  const { data: tradesRaw } = useGetTrades({ ...getAuthOptions() });
+  const { data: perfRaw } = useGetPerformance({ ...getAuthOptions() });
 
-  const trades        = (tradesRaw as any[]) || [];
-  const closedTrades  = trades.filter((t: any) => t.status === 'closed' && t.profit !== undefined);
-  const openTrades    = trades.filter((t: any) => t.status === 'open');
+  const perf = perfRaw as any;
 
-  const totalTrades   = closedTrades.length;
-  const winningTrades = closedTrades.filter((t: any) => (t.profit || 0) > 0).length;
-  const losingTrades  = closedTrades.filter((t: any) => (t.profit || 0) <= 0).length;
+  // Use performance API data (algo + binary combined) — source of truth
+  const totalTrades   = perf?.totalTrades   ?? 0;
+  const winningTrades = perf?.winningTrades  ?? 0;
+  const losingTrades  = perf?.losingTrades   ?? 0;
+  const totalProfit   = (perf?.totalProfit   ?? dashboard?.totalProfit) ?? 0;
+  const grossWin      = perf?.grossWin  ?? 0;
+  const grossLoss     = perf?.grossLoss ?? 0;
   const winRate       = totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(1) : null;
-  const totalProfit   = dashboard?.totalProfit ?? 0;
   const totalBalance  = dashboard?.totalBalance ?? 0;
   const equityData    = dashboard?.equityCurve?.length ? dashboard.equityCurve : [];
 
-  const grossWin      = closedTrades.filter((t: any) => (t.profit || 0) > 0).reduce((s: number, t: any) => s + (t.profit || 0), 0);
-  const grossLoss     = Math.abs(closedTrades.filter((t: any) => (t.profit || 0) < 0).reduce((s: number, t: any) => s + (t.profit || 0), 0));
   const profitFactor  = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : grossWin > 0 ? '∞' : '—';
   const avgWin        = winningTrades > 0 ? (grossWin / winningTrades) : 0;
-  const avgLoss       = losingTrades > 0 ? (grossLoss / losingTrades) : 0;
+  const avgLoss       = losingTrades  > 0 ? (grossLoss / losingTrades) : 0;
 
-  const profitPercent = totalBalance > 0 && totalProfit !== 0
-    ? (((totalBalance) / (totalBalance - totalProfit) - 1) * 100).toFixed(1)
+  const deposits = dashboard?.totalDeposits ?? 0;
+  const profitPercent = deposits > 0 && totalProfit !== 0
+    ? ((totalProfit / deposits) * 100).toFixed(1)
     : null;
 
   const monthlyReturns = (() => {
-    if (closedTrades.length === 0) return [];
-    const byMonth: Record<string, number> = {};
-    closedTrades.forEach((t: any) => {
-      const d = new Date(t.closedAt || t.openedAt);
-      const key = `${d.getFullYear()}-${d.getMonth()}`;
-      byMonth[key] = (byMonth[key] || 0) + (t.profit || 0);
-    });
-    return Object.entries(byMonth)
-      .map(([key, profit]) => {
-        const [year, month] = key.split('-').map(Number);
-        return { month: `${MONTH_NAMES[month]} ${year.toString().slice(-2)}`, return: Number(profit.toFixed(2)) };
-      })
-      .sort((a, b) => {
-        const ai = MONTH_NAMES.findIndex(m => a.month.startsWith(m));
-        const bi = MONTH_NAMES.findIndex(m => b.month.startsWith(m));
-        return ai - bi;
-      })
-      .slice(-12);
+    if (!perf?.monthlyReturns?.length) return [];
+    return perf.monthlyReturns.filter((m: any) => m.return !== 0);
   })();
 
-  const bestMonth      = monthlyReturns.length ? monthlyReturns.reduce((a, b) => a.return > b.return ? a : b) : null;
-  const worstMonth     = monthlyReturns.length ? monthlyReturns.reduce((a, b) => a.return < b.return ? a : b) : null;
-  const positiveMonths = monthlyReturns.filter(m => m.return > 0).length;
+  const bestMonth      = monthlyReturns.length ? monthlyReturns.reduce((a: any, b: any) => a.return > b.return ? a : b) : null;
+  const worstMonth     = monthlyReturns.length ? monthlyReturns.reduce((a: any, b: any) => a.return < b.return ? a : b) : null;
+  const positiveMonths = monthlyReturns.filter((m: any) => m.return > 0).length;
 
-  const byInstrument: Record<string, { wins: number; losses: number; profit: number; trades: number }> = {};
-  closedTrades.forEach((t: any) => {
-    const inst = t.instrument || 'Unknown';
-    if (!byInstrument[inst]) byInstrument[inst] = { wins: 0, losses: 0, profit: 0, trades: 0 };
-    byInstrument[inst].trades++;
-    byInstrument[inst].profit += (t.profit || 0);
-    if ((t.profit || 0) > 0) byInstrument[inst].wins++;
-    else byInstrument[inst].losses++;
-  });
-  const instrumentList = Object.entries(byInstrument)
-    .map(([name, d]) => ({ name, ...d, winRate: d.trades > 0 ? Math.round((d.wins / d.trades) * 100) : 0 }))
-    .sort((a, b) => b.profit - a.profit);
+  const instrumentList: any[] = [];
 
   const stats = [
     { label: 'Total Return',   color: '#00C274', value: profitPercent !== null ? `+${profitPercent}%` : '—', icon: TrendingUp },
