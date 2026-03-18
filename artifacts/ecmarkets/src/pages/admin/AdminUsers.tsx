@@ -7,8 +7,47 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Users, ShieldCheck, ShieldOff, Search, Loader2,
   ChevronDown, ChevronUp, DollarSign, Target, Save,
-  KeyRound, Eye, EyeOff, Check, X, CreditCard, Hash, TrendingUp
+  KeyRound, Eye, EyeOff, Check, X, CreditCard, Hash, TrendingUp, FileImage
 } from 'lucide-react';
+
+const API_BASE = '';
+
+function DocThumb({ url, label }: { url: string | null | undefined; label: string }) {
+  const [preview, setPreview] = useState(false);
+  if (!url) return (
+    <div className="rounded-lg border border-dashed border-[#2A2D3A] bg-[#0d1117] flex flex-col items-center justify-center gap-1 p-2" style={{ minHeight: 64 }}>
+      <FileImage className="w-4 h-4 text-[#3D4450]" />
+      <p className="text-[10px] text-[#3D4450]">{label}</p>
+      <p className="text-[9px] text-[#3D4450]">Not uploaded</p>
+    </div>
+  );
+  const fullUrl = `${API_BASE}${url}`;
+  return (
+    <>
+      {preview && (
+        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4" onClick={() => setPreview(false)}>
+          <div className="relative max-w-xl w-full" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setPreview(false)} className="absolute -top-9 right-0 text-white hover:text-[#CF304A]"><X className="w-6 h-6" /></button>
+            <p className="text-xs text-[#848E9C] mb-2 text-center">{label}</p>
+            <img src={fullUrl} alt={label} className="w-full rounded-xl shadow-2xl" />
+          </div>
+        </div>
+      )}
+      <button
+        type="button"
+        onClick={() => setPreview(true)}
+        className="rounded-lg border border-[#1A1D27] bg-[#0d1117] hover:border-[#00C274]/40 transition-colors overflow-hidden group relative"
+        style={{ minHeight: 64 }}
+      >
+        <img src={fullUrl} alt={label} className="w-full h-full object-cover" style={{ maxHeight: 80 }} />
+        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <Eye className="w-4 h-4 text-white" />
+        </div>
+        <p className="text-[9px] text-[#848E9C] text-center py-1 bg-[#0d1117]">{label}</p>
+      </button>
+    </>
+  );
+}
 
 export function AdminUsers() {
   const queryClient = useQueryClient();
@@ -333,21 +372,32 @@ export function AdminUsers() {
                         </p>
 
                         {userKycDoc && (
-                          <div className="grid grid-cols-2 gap-3 mb-3">
-                            <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
-                              <CreditCard className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
-                              <div>
-                                <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">PAN</p>
-                                <p className="text-white font-mono text-sm font-bold">{userKycDoc.panNumber || '—'}</p>
+                          <div className="space-y-3 mb-3">
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
+                                <CreditCard className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                                <div>
+                                  <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">PAN</p>
+                                  <p className="text-white font-mono text-sm font-bold">{userKycDoc.panNumber || '—'}</p>
+                                </div>
+                              </div>
+                              <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
+                                <Hash className="w-3.5 h-3.5 text-[#2a6df4] shrink-0" />
+                                <div>
+                                  <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">Aadhaar</p>
+                                  <p className="text-white font-mono text-sm font-bold">
+                                    {userKycDoc.aadharNumber ? `XXXX XXXX ${String(userKycDoc.aadharNumber).slice(-4)}` : '—'}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                            <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
-                              <Hash className="w-3.5 h-3.5 text-[#2a6df4] shrink-0" />
-                              <div>
-                                <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">Aadhaar</p>
-                                <p className="text-white font-mono text-sm font-bold">
-                                  {userKycDoc.aadharNumber ? `XXXX XXXX ${String(userKycDoc.aadharNumber).slice(-4)}` : '—'}
-                                </p>
+                            <div>
+                              <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider mb-2">Document Photos (click to view)</p>
+                              <div className="grid grid-cols-4 gap-2">
+                                <DocThumb url={userKycDoc.aadharCardFrontUrl} label="Aadhaar Front" />
+                                <DocThumb url={userKycDoc.aadharCardBackUrl}  label="Aadhaar Back"  />
+                                <DocThumb url={userKycDoc.panCardFrontUrl}    label="PAN Front"     />
+                                <DocThumb url={userKycDoc.panCardBackUrl}     label="PAN Back"      />
                               </div>
                             </div>
                           </div>
