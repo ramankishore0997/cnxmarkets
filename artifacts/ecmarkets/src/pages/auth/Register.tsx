@@ -29,8 +29,8 @@ function getPasswordStrength(password: string) {
   if (/[^A-Za-z0-9]/.test(password)) score++;
   const map = [
     { label: 'Weak', color: '#CF304A' },
-    { label: 'Fair', color: '#F0B90B' },
-    { label: 'Good', color: '#F0B90B' },
+    { label: 'Fair', color: '#00C274' },
+    { label: 'Good', color: '#00C274' },
     { label: 'Strong', color: '#02C076' },
     { label: 'Very Strong', color: '#02C076' },
   ];
@@ -88,8 +88,8 @@ export function Register() {
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>, hasError: boolean) => {
     if (!hasError) {
-      e.target.style.border = '1px solid #F0B90B';
-      e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
+      e.target.style.border = '1px solid #00C274';
+      e.target.style.boxShadow = '0 0 0 3px rgba(0,194,116,0.1)';
     }
   };
 
@@ -116,7 +116,7 @@ export function Register() {
         <div
           className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: `radial-gradient(circle at 20% 80%, #F0B90B22 0%, transparent 50%),
+            backgroundImage: `radial-gradient(circle at 20% 80%, #00C27422 0%, transparent 50%),
               radial-gradient(circle at 80% 20%, #02C07611 0%, transparent 50%)`
           }}
         />
@@ -125,7 +125,7 @@ export function Register() {
             <div className="flex items-center gap-3 cursor-pointer">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #F0B90B, #d4a100)', boxShadow: '0 0 20px rgba(240,185,11,0.3)' }}
+                style={{ background: 'linear-gradient(135deg, #00C274, #00a863)', boxShadow: '0 0 20px rgba(0,194,116,0.3)' }}
               >
                 <TrendingUp className="w-5 h-5 text-black" />
               </div>
@@ -137,7 +137,7 @@ export function Register() {
           <div>
             <h2 className="text-4xl font-bold text-white leading-tight mb-4">
               Start Trading<br />
-              <span style={{ color: '#F0B90B' }}>Smarter Today</span>
+              <span style={{ color: '#00C274' }}>Smarter Today</span>
             </h2>
             <p style={{ color: '#848E9C' }} className="text-lg leading-relaxed">
               Join thousands of traders using ECMarketsIndia's algorithmic platform to grow their wealth.
@@ -171,7 +171,7 @@ export function Register() {
               <div className="flex items-center gap-3 cursor-pointer">
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #F0B90B, #d4a100)' }}
+                  style={{ background: 'linear-gradient(135deg, #00C274, #00a863)' }}
                 >
                   <TrendingUp className="w-4 h-4 text-black" />
                 </div>
@@ -348,21 +348,21 @@ export function Register() {
               className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 mt-2"
               style={{
                 background: registerMutation.isPending
-                  ? 'rgba(240,185,11,0.5)'
-                  : 'linear-gradient(135deg, #F0B90B 0%, #d4a100 100%)',
+                  ? 'rgba(0,194,116,0.5)'
+                  : 'linear-gradient(135deg, #00C274 0%, #00a863 100%)',
                 color: '#0B0E11',
-                boxShadow: registerMutation.isPending ? 'none' : '0 4px 20px rgba(240,185,11,0.3)',
+                boxShadow: registerMutation.isPending ? 'none' : '0 4px 20px rgba(0,194,116,0.3)',
                 cursor: registerMutation.isPending ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={(e) => {
                 if (!registerMutation.isPending) {
                   (e.currentTarget).style.transform = 'translateY(-1px)';
-                  (e.currentTarget).style.boxShadow = '0 6px 24px rgba(240,185,11,0.45)';
+                  (e.currentTarget).style.boxShadow = '0 6px 24px rgba(0,194,116,0.45)';
                 }
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget).style.transform = 'translateY(0)';
-                (e.currentTarget).style.boxShadow = registerMutation.isPending ? 'none' : '0 4px 20px rgba(240,185,11,0.3)';
+                (e.currentTarget).style.boxShadow = registerMutation.isPending ? 'none' : '0 4px 20px rgba(0,194,116,0.3)';
               }}
             >
               {registerMutation.isPending ? (
@@ -375,9 +375,9 @@ export function Register() {
 
             <p className="text-xs text-center" style={{ color: '#848E9C' }}>
               By creating an account, you agree to our{' '}
-              <Link href="#" className="hover:underline" style={{ color: '#F0B90B' }}>Terms of Service</Link>
+              <Link href="#" className="hover:underline" style={{ color: '#00C274' }}>Terms of Service</Link>
               {' '}and{' '}
-              <Link href="#" className="hover:underline" style={{ color: '#F0B90B' }}>Privacy Policy</Link>.
+              <Link href="#" className="hover:underline" style={{ color: '#00C274' }}>Privacy Policy</Link>.
             </p>
           </form>
 
@@ -388,7 +388,7 @@ export function Register() {
           <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid #2B3139' }}>
             <p style={{ color: '#848E9C' }} className="text-sm">
               Already have an account?{' '}
-              <Link href="/auth/login" className="font-semibold hover:underline transition-colors" style={{ color: '#F0B90B' }}>
+              <Link href="/auth/login" className="font-semibold hover:underline transition-colors" style={{ color: '#00C274' }}>
                 Sign in
               </Link>
             </p>
