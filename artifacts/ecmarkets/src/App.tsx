@@ -38,6 +38,8 @@ import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
 import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 import { BinaryTrading } from "@/pages/client/BinaryTrading";
+import { SelectStrategy } from "@/pages/client/SelectStrategy";
+import { Strategies } from "@/pages/public/Strategies";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/faq" component={Faq} />
       <Route path="/contact" component={Contact} />
+      <Route path="/strategies" component={Strategies} />
       <Route path="/download-app" component={DownloadApp} />
       <Route path="/legal/:page" component={Home} />
 
@@ -95,6 +98,9 @@ function Router() {
       </Route>
       <Route path="/dashboard/binary">
         <ProtectedRoute component={BinaryTrading} />
+      </Route>
+      <Route path="/dashboard/strategies">
+        <ProtectedRoute component={SelectStrategy} />
       </Route>
 
       {/* Admin Routes */}
