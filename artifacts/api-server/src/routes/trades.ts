@@ -42,7 +42,7 @@ router.get("/", requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
-// Paginated trade history with date-range filtering
+// Paginated algo trade history with date-range filtering + full-period stats
 router.get("/history", requireAuth, async (req: AuthRequest, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
@@ -51,7 +51,10 @@ router.get("/history", requireAuth, async (req: AuthRequest, res) => {
     const fromDate = req.query.from ? new Date(req.query.from as string) : undefined;
     const toDate = req.query.to ? new Date(req.query.to as string) : undefined;
 
-    const conditions = [eq(tradesTable.userId, req.user!.id)];
+    const conditions = [
+      eq(tradesTable.userId, req.user!.id),
+      eq(tradesTable.status, "closed" as string),
+    ];
     if (fromDate) conditions.push(gte(tradesTable.closedAt, fromDate));
     if (toDate) {
       const end = new Date(toDate);
@@ -61,8 +64,13 @@ router.get("/history", requireAuth, async (req: AuthRequest, res) => {
 
     const where = and(...conditions);
 
-    const [{ total }] = await db
-      .select({ total: sql<number>`count(*)::int` })
+    // Full-period aggregate stats (across ALL pages)
+    const [aggRow] = await db
+      .select({
+        total:      sql<number>`count(*)::int`,
+        periodPnl:  sql<number>`coalesce(sum(profit::numeric), 0)::float`,
+        wins:       sql<number>`count(*) filter (where profit::numeric >= 0)::int`,
+      })
       .from(tradesTable)
       .where(where);
 
@@ -76,11 +84,13 @@ router.get("/history", requireAuth, async (req: AuthRequest, res) => {
       .offset(offset);
 
     res.json({
-      trades: rows.map(({ trade, strategy }) => mapTrade(trade, strategy)),
-      total,
+      trades:     rows.map(({ trade, strategy }) => mapTrade(trade, strategy)),
+      total:      aggRow.total,
       page,
-      pages: Math.ceil(total / limit),
+      pages:      Math.ceil(aggRow.total / limit),
       limit,
+      periodPnl:  aggRow.periodPnl,
+      periodWins: aggRow.wins,
     });
   } catch (err) {
     console.error(err);

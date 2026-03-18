@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { binaryTradesTable, accountsTable, adminSettingsTable } from "@workspace/db/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import { requireAuth, requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { getCurrentPrice } from "../services/priceService.js";
 import type { Server as SocketIOServer } from "socket.io";
@@ -243,30 +243,64 @@ router.get("/active", requireAuth, async (req: AuthRequest, res) => {
 
 router.get("/history", requireAuth, async (req: AuthRequest, res) => {
   try {
+    const page  = Math.max(1, parseInt(req.query.page  as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+    const offset = (page - 1) * limit;
+    const fromDate = req.query.from ? new Date(req.query.from as string) : undefined;
+    const toDate   = req.query.to   ? new Date(req.query.to   as string) : undefined;
+
+    const conditions: any[] = [eq(binaryTradesTable.userId, req.user!.id)];
+    if (fromDate) conditions.push(gte(binaryTradesTable.closedAt, fromDate));
+    if (toDate) {
+      const end = new Date(toDate);
+      end.setHours(23, 59, 59, 999);
+      conditions.push(lte(binaryTradesTable.closedAt, end));
+    }
+
+    const where = and(...conditions);
+
+    // Full-period aggregate (all pages)
+    const [aggRow] = await db
+      .select({
+        total:     sql<number>`count(*)::int`,
+        periodPnl: sql<number>`coalesce(sum(profit::numeric), 0)::float`,
+        wins:      sql<number>`count(*) filter (where profit::numeric > 0)::int`,
+      })
+      .from(binaryTradesTable)
+      .where(where);
+
     const trades = await db
       .select()
       .from(binaryTradesTable)
-      .where(eq(binaryTradesTable.userId, req.user!.id))
-      .orderBy(desc(binaryTradesTable.openedAt))
-      .limit(50);
+      .where(where)
+      .orderBy(desc(binaryTradesTable.closedAt))
+      .limit(limit)
+      .offset(offset);
 
-    res.json(
-      trades.map((t) => ({
-        id: t.id,
-        instrument: t.instrument,
-        direction: t.direction,
-        entryPrice: parseFloat(t.entryPrice as string),
+    res.json({
+      trades: trades.map((t) => ({
+        id:           t.id,
+        instrument:   t.instrument,
+        direction:    t.direction,
+        entryPrice:   parseFloat(t.entryPrice   as string),
         closingPrice: t.closingPrice ? parseFloat(t.closingPrice as string) : null,
-        amount: parseFloat(t.amount as string),
-        duration: t.duration,
-        payoutPct: parseFloat(t.payoutPct as string),
-        profit: t.profit ? parseFloat(t.profit as string) : null,
-        status: t.status,
-        openedAt: t.openedAt,
-        closedAt: t.closedAt,
-      }))
-    );
-  } catch {
+        amount:       parseFloat(t.amount       as string),
+        duration:     t.duration,
+        payoutPct:    parseFloat(t.payoutPct    as string),
+        profit:       t.profit ? parseFloat(t.profit as string) : null,
+        status:       t.status,
+        openedAt:     t.openedAt,
+        closedAt:     t.closedAt,
+      })),
+      total:      aggRow.total,
+      page,
+      pages:      Math.ceil(aggRow.total / limit),
+      limit,
+      periodPnl:  aggRow.periodPnl,
+      periodWins: aggRow.wins,
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
