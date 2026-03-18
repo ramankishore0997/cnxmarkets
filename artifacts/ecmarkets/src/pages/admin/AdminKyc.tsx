@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Check, X, Loader2, ShieldCheck, User, Calendar,
   CreditCard, Hash, ImageIcon, Trash2, AlertTriangle, ExternalLink,
-  FileText, CheckCircle2
+  FileText, CheckCircle2, RefreshCw
 } from 'lucide-react';
 
 function DocThumbnail({ url, label }: { url?: string | null; label: string }) {
@@ -80,7 +80,16 @@ export function AdminKyc() {
   const [rejectingId, setRejectingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const { data: docs, isLoading } = useGetAdminKyc({ ...getAuthOptions() });
+  const { data: docs, isLoading, isFetching, isError, refetch } = useGetAdminKyc({
+    ...getAuthOptions(),
+    query: {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      refetchInterval: 15000,
+      staleTime: 0,
+      retry: 2,
+    }
+  });
 
   const updateMutation = useUpdateAdminKyc({
     ...getAuthOptions(),
@@ -139,11 +148,33 @@ export function AdminKyc() {
     </AdminLayout>
   );
 
+  if (isError) return (
+    <AdminLayout>
+      <div className="flex flex-col items-center justify-center h-64 gap-4">
+        <AlertTriangle className="w-10 h-10 text-[#CF304A]" />
+        <p className="text-white font-semibold">Failed to load KYC records</p>
+        <button onClick={() => refetch()} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00C274]/20 text-[#00C274] font-bold hover:bg-[#00C274]/30 transition-all">
+          <RefreshCw className="w-4 h-4" /> Try Again
+        </button>
+      </div>
+    </AdminLayout>
+  );
+
   return (
     <AdminLayout>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">KYC Approvals</h1>
-        <p className="text-[#848E9C] font-medium">Review PAN & Aadhar identity documents submitted by clients</p>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">KYC Approvals</h1>
+          <p className="text-[#848E9C] font-medium">Review PAN & Aadhar identity documents submitted by clients</p>
+        </div>
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0C0E15] border border-[#1A1D27] text-[#848E9C] hover:text-white hover:border-[#00C274]/40 transition-all font-semibold text-sm shrink-0 disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-[#00C274]' : ''}`} />
+          {isFetching ? 'Refreshing...' : 'Refresh'}
+        </button>
       </div>
 
       {/* Stats */}
@@ -434,9 +465,21 @@ export function AdminKyc() {
 
       {allDocs.length === 0 && (
         <div className="card-stealth p-16 text-center">
-          <ShieldCheck className="w-16 h-16 text-[#181B23] mx-auto mb-6" />
-          <h3 className="text-xl font-bold text-white mb-2">No KYC submissions yet</h3>
-          <p className="text-[#848E9C]">Client documents will appear here as soon as they submit their PAN & Aadhar through the dashboard.</p>
+          {isFetching ? (
+            <>
+              <Loader2 className="w-10 h-10 text-[#00C274] animate-spin mx-auto mb-4" />
+              <p className="text-[#848E9C]">Loading KYC records...</p>
+            </>
+          ) : (
+            <>
+              <ShieldCheck className="w-16 h-16 text-[#181B23] mx-auto mb-6" />
+              <h3 className="text-xl font-bold text-white mb-2">No KYC submissions yet</h3>
+              <p className="text-[#848E9C]">Client documents will appear here as soon as they submit their PAN & Aadhar through the dashboard.</p>
+              <button onClick={() => refetch()} className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0C0E15] border border-[#1A1D27] text-[#848E9C] hover:text-[#00C274] hover:border-[#00C274]/30 mx-auto transition-all text-sm font-semibold">
+                <RefreshCw className="w-3.5 h-3.5" /> Check for new submissions
+              </button>
+            </>
+          )}
         </div>
       )}
     </AdminLayout>
