@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
   ShieldCheck, Loader2, CreditCard, AlertTriangle,
-  CheckCircle2, Hash, Upload, Eye, X, FileImage,
+  CheckCircle2, Hash, Upload, Eye, X, FileImage, RefreshCw,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useRef } from 'react';
@@ -52,14 +52,15 @@ async function submitKycWithFiles(data: FormData, files: DocFiles) {
 }
 
 function FileUploadBox({
-  label, fieldKey, file, onSet, preview, onPreview,
+  label, fieldKey, file, onSet, onPreview, required, allUploaded,
 }: {
   label: string;
   fieldKey: keyof DocFiles;
   file: File | null;
   onSet: (k: keyof DocFiles, f: File | null) => void;
-  preview: string | null;
   onPreview: (url: string | null) => void;
+  required?: boolean;
+  allUploaded?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -77,9 +78,15 @@ function FileUploadBox({
     if (f) handleFile(f);
   };
 
+  const missing = !file && required && allUploaded === false;
+
   return (
     <div className="space-y-1.5">
-      <p className="text-xs font-semibold text-[#EAECEF]">{label}</p>
+      <p className="text-xs font-semibold text-[#EAECEF] flex items-center gap-1.5">
+        {label}
+        {!file && <span className="text-[#CF304A] text-[10px]">required</span>}
+        {file  && <CheckCircle2 className="w-3 h-3 text-[#00C274]" />}
+      </p>
       <div
         onDragOver={e => e.preventDefault()}
         onDrop={handleDrop}
@@ -87,7 +94,9 @@ function FileUploadBox({
         className={`relative rounded-xl border-2 border-dashed transition-all cursor-pointer
           ${file
             ? 'border-[#00C274]/60 bg-[#00C274]/5'
-            : 'border-[#2A2D3A] bg-[#0C0E15] hover:border-[#00C274]/40 hover:bg-[#00C274]/5'
+            : missing
+              ? 'border-[#CF304A]/50 bg-[#CF304A]/5'
+              : 'border-[#2A2D3A] bg-[#0C0E15] hover:border-[#00C274]/40 hover:bg-[#00C274]/5'
           }`}
         style={{ minHeight: 90 }}
       >
@@ -119,8 +128,8 @@ function FileUploadBox({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-1.5 py-5 px-3 text-center">
-            <Upload className="w-5 h-5 text-[#848E9C]" />
-            <p className="text-xs text-[#848E9C]">Click or drag & drop</p>
+            <Upload className={`w-5 h-5 ${missing ? 'text-[#CF304A]/60' : 'text-[#848E9C]'}`} />
+            <p className={`text-xs ${missing ? 'text-[#CF304A]/80' : 'text-[#848E9C]'}`}>Click or drag & drop</p>
             <p className="text-[10px] text-[#3D4450]">JPG, PNG, WEBP · Max 10 MB</p>
           </div>
         )}
@@ -141,17 +150,31 @@ export function Kyc() {
   const queryClient = useQueryClient();
   const { data: kycData, isLoading } = useGetKyc({ ...getAuthOptions() });
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const [files, setFiles] = useState<DocFiles>({ aadhaarFront: null, aadhaarBack: null, panFront: null, panBack: null });
   const [submitting, setSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
   const setFile = (k: keyof DocFiles, f: File | null) => setFiles(prev => ({ ...prev, [k]: f }));
 
+  const panValue    = watch('panNumber', '');
+  const aadharValue = watch('aadharNumber', '');
+
+  const uploadedCount = [files.aadhaarFront, files.aadhaarBack, files.panFront, files.panBack].filter(Boolean).length;
+  const allFilesUploaded = uploadedCount === 4;
+  const allFieldsValid   = panValue.length === 10 && aadharValue.length === 12;
+  const canSubmit = allFilesUploaded && allFieldsValid;
+
   const onSubmit = async (data: FormData) => {
+    setAttemptedSubmit(true);
+    if (!allFilesUploaded) {
+      toast({ title: 'Photos required', description: `Please upload all 4 document photos (${uploadedCount}/4 uploaded).`, variant: 'destructive' });
+      return;
+    }
     setSubmitting(true);
     try {
       await submitKycWithFiles(data, files);
@@ -171,7 +194,10 @@ export function Kyc() {
   );
 
   const kycDoc = kycData as any;
-  const isSubmitted = kycDoc?.status && kycDoc.status !== 'rejected';
+
+  const isApprovedOrUnderReview = kycDoc?.status === 'submitted' || kycDoc?.status === 'approved';
+  const wasResetToPending = kycDoc && kycDoc.status === 'pending' && kycDoc.panNumber;
+  const isRejected = kycDoc?.status === 'rejected';
 
   return (
     <DashboardLayout>
@@ -198,7 +224,7 @@ export function Kyc() {
           <p className="text-[#848E9C] font-medium">Submit your PAN & Aadhaar details + photos to unlock full trading access</p>
         </div>
 
-        {isSubmitted ? (
+        {isApprovedOrUnderReview ? (
           <div className="card-stealth p-12 text-center">
             <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center ${kycDoc.status === 'approved' ? 'bg-[#02C076]/20' : 'bg-[#00C274]/20'}`}>
               <ShieldCheck className={`w-10 h-10 ${kycDoc.status === 'approved' ? 'text-[#02C076]' : 'text-[#00C274]'}`} />
@@ -241,12 +267,25 @@ export function Kyc() {
           </div>
         ) : (
           <div className="card-stealth p-8">
-            {kycDoc?.status === 'rejected' && (
+
+            {/* Rejected banner */}
+            {isRejected && (
               <div className="bg-[#CF304A]/10 border border-[#CF304A]/30 text-[#CF304A] p-4 rounded-xl mb-6 flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 mt-0.5 shrink-0" />
                 <div>
-                  <strong className="block mb-1">Verification Failed</strong>
-                  <p className="text-sm">{kycDoc.rejectionReason || 'Your details did not match our records. Please resubmit.'}</p>
+                  <strong className="block mb-1">Verification Failed — Please Resubmit</strong>
+                  <p className="text-sm opacity-90">{kycDoc.rejectionReason || 'Your documents did not pass verification. Please upload clear, valid photos and resubmit.'}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Reset-to-pending banner */}
+            {wasResetToPending && !isRejected && (
+              <div className="bg-[#F0B90B]/10 border border-[#F0B90B]/30 text-[#F0B90B] p-4 rounded-xl mb-6 flex items-start gap-3">
+                <RefreshCw className="w-5 h-5 mt-0.5 shrink-0" />
+                <div>
+                  <strong className="block mb-1">KYC Reset — Resubmission Required</strong>
+                  <p className="text-sm opacity-90">Our team has requested you to resubmit your KYC documents. Please fill in your details and upload all 4 photos again.</p>
                 </div>
               </div>
             )}
@@ -295,66 +334,88 @@ export function Kyc() {
                 )}
               </div>
 
-              {/* Divider */}
-              <div className="border-t border-[#1A1D27] pt-2">
-                <p className="text-sm font-semibold text-[#EAECEF] mb-1 flex items-center gap-2">
-                  <FileImage className="w-4 h-4 text-[#848E9C]" />
-                  Document Photos <span className="text-[#848E9C] font-normal text-xs">(JPG/PNG · Max 10 MB each)</span>
-                </p>
-                <p className="text-xs text-[#848E9C] mb-4">Upload clear, readable photos of all 4 documents for faster approval.</p>
+              {/* Document Photos */}
+              <div className="border-t border-[#1A1D27] pt-4">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
+                    <FileImage className="w-4 h-4 text-[#848E9C]" />
+                    Document Photos <span className="text-[#CF304A]">*</span>
+                  </p>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${
+                    allFilesUploaded
+                      ? 'bg-[#00C274]/20 text-[#00C274]'
+                      : 'bg-[#1E2329] text-[#848E9C]'
+                  }`}>
+                    {uploadedCount}/4 uploaded
+                  </span>
+                </div>
+                <p className="text-xs text-[#848E9C] mb-4">All 4 photos are required. Upload clear, readable photos for faster approval.</p>
 
                 {/* Aadhaar photos */}
                 <p className="text-xs font-semibold text-[#00C274] uppercase tracking-widest mb-2">Aadhaar Card</p>
                 <div className="grid grid-cols-2 gap-3 mb-4">
-                  <FileUploadBox
-                    label="Front Side"
-                    fieldKey="aadhaarFront"
-                    file={files.aadhaarFront}
-                    onSet={setFile}
-                    preview={null}
-                    onPreview={setPreviewUrl}
-                  />
-                  <FileUploadBox
-                    label="Back Side"
-                    fieldKey="aadhaarBack"
-                    file={files.aadhaarBack}
-                    onSet={setFile}
-                    preview={null}
-                    onPreview={setPreviewUrl}
-                  />
+                  <FileUploadBox label="Front Side" fieldKey="aadhaarFront" file={files.aadhaarFront} onSet={setFile} onPreview={setPreviewUrl} required allUploaded={allFilesUploaded || !attemptedSubmit ? undefined : false} />
+                  <FileUploadBox label="Back Side"  fieldKey="aadhaarBack"  file={files.aadhaarBack}  onSet={setFile} onPreview={setPreviewUrl} required allUploaded={allFilesUploaded || !attemptedSubmit ? undefined : false} />
                 </div>
 
                 {/* PAN photos */}
-                <p className="text-xs font-semibold text-[#00C274] uppercase tracking-widest mb-2">PAN Card</p>
+                <p className="text-xs font-semibold text-[#2a6df4] uppercase tracking-widest mb-2">PAN Card</p>
                 <div className="grid grid-cols-2 gap-3">
-                  <FileUploadBox
-                    label="Front Side"
-                    fieldKey="panFront"
-                    file={files.panFront}
-                    onSet={setFile}
-                    preview={null}
-                    onPreview={setPreviewUrl}
-                  />
-                  <FileUploadBox
-                    label="Back Side"
-                    fieldKey="panBack"
-                    file={files.panBack}
-                    onSet={setFile}
-                    preview={null}
-                    onPreview={setPreviewUrl}
-                  />
+                  <FileUploadBox label="Front Side" fieldKey="panFront" file={files.panFront} onSet={setFile} onPreview={setPreviewUrl} required allUploaded={allFilesUploaded || !attemptedSubmit ? undefined : false} />
+                  <FileUploadBox label="Back Side"  fieldKey="panBack"  file={files.panBack}  onSet={setFile} onPreview={setPreviewUrl} required allUploaded={allFilesUploaded || !attemptedSubmit ? undefined : false} />
                 </div>
+
+                {/* Missing photos warning */}
+                {attemptedSubmit && !allFilesUploaded && (
+                  <p className="mt-3 text-xs text-[#CF304A] flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                    Please upload all 4 photos before submitting ({4 - uploadedCount} remaining)
+                  </p>
+                )}
               </div>
 
               <div className="pt-2">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-gold w-full flex justify-center items-center gap-2 text-base py-3"
+                  onClick={() => setAttemptedSubmit(true)}
+                  className={`w-full flex justify-center items-center gap-2 text-base py-3 rounded-xl font-bold transition-all
+                    ${canSubmit
+                      ? 'btn-gold cursor-pointer'
+                      : 'bg-[#1A1D27] text-[#4B5563] border border-[#2A2D3A] cursor-not-allowed'
+                    }`}
                 >
-                  {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
-                  Submit for Verification
+                  {submitting
+                    ? <><Loader2 className="w-5 h-5 animate-spin" /> Uploading...</>
+                    : <><ShieldCheck className="w-5 h-5" /> Submit for Verification</>
+                  }
                 </button>
+
+                {/* Checklist */}
+                {!canSubmit && (
+                  <div className="mt-3 space-y-1">
+                    <p className="text-[10px] text-[#3D4450] font-semibold uppercase tracking-wider">Complete to enable submit:</p>
+                    <div className="flex items-center gap-1.5 text-xs">
+                      {panValue.length === 10
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                        : <div className="w-3.5 h-3.5 rounded-full border border-[#3D4450] shrink-0" />}
+                      <span className={panValue.length === 10 ? 'text-[#00C274]' : 'text-[#848E9C]'}>PAN number (10 characters)</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs">
+                      {aadharValue.length === 12
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                        : <div className="w-3.5 h-3.5 rounded-full border border-[#3D4450] shrink-0" />}
+                      <span className={aadharValue.length === 12 ? 'text-[#00C274]' : 'text-[#848E9C]'}>Aadhaar number (12 digits)</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs">
+                      {allFilesUploaded
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                        : <div className="w-3.5 h-3.5 rounded-full border border-[#3D4450] shrink-0" />}
+                      <span className={allFilesUploaded ? 'text-[#00C274]' : 'text-[#848E9C]'}>All 4 document photos ({uploadedCount}/4)</span>
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-center text-xs text-[#848E9C] mt-4 flex items-center justify-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Your details are encrypted and stored securely. We comply with DPDP Act 2023.
