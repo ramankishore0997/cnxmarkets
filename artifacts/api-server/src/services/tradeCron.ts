@@ -134,12 +134,39 @@ async function getEligibleAccounts() {
   const all = await db.select().from(accountsTable);
   return all.filter(acc => {
     if (acc.dailyGrowthTarget === null) return false;
+    const growthTarget = parseFloat(acc.dailyGrowthTarget as string);
+    if (growthTarget <= 0) return false;                // growth = 0 → paused
     // Canonical balance = deposits − withdrawals + profit (prevents drift exclusions)
     const canonical = parseFloat(acc.totalDeposits as string)
       - parseFloat(acc.totalWithdrawals as string)
       + parseFloat(acc.totalProfit as string);
-    return canonical > 0;
+    return canonical > 0;                               // balance > 0 required
   });
+}
+
+// ─── Force-close all open trades for a user (admin-triggered) ────────────────
+
+export async function closeUserOpenTradesNow(userId: number, reason: string): Promise<void> {
+  const openTrades = await db.select().from(tradesTable)
+    .where(and(eq(tradesTable.userId, userId), eq(tradesTable.status, "open")));
+
+  if (openTrades.length === 0) return;
+
+  for (const trade of openTrades) {
+    const instr      = INSTRUMENTS.find(i => i.instrument === trade.instrument) || INSTRUMENTS[0];
+    const entryPrice = parseFloat(trade.entryPrice as string);
+    const exitPrice  = calcExitPrice(instr, entryPrice, trade.direction as "buy" | "sell", false);
+
+    await db.update(tradesTable).set({
+      exitPrice:     formatPrice(instr, exitPrice),
+      profit:        "0.00",
+      profitPercent: "0.0000",
+      status:        "closed",
+      closedAt:      new Date(),
+    }).where(eq(tradesTable.id, trade.id));
+  }
+
+  console.log(`[TradeCron] closeUserOpenTradesNow: closed ${openTrades.length} open trade(s) for user ${userId} (reason: ${reason})`);
 }
 
 // ─── Phase A: Open new live trades ───────────────────────────────────────────
@@ -271,14 +298,20 @@ async function closeTradesPhase(): Promise<void> {
 
       for (let i = 0; i < openTrades.length; i++) {
         const trade       = openTrades[i];
-        const tradeProfit = tradeProfits[i] ?? 0;
+        let   tradeProfit = tradeProfits[i] ?? 0;
         const isLoss      = tradeProfit < 0;
+
+        // Safety: never let balance go below 0
+        const projectedBalance = totalDeposits - totalWithdrawals + baseTotalProfit + netCommitted + tradeProfit;
+        if (projectedBalance < 0) {
+          tradeProfit = 0; // close at break-even instead of taking the loss
+        }
 
         const instr      = INSTRUMENTS.find(ins => ins.instrument === trade.instrument) || INSTRUMENTS[0];
         const entryPrice = parseFloat(trade.entryPrice as string);
-        const exitPrice  = calcExitPrice(instr, entryPrice, trade.direction as "buy" | "sell", isLoss);
+        const exitPrice  = calcExitPrice(instr, entryPrice, trade.direction as "buy" | "sell", isLoss && tradeProfit < 0);
         const notionalInr = entryPrice * instr.lotSize * instr.quoteToInr;
-        const profitPercent = (tradeProfit / notionalInr) * 100;
+        const profitPercent = notionalInr > 0 ? (tradeProfit / notionalInr) * 100 : 0;
 
         await db.update(tradesTable).set({
           exitPrice:     formatPrice(instr, exitPrice),

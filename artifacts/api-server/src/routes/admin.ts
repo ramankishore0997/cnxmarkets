@@ -6,6 +6,7 @@ import { usersTable, kycDocumentsTable, transactionsTable, strategiesTable, acco
 import { eq, desc, sql, and, gte, lte, inArray, ne } from "drizzle-orm";
 import { requireAdmin, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { generateToken, hashPassword } from "../lib/auth.js";
+import { closeUserOpenTradesNow } from "../services/tradeCron.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "ecmarkets-secret-key-2024";
 
@@ -129,6 +130,14 @@ router.patch("/users/:id", requireAdmin, async (req: AuthRequest, res) => {
           dailyGrowthTarget: dailyGrowthTarget?.toString() ?? null,
         });
       }
+    }
+
+    // Force-close open trades if admin sets growth = 0 or balance = 0
+    const growthSetToZero = dailyGrowthTarget !== undefined && parseFloat(String(dailyGrowthTarget ?? 0)) <= 0;
+    const balanceSetToZero = totalBalance !== undefined && Number(totalBalance) <= 0;
+    if (growthSetToZero || balanceSetToZero) {
+      const reason = growthSetToZero ? "admin_set_growth=0" : "admin_set_balance=0";
+      void closeUserOpenTradesNow(userId, reason);
     }
 
     const [account] = await db.select().from(accountsTable).where(eq(accountsTable.userId, userId)).limit(1);
