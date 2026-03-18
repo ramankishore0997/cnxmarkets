@@ -132,9 +132,14 @@ function buildTradePlan(runProfit: number, count?: number): number[] {
 
 async function getEligibleAccounts() {
   const all = await db.select().from(accountsTable);
-  return all.filter(
-    acc => acc.dailyGrowthTarget !== null && parseFloat(acc.totalBalance as string) > 0
-  );
+  return all.filter(acc => {
+    if (acc.dailyGrowthTarget === null) return false;
+    // Canonical balance = deposits − withdrawals + profit (prevents drift exclusions)
+    const canonical = parseFloat(acc.totalDeposits as string)
+      - parseFloat(acc.totalWithdrawals as string)
+      + parseFloat(acc.totalProfit as string);
+    return canonical > 0;
+  });
 }
 
 // ─── Phase A: Open new live trades ───────────────────────────────────────────
@@ -210,13 +215,17 @@ async function closeTradesPhase(): Promise<void> {
 
       if (openTrades.length === 0) continue;
 
-      let currentBalance = parseFloat(account.totalBalance as string);
+      const totalDeposits    = parseFloat(account.totalDeposits    as string);
+      const totalWithdrawals = parseFloat(account.totalWithdrawals as string);
+      const baseTotalProfit  = parseFloat(account.totalProfit      as string);
+      // Canonical balance: always deposits − withdrawals + net profit (no drift)
+      const canonicalBalance = totalDeposits - totalWithdrawals + baseTotalProfit;
       const dailyGrowthPct   = parseFloat(account.dailyGrowthTarget as string);
 
       // Apply a random variance ±1% around the target (e.g. 4% target → 3–5% actual)
-      const variance         = randomBetween(-1.0, 1.0);
-      const effectivePct     = Math.max(1, dailyGrowthPct + variance);
-      const dailyTargetAmount = currentBalance * (effectivePct / 100);
+      const variance          = randomBetween(-1.0, 1.0);
+      const effectivePct      = Math.max(1, dailyGrowthPct + variance);
+      const dailyTargetAmount = canonicalBalance * (effectivePct / 100);
 
       // Today's already-closed profit
       const todayClosedTrades = await db
@@ -279,16 +288,16 @@ async function closeTradesPhase(): Promise<void> {
           closedAt:      new Date(),
         }).where(eq(tradesTable.id, trade.id));
 
-        currentBalance += tradeProfit;
-        const currentTotalProfit = parseFloat(account.totalProfit as string) + netCommitted + tradeProfit;
+        netCommitted += tradeProfit;
+        // Canonical: balance = deposits − withdrawals + totalProfit (no drift ever)
+        const newTotalProfit = baseTotalProfit + netCommitted;
+        const newBalance     = totalDeposits - totalWithdrawals + newTotalProfit;
 
         await db.update(accountsTable).set({
-          totalBalance: Math.max(0, currentBalance).toFixed(2),
-          totalProfit:  currentTotalProfit.toFixed(2),
+          totalBalance: Math.max(0, newBalance).toFixed(2),
+          totalProfit:  newTotalProfit.toFixed(2),
           updatedAt:    new Date(),
         }).where(eq(accountsTable.id, account.id));
-
-        netCommitted += tradeProfit;
       }
 
       const wins = tradeProfits.filter(p => p > 0).length;

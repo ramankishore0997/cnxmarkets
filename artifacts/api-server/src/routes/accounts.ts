@@ -15,7 +15,16 @@ router.get("/dashboard", requireAuth, async (req: AuthRequest, res) => {
     const recentTrades = await db.select().from(tradesTable).where(eq(tradesTable.userId, req.user!.id)).orderBy(desc(tradesTable.openedAt)).limit(5);
     const recentTransactions = await db.select().from(transactionsTable).where(eq(transactionsTable.userId, req.user!.id)).orderBy(desc(transactionsTable.createdAt)).limit(5);
     const allocations = await db.select().from(allocationsTable).where(eq(allocationsTable.userId, req.user!.id));
-    const balance = account ? parseFloat(account.totalBalance as string) : 0;
+
+    const rawDeposits    = account ? parseFloat(account.totalDeposits    as string) : 0;
+    const rawWithdrawals = account ? parseFloat(account.totalWithdrawals as string) : 0;
+    const rawProfit      = account ? parseFloat(account.totalProfit      as string) : 0;
+    // Canonical balance = net deposited + net profit (prevents drift from incremental updates)
+    const balance = rawDeposits - rawWithdrawals + rawProfit;
+    // Auto-repair stored totalBalance if it drifted
+    if (account && Math.abs(parseFloat(account.totalBalance as string) - balance) > 0.01) {
+      await db.update(accountsTable).set({ totalBalance: balance.toFixed(2), updatedAt: new Date() }).where(eq(accountsTable.userId, req.user!.id));
+    }
 
     let assignedStrategyDetails = null;
     if (account?.assignedStrategyId) {
