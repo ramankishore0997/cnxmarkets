@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   X,
   ShieldAlert,
-  Zap,
   History,
   TrendingUp,
   ChevronRight,
@@ -25,7 +24,6 @@ import { useAuthState } from '@/hooks/use-auth-state';
 const navItems = [
   { name: 'Overview',         href: '/dashboard',                 icon: LayoutDashboard },
   { name: 'Binary Trading',   href: '/dashboard/binary',          icon: TrendingUp, highlight: true },
-  { name: 'Auto Strategies',  href: '/dashboard/strategies',      icon: Zap },
   { name: 'Analytics',        href: '/dashboard/analytics',       icon: LineChart },
   { name: 'Trade History',    href: '/dashboard/trades',          icon: History },
   { name: 'Deposit',          href: '/dashboard/deposit',         icon: Wallet },

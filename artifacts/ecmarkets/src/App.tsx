@@ -8,7 +8,6 @@ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 // Public Pages
 import { Home } from "@/pages/public/Home";
 import { Markets } from "@/pages/public/Markets";
-import { Strategies } from "@/pages/public/Strategies";
 import { About } from "@/pages/public/About";
 import { Performance } from "@/pages/public/Performance";
 import { Pricing } from "@/pages/public/Pricing";
@@ -41,7 +40,6 @@ import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
 import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 import { BinaryTrading } from "@/pages/client/BinaryTrading";
-import { SelectStrategy } from "@/pages/client/SelectStrategy";
 
 const queryClient = new QueryClient();
 
@@ -62,7 +60,6 @@ function Router() {
       {/* Public Routes */}
       <Route path="/" component={Home} />
       <Route path="/markets" component={Markets} />
-      <Route path="/strategies" component={Strategies} />
       <Route path="/about" component={About} />
       <Route path="/performance" component={Performance} />
       <Route path="/pricing" component={Pricing} />
@@ -102,9 +99,6 @@ function Router() {
       </Route>
       <Route path="/dashboard/binary">
         <ProtectedRoute component={BinaryTrading} />
-      </Route>
-      <Route path="/dashboard/strategies">
-        <ProtectedRoute component={SelectStrategy} />
       </Route>
 
       {/* Admin Routes */}
