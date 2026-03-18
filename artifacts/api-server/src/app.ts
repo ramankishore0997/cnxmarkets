@@ -1,11 +1,7 @@
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
 import router from "./routes";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app: Express = express();
 
@@ -40,7 +36,7 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-const uploadsDir = path.resolve(__dirname, "..", "uploads");
+const uploadsDir = path.resolve(process.cwd(), "uploads");
 app.use("/api/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
