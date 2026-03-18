@@ -1,23 +1,238 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import {
-  ArrowUpRight, ArrowDownRight, Wallet, Activity,
-  CreditCard, TrendingUp, Download, Upload,
-  BarChart2, Bot, Zap, ShieldCheck
+  TrendingUp, Download, Upload,
+  BarChart2, Bot, Zap, ArrowUp, ArrowDown, Activity, Wifi
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Link } from 'wouter';
 import { LivePriceTicker } from '@/components/shared/LivePriceTicker';
 
-const getISTProgress = () => {
-  const now = new Date();
-  const istMs = now.getTime() + (5.5 * 3600 * 1000);
-  const istDate = new Date(istMs);
-  const s = (istDate.getUTCHours() * 3600) + (istDate.getUTCMinutes() * 60) + istDate.getUTCSeconds();
-  return Math.min(s / 86400, 1);
+// ─── Live Open Trades Panel ──────────────────────────────────────────────────
+
+interface LiveTrade {
+  id: number;
+  instrument: string;
+  market: string;
+  direction: 'buy' | 'sell';
+  entryPrice: number;
+  lotSize: number;
+  openedAt: string;
+}
+
+interface AnimatedTrade extends LiveTrade {
+  currentPrice: number;
+  prevPrice: number;
+  unrealizedPnl: number;
+  priceDirection: 'up' | 'down' | 'flat';
+}
+
+const PIP_SIZE: Record<string, number> = {
+  'JPY': 0.01,
+  'BTC': 10, 'ETH': 0.5, 'SOL': 0.05, 'BNB': 0.1, 'XRP': 0.0002,
 };
+
+function getPipSize(instrument: string): number {
+  for (const [key, size] of Object.entries(PIP_SIZE)) {
+    if (instrument.includes(key)) return size;
+  }
+  return 0.0001; // default forex
+}
+
+function formatPrice(price: number, instrument: string): string {
+  const isJpy    = instrument.includes('JPY');
+  const isCrypto = ['BTC','ETH','SOL','BNB','XRP'].some(c => instrument.startsWith(c));
+  if (isCrypto && price > 10_000) return price.toFixed(2);
+  if (isCrypto) return price.toFixed(4);
+  if (isJpy) return price.toFixed(3);
+  return price.toFixed(5);
+}
+
+function calcUnrealizedPnl(trade: LiveTrade, currentPrice: number): number {
+  const pip       = getPipSize(trade.instrument);
+  const priceDiff = currentPrice - trade.entryPrice;
+  const pips      = priceDiff / pip;
+  const isCrypto  = ['BTC','ETH','SOL','BNB','XRP'].some(c => trade.instrument.startsWith(c));
+  const perPipInr = isCrypto ? trade.lotSize * pip * 83.45 : trade.lotSize * pip * 83.45 * 0.0001;
+  const pnl       = trade.direction === 'buy' ? pips * perPipInr : -pips * perPipInr;
+  return parseFloat(pnl.toFixed(2));
+}
+
+function LiveOpenTrades() {
+  const [trades, setTrades]     = useState<AnimatedTrade[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const animRef = useRef<NodeJS.Timeout | null>(null);
+
+  const fetchOpenTrades = async () => {
+    try {
+      const token = localStorage.getItem('ecm_token');
+      const res = await fetch('/api/trades/open', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      const raw: LiveTrade[] = await res.json();
+      setTrades(prev => {
+        return raw.map(t => {
+          const existing = prev.find(p => p.id === t.id);
+          const cp = existing?.currentPrice ?? t.entryPrice;
+          return {
+            ...t,
+            currentPrice:   cp,
+            prevPrice:      cp,
+            unrealizedPnl:  existing?.unrealizedPnl ?? 0,
+            priceDirection: 'flat',
+          };
+        });
+      });
+    } catch { /* silent */ } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch open trades every 15 s
+  useEffect(() => {
+    fetchOpenTrades();
+    const id = setInterval(fetchOpenTrades, 15_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Animate price every 2-3 s
+  useEffect(() => {
+    const animate = () => {
+      setTrades(prev => prev.map(t => {
+        const pip       = getPipSize(t.instrument);
+        const isCrypto  = ['BTC','ETH','SOL','BNB','XRP'].some(c => t.instrument.startsWith(c));
+        // Move 1-8 pips randomly, with slight bullish bias (55% up)
+        const move      = isCrypto
+          ? pip * (Math.random() * 4) * (Math.random() > 0.45 ? 1 : -1)
+          : pip * (1 + Math.random() * 7) * (Math.random() > 0.45 ? 1 : -1);
+        const newPrice  = Math.max(t.entryPrice * 0.95, t.currentPrice + move);
+        return {
+          ...t,
+          prevPrice:      t.currentPrice,
+          currentPrice:   newPrice,
+          unrealizedPnl:  calcUnrealizedPnl(t, newPrice),
+          priceDirection: newPrice > t.currentPrice ? 'up' : newPrice < t.currentPrice ? 'down' : 'flat',
+        };
+      }));
+      const delay = 2_000 + Math.random() * 1_000;
+      animRef.current = setTimeout(animate, delay);
+    };
+    animRef.current = setTimeout(animate, 2_000);
+    return () => { if (animRef.current) clearTimeout(animRef.current); };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="card-stealth p-8 flex justify-center">
+        <div className="w-8 h-8 border-t-2 border-[#00C274] rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (trades.length === 0) {
+    return (
+      <div className="card-stealth p-10 text-center">
+        <Wifi className="w-12 h-12 text-white/[0.04] mx-auto mb-3" />
+        <p className="text-[#4B5563] font-medium text-sm">No open positions right now</p>
+        <p className="text-xs text-[#374151] mt-1">The trading engine will open positions shortly</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {trades.map(trade => {
+        const isUp   = trade.priceDirection === 'up';
+        const isDown = trade.priceDirection === 'down';
+        const pnlPos = trade.unrealizedPnl >= 0;
+
+        return (
+          <div key={trade.id}
+            className="relative overflow-hidden rounded-2xl transition-all"
+            style={{
+              background: 'rgba(12,14,21,0.8)',
+              border: `1px solid ${pnlPos ? 'rgba(0,194,116,0.15)' : 'rgba(207,48,74,0.15)'}`,
+            }}
+          >
+            {/* Animated glow on price change */}
+            <div className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+              style={{
+                background: isUp
+                  ? 'linear-gradient(135deg, rgba(0,194,116,0.04) 0%, transparent 60%)'
+                  : 'linear-gradient(135deg, rgba(207,48,74,0.04) 0%, transparent 60%)',
+                opacity: trade.priceDirection === 'flat' ? 0 : 1,
+              }}
+            />
+
+            <div className="relative z-10 p-4">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+
+                {/* Left: instrument info */}
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm ${
+                    trade.direction === 'buy'
+                      ? 'bg-[#00C274]/12 border border-[#00C274]/25 text-[#00C274]'
+                      : 'bg-[#CF304A]/12 border border-[#CF304A]/25 text-[#CF304A]'
+                  }`}>
+                    {trade.direction === 'buy' ? '▲' : '▼'}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-[#F8FAFC] text-sm">{trade.instrument}</p>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
+                        style={{ background: 'rgba(0,194,116,0.1)', color: '#00C274', border: '1px solid rgba(0,194,116,0.2)' }}>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00C274] animate-pulse inline-block" />
+                        LIVE
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#4B5563] font-medium capitalize mt-0.5">
+                      {trade.direction.toUpperCase()} · {trade.market} · {trade.lotSize} lots
+                    </p>
+                  </div>
+                </div>
+
+                {/* Center: price block */}
+                <div className="flex items-center gap-6 flex-wrap">
+                  <div>
+                    <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Entry</p>
+                    <p className="font-mono text-sm text-[#848E9C]">{formatPrice(trade.entryPrice, trade.instrument)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Current</p>
+                    <div className="flex items-center gap-1.5">
+                      {isUp && <ArrowUp className="w-3.5 h-3.5 text-[#00C274] shrink-0" />}
+                      {isDown && <ArrowDown className="w-3.5 h-3.5 text-[#CF304A] shrink-0" />}
+                      <p className={`font-mono font-bold text-sm tabular-nums transition-colors duration-300 ${
+                        isUp ? 'text-[#00C274]' : isDown ? 'text-[#CF304A]' : 'text-[#F8FAFC]'
+                      }`}>
+                        {formatPrice(trade.currentPrice, trade.instrument)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: unrealized P&L */}
+                <div className="text-right shrink-0">
+                  <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Unrealized P&L</p>
+                  <p className={`font-mono font-black text-lg tabular-nums transition-colors duration-300 ${
+                    pnlPos ? 'text-[#00C274]' : 'text-[#CF304A]'
+                  }`}>
+                    {pnlPos ? '+' : ''}₹{Math.abs(trade.unrealizedPnl).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Main Dashboard ──────────────────────────────────────────────────────────
 
 export function Dashboard() {
   const { data, isLoading } = useGetDashboard({
@@ -28,22 +243,7 @@ export function Dashboard() {
   const totalBalance  = data?.totalBalance  ?? 0;
   const totalProfit   = data?.totalProfit   ?? 0;
   const dailyTarget   = (data as any)?.dailyGrowthTarget ?? 4.0;
-  const dailyTargetAmt = totalBalance > 0 ? totalBalance * (dailyTarget / 100) : 0;
-  const monthlyReturn  = dailyTarget * 30;
-
-  const [liveProfit, setLiveProfit] = useState<number>(() => dailyTargetAmt * getISTProgress());
-
-  useEffect(() => {
-    if (!dailyTargetAmt) return;
-    setLiveProfit(dailyTargetAmt * getISTProgress());
-    const id = setInterval(() => {
-      setLiveProfit(prev => {
-        const inc = dailyTargetAmt * 0.0012 * (0.6 + Math.random() * 0.8);
-        return Math.min(prev + inc, dailyTargetAmt);
-      });
-    }, 4_500);
-    return () => clearInterval(id);
-  }, [dailyTargetAmt]);
+  const monthlyReturn = (dailyTarget * 30).toFixed(0);
 
   if (isLoading) {
     return (
@@ -62,18 +262,16 @@ export function Dashboard() {
   const profitPercent = totalBalance > 0 && totalProfit !== 0
     ? (((totalBalance) / (totalBalance - totalProfit) - 1) * 100).toFixed(2)
     : '0.00';
-  const progressPct   = dailyTargetAmt > 0 ? Math.min((liveProfit / dailyTargetAmt) * 100, 100) : 0;
-  const dailyGainPct  = totalBalance > 0 ? (liveProfit / totalBalance) * 100 : 0;
 
   return (
     <DashboardLayout>
 
-      {/* ── Live ticker ─── */}
+      {/* ── Live ticker ── */}
       <div className="mb-5">
         <LivePriceTicker />
       </div>
 
-      {/* ── Main Balance Hero (Olymp Trade style) ─── */}
+      {/* ── Balance Hero ── */}
       <div className="relative rounded-2xl overflow-hidden mb-5"
         style={{
           background: 'linear-gradient(135deg, rgba(0,194,116,0.08) 0%, rgba(15,23,42,0.9) 50%, rgba(0,0,0,0.7) 100%)',
@@ -85,7 +283,6 @@ export function Dashboard() {
 
         <div className="relative z-10 p-6 md:p-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-            {/* Balance Display */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <span className="live-dot w-2 h-2 rounded-full bg-[#00C274] inline-block" />
@@ -113,15 +310,10 @@ export function Dashboard() {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-3 w-full md:w-auto shrink-0">
               <Link href="/dashboard/deposit"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
-                style={{
-                  background: 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)',
-                  color: '#000',
-                  boxShadow: '0 4px 20px rgba(0,194,116,0.35)',
-                }}>
+                style={{ background: 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)', color: '#000', boxShadow: '0 4px 20px rgba(0,194,116,0.35)' }}>
                 <Download className="w-4 h-4" /> Deposit
               </Link>
               <Link href="/dashboard/withdraw"
@@ -132,14 +324,8 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Quick stats row */}
-          <div className="grid grid-cols-3 gap-3 mt-6 pt-5 border-t border-white/[0.05]">
-            <div>
-              <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Net Deposits</p>
-              <p className="font-terminal text-sm font-bold text-[#F8FAFC] tabular-nums">
-                ₹{((data?.totalDeposits || 0) - (data?.totalWithdrawals || 0)).toLocaleString('en-IN')}
-              </p>
-            </div>
+          {/* Stats row */}
+          <div className="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-white/[0.05]">
             <div>
               <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Daily Target</p>
               <p className="font-terminal text-sm font-bold text-[#00C274] tabular-nums">+{dailyTarget}%</p>
@@ -152,141 +338,60 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* ── Two column row: Auto Trading + Live Profit ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-
-        {/* Auto Trading Status */}
-        <div className="card-stealth p-6 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.08) 0%, transparent 70%)' }} />
-          <div className="relative z-10">
-            <div className="flex items-start justify-between mb-5">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.25)' }}>
-                  <Bot className="w-5 h-5 text-[#00C274]" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-[#F8FAFC]">Auto Trading</p>
-                  <p className="text-[11px] text-[#4B5563]">Algorithm is running</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-                style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)' }}>
-                <span className="live-dot w-1.5 h-1.5 rounded-full bg-[#00C274] inline-block" />
-                <span className="text-[10px] font-bold text-[#00C274] uppercase tracking-wide">Active</span>
-              </div>
+      {/* ── Auto Trading (full width) ── */}
+      <div className="card-stealth p-6 relative overflow-hidden mb-5">
+        <div className="absolute top-0 left-0 w-40 h-40 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.08) 0%, transparent 70%)' }} />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-5">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+              style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.25)' }}>
+              <Bot className="w-5 h-5 text-[#00C274]" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <p className="text-[10px] text-[#4B5563] uppercase tracking-wider mb-1 font-semibold">Daily Rate</p>
-                <p className="font-terminal text-lg font-bold text-[#00C274]">+{dailyTarget}%</p>
-              </div>
-              <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <p className="text-[10px] text-[#4B5563] uppercase tracking-wider mb-1 font-semibold">Trades Today</p>
-                <p className="font-terminal text-lg font-bold text-[#F8FAFC]">
-                  {data?.recentTrades?.length ?? 0}
-                </p>
-              </div>
+            <div>
+              <p className="text-sm font-bold text-[#F8FAFC]">Auto Trading</p>
+              <p className="text-[11px] text-[#4B5563]">Algorithm is running continuously</p>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full ml-2"
+              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)' }}>
+              <span className="live-dot w-1.5 h-1.5 rounded-full bg-[#00C274] inline-block" />
+              <span className="text-[10px] font-bold text-[#00C274] uppercase tracking-wide">Active</span>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <div className="px-4 py-2.5 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[10px] text-[#4B5563] uppercase tracking-wider font-semibold">Daily Rate</p>
+              <p className="font-terminal text-base font-bold text-[#00C274]">+{dailyTarget}%</p>
             </div>
             <Link href="/dashboard/binary"
-              className="flex items-center justify-center gap-2 mt-4 w-full py-2.5 rounded-xl text-sm font-bold transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
               style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)', color: '#00C274' }}>
-              <Zap className="w-4 h-4" /> Open Binary Trading
+              <Zap className="w-4 h-4" /> Binary Trading
             </Link>
           </div>
         </div>
+      </div>
 
-        {/* Live Profit Today */}
-        <div className="card-stealth p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.07) 0%, transparent 70%)' }} />
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="live-dot w-2 h-2 rounded-full bg-[#00C274] inline-block" />
-              <p className="text-[11px] font-bold text-[#00C274] uppercase tracking-[0.14em]">Live Profit Today</p>
-            </div>
-            <p className="font-terminal text-glow-green-breathe text-3xl font-black tabular-nums leading-none mb-2">
-              +₹{liveProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </p>
-            <p className="text-xs text-[#4B5563] mb-4 font-medium">
-              Target:&nbsp;
-              <span className="font-terminal text-[#F8FAFC] font-bold">
-                ₹{dailyTargetAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-            </p>
-
-            {/* Progress bar */}
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-[#4B5563]">Daily Progress</span>
-                <span className="font-terminal text-[#00C274]">{progressPct.toFixed(1)}%</span>
-              </div>
-              <div className="w-full h-2 bg-white/[0.05] rounded-full overflow-hidden">
-                <div className="h-full rounded-full transition-all duration-700"
-                  style={{
-                    width: `${progressPct}%`,
-                    background: 'linear-gradient(90deg, #00C274 0%, #00FF9D 100%)',
-                    boxShadow: '0 0 8px rgba(0,194,116,0.5)',
-                  }} />
-              </div>
-              <p className="text-[11px] text-[#4B5563] font-medium">
-                {dailyGainPct >= 0 ? '+' : ''}{dailyGainPct.toFixed(2)}% gained today
-              </p>
-            </div>
+      {/* ── Live Open Trades ── */}
+      <div className="mb-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C274] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00C274]"></span>
+            </span>
+            <h3 className="text-base font-bold text-[#F8FAFC]">Live Open Trades</h3>
           </div>
+          <Link href="/dashboard/trades" className="text-xs font-semibold text-[#00C274] hover:text-[#33d494] transition-colors">
+            Full History →
+          </Link>
         </div>
+        <LiveOpenTrades />
       </div>
 
-      {/* ── Quick Action Tiles ─── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-        <Link href="/dashboard/deposit" className="group card-stealth p-5 hover:border-[#00C274]/30 transition-all">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-all"
-            style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)' }}>
-            <Download className="w-4 h-4 text-[#00C274]" />
-          </div>
-          <p className="text-xs text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Total Deposits</p>
-          <p className="font-terminal text-base font-bold text-[#F8FAFC] tabular-nums">
-            ₹{(data?.totalDeposits || 0).toLocaleString('en-IN')}
-          </p>
-        </Link>
-
-        <Link href="/dashboard/trades" className="group card-stealth p-5 hover:border-[#00C274]/30 transition-all">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
-            style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)' }}>
-            <Activity className="w-4 h-4 text-[#00C274]" />
-          </div>
-          <p className="text-xs text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Total Profit</p>
-          <p className={`font-terminal text-base font-bold tabular-nums ${totalProfit >= 0 ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>
-            {totalProfit >= 0 ? '+' : ''}₹{Math.abs(totalProfit).toLocaleString('en-IN')}
-          </p>
-        </Link>
-
-        <Link href="/dashboard/analytics" className="group card-stealth p-5 hover:border-[#00C274]/30 transition-all">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
-            style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)' }}>
-            <BarChart2 className="w-4 h-4 text-[#00C274]" />
-          </div>
-          <p className="text-xs text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Closed Trades</p>
-          <p className="font-terminal text-base font-bold text-[#F8FAFC] tabular-nums">
-            {data?.recentTrades?.filter((t: any) => t.status === 'closed').length ?? 0}
-          </p>
-        </Link>
-
-        <Link href="/dashboard/kyc" className="group card-stealth p-5 hover:border-[#00C274]/30 transition-all">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
-            style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)' }}>
-            <ShieldCheck className="w-4 h-4 text-[#00C274]" />
-          </div>
-          <p className="text-xs text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Account</p>
-          <p className="text-base font-bold text-[#F8FAFC] capitalize">
-            {(data as any)?.kycStatus === 'approved' ? 'Verified' : 'Pending'}
-          </p>
-        </Link>
-      </div>
-
-      {/* ── Equity Curve ─── */}
-      <div className="card-stealth p-6 mb-5">
+      {/* ── Equity Curve ── */}
+      <div className="card-stealth p-6 pb-10">
         <div className="flex items-center justify-between mb-5">
           <div>
             <h3 className="text-base font-bold text-[#F8FAFC]">Equity Curve</h3>
@@ -333,119 +438,6 @@ export function Dashboard() {
         )}
       </div>
 
-      {/* ── Activity Row ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pb-10">
-
-        {/* Recent Trades */}
-        <div className="card-stealth p-6">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-base font-bold text-[#F8FAFC]">Recent Trades</h3>
-            <Link href="/dashboard/trades" className="text-xs font-semibold text-[#00C274] hover:text-[#33d494] transition-colors">
-              View All →
-            </Link>
-          </div>
-          <div className="space-y-2">
-            {(data?.recentTrades?.length ? data.recentTrades : []).length === 0 ? (
-              <div className="text-center py-10">
-                <Activity className="w-10 h-10 text-white/[0.05] mx-auto mb-3" />
-                <p className="text-[#4B5563] text-sm">No trades yet</p>
-                <Link href="/dashboard/binary" className="text-xs text-[#00C274] font-semibold mt-2 inline-block hover:text-[#33d494] transition-colors">
-                  Start Binary Trading →
-                </Link>
-              </div>
-            ) : (
-              (data?.recentTrades || []).slice(0, 5).map((trade: any) => (
-                <div key={trade.id}
-                  className="flex items-center justify-between p-3 rounded-xl transition-all"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black ${
-                      trade.direction === 'buy'
-                        ? 'bg-[#00C274]/15 text-[#00C274] border border-[#00C274]/25'
-                        : 'bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/25'
-                    }`}>
-                      {trade.direction === 'buy' ? '▲' : '▼'}
-                    </div>
-                    <div>
-                      <p className="font-bold text-[#F8FAFC] text-sm">{trade.instrument}</p>
-                      <p className="text-[10px] text-[#4B5563] font-medium capitalize">{trade.direction} · {trade.lotSize} lots</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {trade.status === 'open' ? (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border"
-                        style={{ background: 'rgba(0,194,116,0.1)', color: '#00C274', borderColor: 'rgba(0,194,116,0.25)' }}>
-                        Open
-                      </span>
-                    ) : (
-                      <p className={`font-terminal font-bold text-sm tabular-nums ${(trade.profit || 0) >= 0 ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>
-                        {(trade.profit || 0) >= 0 ? '+' : ''}₹{Math.abs(trade.profit || 0).toLocaleString('en-IN')}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Recent Transactions */}
-        <div className="card-stealth p-6">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-base font-bold text-[#F8FAFC]">Recent Transactions</h3>
-            <Link href="/dashboard/deposit" className="text-xs font-semibold text-[#00C274] hover:text-[#33d494] transition-colors">
-              Manage →
-            </Link>
-          </div>
-          <div className="space-y-2">
-            {(data?.recentTransactions?.length ? data.recentTransactions : []).length === 0 ? (
-              <div className="text-center py-10">
-                <CreditCard className="w-10 h-10 text-white/[0.05] mx-auto mb-3" />
-                <p className="text-[#4B5563] text-sm">No transactions yet</p>
-                <Link href="/dashboard/deposit" className="text-xs text-[#00C274] font-semibold mt-2 inline-block hover:text-[#33d494] transition-colors">
-                  Make a Deposit →
-                </Link>
-              </div>
-            ) : (
-              (data?.recentTransactions || []).slice(0, 5).map((tx: any) => (
-                <div key={tx.id}
-                  className="flex items-center justify-between p-3 rounded-xl transition-all"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      tx.type === 'deposit'
-                        ? 'bg-[#00C274]/12 border border-[#00C274]/20'
-                        : 'bg-[#CF304A]/12 border border-[#CF304A]/20'
-                    }`}>
-                      {tx.type === 'deposit'
-                        ? <ArrowDownRight className="w-4 h-4 text-[#00C274]" />
-                        : <ArrowUpRight className="w-4 h-4 text-[#CF304A]" />}
-                    </div>
-                    <div>
-                      <p className="font-bold text-[#F8FAFC] text-sm capitalize">{tx.type}</p>
-                      <p className="text-[10px] text-[#4B5563] font-medium">
-                        {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-terminal font-bold text-[#F8FAFC] tabular-nums text-sm">
-                      ₹{tx.amount.toLocaleString('en-IN')}
-                    </p>
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block mt-1 ${
-                      tx.status === 'approved' ? 'bg-[#00C274]/12 text-[#00C274] border border-[#00C274]/25' :
-                      tx.status === 'pending'  ? 'bg-[#00C274]/12 text-[#00C274] border border-[#00C274]/25' :
-                      'bg-[#CF304A]/12 text-[#CF304A] border border-[#CF304A]/25'
-                    }`}>
-                      {tx.status}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
     </DashboardLayout>
   );
 }

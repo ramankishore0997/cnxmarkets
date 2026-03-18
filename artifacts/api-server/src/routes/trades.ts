@@ -88,6 +88,20 @@ router.get("/history", requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
+// Open trades for logged-in user (shown on dashboard as live trades)
+router.get("/open", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const trades = await db
+      .select({ trade: tradesTable })
+      .from(tradesTable)
+      .where(and(eq(tradesTable.userId, req.user!.id), eq(tradesTable.status, "open")))
+      .orderBy(desc(tradesTable.openedAt));
+    res.json(trades.map(({ trade }) => mapTrade(trade, null)));
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Cleanup: delete trades older than 2 years (called by cron)
 export async function purgeOldTrades() {
   const twoYearsAgo = new Date(Date.now() - 2 * 365 * 24 * 60 * 60 * 1_000);
