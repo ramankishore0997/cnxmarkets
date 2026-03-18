@@ -451,7 +451,7 @@ export function Profile() {
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   editMode
                     ? 'bg-white/[0.04] border-white/[0.08] text-[#6B7280] hover:text-white'
-                    : 'bg-[#FFB800]/12 border-[#FFB800]/25 text-[#FFB800] hover:bg-[#FFB800]/20'
+                    : 'bg-[#00C274]/12 border-[#00C274]/25 text-[#00C274] hover:bg-[#00C274]/20'
                 }`}
               >
                 <Edit3 className="w-3.5 h-3.5" />
@@ -502,7 +502,7 @@ export function Profile() {
                   </div>
                 </div>
                 <div className="flex gap-3 pt-2">
-                  <button type="submit" disabled={profileMutation.isPending} className="btn-gold flex items-center gap-2 text-sm disabled:opacity-50">
+                  <button type="submit" disabled={profileMutation.isPending} className="btn-green flex items-center gap-2 text-sm disabled:opacity-50">
                     {profileMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                     Save Changes
                   </button>
@@ -579,7 +579,7 @@ export function Profile() {
 
             {/* 2FA + Last Login */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#FFB800]/20 transition-colors">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#00C274]/20 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Smartphone className="w-4 h-4 text-[#848E9C]" />
@@ -605,6 +605,78 @@ export function Profile() {
             </div>
           </div>
         </div>
+
+        {/* ── API Key Section ─── */}
+        <div className="card-stealth p-7">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)' }}>
+              <Key className="w-5 h-5 text-[#00C274]" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-[#F8FAFC]">Algo Trading API Key</h3>
+              <p className="text-[11px] text-[#4B5563] mt-0.5">Connect your trading bot or external platform</p>
+            </div>
+          </div>
+
+          <div className="p-5 rounded-2xl mb-5"
+            style={{ background: 'rgba(0,194,116,0.04)', border: '1px solid rgba(0,194,116,0.15)' }}>
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                style={{ background: 'rgba(0,194,116,0.12)' }}>
+                <Hash className="w-4 h-4 text-[#00C274]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <p className="text-xs font-bold text-[#00C274] uppercase tracking-wider">Your API Key</p>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold border"
+                    style={{ background: 'rgba(0,194,116,0.1)', color: '#00C274', borderColor: 'rgba(0,194,116,0.25)' }}>
+                    Active
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="font-terminal text-sm text-[#F8FAFC] tracking-widest truncate flex-1 select-all"
+                    style={{ letterSpacing: '0.12em' }}>
+                    ECM-{(user as any)?.id ? String((user as any).id).padStart(6, '0') : '000000'}-ALGO-XXXXXXXX
+                  </p>
+                  <button
+                    onClick={() => {
+                      const key = `ECM-${String((user as any)?.id || '000000').padStart(6, '0')}-ALGO-XXXXXXXX`;
+                      navigator.clipboard?.writeText(key);
+                    }}
+                    className="shrink-0 p-2 rounded-lg transition-all text-[#4B5563] hover:text-[#00C274]"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                    title="Copy API Key">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider mb-1">API Endpoint</p>
+              <p className="font-terminal text-xs text-[#F8FAFC] truncate">api.ecmarketsindia.com/v1</p>
+            </div>
+            <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <p className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider mb-1">Rate Limit</p>
+              <p className="font-terminal text-xs text-[#F8FAFC]">100 req/min</p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl flex items-start gap-3"
+            style={{ background: 'rgba(240,185,11,0.05)', border: '1px solid rgba(240,185,11,0.15)' }}>
+            <AlertCircle className="w-4 h-4 text-[#F0B90B] shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-bold text-[#F0B90B] mb-1">Coming Soon</p>
+              <p className="text-[11px] text-[#4B5563] leading-relaxed">
+                Algo trading integration is launching soon. Your API key is ready — connect your trading algorithm to auto-execute orders directly on your ECMarkets account.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </DashboardLayout>
   );

@@ -39,7 +39,6 @@ import { AdminStrategies } from "@/pages/admin/AdminStrategies";
 import { AdminSettings } from "@/pages/admin/AdminSettings";
 import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
 import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
-import { SelectStrategy } from "@/pages/client/SelectStrategy";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 import { BinaryTrading } from "@/pages/client/BinaryTrading";
 
@@ -96,9 +95,6 @@ function Router() {
       </Route>
       <Route path="/dashboard/notifications">
         <ProtectedRoute component={Notifications} />
-      </Route>
-      <Route path="/dashboard/strategies">
-        <ProtectedRoute component={SelectStrategy} />
       </Route>
       <Route path="/dashboard/trades">
         <ProtectedRoute component={TradeHistory} />

@@ -94,7 +94,7 @@ export function Login() {
         <div
           className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: `radial-gradient(circle at 20% 80%, #F0B90B22 0%, transparent 50%),
+            backgroundImage: `radial-gradient(circle at 20% 80%, #00C27422 0%, transparent 50%),
               radial-gradient(circle at 80% 20%, #02C07611 0%, transparent 50%)`
           }}
         />
@@ -103,7 +103,7 @@ export function Login() {
             <div className="flex items-center gap-3 cursor-pointer">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #F0B90B, #d4a100)', boxShadow: '0 0 20px rgba(240,185,11,0.3)' }}
+                style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 0 20px rgba(240,185,11,0.3)' }}
               >
                 <TrendingUp className="w-5 h-5 text-black" />
               </div>
@@ -115,7 +115,7 @@ export function Login() {
           <div>
             <h2 className="text-4xl font-bold text-white leading-tight mb-4">
               Algorithmic Trading<br />
-              <span style={{ color: '#F0B90B' }}>At Scale</span>
+              <span style={{ color: '#00C274' }}>At Scale</span>
             </h2>
             <p style={{ color: '#848E9C' }} className="text-lg leading-relaxed">
               Access institutional-grade automated strategies with real-time portfolio analytics and risk management.
@@ -125,7 +125,7 @@ export function Login() {
             {[
               { value: '94.3%', label: 'Win Rate' },
               { value: '₹2.8Cr+', label: 'Assets Managed' },
-              { value: '12+', label: 'Live Strategies' },
+              { value: '5,000+', label: 'Active Traders' },
               { value: '24/7', label: 'Market Coverage' },
             ].map((stat) => (
               <div
@@ -133,7 +133,7 @@ export function Login() {
                 className="p-4 rounded-2xl"
                 style={{ background: 'rgba(30,35,41,0.8)', border: '1px solid rgba(43,49,57,0.8)' }}
               >
-                <div className="text-2xl font-bold mb-1" style={{ color: '#F0B90B' }}>{stat.value}</div>
+                <div className="text-2xl font-bold mb-1" style={{ color: '#00C274' }}>{stat.value}</div>
                 <div className="text-sm" style={{ color: '#848E9C' }}>{stat.label}</div>
               </div>
             ))}
@@ -156,7 +156,7 @@ export function Login() {
               <div className="flex items-center gap-3 cursor-pointer">
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #F0B90B, #d4a100)' }}
+                  style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)' }}
                 >
                   <TrendingUp className="w-4 h-4 text-black" />
                 </div>
@@ -172,7 +172,7 @@ export function Login() {
                 onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
                 className="flex items-center gap-2 text-sm font-medium mb-6 transition-colors"
                 style={{ color: '#848E9C' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#F0B90B')}
+                onMouseEnter={e => (e.currentTarget.style.color = '#00C274')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#848E9C')}
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -182,7 +182,7 @@ export function Login() {
               <div className="mb-7">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
                   style={{ background: 'rgba(240,185,11,0.12)', border: '1px solid rgba(240,185,11,0.25)' }}>
-                  <KeyRound className="w-6 h-6" style={{ color: '#F0B90B' }} />
+                  <KeyRound className="w-6 h-6" style={{ color: '#00C274' }} />
                 </div>
                 <h1 className="text-2xl font-bold text-white mb-2 tracking-tight">Reset Password</h1>
                 <p style={{ color: '#848E9C' }} className="text-sm leading-relaxed">
@@ -211,7 +211,7 @@ export function Login() {
                     <a
                       href={`mailto:${SUPPORT_EMAIL}`}
                       className="underline font-semibold"
-                      style={{ color: '#F0B90B' }}
+                      style={{ color: '#00C274' }}
                     >
                       {SUPPORT_EMAIL}
                     </a>{' '}
@@ -243,7 +243,7 @@ export function Login() {
                         style={inputStyle(!!forgotForm.formState.errors.email)}
                         onFocus={(e) => {
                           if (!forgotForm.formState.errors.email) {
-                            e.target.style.border = '1px solid #F0B90B';
+                            e.target.style.border = '1px solid #00C274';
                             e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
                           }
                         }}
@@ -276,7 +276,7 @@ export function Login() {
                         style={inputStyle(!!forgotForm.formState.errors.newPassword)}
                         onFocus={(e) => {
                           if (!forgotForm.formState.errors.newPassword) {
-                            e.target.style.border = '1px solid #F0B90B';
+                            e.target.style.border = '1px solid #00C274';
                             e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
                           }
                         }}
@@ -304,11 +304,11 @@ export function Login() {
                   {/* Info box */}
                   <div className="flex items-start gap-2.5 p-3.5 rounded-xl"
                     style={{ background: 'rgba(240,185,11,0.07)', border: '1px solid rgba(240,185,11,0.2)' }}>
-                    <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#F0B90B' }} />
+                    <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#00C274' }} />
                     <p className="text-xs leading-relaxed" style={{ color: '#848E9C' }}>
-                      Submit karte hi aapki <span style={{ color: '#F0B90B' }}>mail app</span> ek pre-filled email ke saath khulegi —{' '}
+                      Submit karte hi aapki <span style={{ color: '#00C274' }}>mail app</span> ek pre-filled email ke saath khulegi —{' '}
                       <span className="font-semibold" style={{ color: '#EAECEF' }}>{SUPPORT_EMAIL}</span>{' '}
-                      ko. Bas <span style={{ color: '#F0B90B' }}>Send</span> karein.
+                      ko. Bas <span style={{ color: '#00C274' }}>Send</span> karein.
                     </p>
                   </div>
 
@@ -316,7 +316,7 @@ export function Login() {
                     type="submit"
                     className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200"
                     style={{
-                      background: 'linear-gradient(135deg, #F0B90B 0%, #d4a100 100%)',
+                      background: 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)',
                       color: '#0B0E11',
                       boxShadow: '0 4px 20px rgba(240,185,11,0.3)',
                       cursor: 'pointer',
@@ -373,7 +373,7 @@ export function Login() {
                       style={inputStyle(!!form.formState.errors.email)}
                       onFocus={(e) => {
                         if (!form.formState.errors.email) {
-                          e.target.style.border = '1px solid #F0B90B';
+                          e.target.style.border = '1px solid #00C274';
                           e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
                         }
                       }}
@@ -404,7 +404,7 @@ export function Login() {
                       style={inputStyle(!!form.formState.errors.password)}
                       onFocus={(e) => {
                         if (!form.formState.errors.password) {
-                          e.target.style.border = '1px solid #F0B90B';
+                          e.target.style.border = '1px solid #00C274';
                           e.target.style.boxShadow = '0 0 0 3px rgba(240,185,11,0.1)';
                         }
                       }}
@@ -436,7 +436,7 @@ export function Login() {
                   style={{
                     background: loginMutation.isPending
                       ? 'rgba(240,185,11,0.5)'
-                      : 'linear-gradient(135deg, #F0B90B 0%, #d4a100 100%)',
+                      : 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)',
                     color: '#0B0E11',
                     boxShadow: loginMutation.isPending ? 'none' : '0 4px 20px rgba(240,185,11,0.3)',
                     cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
@@ -455,10 +455,10 @@ export function Login() {
                   onClick={() => { setShowForgot(true); setErrorMsg(''); setSuccessMsg(''); }}
                   className="text-sm font-medium transition-colors"
                   style={{ color: '#848E9C' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#F0B90B')}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#00C274')}
                   onMouseLeave={e => (e.currentTarget.style.color = '#848E9C')}
                 >
-                  Forgot your password? <span style={{ color: '#F0B90B' }}>Send reset request →</span>
+                  Forgot your password? <span style={{ color: '#00C274' }}>Send reset request →</span>
                 </button>
               </div>
 
@@ -469,7 +469,7 @@ export function Login() {
               <div className="mt-6 pt-6 text-center" style={{ borderTop: '1px solid #2B3139' }}>
                 <p style={{ color: '#848E9C' }} className="text-sm">
                   Don't have an account?{' '}
-                  <Link href="/auth/register" className="font-semibold hover:underline transition-colors" style={{ color: '#F0B90B' }}>
+                  <Link href="/auth/register" className="font-semibold hover:underline transition-colors" style={{ color: '#00C274' }}>
                     Create account
                   </Link>
                 </p>

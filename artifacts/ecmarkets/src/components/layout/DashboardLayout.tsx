@@ -24,10 +24,9 @@ import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
   { name: 'Overview',         href: '/dashboard',               icon: LayoutDashboard },
-  { name: 'Analytics',        href: '/dashboard/analytics',     icon: LineChart },
   { name: 'Binary Trading',   href: '/dashboard/binary',        icon: TrendingUp, highlight: true },
+  { name: 'Analytics',        href: '/dashboard/analytics',     icon: LineChart },
   { name: 'Trade History',    href: '/dashboard/trades',        icon: History },
-  { name: 'Strategies',       href: '/dashboard/strategies',    icon: Zap },
   { name: 'Deposit',          href: '/dashboard/deposit',       icon: Wallet },
   { name: 'Withdraw',         href: '/dashboard/withdraw',      icon: ArrowDownUp },
   { name: 'KYC & Security',   href: '/dashboard/kyc',           icon: ShieldCheck },
@@ -45,12 +44,12 @@ const bottomNavItems = [
 function SidebarLogo() {
   return (
     <Link href="/" className="flex items-center gap-3 group">
-      <div className="shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.3)]">
+      <div className="shrink-0 drop-shadow-[0_0_8px_rgba(0,194,116,0.3)]">
         <EcmLogo size={36} />
       </div>
       <div className="leading-none">
         <span className="text-lg font-black tracking-tight text-gradient-metallic">ECMarkets</span>
-        <span className="text-lg font-black tracking-tight text-[#FFB800]">India</span>
+        <span className="text-lg font-black tracking-tight text-[#00C274]">India</span>
       </div>
     </Link>
   );
@@ -61,13 +60,13 @@ function UserAvatar({ firstName, lastName, photo, size = 'md' }: { firstName?: s
   const dim = size === 'lg' ? 'w-12 h-12 text-base' : size === 'sm' ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm';
   if (photo) {
     return (
-      <div className={`${dim} rounded-full shrink-0 overflow-hidden ring-2 ring-[#FFB800]/40 shadow-lg shadow-[#FFB800]/15`}>
+      <div className={`${dim} rounded-full shrink-0 overflow-hidden ring-2 ring-[#00C274]/40 shadow-lg shadow-[#00C274]/15`}>
         <img src={photo} alt="Avatar" className="w-full h-full object-cover" />
       </div>
     );
   }
   return (
-    <div className={`${dim} rounded-full bg-gradient-to-br from-[#FFB800] via-[#F0B90B] to-[#c8960c] flex items-center justify-center font-black text-black shadow-lg shadow-[#FFB800]/20 shrink-0`}>
+    <div className={`${dim} rounded-full bg-gradient-to-br from-[#00C274] via-[#00A85E] to-[#007A45] flex items-center justify-center font-black text-black shadow-lg shadow-[#00C274]/20 shrink-0`}>
       {initials}
     </div>
   );
@@ -96,21 +95,21 @@ function NavItem({ item, isActive, onClose }: { item: typeof navItems[0]; isActi
       onClick={onClose}
       className={`flex items-center gap-3 py-3 pr-4 text-sm font-semibold transition-all duration-200 relative group
         ${isActive
-          ? 'nav-item-active text-[#FFB800] pl-[13px]'
+          ? 'nav-item-active text-[#00C274] pl-[13px]'
           : isHighlight
-          ? 'pl-4 text-[#FFB800]/80 hover:text-[#FFB800]'
+          ? 'pl-4 text-[#00C274]/80 hover:text-[#00C274]'
           : 'nav-item-hover text-[#6B7280] hover:text-[#F8FAFC] pl-4'
         }`}
     >
       <Icon className={`w-[18px] h-[18px] shrink-0 transition-all duration-200 ${
-        isActive ? 'text-[#FFB800]' : isHighlight ? 'text-[#FFB800]/70 group-hover:text-[#FFB800]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
+        isActive ? 'text-[#00C274]' : isHighlight ? 'text-[#00C274]/70 group-hover:text-[#00C274]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
       }`} />
       <span className="flex-1 truncate">{item.name}</span>
       {isHighlight && !isActive && (
-        <span className="text-[9px] font-black bg-[#FFB800] text-black px-1.5 py-0.5 rounded-full uppercase tracking-wide">LIVE</span>
+        <span className="text-[9px] font-black bg-[#00C274] text-black px-1.5 py-0.5 rounded-full uppercase tracking-wide">LIVE</span>
       )}
       {isActive && (
-        <ChevronRight className="w-3.5 h-3.5 text-[#FFB800]/60 shrink-0" />
+        <ChevronRight className="w-3.5 h-3.5 text-[#00C274]/60 shrink-0" />
       )}
     </Link>
   );
@@ -205,20 +204,20 @@ function MobileBottomNav({ location, onMoreClick }: { location: string; onMoreCl
           >
             {isHL && !isActive && (
               <div className="absolute inset-x-3 inset-y-1.5 rounded-xl"
-                style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.2)' }} />
+                style={{ background: 'rgba(0,194,116,0.08)', border: '1px solid rgba(0,194,116,0.2)' }} />
             )}
             <Icon
               className={`w-5 h-5 relative z-10 transition-colors ${
-                isActive ? 'text-[#FFB800]' : isHL ? 'text-[#FFB800]/70' : 'text-[#4B5563]'
+                isActive ? 'text-[#00C274]' : isHL ? 'text-[#00C274]/70' : 'text-[#4B5563]'
               }`}
             />
             <span className={`text-[10px] font-semibold relative z-10 transition-colors ${
-              isActive ? 'text-[#FFB800]' : isHL ? 'text-[#FFB800]/70' : 'text-[#4B5563]'
+              isActive ? 'text-[#00C274]' : isHL ? 'text-[#00C274]/70' : 'text-[#4B5563]'
             }`}>
               {item.name}
             </span>
             {isActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-[#FFB800]" />
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-[#00C274]" />
             )}
           </Link>
         );
@@ -293,11 +292,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
           <div className="md:hidden flex items-center gap-2">
             <EcmLogo size={26} />
-            <span className="text-sm font-black tracking-tight text-white">ECMarkets<span className="text-[#FFB800]">India</span></span>
+            <span className="text-sm font-black tracking-tight text-white">ECMarkets<span className="text-[#00C274]">India</span></span>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-[#FFB800] to-[#F0B90B]" />
+            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-[#00C274] to-[#00A85E]" />
             <h2 className="text-[15px] font-bold text-[#F8FAFC] tracking-tight">
               {getPageTitle(location)}
             </h2>
@@ -306,7 +305,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2 md:gap-3 ml-auto">
             <Link
               href="/dashboard/notifications"
-              className="relative p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-[#6B7280] hover:text-[#FFB800] hover:border-[#FFB800]/25 transition-all duration-200"
+              className="relative p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-[#6B7280] hover:text-[#00C274] hover:border-[#00C274]/25 transition-all duration-200"
             >
               <Bell className="w-[18px] h-[18px]" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#CF304A] border-2 border-[#080D18] rounded-full" />
