@@ -171,7 +171,7 @@ interface SettledResult {
 export function BinaryTrading() {
   const { toast }        = useToast();
   const queryClient      = useQueryClient();
-  const { data: dashboard } = useGetDashboard({ ...getAuthOptions(), query: { staleTime: 0 } });
+  const { data: dashboard } = useGetDashboard(getAuthOptions());
   const balance          = dashboard?.totalBalance ?? 0;
 
   /* chart state */
@@ -331,7 +331,7 @@ export function BinaryTrading() {
     return () => {
       priceLineRef.current = null;
       entryLinesRef.current.clear();
-      chart.remove();
+      try { chart.remove(); } catch {}
       chartInstance.current = null;
       seriesRef.current = null;
     };
@@ -453,12 +453,11 @@ export function BinaryTrading() {
       const last = candles[candles.length - 1];
       if (last && (last.time as number) === (barTs as number)) candles[candles.length - 1] = bar;
       else { candles.push(bar); if (candles.length > 1440) candles.shift(); }
-      setPrices(prev => {
-        const old = prev[inst] ?? price;
-        setPriceDir(pd => ({ ...pd, [inst]: price >= old ? 'up' : 'down' }));
-        pricesRef.current = { ...pricesRef.current, [inst]: price };
-        return { ...prev, [inst]: price };
-      });
+      const oldPrice = pricesRef.current[inst] ?? price;
+      const dir: 'up' | 'down' = price >= oldPrice ? 'up' : 'down';
+      pricesRef.current = { ...pricesRef.current, [inst]: price };
+      setPrices(prev => ({ ...prev, [inst]: price }));
+      setPriceDir(prev => ({ ...prev, [inst]: dir }));
       if (inst === instRef.current && seriesRef.current) {
         try { seriesRef.current.update(bar); }
         catch { try { seriesRef.current.setData(aggregateCandlesBucket(candles, tfBucketRef.current)); } catch {} }
@@ -498,12 +497,11 @@ export function BinaryTrading() {
     socket.on('price:tick', (d: { instrument: string; price: number; open: number; high: number; low: number; time: number }) => {
       if (binanceLiveRef.current[d.instrument]) return;
       const { instrument: inst, price } = d;
-      setPrices(prev => {
-        const old = prev[inst] ?? price;
-        setPriceDir(pd => ({ ...pd, [inst]: price >= old ? 'up' : 'down' }));
-        pricesRef.current = { ...pricesRef.current, [inst]: price };
-        return { ...prev, [inst]: price };
-      });
+      const oldP = pricesRef.current[inst] ?? price;
+      const dir2: 'up'|'down' = price >= oldP ? 'up' : 'down';
+      pricesRef.current = { ...pricesRef.current, [inst]: price };
+      setPrices(prev => ({ ...prev, [inst]: price }));
+      setPriceDir(prev => ({ ...prev, [inst]: dir2 }));
     });
     socket.on('binary:settled', (data: SettledResult) => {
       setResult(data);
