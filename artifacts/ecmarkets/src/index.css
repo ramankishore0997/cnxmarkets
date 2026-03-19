@@ -140,10 +140,6 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-@keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
 @keyframes breathe-green {
   0%, 100% { 
     text-shadow: 0 0 8px rgba(2,192,118,0.35), 0 0 16px rgba(2,192,118,0.15); 
@@ -602,14 +598,3 @@
   }
 }
 
-/* Ticker tape animation */
-@keyframes ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.animate-ticker {
-  animation: ticker-scroll 45s linear infinite;
-}
-.animate-ticker:hover {
-  animation-play-state: paused;
-}

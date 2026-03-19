@@ -64,12 +64,7 @@ const DURATIONS = [
   { seconds: 120,label: '2m'  },
   { seconds: 300,label: '5m'  },
 ];
-const FAKE_NAMES = ['Rahul','Priya','Amit','Sneha','Vikram','Anjali','Deepak','Sunita','Rajesh','Kavya','Suresh','Pooja','Arjun','Meera','Rohit','Divya','Karan','Nisha','Anil','Ritu'];
-const FAKE_AMTS  = [500,1000,2000,5000,10000,25000];
-
 /* ─── Helpers ─────────────────────────────────────────────────── */
-function rand<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
-function maskUser(n: string) { return n.length >= 4 ? `${n.slice(0,4)}****` : `${n}****`; }
 function getUserIdFromToken(): number | null {
   try { return JSON.parse(atob(localStorage.getItem('ecm_token')!.split('.')[1])).id ?? null; } catch { return null; }
 }
@@ -158,10 +153,6 @@ interface HistEntry {
   id: number; instrument: string; direction: string; entryPrice: number;
   exitPrice: number; amount: number; profit: number; status: string; payoutPct: number; openedAt: string;
 }
-interface TickerItem {
-  key: string; user: string; instrument: string; amount: number;
-  direction: 'call'|'put'; status: 'pending'|'won'|'lost'; profit?: number;
-}
 interface SettledResult {
   tradeId: number; instrument: string; direction: string; entryPrice: number;
   exitPrice: number; amount: number; profit: number; payout: number; status: string; payoutPct: number;
@@ -192,7 +183,6 @@ export function BinaryTrading() {
   const [connected,   setConnected]   = useState(false);
 
   /* engagement */
-  const [ticker,      setTicker]      = useState<TickerItem[]>([]);
   const [hotPairs,    setHotPairs]    = useState<string[]>(['BTC/USDT','SOL/USDT','DOGE/USDT']);
   const [moodCall,    setMoodCall]    = useState<Record<string,number>>({});
   const [aiSignal,    setAiSignal]    = useState<Record<string,'call'|'put'|'neutral'>>({});
@@ -241,37 +231,6 @@ export function BinaryTrading() {
       .catch(() => {});
     fetch('/api/binary/history?limit=30', { headers: authHdr }).then(r => r.ok ? r.json() : null)
       .then((d: any) => { if (d?.trades) setMyHistory(d.trades.slice(0, 30)); }).catch(() => {});
-    fetch('/api/binary/recent', { headers: authHdr }).then(r => r.ok ? r.json() : [])
-      .then((t: any[]) => {
-        const items: TickerItem[] = t.map(tr => ({
-          key: `r-${tr.id}`, user: maskUser(tr.user || 'User'),
-          instrument: tr.instrument, amount: tr.amount, direction: tr.direction, status: tr.status,
-        }));
-        setTicker(items.slice(0, 30));
-      }).catch(() => {});
-  }, []);
-
-  /* ── Simulated ticker feed ── */
-  useEffect(() => {
-    const schedule = () => {
-      const delay = 1800 + Math.random() * 2200;
-      return setTimeout(() => {
-        const inst = rand(INSTRUMENTS.map(i => i.id));
-        const dir: 'call'|'put' = Math.random() > 0.5 ? 'call' : 'put';
-        const amt = rand(FAKE_AMTS);
-        const key = `s-${Date.now()}-${Math.random()}`;
-        const entry: TickerItem = { key, user: maskUser(rand(FAKE_NAMES)), instrument: inst, amount: amt, direction: dir, status: 'pending' };
-        setTicker(prev => [entry, ...prev].slice(0, 40));
-        setTimeout(() => {
-          const won = Math.random() < 0.68;
-          const profit = won ? Math.round(amt * 0.9) : 0;
-          setTicker(prev => prev.map(e => e.key === key ? { ...e, status: won ? 'won' : 'lost', profit } : e));
-        }, 3000 + Math.random() * 5000);
-        schedule();
-      }, delay);
-    };
-    const id = schedule();
-    return () => clearTimeout(id);
   }, []);
 
   /* ── Hot pairs rotation ── */
@@ -582,35 +541,11 @@ export function BinaryTrading() {
     ? '0 0 0 2px rgba(207,48,74,0.5), 0 0 40px rgba(207,48,74,0.15)'
     : 'none';
 
-  const tickerItems = ticker.filter(t => t.status !== 'pending').slice(0, 30);
-
   /* ─── JSX ────────────────────────────────────────────────────── */
   return (
     <DashboardLayout>
       <div className="flex flex-col binary-terminal-h"
         style={{ borderRadius: 16, boxShadow: screenGlow, transition: 'box-shadow 0.8s ease', gap: 8 }}>
-
-        {/* ── TICKER TAPE ── */}
-        {tickerItems.length > 0 && (
-          <div className="rounded-xl overflow-hidden flex-shrink-0"
-            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', height: 30 }}>
-            <div className="animate-ticker flex items-center h-full" style={{ width: 'max-content' }}>
-              {[...tickerItems, ...tickerItems].map((t, i) => (
-                <span key={i} className="flex items-center gap-1 mx-4 flex-shrink-0 text-[11px] font-bold">
-                  <span className="text-[#6B7280]">{t.user}</span>
-                  <span className={t.status === 'won' ? 'text-[#02C076]' : 'text-[#CF304A]'}>
-                    {t.status === 'won' ? '▲ WON' : '▼ LOST'}
-                  </span>
-                  <span className="text-white">
-                    {t.status === 'won' ? '+' : '−'}₹{Number(t.profit ?? t.amount ?? 0).toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[#4B5563]">on {t.instrument}</span>
-                  <span className="text-[#1F2937] mx-2">|</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* ── MOBILE: pair chips ── */}
         <div className="md:hidden flex gap-1.5 overflow-x-auto pb-1 flex-shrink-0" style={{ scrollbarWidth: 'none' }}>
