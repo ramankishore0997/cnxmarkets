@@ -587,3 +587,15 @@
     }
   }
 }
+
+/* Crypto terminal full height */
+.binary-terminal-h {
+  height: calc(100vh - 80px);
+  min-height: 600px;
+}
+@media (max-width: 768px) {
+  .binary-terminal-h {
+    height: auto;
+    min-height: unset;
+  }
+}
