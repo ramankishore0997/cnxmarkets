@@ -424,7 +424,6 @@ function InjectTradePanel({ users }: { users: any[] }) {
   const [direction,  setDirection]  = useState<'buy' | 'sell'>('buy');
   const [tradeStatus, setTradeStatus] = useState<'open' | 'closed'>('closed');
   const [profit,     setProfit]     = useState('');
-  const [entryOverride, setEntryOverride] = useState('');
 
   const instr = INSTRUMENTS_DATA.find(i => i.instrument === instrKey) || INSTRUMENTS_DATA[0];
 
@@ -432,7 +431,7 @@ function InjectTradePanel({ users }: { users: any[] }) {
     if (!userId) { toast({ title: 'No user selected', description: 'Please choose a client.', variant: 'destructive' }); return; }
     if (tradeStatus === 'closed' && profit === '') { toast({ title: 'Profit required', description: 'Enter a profit or loss amount (₹).', variant: 'destructive' }); return; }
 
-    const entryPrice = entryOverride ? parseFloat(entryOverride) : instr.basePrice;
+    const entryPrice = instr.basePrice;
     const profitVal  = tradeStatus === 'closed' ? parseFloat(profit) : undefined;
 
     setSubmitting(true);
@@ -463,7 +462,6 @@ function InjectTradePanel({ users }: { users: any[] }) {
       });
       setSuccess(true);
       setProfit('');
-      setEntryOverride('');
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -515,7 +513,7 @@ function InjectTradePanel({ users }: { users: any[] }) {
           <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Instrument *</label>
           <select
             value={instrKey}
-            onChange={e => { setInstrKey(e.target.value); setEntryOverride(''); }}
+            onChange={e => setInstrKey(e.target.value)}
             className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00C274] transition-colors"
           >
             <optgroup label="Forex">
@@ -529,24 +527,13 @@ function InjectTradePanel({ users }: { users: any[] }) {
               ))}
             </optgroup>
           </select>
-          <p className="text-xs text-[#848E9C] mt-1">
-            Market: <span className="text-white">{instr.market}</span> &nbsp;|&nbsp;
-            Default entry: <span className="text-white font-mono">{instr.basePrice}</span> &nbsp;|&nbsp;
-            Lot size: <span className="text-white font-mono">{instr.lotSize}</span>
+          <p className="text-xs text-[#848E9C] mt-1.5">
+            Market: <span className="text-white">{instr.market}</span>
+            <span className="mx-2">·</span>
+            Entry: <span className="text-[#00C274] font-mono">{instr.basePrice} (auto)</span>
+            <span className="mx-2">·</span>
+            Lot: <span className="text-white font-mono">{instr.lotSize}</span>
           </p>
-        </div>
-
-        {/* Entry override */}
-        <div>
-          <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Entry Price (optional override)</label>
-          <input
-            type="number"
-            step="any"
-            value={entryOverride}
-            onChange={e => setEntryOverride(e.target.value)}
-            placeholder={`Default: ${instr.basePrice}`}
-            className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-[#00C274] transition-colors placeholder-[#3d4450]"
-          />
         </div>
 
         {/* Direction + Status */}
