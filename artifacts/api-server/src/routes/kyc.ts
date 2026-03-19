@@ -1,27 +1,68 @@
 import { Router } from "express";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
 import { db } from "@workspace/db";
 import { kycDocumentsTable, usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { sendTelegram } from "../lib/telegram.js";
 
-const UPLOADS_DIR = path.resolve(process.cwd(), "uploads", "kyc");
-if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+const SUPABASE_URL = "https://walzicfjkwiifeldzppx.supabase.co";
+const SUPABASE_BUCKET = "kyc-documents";
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
-  filename: (req: any, file, cb) => {
-    const userId = req.user?.id ?? "unknown";
-    const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
-    cb(null, `${userId}_${file.fieldname}_${Date.now()}${ext}`);
-  },
-});
+async function uploadToSupabase(
+  buffer: Buffer,
+  filename: string,
+  mimetype: string
+): Promise<string> {
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!serviceKey) throw new Error("SUPABASE_SERVICE_KEY not configured");
+
+  const uploadUrl = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${filename}`;
+
+  const response = await fetch(uploadUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": mimetype,
+      "x-upsert": "true",
+    },
+    body: buffer,
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Supabase upload failed: ${err}`);
+  }
+
+  return `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${filename}`;
+}
+
+async function getSignedUrl(filePath: string): Promise<string> {
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!serviceKey) return filePath;
+
+  const filename = filePath.includes(`/${SUPABASE_BUCKET}/`)
+    ? filePath.split(`/${SUPABASE_BUCKET}/`)[1]
+    : filePath;
+
+  const signUrl = `${SUPABASE_URL}/storage/v1/object/sign/${SUPABASE_BUCKET}/${filename}`;
+  const response = await fetch(signUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ expiresIn: 3600 }),
+  });
+
+  if (!response.ok) return filePath;
+  const data = (await response.json()) as { signedURL?: string };
+  return data.signedURL ? `${SUPABASE_URL}/storage/v1${data.signedURL}` : filePath;
+}
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -50,15 +91,23 @@ router.get("/", requireAuth, async (req: AuthRequest, res) => {
 
     const effectiveStatus = user?.kycStatus || doc?.status || "pending";
 
+    const [aadharFrontSigned, aadharBackSigned, panFrontSigned, panBackSigned] =
+      await Promise.all([
+        doc?.aadharCardFrontUrl ? getSignedUrl(doc.aadharCardFrontUrl) : Promise.resolve(null),
+        doc?.aadharCardBackUrl  ? getSignedUrl(doc.aadharCardBackUrl)  : Promise.resolve(null),
+        doc?.panCardFrontUrl    ? getSignedUrl(doc.panCardFrontUrl)    : Promise.resolve(null),
+        doc?.panCardBackUrl     ? getSignedUrl(doc.panCardBackUrl)     : Promise.resolve(null),
+      ]);
+
     res.json({
       id: doc?.id ?? null,
       userId: req.user!.id,
       panNumber: doc?.panNumber ?? null,
       aadharNumber: doc?.aadharNumber ?? null,
-      panCardFrontUrl: doc?.panCardFrontUrl ?? null,
-      panCardBackUrl: doc?.panCardBackUrl ?? null,
-      aadharCardFrontUrl: doc?.aadharCardFrontUrl ?? null,
-      aadharCardBackUrl: doc?.aadharCardBackUrl ?? null,
+      panCardFrontUrl: panFrontSigned,
+      panCardBackUrl: panBackSigned,
+      aadharCardFrontUrl: aadharFrontSigned,
+      aadharCardBackUrl: aadharBackSigned,
       status: effectiveStatus,
       rejectionReason: doc?.rejectionReason ?? null,
       submittedAt: doc?.submittedAt?.toISOString() ?? null,
@@ -94,19 +143,28 @@ router.post(
 
       const pan    = String(panNumber).toUpperCase().trim();
       const aadhar = String(aadharNumber).replace(/\s/g, "").trim();
+      const userId = req.user!.id;
 
       const files = (req as any).files as Record<string, Express.Multer.File[]> | undefined;
-      const toUrl = (field: string) => {
+
+      async function uploadField(field: string): Promise<string | undefined> {
         const arr = files?.[field];
-        return arr && arr.length > 0 ? `/api/uploads/kyc/${arr[0].filename}` : undefined;
-      };
+        if (!arr || arr.length === 0) return undefined;
+        const file = arr[0];
+        const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
+        const filename = `${userId}/${field}_${Date.now()}${ext}`;
+        return uploadToSupabase(file.buffer, filename, file.mimetype);
+      }
 
-      const aadhaarFrontUrl = toUrl("aadhaarFront");
-      const aadhaarBackUrl  = toUrl("aadhaarBack");
-      const panFrontUrl     = toUrl("panFront");
-      const panBackUrl      = toUrl("panBack");
+      const [aadhaarFrontUrl, aadhaarBackUrl, panFrontUrl, panBackUrl] = await Promise.all([
+        uploadField("aadhaarFront"),
+        uploadField("aadhaarBack"),
+        uploadField("panFront"),
+        uploadField("panBack"),
+      ]);
 
-      console.log(`[KYC] User ${req.user!.id} submitting — PAN: ${pan}, Aadhaar: ${aadhar}, photos: ${[aadhaarFrontUrl, aadhaarBackUrl, panFrontUrl, panBackUrl].filter(Boolean).length}/4`);
+      const photoCount = [aadhaarFrontUrl, aadhaarBackUrl, panFrontUrl, panBackUrl].filter(Boolean).length;
+      console.log(`[KYC] User ${userId} submitting — PAN: ${pan}, Aadhaar: ${aadhar}, photos: ${photoCount}/4`);
 
       const updates: Record<string, any> = {
         panNumber: pan,
@@ -122,27 +180,26 @@ router.post(
       if (panBackUrl)      updates.panCardBackUrl     = panBackUrl;
 
       const existing = await db.select().from(kycDocumentsTable)
-        .where(eq(kycDocumentsTable.userId, req.user!.id)).limit(1);
+        .where(eq(kycDocumentsTable.userId, userId)).limit(1);
 
       let doc;
       if (existing.length > 0) {
         [doc] = await db.update(kycDocumentsTable)
           .set(updates)
-          .where(eq(kycDocumentsTable.userId, req.user!.id))
+          .where(eq(kycDocumentsTable.userId, userId))
           .returning();
       } else {
         [doc] = await db.insert(kycDocumentsTable)
-          .values({ userId: req.user!.id, ...updates })
+          .values({ userId, ...updates })
           .returning();
       }
 
       await db.update(usersTable)
         .set({ kycStatus: "submitted" })
-        .where(eq(usersTable.id, req.user!.id));
+        .where(eq(usersTable.id, userId));
 
-      console.log(`[KYC] Saved — docId: ${doc.id}, userId: ${req.user!.id}`);
+      console.log(`[KYC] Saved to Supabase Storage — docId: ${doc.id}, userId: ${userId}`);
 
-      const userId = req.user!.id;
       const userEmail = req.user!.email;
       void (async () => {
         try {
@@ -154,7 +211,7 @@ router.post(
             `👤 User: ${name}`,
             `💳 PAN: ${pan}`,
             `🆔 Aadhaar: ${aadhar}`,
-            `📷 Photos: ${[aadhaarFrontUrl, aadhaarBackUrl, panFrontUrl, panBackUrl].filter(Boolean).length}/4 uploaded`,
+            `📷 Photos: ${photoCount}/4 uploaded to Supabase Storage`,
           ].join("\n"));
         } catch { /* silent */ }
       })();

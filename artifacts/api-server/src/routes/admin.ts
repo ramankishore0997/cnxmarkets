@@ -10,6 +10,36 @@ import { closeUserOpenTradesNow } from "../services/tradeCron.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "ecmarkets-secret-key-2024";
 
+const SUPABASE_URL = "https://walzicfjkwiifeldzppx.supabase.co";
+const SUPABASE_BUCKET = "kyc-documents";
+
+async function getSignedUrl(filePath: string | null | undefined): Promise<string | null> {
+  if (!filePath) return null;
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!serviceKey) return filePath;
+  if (!filePath.includes(SUPABASE_BUCKET)) return filePath;
+
+  const filename = filePath.split(`/${SUPABASE_BUCKET}/`)[1];
+  if (!filename) return filePath;
+
+  try {
+    const signUrl = `${SUPABASE_URL}/storage/v1/object/sign/${SUPABASE_BUCKET}/${filename}`;
+    const response = await fetch(signUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ expiresIn: 3600 }),
+    });
+    if (!response.ok) return filePath;
+    const data = (await response.json()) as { signedURL?: string };
+    return data.signedURL ? `${SUPABASE_URL}/storage/v1${data.signedURL}` : filePath;
+  } catch {
+    return filePath;
+  }
+}
+
 const router = Router();
 
 router.get("/stats", requireAdmin, async (_req, res) => {
@@ -181,11 +211,17 @@ router.get("/users/:id/kyc", requireAdmin, async (req, res) => {
     const userId = parseInt(req.params.id);
     const [doc] = await db.select().from(kycDocumentsTable).where(eq(kycDocumentsTable.userId, userId)).limit(1);
     if (!doc) { res.json(null); return; }
+    const [panFront, panBack, aadharFront, aadharBack] = await Promise.all([
+      getSignedUrl(doc.panCardFrontUrl),
+      getSignedUrl(doc.panCardBackUrl),
+      getSignedUrl(doc.aadharCardFrontUrl),
+      getSignedUrl(doc.aadharCardBackUrl),
+    ]);
     res.json({
       id: doc.id, userId: doc.userId,
       panNumber: doc.panNumber, aadharNumber: doc.aadharNumber,
-      panCardFrontUrl: doc.panCardFrontUrl, panCardBackUrl: doc.panCardBackUrl,
-      aadharCardFrontUrl: doc.aadharCardFrontUrl, aadharCardBackUrl: doc.aadharCardBackUrl,
+      panCardFrontUrl: panFront, panCardBackUrl: panBack,
+      aadharCardFrontUrl: aadharFront, aadharCardBackUrl: aadharBack,
       status: doc.status, rejectionReason: doc.rejectionReason,
       submittedAt: doc.submittedAt?.toISOString(),
     });
@@ -235,24 +271,33 @@ router.get("/kyc", requireAdmin, async (_req, res) => {
         noDocuments: true,
       }));
 
-    const result = [
-      ...docs.map(({ doc, user }) => ({
-        id: doc.id, userId: doc.userId,
-        userEmail: user?.email || "", userName: `${user?.firstName} ${user?.lastName}`,
-        panNumber: doc.panNumber,
-        aadharNumber: doc.aadharNumber,
-        panCardFrontUrl: doc.panCardFrontUrl,
-        panCardBackUrl: doc.panCardBackUrl,
-        aadharCardFrontUrl: doc.aadharCardFrontUrl,
-        aadharCardBackUrl: doc.aadharCardBackUrl,
-        idDocumentType: doc.idDocumentType, idDocumentUrl: doc.idDocumentUrl,
-        addressProofType: doc.addressProofType, addressProofUrl: doc.addressProofUrl,
-        status: doc.status, rejectionReason: doc.rejectionReason,
-        submittedAt: doc.submittedAt?.toISOString(),
-        noDocuments: false,
-      })),
-      ...ghostEntries,
-    ];
+    const signedDocs = await Promise.all(
+      docs.map(async ({ doc, user }) => {
+        const [panFront, panBack, aadharFront, aadharBack] = await Promise.all([
+          getSignedUrl(doc.panCardFrontUrl),
+          getSignedUrl(doc.panCardBackUrl),
+          getSignedUrl(doc.aadharCardFrontUrl),
+          getSignedUrl(doc.aadharCardBackUrl),
+        ]);
+        return {
+          id: doc.id, userId: doc.userId,
+          userEmail: user?.email || "", userName: `${user?.firstName} ${user?.lastName}`,
+          panNumber: doc.panNumber,
+          aadharNumber: doc.aadharNumber,
+          panCardFrontUrl: panFront,
+          panCardBackUrl: panBack,
+          aadharCardFrontUrl: aadharFront,
+          aadharCardBackUrl: aadharBack,
+          idDocumentType: doc.idDocumentType, idDocumentUrl: doc.idDocumentUrl,
+          addressProofType: doc.addressProofType, addressProofUrl: doc.addressProofUrl,
+          status: doc.status, rejectionReason: doc.rejectionReason,
+          submittedAt: doc.submittedAt?.toISOString(),
+          noDocuments: false,
+        };
+      })
+    );
+
+    const result = [...signedDocs, ...ghostEntries];
 
     console.log(`[AdminKYC] Returning ${result.length} entries (${docs.length} real docs + ${ghostEntries.length} ghost entries). Statuses: ${result.map(r => `${r.userId}=${r.status}(docs:${!r.noDocuments})`).join(", ")}`);
     res.json(result);
