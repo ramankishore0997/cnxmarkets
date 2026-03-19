@@ -7,8 +7,7 @@ import { getCurrentPrice } from "../services/priceService.js";
 import type { Server as SocketIOServer } from "socket.io";
 
 const VALID_INSTRUMENTS = [
-  "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD", "EUR/JPY",
-  "BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT",
+  "BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT",
 ];
 const VALID_DURATIONS = [30, 60, 120, 300];
 const MIN_TRADE = 100;
@@ -349,30 +348,25 @@ router.get("/recent", requireAuth, async (_req, res) => {
   }
 });
 
-const ALLTICK_TOKEN = '5d1a2ce3f3c21f3e430c3695b884e96f-c-app';
-const ALLTICK_CODE: Record<string, string> = {
-  'EUR/USD': 'EURUSD', 'GBP/USD': 'GBPUSD', 'USD/JPY': 'USDJPY',
-  'AUD/USD': 'AUDUSD', 'USD/CAD': 'USDCAD', 'EUR/JPY': 'EURJPY',
-  'BTC/USDT': 'BTCUSDT', 'ETH/USDT': 'ETHUSDT', 'SOL/USDT': 'SOLUSDT', 'BNB/USDT': 'BNBUSDT',
+const BINANCE_SYMBOL: Record<string, string> = {
+  'BTC/USDT': 'BTCUSDT', 'ETH/USDT': 'ETHUSDT', 'SOL/USDT': 'SOLUSDT',
+  'BNB/USDT': 'BNBUSDT', 'XRP/USDT': 'XRPUSDT',
 };
+const BINANCE_INTERVAL: Record<string, string> = { '1': '1m', '5': '5m', '15': '15m', '60': '1h' };
 
 router.get("/klines", requireAuth, async (req, res) => {
   try {
     const inst = String(req.query.instrument ?? '');
-    const kline_type = parseInt(String(req.query.kline_type ?? '1'), 10) || 1;
-    const count = Math.min(500, parseInt(String(req.query.count ?? '150'), 10) || 150);
-    const code = ALLTICK_CODE[inst];
-    if (!code) { res.status(400).json({ message: 'Unknown instrument' }); return; }
-
-    const query = encodeURIComponent(JSON.stringify({
-      trace: `kl-${Date.now()}`,
-      data: { code, kline_type, kline_timestamp_end: 0, query_kline_num: count, adjust_type: 0 },
-    }));
-    const url = `https://quote.alltick.co/quote-b-api/kline?token=${ALLTICK_TOKEN}&query=${query}`;
+    const tf = String(req.query.interval ?? '1');
+    const count = Math.min(500, parseInt(String(req.query.count ?? '200'), 10) || 200);
+    const symbol = BINANCE_SYMBOL[inst];
+    if (!symbol) { res.status(400).json({ message: 'Unknown instrument' }); return; }
+    const interval = BINANCE_INTERVAL[tf] ?? '1m';
+    const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${count}`;
     const response = await fetch(url);
     const data = await response.json() as any;
     res.json(data);
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: 'Failed to fetch klines' });
   }
 });

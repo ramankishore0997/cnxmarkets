@@ -23,7 +23,7 @@ import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
   { name: 'Overview',         href: '/dashboard',                 icon: LayoutDashboard },
-  { name: 'Binary Trading',   href: '/dashboard/binary',          icon: TrendingUp, highlight: true },
+  { name: 'Crypto Trading',   href: '/dashboard/binary',          icon: TrendingUp, highlight: true },
   { name: 'Leaderboard',      href: '/dashboard/leaderboard',     icon: Trophy },
   { name: 'Analytics',        href: '/dashboard/analytics',       icon: LineChart },
   { name: 'Trade History',    href: '/dashboard/trades',          icon: History },
@@ -35,7 +35,7 @@ const navItems = [
 
 const bottomNavItems = [
   { name: 'Home',     href: '/dashboard',           icon: LayoutDashboard },
-  { name: 'Binary',   href: '/dashboard/binary',    icon: TrendingUp, highlight: true },
+  { name: 'Crypto',   href: '/dashboard/binary',    icon: TrendingUp, highlight: true },
   { name: 'Deposit',  href: '/dashboard/deposit',   icon: Wallet },
   { name: 'Profile',  href: '/dashboard/profile',   icon: User },
 ];

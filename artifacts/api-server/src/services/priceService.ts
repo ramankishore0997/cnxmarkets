@@ -1,20 +1,15 @@
-import WebSocket from "ws";
 import type { Server as SocketIOServer } from "socket.io";
 
-const FINNHUB_TOKEN = process.env.FINNHUB_API_KEY || "";
-
-const INSTRUMENT_MAP: Record<string, string> = {
-  "OANDA:EUR_USD":    "EUR/USD",
-  "OANDA:GBP_USD":    "GBP/USD",
-  "OANDA:USD_JPY":    "USD/JPY",
-  "OANDA:AUD_USD":    "AUD/USD",
-  "OANDA:USD_CAD":    "USD/CAD",
-  "OANDA:EUR_JPY":    "EUR/JPY",
-  "BINANCE:BTCUSDT":  "BTC/USDT",
-  "BINANCE:ETHUSDT":  "ETH/USDT",
-  "BINANCE:SOLUSDT":  "SOL/USDT",
-  "BINANCE:BNBUSDT":  "BNB/USDT",
+const BINANCE_SYMBOLS: Record<string, string> = {
+  "BTC/USDT": "BTCUSDT",
+  "ETH/USDT": "ETHUSDT",
+  "SOL/USDT": "SOLUSDT",
+  "BNB/USDT": "BNBUSDT",
+  "XRP/USDT": "XRPUSDT",
 };
+const SYMBOL_TO_INST: Record<string, string> = Object.fromEntries(
+  Object.entries(BINANCE_SYMBOLS).map(([k, v]) => [v, k])
+);
 
 interface PriceState {
   price: number;
@@ -25,39 +20,25 @@ interface PriceState {
 }
 
 export const prices: Record<string, PriceState> = {
-  "EUR/USD":  { price: 1.08540,  open: 1.08540,  high: 1.08560,  low: 1.08520,  candle_time: 0 },
-  "GBP/USD":  { price: 1.27230,  open: 1.27230,  high: 1.27260,  low: 1.27200,  candle_time: 0 },
-  "USD/JPY":  { price: 149.850,  open: 149.850,  high: 149.870,  low: 149.830,  candle_time: 0 },
-  "AUD/USD":  { price: 0.65430,  open: 0.65430,  high: 0.65450,  low: 0.65410,  candle_time: 0 },
-  "USD/CAD":  { price: 1.36420,  open: 1.36420,  high: 1.36450,  low: 1.36390,  candle_time: 0 },
-  "EUR/JPY":  { price: 162.540,  open: 162.540,  high: 162.580,  low: 162.500,  candle_time: 0 },
-  "BTC/USDT": { price: 67450.0,  open: 67450.0,  high: 67520.0,  low: 67380.0,  candle_time: 0 },
-  "ETH/USDT": { price: 3250.0,   open: 3250.0,   high: 3265.0,   low: 3235.0,   candle_time: 0 },
-  "SOL/USDT": { price: 148.50,   open: 148.50,   high: 149.20,   low: 147.80,   candle_time: 0 },
-  "BNB/USDT": { price: 410.00,   open: 410.00,   high: 411.50,   low: 408.50,   candle_time: 0 },
+  "BTC/USDT": { price: 67450.0, open: 67450.0, high: 67520.0, low: 67380.0, candle_time: 0 },
+  "ETH/USDT": { price: 3250.0,  open: 3250.0,  high: 3265.0,  low: 3235.0,  candle_time: 0 },
+  "SOL/USDT": { price: 148.50,  open: 148.50,  high: 149.20,  low: 147.80,  candle_time: 0 },
+  "BNB/USDT": { price: 410.00,  open: 410.00,  high: 411.50,  low: 408.50,  candle_time: 0 },
+  "XRP/USDT": { price: 0.5280,  open: 0.5280,  high: 0.5310,  low: 0.5250,  candle_time: 0 },
 };
 
 const SIM_VOL: Record<string, number> = {
-  "EUR/USD":  0.00014,
-  "GBP/USD":  0.00016,
-  "USD/JPY":  0.012,
-  "AUD/USD":  0.00012,
-  "USD/CAD":  0.00013,
-  "EUR/JPY":  0.015,
-  "BTC/USDT": 22.0,
-  "ETH/USDT": 1.2,
-  "SOL/USDT": 0.18,
-  "BNB/USDT": 0.28,
+  "BTC/USDT": 22.0,  "ETH/USDT": 1.2,  "SOL/USDT": 0.18,
+  "BNB/USDT": 0.28,  "XRP/USDT": 0.003,
 };
 
 const DECIMALS: Record<string, number> = {
-  "EUR/USD": 5, "GBP/USD": 5, "AUD/USD": 5, "USD/CAD": 5,
-  "USD/JPY": 3, "EUR/JPY": 3,
-  "BTC/USDT": 1, "ETH/USDT": 2, "SOL/USDT": 3, "BNB/USDT": 2,
+  "BTC/USDT": 1, "ETH/USDT": 2, "SOL/USDT": 3, "BNB/USDT": 2, "XRP/USDT": 4,
 };
 
 let io: SocketIOServer | null = null;
 let simInterval: NodeJS.Timeout | null = null;
+let pollInterval: NodeJS.Timeout | null = null;
 
 export function getCurrentPrice(instrument: string): number {
   return prices[instrument]?.price ?? 0;
@@ -103,66 +84,54 @@ function startSimulation(): void {
   simInterval = setInterval(() => {
     const now = Date.now();
     for (const sym of Object.keys(prices)) {
-      const v = SIM_VOL[sym] ?? 0.0001;
-      const dec = DECIMALS[sym] ?? 5;
+      const v = SIM_VOL[sym] ?? 0.01;
+      const dec = DECIMALS[sym] ?? 2;
       const prev = prices[sym].price;
       const delta = (Math.random() - 0.5) * 2 * v;
       const next = parseFloat((prev + delta).toFixed(dec));
       processTick(sym, next, now);
     }
   }, 800);
-  console.log("[Price] Simulation started for all 10 instruments.");
+  console.log("[Price] Simulation fallback started for crypto instruments.");
+}
+
+async function fetchBinancePrices(): Promise<void> {
+  try {
+    const symsJson = encodeURIComponent(JSON.stringify(Object.values(BINANCE_SYMBOLS)));
+    const url = `https://api.binance.com/api/v3/ticker/price?symbols=${symsJson}`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return;
+    const data = await res.json() as { symbol: string; price: string }[];
+    const now = Date.now();
+    for (const item of data) {
+      const inst = SYMBOL_TO_INST[item.symbol];
+      if (!inst) continue;
+      const price = parseFloat(item.price);
+      if (price > 0) processTick(inst, price, now);
+    }
+  } catch {
+    // silently ignore network errors
+  }
 }
 
 export function startPriceService(): void {
-  if (!FINNHUB_TOKEN) {
-    console.log("[Price] No FINNHUB_API_KEY — using simulated prices.");
+  console.log("[Price] Starting Binance REST price polling (every 3s)…");
+  fetchBinancePrices().then(() => {
+    console.log("[Price] Initial Binance prices fetched.");
+  }).catch(() => {
+    console.log("[Price] Initial Binance fetch failed — simulation active.");
     startSimulation();
-    return;
-  }
+  });
 
-  let dataReceived = false;
-
-  const connect = () => {
-    const ws = new WebSocket(`wss://ws.finnhub.io?token=${FINNHUB_TOKEN}`);
-
-    ws.on("open", () => {
-      console.log("[Price] Finnhub WS connected.");
-      Object.keys(INSTRUMENT_MAP).forEach((sym) => {
-        ws.send(JSON.stringify({ type: "subscribe", symbol: sym }));
-      });
-    });
-
-    ws.on("message", (raw: Buffer) => {
-      try {
-        const msg = JSON.parse(raw.toString());
-        if (msg.type === "trade" && Array.isArray(msg.data)) {
-          msg.data.forEach((tick: any) => {
-            const friendly = INSTRUMENT_MAP[tick.s as string];
-            if (!friendly) return;
-            dataReceived = true;
-            processTick(friendly, tick.p, tick.t);
-          });
-        }
-      } catch {}
-    });
-
-    ws.on("error", (err: Error) => {
-      console.error("[Price] Finnhub WS error:", err.message);
-    });
-
-    ws.on("close", () => {
-      console.log("[Price] Finnhub WS closed — reconnecting in 5s…");
-      setTimeout(connect, 5000);
-    });
-  };
-
-  connect();
+  pollInterval = setInterval(async () => {
+    await fetchBinancePrices();
+  }, 3000);
 
   setTimeout(() => {
-    if (!dataReceived) {
-      console.log("[Price] No Finnhub data received — enabling simulation fallback.");
+    const anyLive = Object.values(prices).some(p => p.candle_time > 0);
+    if (!anyLive) {
+      console.log("[Price] Binance polling not returning data — enabling simulation fallback.");
       startSimulation();
     }
-  }, 6000);
+  }, 10000);
 }

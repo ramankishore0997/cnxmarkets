@@ -12,42 +12,31 @@ import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 
 const INSTRUMENTS = [
-  { id: 'EUR/USD', label: 'EUR/USD', category: 'Forex', decimals: 5, vol: 0.00014, base: 1.08540 },
-  { id: 'GBP/USD', label: 'GBP/USD', category: 'Forex', decimals: 5, vol: 0.00016, base: 1.27230 },
-  { id: 'USD/JPY', label: 'USD/JPY', category: 'Forex', decimals: 3, vol: 0.012,   base: 149.850 },
-  { id: 'AUD/USD', label: 'AUD/USD', category: 'Forex', decimals: 5, vol: 0.00012, base: 0.65430 },
-  { id: 'USD/CAD', label: 'USD/CAD', category: 'Forex', decimals: 5, vol: 0.00013, base: 1.36420 },
-  { id: 'EUR/JPY', label: 'EUR/JPY', category: 'Forex', decimals: 3, vol: 0.015,   base: 162.540 },
-  { id: 'BTC/USDT', label: 'BTC/USDT', category: 'Crypto', decimals: 1, vol: 22.0,  base: 67450.0 },
-  { id: 'ETH/USDT', label: 'ETH/USDT', category: 'Crypto', decimals: 2, vol: 1.2,   base: 3250.0  },
-  { id: 'SOL/USDT', label: 'SOL/USDT', category: 'Crypto', decimals: 3, vol: 0.18,  base: 148.50  },
-  { id: 'BNB/USDT', label: 'BNB/USDT', category: 'Crypto', decimals: 2, vol: 0.28,  base: 410.00  },
+  { id: 'BTC/USDT', label: 'BTC/USDT', decimals: 1, vol: 22.0,  base: 67450.0 },
+  { id: 'ETH/USDT', label: 'ETH/USDT', decimals: 2, vol: 1.2,   base: 3250.0  },
+  { id: 'SOL/USDT', label: 'SOL/USDT', decimals: 3, vol: 0.18,  base: 148.50  },
+  { id: 'BNB/USDT', label: 'BNB/USDT', decimals: 2, vol: 0.28,  base: 410.00  },
+  { id: 'XRP/USDT', label: 'XRP/USDT', decimals: 4, vol: 0.003, base: 0.5280  },
 ];
 const INST_MAP = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i]));
 const BASE_PRICES = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i.base]));
 
-const ALLTICK_TOKEN = '5d1a2ce3f3c21f3e430c3695b884e96f-c-app';
-
-const INST_TO_ALLTICK: Record<string, string> = {
-  'EUR/USD':  'EURUSD',
-  'GBP/USD':  'GBPUSD',
-  'USD/JPY':  'USDJPY',
-  'AUD/USD':  'AUDUSD',
-  'USD/CAD':  'USDCAD',
-  'EUR/JPY':  'EURJPY',
-  'BTC/USDT': 'BTCUSDT',
-  'ETH/USDT': 'ETHUSDT',
-  'SOL/USDT': 'SOLUSDT',
-  'BNB/USDT': 'BNBUSDT',
+const BINANCE_SYMBOL: Record<string, string> = {
+  'BTC/USDT': 'btcusdt',
+  'ETH/USDT': 'ethusdt',
+  'SOL/USDT': 'solusdt',
+  'BNB/USDT': 'bnbusdt',
+  'XRP/USDT': 'xrpusdt',
 };
-const ALLTICK_TO_INST: Record<string, string> = Object.fromEntries(
-  Object.entries(INST_TO_ALLTICK).map(([k, v]) => [v, k])
+const BINANCE_TO_INST: Record<string, string> = Object.fromEntries(
+  Object.entries(BINANCE_SYMBOL).map(([k, v]) => [v, k])
 );
 
+const BINANCE_INTERVAL: Record<number, string> = { 1: '1m', 5: '5m', 15: '15m', 60: '1h' };
+
 const SEED_24H: Record<string, number> = {
-  'EUR/USD': 0.32, 'GBP/USD': -0.18, 'USD/JPY': 0.54, 'AUD/USD': -0.41,
-  'USD/CAD': 0.12, 'EUR/JPY': 0.87, 'BTC/USDT': 2.14, 'ETH/USDT': -1.32,
-  'SOL/USDT': 3.45, 'BNB/USDT': 0.78,
+  'BTC/USDT': 2.14, 'ETH/USDT': -1.32, 'SOL/USDT': 3.45,
+  'BNB/USDT': 0.78, 'XRP/USDT': 1.95,
 };
 
 const DURATIONS = [
@@ -163,7 +152,7 @@ export function BinaryTrading() {
   const [liveFeed, setLiveFeed] = useState<FeedEntry[]>([]);
   const [myHistory, setMyHistory] = useState<HistoryEntry[]>([]);
   const [tick, setTick] = useState(0);
-  const [alltickLive, setAlltickLive] = useState(false);
+  const [binanceLive, setBinanceLive] = useState(false);
   const [mobileTab, setMobileTab] = useState<'live' | 'history'>('live');
 
   const chartRef = useRef<HTMLDivElement>(null);
@@ -180,9 +169,9 @@ export function BinaryTrading() {
   const recentTicks = useRef<Record<string, number[]>>({});
   const priceLineRef = useRef<any>(null);
   const entryLinesRef = useRef<Map<number, any>>(new Map());
-  const alltickWsRef = useRef<WebSocket | null>(null);
-  const alltickOHLC = useRef<Record<string, { open: number; high: number; low: number; close: number; bucketMs: number }>>({});
-  const alltickActiveRef = useRef<Record<string, boolean>>({});
+  const binanceWsRef = useRef<WebSocket | null>(null);
+  const binanceOHLC = useRef<Record<string, { open: number; high: number; low: number; close: number; bucketMs: number }>>({});
+  const binanceLiveRef = useRef<Record<string, boolean>>({});
 
   const token = localStorage.getItem('ecm_token');
   const userId = getUserIdFromToken();
@@ -323,29 +312,24 @@ export function BinaryTrading() {
   }, [instrument, timeframe]);
 
   useEffect(() => {
-    const code = INST_TO_ALLTICK[instrument];
-    if (!code || !token) return;
+    const symbol = BINANCE_SYMBOL[instrument];
+    if (!symbol) return;
     const controller = new AbortController();
-    const klineTypeMap: Record<number, number> = { 1: 1, 5: 2, 15: 3, 60: 5 };
-    const klineType = klineTypeMap[timeframe] ?? 1;
-    fetch(`/api/binary/klines?instrument=${encodeURIComponent(instrument)}&kline_type=${klineType}&count=150`, {
-      headers: authHdr,
+    const interval = BINANCE_INTERVAL[timeframe] ?? '1m';
+    const dec = INST_MAP[instrument]?.decimals ?? 2;
+    fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol.toUpperCase()}&interval=${interval}&limit=200`, {
       signal: controller.signal,
     })
       .then(r => r.ok ? r.json() : null)
       .then((data: any) => {
-        if (!data || data.ret !== 200 || !Array.isArray(data?.data?.kline_list)) return;
-        const dec = INST_MAP[instrument]?.decimals ?? 5;
-        const bars = (data.data.kline_list as any[])
-          .map(k => ({
-            time: parseInt(k.timestamp, 10) as UTCTimestamp,
-            open:  parseFloat(parseFloat(k.open_price).toFixed(dec)),
-            high:  parseFloat(parseFloat(k.high_price).toFixed(dec)),
-            low:   parseFloat(parseFloat(k.low_price).toFixed(dec)),
-            close: parseFloat(parseFloat(k.close_price).toFixed(dec)),
-          }))
-          .filter(k => !isNaN(k.time) && k.time > 0 && k.open > 0)
-          .sort((a, b) => (a.time as number) - (b.time as number));
+        if (!Array.isArray(data) || data.length === 0) return;
+        const bars = data.map((k: any) => ({
+          time: Math.floor(k[0] / 1000) as UTCTimestamp,
+          open:  parseFloat(parseFloat(k[1]).toFixed(dec)),
+          high:  parseFloat(parseFloat(k[2]).toFixed(dec)),
+          low:   parseFloat(parseFloat(k[3]).toFixed(dec)),
+          close: parseFloat(parseFloat(k[4]).toFixed(dec)),
+        })).filter((k: any) => k.open > 0);
         if (bars.length === 0) return;
         minuteCandles.current[instrument] = bars;
         if (seriesRef.current && instRef.current === instrument) {
@@ -396,43 +380,33 @@ export function BinaryTrading() {
   useEffect(() => {
     let ws: WebSocket | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-    let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
-    let seqId = 1;
 
-    const applyAlltickTick = (code: string, rawPrice: number, tsMs: number) => {
-      const inst = ALLTICK_TO_INST[code];
+    const applyBinanceTick = (streamSym: string, kline: any) => {
+      const inst = BINANCE_TO_INST[streamSym];
       if (!inst) return;
-      const dec = INST_MAP[inst]?.decimals ?? 5;
+      const dec = INST_MAP[inst]?.decimals ?? 2;
+      const price = parseFloat(parseFloat(kline.c).toFixed(dec));
+      if (!price || price <= 0) return;
 
-      let price = rawPrice;
-      const prev = lastAccepted.current[inst];
-      if (prev) {
-        const pct = Math.abs(price - prev.price) / prev.price;
-        if (pct > 0.015 && Date.now() - prev.ts < 1000) {
-          const bucket = recentTicks.current[inst] ?? [];
-          const last4 = [...bucket.slice(-3), price];
-          price = parseFloat((last4.reduce((a, b) => a + b, 0) / last4.length).toFixed(dec));
-        }
-      }
-      recentTicks.current[inst] = [...(recentTicks.current[inst] ?? []).slice(-9), price];
-      lastAccepted.current[inst] = { price, ts: Date.now() };
-      if (!alltickActiveRef.current[inst]) {
-        alltickActiveRef.current[inst] = true;
-        setAlltickLive(true);
+      if (!binanceLiveRef.current[inst]) {
+        binanceLiveRef.current[inst] = true;
+        setBinanceLive(true);
       }
 
-      const bucketMs = Math.floor(tsMs / 60000) * 60000;
+      const bucketMs = parseInt(kline.t, 10);
       const minuteTs = Math.floor(bucketMs / 1000);
-      const ohlcState = alltickOHLC.current[inst];
+      const ohlcState = binanceOHLC.current[inst];
+      const open  = parseFloat(parseFloat(kline.o).toFixed(dec));
+      const high  = parseFloat(parseFloat(kline.h).toFixed(dec));
+      const low   = parseFloat(parseFloat(kline.l).toFixed(dec));
       if (!ohlcState || ohlcState.bucketMs !== bucketMs) {
-        const prevClose = ohlcState?.close ?? price;
-        alltickOHLC.current[inst] = { open: prevClose, high: Math.max(prevClose, price), low: Math.min(prevClose, price), close: price, bucketMs };
+        binanceOHLC.current[inst] = { open, high, low, close: price, bucketMs };
       } else {
-        ohlcState.high = Math.max(ohlcState.high, price);
-        ohlcState.low = Math.min(ohlcState.low, price);
+        ohlcState.high = Math.max(ohlcState.high, high);
+        ohlcState.low = Math.min(ohlcState.low, low);
         ohlcState.close = price;
       }
-      const s = alltickOHLC.current[inst];
+      const s = binanceOHLC.current[inst];
       const bar: CandlestickData = { time: minuteTs as UTCTimestamp, open: s.open, high: s.high, low: s.low, close: s.close };
 
       ensureCandles(inst);
@@ -449,63 +423,38 @@ export function BinaryTrading() {
       });
 
       if (inst === instRef.current && seriesRef.current) {
-        try {
-          seriesRef.current.update(bar);
-        } catch {
-          try { seriesRef.current.setData(aggregateCandles(candles, tfRef.current)); } catch {}
-        }
-        if (priceLineRef.current) {
-          try { priceLineRef.current.applyOptions({ price }); } catch {}
-        }
+        try { seriesRef.current.update(bar); }
+        catch { try { seriesRef.current.setData(aggregateCandles(candles, tfRef.current)); } catch {} }
+        if (priceLineRef.current) { try { priceLineRef.current.applyOptions({ price }); } catch {} }
       }
     };
 
+    const streams = Object.values(BINANCE_SYMBOL).map(s => `${s}@kline_1m`).join('/');
     const connect = () => {
-      ws = new WebSocket(`wss://quote.alltick.co/quote-b-ws-api?token=${ALLTICK_TOKEN}`);
-      alltickWsRef.current = ws;
-
-      ws.onopen = () => {
-        ws?.send(JSON.stringify({
-          cmd_id: 22004,
-          seq_id: seqId++,
-          trace: `sub-${Date.now()}`,
-          data: { symbol_list: Object.values(INST_TO_ALLTICK).map(code => ({ code })) },
-        }));
-        heartbeatTimer = setInterval(() => {
-          if (ws?.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ cmd_id: 22000, seq_id: seqId++, trace: `hb-${Date.now()}`, data: {} }));
-          }
-        }, 10000);
-      };
+      ws = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
+      binanceWsRef.current = ws;
 
       ws.onmessage = (evt: MessageEvent) => {
         try {
           const msg = JSON.parse(evt.data as string);
-          if (msg.cmd_id === 22998 && msg.data) {
-            const { code, price, tick_time } = msg.data;
-            const rawPrice = parseFloat(price);
-            const tsMs = parseInt(tick_time, 10);
-            if (!isNaN(rawPrice) && rawPrice > 0 && !isNaN(tsMs)) {
-              applyAlltickTick(code, rawPrice, tsMs);
-            }
+          if (msg.stream && msg.data?.k) {
+            const sym = msg.stream.split('@')[0];
+            applyBinanceTick(sym, msg.data.k);
           }
         } catch {}
       };
-
       ws.onerror = () => {};
       ws.onclose = () => {
-        alltickWsRef.current = null;
-        if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; }
-        reconnectTimer = setTimeout(connect, 5000);
+        binanceWsRef.current = null;
+        reconnectTimer = setTimeout(connect, 4000);
       };
     };
 
     connect();
     return () => {
       if (reconnectTimer) clearTimeout(reconnectTimer);
-      if (heartbeatTimer) clearInterval(heartbeatTimer);
       if (ws) { try { ws.close(); } catch {} }
-      alltickWsRef.current = null;
+      binanceWsRef.current = null;
     };
   }, []);
 
@@ -522,7 +471,7 @@ export function BinaryTrading() {
 
     socket.on('price:tick', (d: { instrument: string; price: number; open: number; high: number; low: number; time: number }) => {
       const { instrument: inst, price, open, high, low, time } = d;
-      if (alltickActiveRef.current[inst]) return;
+      if (binanceLiveRef.current[inst]) return;
 
       setPrices(prev2 => {
         const old = prev2[inst] ?? price;
@@ -595,9 +544,6 @@ export function BinaryTrading() {
   const priceDirCurrent = priceDir[instrument] ?? 'up';
   const amtNum = parseFloat(amount) || 0;
 
-  const forex = INSTRUMENTS.filter(i => i.category === 'Forex');
-  const crypto = INSTRUMENTS.filter(i => i.category === 'Crypto');
-
   const activeTradeStatus: 'winning' | 'losing' | 'none' = (() => {
     if (!activeTrades.length) return 'none';
     const wins = activeTrades.filter(t => {
@@ -626,16 +572,16 @@ export function BinaryTrading() {
           <div className="flex items-center gap-1.5 md:gap-3 flex-wrap">
             <div className="flex items-center gap-1.5 md:gap-2">
               <Zap className="w-4 h-4 md:w-5 md:h-5 text-[#00C274]" />
-              <span className="text-base md:text-lg font-black text-white tracking-tight">Binary Terminal</span>
+              <span className="text-base md:text-lg font-black text-white tracking-tight">Crypto Terminal</span>
             </div>
             <div className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(0,194,116,0.08)', border: '1px solid rgba(0,194,116,0.15)' }}>
               <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-[#02C076] animate-pulse' : 'bg-[#CF304A]'}`} />
               <span className={connected ? 'text-[#02C076]' : 'text-[#CF304A]'}>{connected ? 'Live' : 'Connecting'}</span>
             </div>
-            {alltickLive && (
+            {binanceLive && (
               <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold" style={{ background: 'rgba(2,192,118,0.08)', border: '1px solid rgba(2,192,118,0.2)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse" />
-                <span className="text-[#02C076]">Alltick Live</span>
+                <span className="text-[#02C076]">Binance Live</span>
               </div>
             )}
             {activeTradeStatus !== 'none' && (
@@ -678,31 +624,27 @@ export function BinaryTrading() {
 
           {/* LEFT: Asset Sidebar (desktop only) */}
           <div className="hidden md:flex w-[175px] flex-shrink-0 flex-col gap-1 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
-            {[['Forex', forex], ['Crypto', crypto]].map(([cat, items]) => (
-              <div key={cat as string}>
-                <p className="text-[9px] font-black text-[#374151] uppercase tracking-[0.15em] px-2 py-1.5">{cat as string}</p>
-                {(items as typeof INSTRUMENTS).map(inst => {
-                  const p = prices[inst.id] ?? inst.base;
-                  const ch = SEED_24H[inst.id] ?? 0;
-                  const isActive = instrument === inst.id;
-                  const pd = priceDir[inst.id] ?? 'up';
-                  return (
-                    <button key={inst.id} onClick={() => setInstrument(inst.id)}
-                      className="w-full text-left px-2.5 py-2 rounded-xl transition-all mb-0.5"
-                      style={{ background: isActive ? 'rgba(0,194,116,0.10)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? 'rgba(0,194,116,0.30)' : 'rgba(255,255,255,0.04)'}` }}>
-                      <div className="flex items-center justify-between mb-0.5">
-                        <span className={`text-xs font-black ${isActive ? 'text-[#00C274]' : 'text-[#9CA3AF]'}`}>{inst.label}</span>
-                        <span className={`text-[9px] font-bold ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{pd === 'up' ? '▲' : '▼'}</span>
-                      </div>
-                      <div className="flex items-end justify-between">
-                        <span className="text-[10px] font-mono text-white leading-tight">{p.toFixed(inst.decimals)}</span>
-                        <span className={`text-[9px] font-bold ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
+            <p className="text-[9px] font-black text-[#374151] uppercase tracking-[0.15em] px-2 py-1.5">Crypto Pairs</p>
+            {INSTRUMENTS.map(inst => {
+              const p = prices[inst.id] ?? inst.base;
+              const ch = SEED_24H[inst.id] ?? 0;
+              const isActive = instrument === inst.id;
+              const pd = priceDir[inst.id] ?? 'up';
+              return (
+                <button key={inst.id} onClick={() => setInstrument(inst.id)}
+                  className="w-full text-left px-2.5 py-2 rounded-xl transition-all mb-0.5"
+                  style={{ background: isActive ? 'rgba(0,194,116,0.10)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? 'rgba(0,194,116,0.30)' : 'rgba(255,255,255,0.04)'}` }}>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className={`text-xs font-black ${isActive ? 'text-[#00C274]' : 'text-[#9CA3AF]'}`}>{inst.label}</span>
+                    <span className={`text-[9px] font-bold ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{pd === 'up' ? '▲' : '▼'}</span>
+                  </div>
+                  <div className="flex items-end justify-between">
+                    <span className="text-[10px] font-mono text-white leading-tight">{p.toFixed(Math.min(inst.decimals, 4))}</span>
+                    <span className={`text-[9px] font-bold ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
           {/* CENTER: Chart + Active Trades + (Desktop: Split Feed) */}
