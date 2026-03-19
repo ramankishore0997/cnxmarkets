@@ -5,7 +5,7 @@ import { getAuthOptions } from '@/lib/api-utils';
 import { useLiveUpdates } from '@/hooks/use-live-updates';
 import {
   TrendingUp, Download, Upload,
-  BarChart2, Bot, Zap, ArrowUp, ArrowDown, Activity, Wifi
+  BarChart2, ArrowUp, ArrowDown, Activity, Wifi
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Link } from 'wouter';
@@ -245,8 +245,6 @@ export function Dashboard() {
 
   const totalBalance  = data?.totalBalance  ?? 0;
   const totalProfit   = data?.totalProfit   ?? 0;
-  const dailyTarget   = (data as any)?.dailyGrowthTarget ?? 4.0;
-  const monthlyReturn = (dailyTarget * 30).toFixed(0);
 
   if (isLoading) {
     return (
@@ -327,52 +325,6 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Stats row */}
-          <div className="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-white/[0.05]">
-            <div>
-              <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Daily Target</p>
-              <p className="font-terminal text-sm font-bold text-[#00C274] tabular-nums">+{dailyTarget}%</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-1">Monthly Est.</p>
-              <p className="font-terminal text-sm font-bold text-[#00C274] tabular-nums">+{monthlyReturn}%</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Auto Trading (full width) ── */}
-      <div className="card-stealth p-6 relative overflow-hidden mb-5">
-        <div className="absolute top-0 left-0 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.08) 0%, transparent 70%)' }} />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-5">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.25)' }}>
-              <Bot className="w-5 h-5 text-[#00C274]" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#F8FAFC]">Auto Trading</p>
-              <p className="text-[11px] text-[#4B5563]">Algorithm is running continuously</p>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full ml-2"
-              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)' }}>
-              <span className="live-dot w-1.5 h-1.5 rounded-full bg-[#00C274] inline-block" />
-              <span className="text-[10px] font-bold text-[#00C274] uppercase tracking-wide">Active</span>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="px-4 py-2.5 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <p className="text-[10px] text-[#4B5563] uppercase tracking-wider font-semibold">Daily Rate</p>
-              <p className="font-terminal text-base font-bold text-[#00C274]">+{dailyTarget}%</p>
-            </div>
-            <Link href="/dashboard/binary"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
-              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)', color: '#00C274' }}>
-              <Zap className="w-4 h-4" /> Binary Trading
-            </Link>
-          </div>
         </div>
       </div>
 
