@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
-import { TrendingUp, Mail, Lock, Loader2, Eye, EyeOff, User, Phone, CheckCircle2, AlertCircle, Check } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff, User, Phone, CheckCircle2, AlertCircle, Check } from 'lucide-react';
 import { useRegister } from '@workspace/api-client-react';
 import { useAuthState } from '@/hooks/use-auth-state';
+import { EcmLogo } from '@/components/shared/EcmLogo';
 
 const schema = z.object({
   fullName: z.string().min(3, "Please enter your full name"),
@@ -123,13 +124,10 @@ export function Register() {
         <div className="relative z-10">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #00C274, #00a863)', boxShadow: '0 0 20px rgba(0,194,116,0.3)' }}
-              >
-                <TrendingUp className="w-5 h-5 text-black" />
-              </div>
-              <span className="text-white font-bold text-xl tracking-tight">CNXMarkets</span>
+              <EcmLogo size={40} />
+              <span className="text-white font-bold text-xl tracking-tight">
+                CNX<span style={{ color: '#00C274' }}>Markets</span>
+              </span>
             </div>
           </Link>
         </div>
@@ -169,13 +167,10 @@ export function Register() {
           <div className="lg:hidden flex items-center gap-3 mb-10">
             <Link href="/">
               <div className="flex items-center gap-3 cursor-pointer">
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #00C274, #00a863)' }}
-                >
-                  <TrendingUp className="w-4 h-4 text-black" />
-                </div>
-                <span className="text-white font-bold text-lg">CNXMarkets</span>
+                <EcmLogo size={36} />
+                <span className="text-white font-bold text-lg">
+                  CNX<span style={{ color: '#00C274' }}>Markets</span>
+                </span>
               </div>
             </Link>
           </div>
