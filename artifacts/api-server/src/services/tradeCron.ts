@@ -1,6 +1,7 @@
 import { db } from "@workspace/db";
 import { accountsTable, tradesTable } from "@workspace/db/schema";
 import { eq, and, gte, lt, isNull } from "drizzle-orm";
+import { emitToUser } from "../lib/sse.js";
 
 const INR_PER_USD = 83.45;
 
@@ -331,6 +332,8 @@ async function closeTradesPhase(): Promise<void> {
           totalProfit:  newTotalProfit.toFixed(2),
           updatedAt:    new Date(),
         }).where(eq(accountsTable.id, account.id));
+
+        emitToUser(account.userId, 'balance_updated', { balance: Math.max(0, newBalance) });
       }
 
       const wins = tradeProfits.filter(p => p > 0).length;

@@ -153,7 +153,8 @@ export function Profile() {
   const [notifPlatform, setNotifPlatform] = useState(true);
 
   /* photo upload state */
-  const [photoPreview, setPhotoPreview]   = useState<string | null>(null);
+  const [photoPreview, setPhotoPreview]     = useState<string | null>(null);
+  const [selectedFile, setSelectedFile]     = useState<File | null>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
 
   const kycStatus = (user as any)?.kycStatus || 'pending';
@@ -209,33 +210,46 @@ export function Profile() {
       toast({ title: 'Invalid file', description: 'Please select an image file.', variant: 'destructive' });
       return;
     }
+    setSelectedFile(file);
     try {
       const resized = await resizeImage(file, 256, 0.85);
       setPhotoPreview(resized);
     } catch {
-      toast({ title: 'Preview failed', description: 'Could not process image.', variant: 'destructive' });
+      setPhotoPreview(URL.createObjectURL(file));
     }
-    // reset so same file can be picked again
     e.target.value = '';
   };
 
-  /* ── save photo to server ──────────────────────── */
+  /* ── save photo to Supabase Storage ───────────── */
   const handlePhotoSave = async () => {
-    if (!photoPreview) return;
+    if (!selectedFile && !photoPreview) return;
     setPhotoUploading(true);
     try {
       const token = localStorage.getItem('ecm_token');
-      const res = await fetch('/api/users/upload-photo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ profilePhoto: photoPreview }),
-      });
+      let res: Response;
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('photo', selectedFile);
+        res = await fetch('/api/users/upload-photo', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+      } else {
+        res = await fetch('/api/users/upload-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ profilePhoto: photoPreview }),
+        });
+      }
+
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || 'Upload failed');
       }
       setPhotoPreview(null);
-      // Refresh user data so sidebar updates immediately
+      setSelectedFile(null);
       await queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
       toast({ title: 'Photo Updated', description: 'Your profile photo has been saved successfully.' });
     } catch (err: any) {

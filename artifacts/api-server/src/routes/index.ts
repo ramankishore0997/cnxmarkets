@@ -12,6 +12,7 @@ import usersRouter from "./users.js";
 import adminRouter from "./admin.js";
 import adminSettingsRouter from "./adminSettings.js";
 import binaryRouter from "./binary.js";
+import eventsRouter from "./events.js";
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use("/users", usersRouter);
 router.use("/admin", adminRouter);
 router.use("/admin", adminSettingsRouter);
 router.use("/binary", binaryRouter);
+router.use("/events", eventsRouter);
 
 export default router;

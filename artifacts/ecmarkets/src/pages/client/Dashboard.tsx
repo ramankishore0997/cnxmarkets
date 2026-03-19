@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
+import { useLiveUpdates } from '@/hooks/use-live-updates';
 import {
   TrendingUp, Download, Upload,
   BarChart2, Bot, Zap, ArrowUp, ArrowDown, Activity, Wifi
@@ -235,9 +236,11 @@ function LiveOpenTrades() {
 // ─── Main Dashboard ──────────────────────────────────────────────────────────
 
 export function Dashboard() {
+  useLiveUpdates();
+
   const { data, isLoading } = useGetDashboard({
     ...getAuthOptions(),
-    query: { refetchInterval: 8_000 },
+    query: { refetchInterval: 30_000 },
   });
 
   const totalBalance  = data?.totalBalance  ?? 0;
