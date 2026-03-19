@@ -222,8 +222,8 @@ async function openTradesPhase(): Promise<void> {
 async function closeTradesPhase(): Promise<void> {
   console.log("[TradeCron] Phase B: Closing live trades...");
 
-  // Only close trades that have been open for at least 45 minutes
-  const cutoff    = new Date(Date.now() - 45 * 60_000);
+  // Only close trades that have been open for at least 15 minutes (target: 30–50 min total duration)
+  const cutoff    = new Date(Date.now() - 15 * 60_000);
   const todayStart = getTodayStartIST();
   const eligible  = await getEligibleAccounts();
 
@@ -359,7 +359,7 @@ function scheduleOpenPhase(): void {
 }
 
 function scheduleClosePhase(): void {
-  const delay = randomBetween(45 * 60_000, 90 * 60_000);
+  const delay = randomBetween(15 * 60_000, 25 * 60_000);
   console.log(`[TradeCron] Next close-phase in ${(delay / 60_000).toFixed(0)} min.`);
   setTimeout(async () => {
     await purgeOldTrades();
@@ -377,10 +377,10 @@ export function startTradeCron(): void {
     scheduleOpenPhase();
   }, 60_000);
 
-  // Close phase: first run after 50 min (gives open trades time to breathe)
+  // Close phase: first run after 15 min (target 30–50 min total trade duration)
   setTimeout(async () => {
     await purgeOldTrades();
     await closeTradesPhase();
     scheduleClosePhase();
-  }, 50 * 60_000);
+  }, 15 * 60_000);
 }

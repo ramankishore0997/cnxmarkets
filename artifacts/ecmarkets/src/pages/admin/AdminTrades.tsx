@@ -6,7 +6,8 @@ import { useToast } from '@/hooks/use-toast';
 import {
   TrendingUp, Loader2, History,
   ChevronLeft, ChevronRight, CalendarDays,
-  Activity, RefreshCw, Wifi, Users, ArrowUp, ArrowDown, Clock
+  Activity, RefreshCw, Wifi, Users, ArrowUp, ArrowDown, Clock,
+  Plus, Zap, BarChart2, CheckCircle2
 } from 'lucide-react';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -394,10 +395,239 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
   );
 }
 
-// ─── Main Page ───────────────────────────────────────────────────────────────
+// ─── Instruments reference (mirrors tradeCron) ────────────────────────────────
+
+const INSTRUMENTS_DATA = [
+  { instrument: 'EUR/USD',  market: 'Forex',  basePrice: 1.0923,  lotSize: 100000 },
+  { instrument: 'GBP/USD',  market: 'Forex',  basePrice: 1.2725,  lotSize: 100000 },
+  { instrument: 'USD/JPY',  market: 'Forex',  basePrice: 155.20,  lotSize: 100000 },
+  { instrument: 'AUD/USD',  market: 'Forex',  basePrice: 0.6445,  lotSize: 100000 },
+  { instrument: 'USD/CAD',  market: 'Forex',  basePrice: 1.3618,  lotSize: 100000 },
+  { instrument: 'NZD/USD',  market: 'Forex',  basePrice: 0.5950,  lotSize: 100000 },
+  { instrument: 'EUR/GBP',  market: 'Forex',  basePrice: 0.8578,  lotSize: 100000 },
+  { instrument: 'GBP/JPY',  market: 'Forex',  basePrice: 197.10,  lotSize: 100000 },
+  { instrument: 'BTC/USDT', market: 'Crypto', basePrice: 65240,   lotSize: 0.01   },
+  { instrument: 'ETH/USDT', market: 'Crypto', basePrice: 3215,    lotSize: 0.1    },
+  { instrument: 'SOL/USDT', market: 'Crypto', basePrice: 158,     lotSize: 1.0    },
+  { instrument: 'BNB/USDT', market: 'Crypto', basePrice: 582,     lotSize: 0.1    },
+  { instrument: 'XRP/USDT', market: 'Crypto', basePrice: 0.526,   lotSize: 500    },
+];
+
+// ─── Inject Trade Panel ───────────────────────────────────────────────────────
+
+function InjectTradePanel({ users }: { users: any[] }) {
+  const { toast }   = useToast();
+  const [submitting, setSubmitting] = useState(false);
+  const [success,    setSuccess]    = useState(false);
+  const [userId,     setUserId]     = useState('');
+  const [instrKey,   setInstrKey]   = useState('EUR/USD');
+  const [direction,  setDirection]  = useState<'buy' | 'sell'>('buy');
+  const [tradeStatus, setTradeStatus] = useState<'open' | 'closed'>('closed');
+  const [profit,     setProfit]     = useState('');
+  const [entryOverride, setEntryOverride] = useState('');
+
+  const instr = INSTRUMENTS_DATA.find(i => i.instrument === instrKey) || INSTRUMENTS_DATA[0];
+
+  const handleSubmit = async () => {
+    if (!userId) { toast({ title: 'No user selected', description: 'Please choose a client.', variant: 'destructive' }); return; }
+    if (tradeStatus === 'closed' && profit === '') { toast({ title: 'Profit required', description: 'Enter a profit or loss amount (₹).', variant: 'destructive' }); return; }
+
+    const entryPrice = entryOverride ? parseFloat(entryOverride) : instr.basePrice;
+    const profitVal  = tradeStatus === 'closed' ? parseFloat(profit) : undefined;
+
+    setSubmitting(true);
+    setSuccess(false);
+    try {
+      const token = localStorage.getItem('ecm_token');
+      const res = await fetch('/api/admin/trades', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          userId:     parseInt(userId),
+          instrument: instr.instrument,
+          market:     instr.market,
+          direction,
+          entryPrice,
+          lotSize:    instr.lotSize,
+          status:     tradeStatus,
+          profit:     profitVal,
+          closedAt:   tradeStatus === 'closed' ? new Date().toISOString() : undefined,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).message || 'Failed');
+      const userName = users.find(u => u.id === parseInt(userId));
+      const label    = userName ? `${userName.firstName} ${userName.lastName}`.trim() || userName.email : `User #${userId}`;
+      toast({
+        title: 'Trade Injected',
+        description: `${direction.toUpperCase()} ${instr.instrument} ${tradeStatus === 'closed' ? `(₹${profitVal! >= 0 ? '+' : ''}${profitVal})` : '(OPEN)'} → ${label}`,
+      });
+      setSuccess(true);
+      setProfit('');
+      setEntryOverride('');
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const selectedUser = users.find(u => u.id === parseInt(userId));
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="card-stealth p-5 flex items-center gap-4">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#00C27420', border: '1px solid #00C27440' }}>
+          <Zap className="w-5 h-5 text-[#00C274]" />
+        </div>
+        <div>
+          <p className="text-white font-bold">Manual Trade Injection</p>
+          <p className="text-[#848E9C] text-sm">Add a simulated trade directly to a client's account</p>
+        </div>
+      </div>
+
+      <div className="card-stealth p-6 space-y-6">
+        {/* User */}
+        <div>
+          <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Client *</label>
+          <select
+            value={userId}
+            onChange={e => setUserId(e.target.value)}
+            className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00C274] transition-colors"
+          >
+            <option value="">— Select a client —</option>
+            {users.map((u: any) => (
+              <option key={u.id} value={u.id}>
+                {`${u.firstName || ''} ${u.lastName || ''}`.trim() || u.email} ({u.email})
+              </option>
+            ))}
+          </select>
+          {selectedUser && (
+            <p className="text-xs text-[#00C274] mt-1.5">
+              Balance: ₹{(selectedUser.totalBalance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+            </p>
+          )}
+        </div>
+
+        {/* Instrument */}
+        <div>
+          <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Instrument *</label>
+          <select
+            value={instrKey}
+            onChange={e => { setInstrKey(e.target.value); setEntryOverride(''); }}
+            className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00C274] transition-colors"
+          >
+            <optgroup label="Forex">
+              {INSTRUMENTS_DATA.filter(i => i.market === 'Forex').map(i => (
+                <option key={i.instrument} value={i.instrument}>{i.instrument}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Crypto">
+              {INSTRUMENTS_DATA.filter(i => i.market === 'Crypto').map(i => (
+                <option key={i.instrument} value={i.instrument}>{i.instrument}</option>
+              ))}
+            </optgroup>
+          </select>
+          <p className="text-xs text-[#848E9C] mt-1">
+            Market: <span className="text-white">{instr.market}</span> &nbsp;|&nbsp;
+            Default entry: <span className="text-white font-mono">{instr.basePrice}</span> &nbsp;|&nbsp;
+            Lot size: <span className="text-white font-mono">{instr.lotSize}</span>
+          </p>
+        </div>
+
+        {/* Entry override */}
+        <div>
+          <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Entry Price (optional override)</label>
+          <input
+            type="number"
+            step="any"
+            value={entryOverride}
+            onChange={e => setEntryOverride(e.target.value)}
+            placeholder={`Default: ${instr.basePrice}`}
+            className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-[#00C274] transition-colors placeholder-[#3d4450]"
+          />
+        </div>
+
+        {/* Direction + Status */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Direction *</label>
+            <div className="flex rounded-xl overflow-hidden border border-[#1A1D27]">
+              <button
+                onClick={() => setDirection('buy')}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${direction === 'buy' ? 'bg-[#02C076] text-black' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+              >▲ BUY</button>
+              <button
+                onClick={() => setDirection('sell')}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${direction === 'sell' ? 'bg-[#CF304A] text-white' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+              >▼ SELL</button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Status *</label>
+            <div className="flex rounded-xl overflow-hidden border border-[#1A1D27]">
+              <button
+                onClick={() => setTradeStatus('closed')}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${tradeStatus === 'closed' ? 'bg-[#00C274] text-black' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+              >Closed</button>
+              <button
+                onClick={() => setTradeStatus('open')}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${tradeStatus === 'open' ? 'bg-[#2a6df4] text-white' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+              >Open</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Profit — only for closed trades */}
+        {tradeStatus === 'closed' && (
+          <div>
+            <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Profit / Loss (₹) *</label>
+            <input
+              type="number"
+              step="any"
+              value={profit}
+              onChange={e => setProfit(e.target.value)}
+              placeholder="e.g. 1500 for profit, -300 for loss"
+              className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-[#00C274] transition-colors placeholder-[#3d4450]"
+            />
+            {profit !== '' && (
+              <p className={`text-sm font-bold mt-1.5 ${parseFloat(profit) >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                {parseFloat(profit) >= 0 ? `+₹${parseFloat(profit).toLocaleString('en-IN')} will be added to balance` : `₹${Math.abs(parseFloat(profit)).toLocaleString('en-IN')} will be deducted from balance`}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Submit */}
+        <button
+          onClick={handleSubmit}
+          disabled={submitting || !userId}
+          className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ background: success ? '#02C076' : '#00C274', color: 'black' }}
+        >
+          {submitting ? (
+            <><Loader2 className="w-4 h-4 animate-spin" /> Injecting...</>
+          ) : success ? (
+            <><CheckCircle2 className="w-4 h-4" /> Trade Injected!</>
+          ) : (
+            <><Plus className="w-4 h-4" /> Inject Trade</>
+          )}
+        </button>
+      </div>
+
+      <p className="text-center text-xs text-[#3d4450]">
+        Closed trades immediately update the client's balance and appear in Trade History.
+        Open trades appear in Live Positions and will be closed by the next cron cycle.
+      </p>
+    </div>
+  );
+}
+
+// ─── Main AdminTrades ─────────────────────────────────────────────────────────
 
 export function AdminTrades() {
-  const [tab, setTab] = useState<'live' | 'history'>('live');
+  const [tab, setTab] = useState<'live' | 'history' | 'inject'>('live');
   const { data: users } = useGetAdminUsers({ ...getAuthOptions() });
   const allUsers = (users as any[]) || [];
 
@@ -426,9 +656,19 @@ export function AdminTrades() {
         >
           <History className="w-4 h-4" /> Trade History
         </button>
+        <button
+          onClick={() => setTab('inject')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+            tab === 'inject' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+          }`}
+        >
+          <Zap className="w-4 h-4" /> Inject Trade
+        </button>
       </div>
 
-      {tab === 'live' ? <LiveTradesPanel /> : <TradeHistoryPanel users={allUsers} />}
+      {tab === 'live' && <LiveTradesPanel />}
+      {tab === 'history' && <TradeHistoryPanel users={allUsers} />}
+      {tab === 'inject' && <InjectTradePanel users={allUsers} />}
     </AdminLayout>
   );
 }
