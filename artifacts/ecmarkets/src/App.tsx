@@ -39,6 +39,7 @@ import { AdminKyc } from "@/pages/admin/AdminKyc";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 import { BinaryTrading } from "@/pages/client/BinaryTrading";
 import { Leaderboard } from "@/pages/client/Leaderboard";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -94,7 +95,9 @@ function Router() {
         <ProtectedRoute component={TradeHistory} />
       </Route>
       <Route path="/dashboard/binary">
-        <ProtectedRoute component={BinaryTrading} />
+        <ErrorBoundary>
+          <ProtectedRoute component={BinaryTrading} />
+        </ErrorBoundary>
       </Route>
       <Route path="/dashboard/leaderboard">
         <ProtectedRoute component={Leaderboard} />

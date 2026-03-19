@@ -73,9 +73,9 @@ function maskUser(n: string) { return n.length >= 4 ? `${n.slice(0,4)}****` : `$
 function getUserIdFromToken(): number | null {
   try { return JSON.parse(atob(localStorage.getItem('ecm_token')!.split('.')[1])).id ?? null; } catch { return null; }
 }
-function fmt(price: number, inst: string) {
+function fmt(price: number | null | undefined, inst: string) {
   const dec = INST_MAP[inst]?.decimals ?? 2;
-  return price.toFixed(Math.min(dec, 6));
+  return (price ?? 0).toFixed(Math.min(dec, 6));
 }
 function generateCandles(inst: string, count = 200, bucketSec = 60): CandlestickData[] {
   const base = BASE_PRICES[inst] ?? 1;
@@ -307,31 +307,38 @@ export function BinaryTrading() {
   /* ── Chart creation ── */
   useEffect(() => {
     if (!chartRef.current) return;
-    const chart = createChart(chartRef.current, {
-      layout: { background: { color: '#050810' }, textColor: '#6B7280' },
-      grid:   { vertLines: { color: '#111827' }, horzLines: { color: '#111827' } },
-      crosshair: { mode: 1 },
-      rightPriceScale: { borderColor: '#1F2937', scaleMargins: { top: 0.1, bottom: 0.1 } },
-      timeScale: { borderColor: '#1F2937', timeVisible: true, secondsVisible: true },
-      autoSize: true,
-    });
-    const series = chart.addSeries(CandlestickSeries, {
-      upColor: '#02C076', downColor: '#CF304A',
-      borderUpColor: '#02C076', borderDownColor: '#CF304A',
-      wickUpColor: '#02C076', wickDownColor: '#CF304A',
-    });
-    chartInstance.current = chart;
-    seriesRef.current = series;
-    ensureCandles(instRef.current);
-    const data = aggregateCandlesBucket(minuteCandles.current[instRef.current], TF_MAP[tfRef.current]?.bucketSec ?? 60);
-    series.setData(data);
-    const initPrice = BASE_PRICES[instRef.current] ?? 1;
-    const pl = series.createPriceLine({ price: initPrice, color: '#00C274', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Live' });
-    priceLineRef.current = pl;
+    let chart: IChartApi | null = null;
+    try {
+      chart = createChart(chartRef.current, {
+        layout: { background: { color: '#050810' }, textColor: '#6B7280' },
+        grid:   { vertLines: { color: '#111827' }, horzLines: { color: '#111827' } },
+        crosshair: { mode: 1 },
+        rightPriceScale: { borderColor: '#1F2937', scaleMargins: { top: 0.1, bottom: 0.1 } },
+        timeScale: { borderColor: '#1F2937', timeVisible: true, secondsVisible: true },
+        autoSize: true,
+      });
+      const series = chart.addSeries(CandlestickSeries, {
+        upColor: '#02C076', downColor: '#CF304A',
+        borderUpColor: '#02C076', borderDownColor: '#CF304A',
+        wickUpColor: '#02C076', wickDownColor: '#CF304A',
+      });
+      chartInstance.current = chart;
+      seriesRef.current = series;
+      ensureCandles(instRef.current);
+      const data = aggregateCandlesBucket(minuteCandles.current[instRef.current] ?? [], TF_MAP[tfRef.current]?.bucketSec ?? 60);
+      try { series.setData(data); } catch {}
+      const initPrice = BASE_PRICES[instRef.current] ?? 1;
+      try {
+        const pl = series.createPriceLine({ price: initPrice, color: '#00C274', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Live' });
+        priceLineRef.current = pl;
+      } catch {}
+    } catch (err) {
+      console.error('[Chart] Init failed:', err);
+    }
     return () => {
       priceLineRef.current = null;
       entryLinesRef.current.clear();
-      try { chart.remove(); } catch {}
+      try { chart?.remove(); } catch {}
       chartInstance.current = null;
       seriesRef.current = null;
     };
@@ -580,15 +587,6 @@ export function BinaryTrading() {
   /* ─── JSX ────────────────────────────────────────────────────── */
   return (
     <DashboardLayout>
-      <style>{`
-        @keyframes ticker-scroll {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-ticker { animation: ticker-scroll 45s linear infinite; }
-        .animate-ticker:hover { animation-play-state: paused; }
-      `}</style>
-
       <div className="flex flex-col binary-terminal-h"
         style={{ borderRadius: 16, boxShadow: screenGlow, transition: 'box-shadow 0.8s ease', gap: 8 }}>
 
@@ -604,7 +602,7 @@ export function BinaryTrading() {
                     {t.status === 'won' ? '▲ WON' : '▼ LOST'}
                   </span>
                   <span className="text-white">
-                    {t.status === 'won' ? '+' : '−'}₹{(t.profit ?? t.amount).toLocaleString('en-IN')}
+                    {t.status === 'won' ? '+' : '−'}₹{Number(t.profit ?? t.amount ?? 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[#4B5563]">on {t.instrument}</span>
                   <span className="text-[#1F2937] mx-2">|</span>
@@ -810,7 +808,7 @@ export function BinaryTrading() {
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>
-                          {won ? `+₹${h.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${h.amount.toLocaleString('en-IN')}`}
+                          {won ? `+₹${(h.profit ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${(h.amount ?? 0).toLocaleString('en-IN')}`}
                         </p>
                         <span className={`text-[9px] font-black uppercase ${won ? 'text-[#02C076]' : push ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>{h.status}</span>
                       </div>
@@ -989,7 +987,7 @@ export function BinaryTrading() {
                             </div>
                           </div>
                           <p className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>
-                            {won ? `+₹${h.profit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${h.amount.toLocaleString('en-IN')}`}
+                            {won ? `+₹${(h.profit ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${(h.amount ?? 0).toLocaleString('en-IN')}`}
                           </p>
                         </div>
                       );
