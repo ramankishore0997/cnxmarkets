@@ -138,12 +138,12 @@ export function Home() {
               </motion.p>
 
               <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-8">
-                <Link href="/register">
+                <Link href="/auth/register">
                   <a className="btn-green flex items-center gap-2 px-7 py-3.5 text-base font-bold rounded-xl">
                     Open Live Account <ArrowRight className="h-4 w-4" />
                   </a>
                 </Link>
-                <Link href="/signin">
+                <Link href="/auth/login">
                   <a className="flex items-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-[#181B23] hover:bg-[#1E222D] border border-[#2A2D3A] rounded-xl transition-colors">
                     Sign In
                   </a>
@@ -468,7 +468,7 @@ export function Home() {
               Join 10 Lakh+ traders already growing with CNXMarkets.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center">
-              <Link href="/register">
+              <Link href="/auth/register">
                 <a className="btn-green flex items-center gap-2 px-8 py-4 text-base font-bold rounded-xl">
                   Open Free Account <ArrowRight className="h-4 w-4" />
                 </a>
