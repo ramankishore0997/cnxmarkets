@@ -213,8 +213,8 @@ export function Leaderboard() {
               <div className="flex items-center gap-2">
                 <Flame className="w-4 h-4 text-[#00C274] shrink-0" />
                 <p className="text-[12px] text-[#9CA3AF]">
-                  Deposit karo aur trading badhao — top traders kamate hain
-                  <span className="text-[#00C274] font-bold"> ₹48.4Cr</span> tak
+                  Deposit & grow your trading — top traders have earned up to
+                  <span className="text-[#00C274] font-bold"> ₹48.4Cr</span>
                 </p>
               </div>
               <Link href="/dashboard/deposit"
