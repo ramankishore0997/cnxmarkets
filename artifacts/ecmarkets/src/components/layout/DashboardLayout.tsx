@@ -240,7 +240,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <div className="min-h-screen bg-[#060709] text-[#F8FAFC] flex">
+    <div className="min-h-screen bg-[#060709] text-[#F8FAFC] flex overflow-x-hidden">
 
       {/* ── Desktop Sidebar ─── */}
       <aside className="w-[260px] sidebar-stealth hidden md:flex flex-col fixed inset-y-0 left-0 z-20">
