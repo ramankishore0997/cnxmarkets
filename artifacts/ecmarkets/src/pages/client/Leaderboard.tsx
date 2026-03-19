@@ -1,117 +1,82 @@
 import { useState, useEffect, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useAuthState } from '@/hooks/use-auth-state';
-import { TrendingUp, Trophy, Flame, ChevronUp, Star } from 'lucide-react';
+import { TrendingUp, Trophy, Flame, Star, ArrowUp, Target } from 'lucide-react';
+import { Link } from 'wouter';
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+// ─── Static top traders data ──────────────────────────────────────────────────
 
-const LOCATIONS = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad'];
-
-const BASE_TRADERS = [
-  { id: 'f1',  name: 'Arjun S.',   location: 'Mumbai',    profit: 4840000, trades: 1847, winRate: 94, isReal: false },
-  { id: 'f2',  name: 'Priya M.',   location: 'Delhi',     profit: 3920000, trades: 1623, winRate: 91, isReal: false },
-  { id: 'f3',  name: 'Rohit K.',   location: 'Bangalore', profit: 3180000, trades: 1412, winRate: 89, isReal: false },
-  { id: 'f4',  name: 'Sneha V.',   location: 'Hyderabad', profit: 2540000, trades: 1198, winRate: 88, isReal: false },
-  { id: 'f5',  name: 'Vikram T.',  location: 'Chennai',   profit: 2090000, trades: 1034, winRate: 86, isReal: false },
-  { id: 'f6',  name: 'Kavya R.',   location: 'Pune',      profit: 1740000, trades: 892,  winRate: 84, isReal: false },
-  { id: 'f7',  name: 'Aditya P.',  location: 'Kolkata',   profit: 1430000, trades: 756,  winRate: 83, isReal: false },
-  // user slot ~8
-  { id: 'f8',  name: 'Meera J.',   location: 'Ahmedabad', profit: 1020000, trades: 621,  winRate: 81, isReal: false },
-  { id: 'f9',  name: 'Suresh N.',  location: 'Jaipur',    profit: 840000,  trades: 534,  winRate: 79, isReal: false },
-  { id: 'f10', name: 'Ananya D.',  location: 'Surat',     profit: 690000,  trades: 447,  winRate: 78, isReal: false },
-  { id: 'f11', name: 'Karan B.',   location: 'Mumbai',    profit: 560000,  trades: 381,  winRate: 76, isReal: false },
-  { id: 'f12', name: 'Pooja L.',   location: 'Delhi',     profit: 450000,  trades: 312,  winRate: 75, isReal: false },
-  { id: 'f13', name: 'Rahul G.',   location: 'Bangalore', profit: 360000,  trades: 247,  winRate: 73, isReal: false },
-  { id: 'f14', name: 'Divya C.',   location: 'Hyderabad', profit: 284000,  trades: 196,  winRate: 72, isReal: false },
-  { id: 'f15', name: 'Nikhil A.',  location: 'Chennai',   profit: 218000,  trades: 158,  winRate: 71, isReal: false },
-  { id: 'f16', name: 'Tanvi S.',   location: 'Pune',      profit: 164000,  trades: 124,  winRate: 70, isReal: false },
-  { id: 'f17', name: 'Gaurav M.',  location: 'Kolkata',   profit: 124000,  trades: 97,   winRate: 69, isReal: false },
-  { id: 'f18', name: 'Riya P.',    location: 'Ahmedabad', profit: 92000,   trades: 74,   winRate: 68, isReal: false },
+const TOP_TRADERS = [
+  { id: 'f1',  name: 'Arjun S.',   location: 'Mumbai',    profit: 48400000, trades: 8247, winRate: 94 },
+  { id: 'f2',  name: 'Priya M.',   location: 'Delhi',     profit: 39200000, trades: 7123, winRate: 91 },
+  { id: 'f3',  name: 'Rohit K.',   location: 'Bangalore', profit: 31800000, trades: 6412, winRate: 89 },
+  { id: 'f4',  name: 'Sneha V.',   location: 'Hyderabad', profit: 25400000, trades: 5198, winRate: 88 },
+  { id: 'f5',  name: 'Vikram T.',  location: 'Chennai',   profit: 20900000, trades: 4534, winRate: 86 },
+  { id: 'f6',  name: 'Kavya R.',   location: 'Pune',      profit: 17400000, trades: 3892, winRate: 84 },
+  { id: 'f7',  name: 'Aditya P.',  location: 'Kolkata',   profit: 14300000, trades: 3256, winRate: 83 },
+  { id: 'f8',  name: 'Meera J.',   location: 'Ahmedabad', profit: 11800000, trades: 2821, winRate: 81 },
+  { id: 'f9',  name: 'Suresh N.',  location: 'Jaipur',    profit: 9600000,  trades: 2434, winRate: 79 },
+  { id: 'f10', name: 'Ananya D.',  location: 'Surat',     profit: 7900000,  trades: 2147, winRate: 78 },
+  { id: 'f11', name: 'Karan B.',   location: 'Mumbai',    profit: 6400000,  trades: 1881, winRate: 76 },
+  { id: 'f12', name: 'Pooja L.',   location: 'Delhi',     profit: 5100000,  trades: 1612, winRate: 75 },
+  { id: 'f13', name: 'Rahul G.',   location: 'Bangalore', profit: 4000000,  trades: 1347, winRate: 73 },
+  { id: 'f14', name: 'Divya C.',   location: 'Hyderabad', profit: 3100000,  trades: 1096, winRate: 72 },
+  { id: 'f15', name: 'Nikhil A.',  location: 'Chennai',   profit: 2400000,  trades: 858,  winRate: 71 },
+  { id: 'f16', name: 'Tanvi S.',   location: 'Pune',      profit: 1800000,  trades: 641,  winRate: 70 },
+  { id: 'f17', name: 'Gaurav M.',  location: 'Kolkata',   profit: 1300000,  trades: 487,  winRate: 69 },
+  { id: 'f18', name: 'Riya P.',    location: 'Ahmedabad', profit: 940000,   trades: 361,  winRate: 68 },
+  { id: 'f19', name: 'Aman K.',    location: 'Mumbai',    profit: 670000,   trades: 258,  winRate: 67 },
+  { id: 'f20', name: 'Shreya V.',  location: 'Delhi',     profit: 460000,   trades: 179,  winRate: 66 },
 ];
 
-type Trader = {
-  id: string; name: string; location: string;
-  profit: number; trades: number; winRate: number;
-  isReal: boolean; isMe?: boolean; flash?: boolean;
-};
+const TOTAL_TRADERS = 12847;
+const USER_RANK     = 6841;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function fmt(n: number) {
-  if (n >= 10000000) return '₹' + (n / 10000000).toFixed(2) + 'Cr';
-  if (n >= 100000)   return '₹' + (n / 100000).toFixed(2) + 'L';
+  if (n >= 10000000) return '₹' + (n / 10000000).toFixed(1) + 'Cr';
+  if (n >= 100000)   return '₹' + (n / 100000).toFixed(1) + 'L';
   if (n >= 1000)     return '₹' + (n / 1000).toFixed(1) + 'K';
   return '₹' + n.toLocaleString('en-IN');
 }
 
 function retPct(profit: number, trades: number) {
-  return ((profit / Math.max(trades * 3500, 1)) * 100).toFixed(1);
+  return ((profit / Math.max(trades * 3200, 1)) * 100).toFixed(1);
 }
 
-function avatar(name: string, isMe: boolean, size: 'sm' | 'lg' = 'sm') {
-  const dim = size === 'lg' ? 'w-14 h-14 text-xl' : 'w-8 h-8 text-xs';
-  const bg  = isMe
-    ? 'linear-gradient(135deg,#00C274,#00A85E)'
-    : 'linear-gradient(135deg,#1A1D2E,#252838)';
+const MEDAL_COLOR  = ['#FFD700', '#C0C0C0', '#CD7F32'];
+const MEDAL_SHADOW = ['rgba(255,215,0,0.3)', 'rgba(192,192,192,0.2)', 'rgba(205,127,50,0.2)'];
+
+function PodiumCard({ t, rank }: { t: typeof TOP_TRADERS[0]; rank: number }) {
+  const mc = MEDAL_COLOR[rank - 1];
   return (
-    <div className={`${dim} rounded-full flex items-center justify-center font-black shrink-0`}
-      style={{ background: bg, border: isMe ? '2px solid rgba(0,194,116,0.5)' : '1px solid rgba(255,255,255,0.07)', color: isMe ? '#000' : '#94A3B8' }}>
-      {name.charAt(0)}
-    </div>
-  );
-}
-
-// ─── Top-3 Podium Card ────────────────────────────────────────────────────────
-
-const MEDAL = ['#FFD700','#C0C0C0','#CD7F32'];
-const MEDAL_SHADOW = ['rgba(255,215,0,0.25)','rgba(192,192,192,0.18)','rgba(205,127,50,0.18)'];
-const MEDAL_LABEL  = ['🥇 #1 Champion','🥈 #2 Runner-up','🥉 #3 Third'];
-
-function PodiumCard({ trader, rank }: { trader: Trader; rank: number }) {
-  const mc = MEDAL[rank - 1];
-  return (
-    <div className={`relative flex flex-col items-center gap-3 rounded-2xl p-5 transition-all duration-500 ${trader.flash ? 'scale-[1.02]' : ''} ${rank === 1 ? 'pt-7' : ''}`}
-      style={{ background: `linear-gradient(160deg, ${mc}0D 0%, #0C0E1500 100%), #0C0E15`, border: `1px solid ${mc}35`, boxShadow: trader.flash ? `0 0 28px ${MEDAL_SHADOW[rank-1]}` : 'none' }}>
-
+    <div className="relative flex flex-col items-center gap-3 rounded-2xl p-5"
+      style={{ background: `linear-gradient(160deg,${mc}0E 0%,#0C0E1500 100%),#0C0E15`, border: `1px solid ${mc}35` }}>
       {rank === 1 && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap"
-          style={{ background: `linear-gradient(90deg,${mc},${mc}99)`, color: '#000' }}>
-          {MEDAL_LABEL[0]}
+          style={{ background: `linear-gradient(90deg,${mc},${mc}88)`, color: '#000' }}>
+          🏆 Champion
         </span>
       )}
-
-      <div className="relative">
-        <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-black"
-          style={{ background: `linear-gradient(135deg,${mc}33,${mc}55)`, border: `2px solid ${mc}66`, color: mc }}>
-          {trader.name.charAt(0)}
-        </div>
-        {rank > 1 && (
-          <span className="absolute -bottom-1 -right-1 text-sm">{rank === 2 ? '🥈' : '🥉'}</span>
-        )}
+      <div className={`w-13 h-13 rounded-full flex items-center justify-center text-lg font-black ${rank === 1 ? 'w-14 h-14' : 'w-12 h-12'}`}
+        style={{ background: `linear-gradient(135deg,${mc}33,${mc}55)`, border: `2px solid ${mc}66`, color: mc }}>
+        {t.name.charAt(0)}
       </div>
-
       <div className="text-center">
-        <p className="font-bold text-[#F8FAFC] text-[13px] leading-tight">{trader.name}</p>
-        <p className="text-[10px] text-[#4B5563] mt-0.5">{trader.location}</p>
+        <p className="font-bold text-[#F8FAFC] text-[13px]">{t.name}</p>
+        <p className="text-[10px] text-[#4B5563] mt-0.5">{t.location}</p>
       </div>
-
-      <div className="text-center">
-        <p className={`font-terminal text-[22px] font-black leading-none transition-colors duration-700`}
-          style={{ color: trader.flash ? '#00C274' : mc }}>
-          {fmt(trader.profit)}
-        </p>
-        <p className="text-[10px] text-[#4B5563] mt-1">+{retPct(trader.profit, trader.trades)}% return</p>
-      </div>
-
-      <div className="flex items-center gap-3 text-center">
-        <div>
-          <p className="text-[10px] text-[#374151] uppercase tracking-wider">Win Rate</p>
-          <p className="text-[13px] font-bold text-[#00C274]">{trader.winRate}%</p>
+      <p className="font-terminal text-[20px] font-black" style={{ color: mc }}>{fmt(t.profit)}</p>
+      <div className="flex gap-3">
+        <div className="text-center">
+          <p className="text-[10px] text-[#374151]">Win Rate</p>
+          <p className="text-[12px] font-bold text-[#00C274]">{t.winRate}%</p>
         </div>
-        <div className="w-px h-7 bg-white/[0.06]" />
-        <div>
-          <p className="text-[10px] text-[#374151] uppercase tracking-wider">Trades</p>
-          <p className="text-[13px] font-bold text-[#F8FAFC]">{trader.trades.toLocaleString()}</p>
+        <div className="w-px bg-white/[0.05]" />
+        <div className="text-center">
+          <p className="text-[10px] text-[#374151]">Trades</p>
+          <p className="text-[12px] font-bold text-[#F8FAFC]">{t.trades.toLocaleString()}</p>
         </div>
       </div>
     </div>
@@ -123,26 +88,10 @@ function PodiumCard({ trader, rank }: { trader: Trader; rank: number }) {
 export function Leaderboard() {
   const { user } = useAuthState();
 
-  const [traders, setTraders] = useState<Trader[]>(() => {
-    const list: Trader[] = BASE_TRADERS.map(t => ({ ...t, flash: false }));
-    if (user) {
-      list.splice(7, 0, {
-        id: 'me',
-        name: `${user.firstName} ${(user.lastName?.[0] || '')}.`,
-        location: LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)],
-        profit: 1180000,
-        trades: 687,
-        winRate: 82,
-        isReal: true,
-        isMe: true,
-        flash: false,
-      });
-    }
-    return list;
-  });
-
+  const [traders, setTraders] = useState(TOP_TRADERS.map(t => ({ ...t, flash: false })));
   const [lastUpdated, setLastUpdated] = useState(0);
-  const [tick, setTick]               = useState(0);
+  const [tick, setTick] = useState(0);
+  const [userProfit, setUserProfit] = useState(18400);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -150,14 +99,15 @@ export function Leaderboard() {
       setTraders(prev => {
         const upd = [...prev];
         const idxs = new Set<number>();
-        while (idxs.size < 3) idxs.add(Math.floor(Math.random() * upd.length));
+        while (idxs.size < 4) idxs.add(Math.floor(Math.random() * upd.length));
         idxs.forEach(i => {
-          const gain = Math.floor(Math.random() * 12000) + 3000;
+          const gain = Math.floor(Math.random() * 80000) + 20000;
           upd[i] = { ...upd[i], profit: upd[i].profit + gain, flash: true };
         });
         setTimeout(() => setTraders(p => p.map(t => ({ ...t, flash: false }))), 900);
         return upd;
       });
+      setUserProfit(p => p + Math.floor(Math.random() * 400) + 100);
       setLastUpdated(0);
       setTick(t => t + 1);
     }, 3800);
@@ -169,12 +119,9 @@ export function Leaderboard() {
     return () => clearInterval(t);
   }, [tick]);
 
-  const myRank   = traders.findIndex(t => t.isMe) + 1;
-  const myTrader = traders.find(t => t.isMe);
-  const aboveMe  = myRank > 1 ? traders[myRank - 2] : null;
-  const profitGap = aboveMe ? aboveMe.profit - (myTrader?.profit ?? 0) : 0;
-
-  const top3 = traders.slice(0, 3);
+  const topPercent = ((USER_RANK / TOTAL_TRADERS) * 100).toFixed(1);
+  const progressPct = 100 - ((USER_RANK / TOTAL_TRADERS) * 100);
+  const top3  = traders.slice(0, 3);
   const rest  = traders.slice(3);
 
   return (
@@ -188,7 +135,9 @@ export function Leaderboard() {
               <Trophy className="w-5 h-5 text-[#FFD700]" />
               <h1 className="text-xl font-black text-[#F8FAFC]">Leaderboard</h1>
             </div>
-            <p className="text-[12px] text-[#4B5563]">Top performing traders on CNXMarkets — all time</p>
+            <p className="text-[12px] text-[#4B5563]">
+              <span className="text-[#00C274] font-bold">{TOTAL_TRADERS.toLocaleString()}</span> active traders on CNXMarkets
+            </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -206,119 +155,182 @@ export function Leaderboard() {
           </div>
         </div>
 
-        {/* ── "You're so close" nudge ── */}
-        {myRank > 0 && aboveMe && (
-          <div className="rounded-xl px-4 py-3.5 flex items-center justify-between gap-3"
-            style={{ background: 'linear-gradient(90deg,rgba(0,194,116,0.07) 0%,rgba(0,194,116,0.02) 100%)', border: '1px solid rgba(0,194,116,0.18)' }}>
+        {/* ── Your Position Card ── */}
+        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)', background: '#0C0E15' }}>
+          <div className="px-5 py-4 border-b flex items-center justify-between gap-4" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.25)' }}>
-                <Flame className="w-4 h-4 text-[#00C274]" />
+              <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
+                style={{ background: 'linear-gradient(135deg,#00C274,#00A85E)', color: '#000' }}>
+                {user?.firstName?.charAt(0) || 'U'}
               </div>
               <div>
-                <p className="text-[13px] font-bold text-[#F8FAFC]">
-                  Aap #{myRank} pe hain — sirf <span className="text-[#00C274]">{fmt(profitGap)}</span> aur chahiye!
-                </p>
-                <p className="text-[11px] text-[#4B5563] mt-0.5">
-                  {aboveMe.name} se {fmt(profitGap)} peeche — ek aur trade aur aap #{myRank - 1} ho sakte hain 🚀
-                </p>
+                <p className="text-[13px] font-bold text-[#F8FAFC]">{user?.firstName} {user?.lastName}</p>
+                <p className="text-[11px] text-[#4B5563]">Your current standing</p>
               </div>
             </div>
-            <div className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-[#00C274]"
-              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)' }}>
-              <ChevronUp className="w-3.5 h-3.5" />
-              Rank #{myRank - 1}
+            <div className="text-right">
+              <p className="text-[11px] text-[#4B5563] uppercase tracking-wider">Your Rank</p>
+              <p className="font-terminal text-2xl font-black text-[#F8FAFC]">#{USER_RANK.toLocaleString()}</p>
+              <p className="text-[10px] text-[#4B5563]">of {TOTAL_TRADERS.toLocaleString()}</p>
             </div>
           </div>
-        )}
 
-        {/* ── Top 3 Podium ── */}
-        <div className="grid grid-cols-3 gap-3">
-          {top3.map((t, i) => <PodiumCard key={t.id} trader={t} rank={i + 1} />)}
+          <div className="px-5 py-4 grid grid-cols-3 gap-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+            <div>
+              <p className="text-[10px] text-[#374151] uppercase tracking-wider mb-1">Your Profit</p>
+              <p className="font-terminal text-[15px] font-bold text-[#F8FAFC]">{fmt(userProfit)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-[#374151] uppercase tracking-wider mb-1">Percentile</p>
+              <p className="font-terminal text-[15px] font-bold text-[#F8FAFC]">Top {topPercent}%</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-[#374151] uppercase tracking-wider mb-1">To Top 100</p>
+              <p className="font-terminal text-[15px] font-bold text-[#F87171]">₹4.6L needed</p>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="px-5 py-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-[#374151]">Your progress to Top 10%</span>
+              <span className="text-[10px] font-bold text-[#00C274]">{progressPct.toFixed(1)}%</span>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+              <div className="h-full rounded-full transition-all duration-700"
+                style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg,#00C274,#00A85E)' }} />
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-[10px] text-[#374151]">Rank #{TOTAL_TRADERS.toLocaleString()}</span>
+              <span className="text-[10px] text-[#374151]">Rank #1</span>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="px-5 pb-4">
+            <div className="rounded-xl px-4 py-3 flex items-center justify-between gap-3"
+              style={{ background: 'rgba(0,194,116,0.06)', border: '1px solid rgba(0,194,116,0.15)' }}>
+              <div className="flex items-center gap-2">
+                <Flame className="w-4 h-4 text-[#00C274] shrink-0" />
+                <p className="text-[12px] text-[#9CA3AF]">
+                  Deposit karo aur trading badhao — top traders kamate hain
+                  <span className="text-[#00C274] font-bold"> ₹48.4Cr</span> tak
+                </p>
+              </div>
+              <Link href="/dashboard/deposit"
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
+                style={{ background: 'linear-gradient(135deg,#00C274,#00A85E)', color: '#000' }}>
+                <ArrowUp className="w-3 h-3" /> Deposit
+              </Link>
+            </div>
+          </div>
         </div>
 
-        {/* ── Rank 4+ Table ── */}
-        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.05)', background: '#0C0E15' }}>
+        {/* ── Top 3 Podium ── */}
+        <div>
+          <p className="text-[11px] font-bold text-[#374151] uppercase tracking-wider mb-3">🏆 Top Performers</p>
+          <div className="grid grid-cols-3 gap-3">
+            {top3.map((t, i) => <PodiumCard key={t.id} t={t} rank={i + 1} />)}
+          </div>
+        </div>
 
-          {/* Table header */}
-          <div className="grid grid-cols-12 px-4 py-2.5 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+        {/* ── Rank 4–20 Table ── */}
+        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.05)', background: '#0C0E15' }}>
+          <div className="px-4 py-2.5 border-b grid grid-cols-12" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
             <span className="col-span-1 text-[10px] font-bold text-[#374151] uppercase tracking-wider">#</span>
             <span className="col-span-4 text-[10px] font-bold text-[#374151] uppercase tracking-wider">Trader</span>
-            <span className="col-span-2 text-[10px] font-bold text-[#374151] uppercase tracking-wider text-right hidden sm:block">Win Rate</span>
+            <span className="col-span-2 text-[10px] font-bold text-[#374151] uppercase tracking-wider text-right hidden sm:block">Win%</span>
             <span className="col-span-3 text-[10px] font-bold text-[#374151] uppercase tracking-wider text-right">Profit</span>
             <span className="col-span-2 text-[10px] font-bold text-[#374151] uppercase tracking-wider text-right">Trades</span>
           </div>
 
-          {rest.map((trader, i) => {
-            const rank  = i + 4;
-            const isMe  = !!trader.isMe;
-            const above = rank > 4 ? rest[i - 1] : top3[2];
-            const gap   = above ? above.profit - trader.profit : 0;
-
-            return (
-              <div key={trader.id}
-                className={`group grid grid-cols-12 px-4 py-3 items-center border-b transition-all duration-500 ${
-                  trader.flash
-                    ? 'bg-[#00C274]/[0.06]'
-                    : isMe
-                    ? 'bg-[#00C274]/[0.04]'
-                    : 'hover:bg-white/[0.018]'
-                }`}
-                style={{ borderColor: isMe ? 'rgba(0,194,116,0.12)' : 'rgba(255,255,255,0.04)' }}>
-
-                {/* Rank */}
-                <div className="col-span-1 flex items-center">
-                  {isMe
-                    ? <span className="text-[12px] font-black text-[#00C274]">#{rank}</span>
-                    : <span className="text-[12px] font-black text-[#374151]">{rank}</span>
-                  }
+          {rest.map((t, i) => (
+            <div key={t.id}
+              className={`grid grid-cols-12 px-4 py-3 items-center border-b transition-all duration-500 ${t.flash ? 'bg-[#00C274]/[0.05]' : 'hover:bg-white/[0.015]'}`}
+              style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+              <div className="col-span-1">
+                <span className="text-[12px] font-black text-[#374151]">{i + 4}</span>
+              </div>
+              <div className="col-span-4 flex items-center gap-2 min-w-0">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black text-[#6B7280] shrink-0"
+                  style={{ background: 'linear-gradient(135deg,#1A1D2E,#252838)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  {t.name.charAt(0)}
                 </div>
-
-                {/* Name */}
-                <div className="col-span-4 flex items-center gap-2.5 min-w-0">
-                  {avatar(trader.name, isMe)}
-                  <div className="min-w-0">
-                    <p className={`text-[13px] font-semibold truncate leading-tight ${isMe ? 'text-[#00C274]' : 'text-[#D1D5DB]'}`}>
-                      {trader.name}
-                      {isMe && <span className="ml-1 text-[10px] font-bold bg-[#00C274]/20 text-[#00C274] px-1.5 py-0.5 rounded-full align-middle">You</span>}
-                    </p>
-                    <p className="text-[10px] text-[#374151] truncate">{trader.location}</p>
-                  </div>
-                </div>
-
-                {/* Win Rate */}
-                <div className="col-span-2 text-right hidden sm:block">
-                  <div className="inline-flex items-center gap-1">
-                    <Star className="w-2.5 h-2.5 text-[#00C274]" />
-                    <span className="text-[12px] font-bold text-[#00C274]">{trader.winRate}%</span>
-                  </div>
-                </div>
-
-                {/* Profit */}
-                <div className="col-span-3 text-right">
-                  <p className={`font-terminal text-[13px] font-bold leading-tight transition-colors duration-700 ${
-                    trader.flash ? 'text-[#00C274]' : isMe ? 'text-[#00C274]' : 'text-[#F8FAFC]'
-                  }`}>
-                    {fmt(trader.profit)}
-                  </p>
-                  <p className="text-[10px] text-[#374151]">+{retPct(trader.profit, trader.trades)}%</p>
-                </div>
-
-                {/* Trades */}
-                <div className="col-span-2 text-right">
-                  <span className="text-[12px] text-[#6B7280] font-semibold">{trader.trades}</span>
+                <div className="min-w-0">
+                  <p className="text-[12px] font-semibold text-[#D1D5DB] truncate leading-tight">{t.name}</p>
+                  <p className="text-[10px] text-[#374151] truncate">{t.location}</p>
                 </div>
               </div>
-            );
-          })}
+              <div className="col-span-2 text-right hidden sm:block">
+                <span className="text-[12px] font-bold text-[#00C274]">{t.winRate}%</span>
+              </div>
+              <div className="col-span-3 text-right">
+                <p className={`font-terminal text-[13px] font-bold transition-colors duration-700 ${t.flash ? 'text-[#00C274]' : 'text-[#F8FAFC]'}`}>
+                  {fmt(t.profit)}
+                </p>
+                <p className="text-[10px] text-[#374151]">+{retPct(t.profit, t.trades)}%</p>
+              </div>
+              <div className="col-span-2 text-right">
+                <span className="text-[12px] text-[#6B7280] font-semibold">{t.trades.toLocaleString()}</span>
+              </div>
+            </div>
+          ))}
+
+          {/* Ellipsis rows hinting at more traders */}
+          <div className="px-4 py-3 flex items-center justify-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+            <span className="text-[#1F2937] text-lg font-black tracking-widest">• • •</span>
+          </div>
+          <div className="px-4 py-3 grid grid-cols-12 items-center opacity-30">
+            <span className="col-span-1 text-[12px] font-black text-[#374151]">6,840</span>
+            <div className="col-span-4 flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-[#1A1D2E] border border-white/[0.06]" />
+              <div className="h-2 w-20 rounded-full bg-white/[0.06]" />
+            </div>
+            <div className="col-span-2 hidden sm:block" />
+            <div className="col-span-3 text-right"><div className="h-2 w-12 rounded-full bg-white/[0.06] ml-auto" /></div>
+            <div className="col-span-2 text-right"><div className="h-2 w-8 rounded-full bg-white/[0.06] ml-auto" /></div>
+          </div>
+          {/* User row at 6841 */}
+          <div className="grid grid-cols-12 px-4 py-3 items-center"
+            style={{ background: 'rgba(0,194,116,0.04)', borderTop: '1px solid rgba(0,194,116,0.12)', borderBottom: '1px solid rgba(0,194,116,0.12)' }}>
+            <div className="col-span-1">
+              <span className="text-[12px] font-black text-[#00C274]">#{USER_RANK.toLocaleString()}</span>
+            </div>
+            <div className="col-span-4 flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black text-black shrink-0"
+                style={{ background: 'linear-gradient(135deg,#00C274,#00A85E)' }}>
+                {user?.firstName?.charAt(0) || 'U'}
+              </div>
+              <div className="min-w-0">
+                <p className="text-[12px] font-bold text-[#00C274] truncate">
+                  {user?.firstName} {user?.lastName?.[0]}.
+                  <span className="ml-1 text-[9px] font-bold bg-[#00C274]/20 text-[#00C274] px-1.5 py-0.5 rounded-full align-middle">You</span>
+                </p>
+                <p className="text-[10px] text-[#374151] truncate">New Trader</p>
+              </div>
+            </div>
+            <div className="col-span-2 text-right hidden sm:block">
+              <span className="text-[12px] font-bold text-[#00C274]">—</span>
+            </div>
+            <div className="col-span-3 text-right">
+              <p className="font-terminal text-[13px] font-bold text-[#00C274]">{fmt(userProfit)}</p>
+              <p className="text-[10px] text-[#374151]">Getting started</p>
+            </div>
+            <div className="col-span-2 text-right">
+              <span className="text-[12px] text-[#6B7280] font-semibold">—</span>
+            </div>
+          </div>
+          <div className="px-4 py-3 flex items-center justify-center gap-2">
+            <span className="text-[#1F2937] text-lg font-black tracking-widest">• • •</span>
+          </div>
         </div>
 
-        {/* Stats footer */}
+        {/* ── Stats footer ── */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'Total Traders', value: `${traders.length}+`, icon: TrendingUp },
-            { label: 'Avg Win Rate', value: '79%', icon: Star },
-            { label: 'Total Volume', value: '₹48.2Cr', icon: Trophy },
+            { label: 'Active Traders', value: '12,847', icon: TrendingUp },
+            { label: 'Platform Win Rate', value: '79%',    icon: Star },
+            { label: 'Total Volume',   value: '₹482Cr',   icon: Target },
           ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="rounded-xl px-4 py-3 flex flex-col items-center gap-1"
               style={{ background: '#0C0E15', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -330,7 +342,7 @@ export function Leaderboard() {
         </div>
 
         <p className="text-center text-[11px] text-[#1F2937] pb-2">
-          Rankings update live every few seconds • Figures in INR
+          Rankings update live • {TOTAL_TRADERS.toLocaleString()} registered traders • Figures in INR
         </p>
       </div>
     </DashboardLayout>
