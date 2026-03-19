@@ -397,20 +397,22 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
 
 // ─── Instruments reference (mirrors tradeCron) ────────────────────────────────
 
+const INR_PER_USD = 83.45;
+
 const INSTRUMENTS_DATA = [
-  { instrument: 'EUR/USD',  market: 'Forex',  basePrice: 1.0923,  lotSize: 100000 },
-  { instrument: 'GBP/USD',  market: 'Forex',  basePrice: 1.2725,  lotSize: 100000 },
-  { instrument: 'USD/JPY',  market: 'Forex',  basePrice: 155.20,  lotSize: 100000 },
-  { instrument: 'AUD/USD',  market: 'Forex',  basePrice: 0.6445,  lotSize: 100000 },
-  { instrument: 'USD/CAD',  market: 'Forex',  basePrice: 1.3618,  lotSize: 100000 },
-  { instrument: 'NZD/USD',  market: 'Forex',  basePrice: 0.5950,  lotSize: 100000 },
-  { instrument: 'EUR/GBP',  market: 'Forex',  basePrice: 0.8578,  lotSize: 100000 },
-  { instrument: 'GBP/JPY',  market: 'Forex',  basePrice: 197.10,  lotSize: 100000 },
-  { instrument: 'BTC/USDT', market: 'Crypto', basePrice: 65240,   lotSize: 0.01   },
-  { instrument: 'ETH/USDT', market: 'Crypto', basePrice: 3215,    lotSize: 0.1    },
-  { instrument: 'SOL/USDT', market: 'Crypto', basePrice: 158,     lotSize: 1.0    },
-  { instrument: 'BNB/USDT', market: 'Crypto', basePrice: 582,     lotSize: 0.1    },
-  { instrument: 'XRP/USDT', market: 'Crypto', basePrice: 0.526,   lotSize: 500    },
+  { instrument: 'EUR/USD',  market: 'Forex',  basePrice: 1.0923,  lotSize: 1, quoteToInr: INR_PER_USD,              isJpy: false },
+  { instrument: 'GBP/USD',  market: 'Forex',  basePrice: 1.2725,  lotSize: 1, quoteToInr: INR_PER_USD,              isJpy: false },
+  { instrument: 'USD/JPY',  market: 'Forex',  basePrice: 155.20,  lotSize: 1, quoteToInr: INR_PER_USD / 155.2,      isJpy: true  },
+  { instrument: 'AUD/USD',  market: 'Forex',  basePrice: 0.6445,  lotSize: 1, quoteToInr: INR_PER_USD,              isJpy: false },
+  { instrument: 'USD/CAD',  market: 'Forex',  basePrice: 1.3618,  lotSize: 1, quoteToInr: INR_PER_USD,              isJpy: false },
+  { instrument: 'NZD/USD',  market: 'Forex',  basePrice: 0.5950,  lotSize: 1, quoteToInr: INR_PER_USD,              isJpy: false },
+  { instrument: 'EUR/GBP',  market: 'Forex',  basePrice: 0.8578,  lotSize: 1, quoteToInr: 107.5,                   isJpy: false },
+  { instrument: 'GBP/JPY',  market: 'Forex',  basePrice: 197.10,  lotSize: 1, quoteToInr: INR_PER_USD / 155.2,      isJpy: true  },
+  { instrument: 'BTC/USDT', market: 'Crypto', basePrice: 65240,   lotSize: 0.1, quoteToInr: INR_PER_USD,            isJpy: false },
+  { instrument: 'ETH/USDT', market: 'Crypto', basePrice: 3215,    lotSize: 1,   quoteToInr: INR_PER_USD,            isJpy: false },
+  { instrument: 'SOL/USDT', market: 'Crypto', basePrice: 158,     lotSize: 2,   quoteToInr: INR_PER_USD,            isJpy: false },
+  { instrument: 'BNB/USDT', market: 'Crypto', basePrice: 582,     lotSize: 1,   quoteToInr: INR_PER_USD,            isJpy: false },
+  { instrument: 'XRP/USDT', market: 'Crypto', basePrice: 0.526,   lotSize: 100, quoteToInr: INR_PER_USD,            isJpy: false },
 ];
 
 // ─── Inject Trade Panel ───────────────────────────────────────────────────────
@@ -434,6 +436,14 @@ function InjectTradePanel({ users }: { users: any[] }) {
     const entryPrice = instr.basePrice;
     const profitVal  = tradeStatus === 'closed' ? parseFloat(profit) : undefined;
 
+    // Auto-calculate exit price so trade history always shows it
+    let exitPrice: number | undefined;
+    if (tradeStatus === 'closed' && profitVal !== undefined) {
+      const sign      = direction === 'buy' ? 1 : -1;
+      const priceMove = profitVal / (instr.lotSize * instr.quoteToInr);
+      exitPrice = entryPrice + sign * priceMove;
+    }
+
     setSubmitting(true);
     setSuccess(false);
     try {
@@ -447,6 +457,7 @@ function InjectTradePanel({ users }: { users: any[] }) {
           market:     instr.market,
           direction,
           entryPrice,
+          exitPrice,
           lotSize:    instr.lotSize,
           status:     tradeStatus,
           profit:     profitVal,
