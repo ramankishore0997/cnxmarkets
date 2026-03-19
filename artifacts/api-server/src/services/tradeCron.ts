@@ -190,6 +190,32 @@ async function openTradesPhase(): Promise<void> {
         continue;
       }
 
+      // Skip if today's profit target is already met
+      const todayStart = getTodayStartIST();
+      const totalDeposits    = parseFloat(account.totalDeposits    as string);
+      const totalWithdrawals = parseFloat(account.totalWithdrawals as string);
+      const baseTotalProfit  = parseFloat(account.totalProfit      as string);
+      const canonicalBalance = totalDeposits - totalWithdrawals + baseTotalProfit;
+      const dailyGrowthPct   = parseFloat(account.dailyGrowthTarget as string);
+      const dailyTargetAmount = canonicalBalance * (dailyGrowthPct / 100);
+
+      const todayClosedTrades = await db
+        .select()
+        .from(tradesTable)
+        .where(and(
+          eq(tradesTable.userId, account.userId),
+          eq(tradesTable.status, "closed"),
+          gte(tradesTable.openedAt, todayStart),
+        ));
+      const todayAccumulatedNet = todayClosedTrades.reduce(
+        (s, t) => s + (t.profit ? parseFloat(t.profit as string) : 0), 0
+      );
+
+      if (todayAccumulatedNet >= dailyTargetAmount) {
+        console.log(`[TradeCron] User ${account.userId}: daily target already met (₹${todayAccumulatedNet.toFixed(0)} / ₹${dailyTargetAmount.toFixed(0)}), skipping new trades.`);
+        continue;
+      }
+
       const count = randInt(2, 4);
       for (let i = 0; i < count; i++) {
         const instr     = pickRandom(INSTRUMENTS);

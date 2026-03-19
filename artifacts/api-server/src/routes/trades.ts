@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { tradesTable, strategiesTable } from "@workspace/db/schema";
-import { eq, desc, and, gte, lte, sql, lt } from "drizzle-orm";
+import { eq, desc, and, gte, lte, sql, lt, ne } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -54,6 +54,7 @@ router.get("/history", requireAuth, async (req: AuthRequest, res) => {
     const conditions = [
       eq(tradesTable.userId, req.user!.id),
       eq(tradesTable.status, "closed" as string),
+      ne(tradesTable.profit, "0.00"),   // hide break-even ₹0 trades
     ];
     if (fromDate) conditions.push(gte(tradesTable.closedAt, fromDate));
     if (toDate) {
