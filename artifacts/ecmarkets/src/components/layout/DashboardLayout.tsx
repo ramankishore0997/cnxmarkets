@@ -7,7 +7,6 @@ import {
   ArrowDownUp, 
   Wallet, 
   User, 
-  Bell, 
   LogOut,
   Menu,
   ShieldCheck,
@@ -30,7 +29,6 @@ const navItems = [
   { name: 'Withdraw',         href: '/dashboard/withdraw',        icon: ArrowDownUp },
   { name: 'KYC & Security',   href: '/dashboard/kyc',             icon: ShieldCheck },
   { name: 'Profile',          href: '/dashboard/profile',         icon: User },
-  { name: 'Notifications',    href: '/dashboard/notifications',   icon: Bell },
 ];
 
 const bottomNavItems = [
@@ -302,14 +300,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 ml-auto">
-            <Link
-              href="/dashboard/notifications"
-              className="relative p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-[#6B7280] hover:text-[#00C274] hover:border-[#00C274]/25 transition-all duration-200"
-            >
-              <Bell className="w-[18px] h-[18px]" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#CF304A] border-2 border-[#080D18] rounded-full" />
-            </Link>
-
             <div className="hidden sm:flex h-5 w-px bg-white/[0.07]" />
 
             <Link href="/dashboard/profile" className="flex items-center gap-2.5 group">

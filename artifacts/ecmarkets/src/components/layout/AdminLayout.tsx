@@ -5,7 +5,6 @@ import {
   BarChart3, 
   Users, 
   ArrowRightLeft, 
-  Send,
   LogOut,
   ShieldAlert,
   Menu,
@@ -23,7 +22,6 @@ const navItems = [
   { name: 'KYC Approvals',  href: '/admin/kyc',              icon: ShieldCheck },
   { name: 'Transactions',   href: '/admin/transactions',     icon: ArrowRightLeft },
   { name: 'Trade Injection',href: '/admin/trades',           icon: Activity },
-  { name: 'Notifications',  href: '/admin/notifications',    icon: Send },
   { name: 'Settings',       href: '/admin/settings',         icon: Settings },
 ];
 

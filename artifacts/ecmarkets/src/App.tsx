@@ -26,13 +26,11 @@ import { Withdraw } from "@/pages/client/Withdraw";
 import { Kyc } from "@/pages/client/Kyc";
 import { Analytics } from "@/pages/client/Analytics";
 import { Profile } from "@/pages/client/Profile";
-import { Notifications } from "@/pages/client/Notifications";
 
 // Admin Pages
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { AdminTransactions } from "@/pages/admin/AdminTransactions";
 import { AdminUsers } from "@/pages/admin/AdminUsers";
-import { AdminNotifications } from "@/pages/admin/AdminNotifications";
 import { AdminTrades } from "@/pages/admin/AdminTrades";
 import { AdminSettings } from "@/pages/admin/AdminSettings";
 import { AdminAutoLogin } from "@/pages/admin/AdminAutoLogin";
@@ -91,9 +89,6 @@ function Router() {
       <Route path="/dashboard/profile">
         <ProtectedRoute component={Profile} />
       </Route>
-      <Route path="/dashboard/notifications">
-        <ProtectedRoute component={Notifications} />
-      </Route>
       <Route path="/dashboard/trades">
         <ProtectedRoute component={TradeHistory} />
       </Route>
@@ -110,9 +105,6 @@ function Router() {
       </Route>
       <Route path="/admin/users">
         <ProtectedRoute component={AdminUsers} adminOnly={true} />
-      </Route>
-      <Route path="/admin/notifications">
-        <ProtectedRoute component={AdminNotifications} adminOnly={true} />
       </Route>
       <Route path="/admin/trades">
         <ProtectedRoute component={AdminTrades} adminOnly={true} />
