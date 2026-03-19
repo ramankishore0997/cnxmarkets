@@ -6,6 +6,31 @@ import { hashPassword, comparePassword, generateToken } from "../lib/auth.js";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { sendTelegram } from "../lib/telegram.js";
 
+const SUPABASE_URL = "https://walzicfjkwiifeldzppx.supabase.co";
+
+async function sendWelcomeEmail(email: string, firstName: string): Promise<void> {
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!serviceKey) return;
+  try {
+    await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${serviceKey}`,
+        "apikey": serviceKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        email_confirm: false,
+        user_metadata: { firstName },
+        app_metadata: { provider: "cnxmarkets" },
+      }),
+    });
+  } catch {
+    // fire and forget — never block registration
+  }
+}
+
 const router = Router();
 
 router.post("/register", async (req, res) => {
@@ -36,6 +61,8 @@ router.post("/register", async (req, res) => {
         isActive: user.isActive, createdAt: user.createdAt.toISOString(),
       }
     });
+    // Fire-and-forget: trigger Supabase welcome email
+    sendWelcomeEmail(user.email, user.firstName);
   } catch (err) {
     console.error("Register error:", err);
     res.status(500).json({ message: "Internal server error" });
