@@ -12,21 +12,30 @@ import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 
 const INSTRUMENTS = [
-  { id: 'BTC/USDT', label: 'BTC/USDT', decimals: 1, vol: 22.0,  base: 67450.0 },
-  { id: 'ETH/USDT', label: 'ETH/USDT', decimals: 2, vol: 1.2,   base: 3250.0  },
-  { id: 'SOL/USDT', label: 'SOL/USDT', decimals: 3, vol: 0.18,  base: 148.50  },
-  { id: 'BNB/USDT', label: 'BNB/USDT', decimals: 2, vol: 0.28,  base: 410.00  },
-  { id: 'XRP/USDT', label: 'XRP/USDT', decimals: 4, vol: 0.003, base: 0.5280  },
+  { id: 'BTC/USDT',  label: 'BTC/USDT',  decimals: 1, vol: 22.0,    base: 67450.0   },
+  { id: 'ETH/USDT',  label: 'ETH/USDT',  decimals: 2, vol: 1.2,     base: 3250.0    },
+  { id: 'SOL/USDT',  label: 'SOL/USDT',  decimals: 3, vol: 0.18,    base: 148.50    },
+  { id: 'BNB/USDT',  label: 'BNB/USDT',  decimals: 2, vol: 0.28,    base: 410.00    },
+  { id: 'XRP/USDT',  label: 'XRP/USDT',  decimals: 4, vol: 0.003,   base: 0.5280    },
+  { id: 'DOGE/USDT', label: 'DOGE/USDT', decimals: 5, vol: 0.0004,  base: 0.16200   },
+  { id: 'ADA/USDT',  label: 'ADA/USDT',  decimals: 4, vol: 0.002,   base: 0.4650    },
+  { id: 'AVAX/USDT', label: 'AVAX/USDT', decimals: 3, vol: 0.08,    base: 38.500    },
+  { id: 'MATIC/USDT',label: 'MATIC/USDT',decimals: 4, vol: 0.0012,  base: 0.8750    },
+  { id: 'DOT/USDT',  label: 'DOT/USDT',  decimals: 3, vol: 0.025,   base: 7.850     },
+  { id: 'LINK/USDT', label: 'LINK/USDT', decimals: 3, vol: 0.045,   base: 14.200    },
+  { id: 'LTC/USDT',  label: 'LTC/USDT',  decimals: 2, vol: 0.35,    base: 82.50     },
+  { id: 'TRX/USDT',  label: 'TRX/USDT',  decimals: 5, vol: 0.0005,  base: 0.11800   },
+  { id: 'SHIB/USDT', label: 'SHIB/USDT', decimals: 8, vol: 0.0000003, base: 0.00002450 },
 ];
 const INST_MAP = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i]));
 const BASE_PRICES = Object.fromEntries(INSTRUMENTS.map(i => [i.id, i.base]));
 
 const BINANCE_SYMBOL: Record<string, string> = {
-  'BTC/USDT': 'btcusdt',
-  'ETH/USDT': 'ethusdt',
-  'SOL/USDT': 'solusdt',
-  'BNB/USDT': 'bnbusdt',
-  'XRP/USDT': 'xrpusdt',
+  'BTC/USDT':  'btcusdt',  'ETH/USDT':  'ethusdt',  'SOL/USDT':  'solusdt',
+  'BNB/USDT':  'bnbusdt',  'XRP/USDT':  'xrpusdt',  'DOGE/USDT': 'dogeusdt',
+  'ADA/USDT':  'adausdt',  'AVAX/USDT': 'avaxusdt', 'MATIC/USDT':'maticusdt',
+  'DOT/USDT':  'dotusdt',  'LINK/USDT': 'linkusdt', 'LTC/USDT':  'ltcusdt',
+  'TRX/USDT':  'trxusdt',  'SHIB/USDT': 'shibusdt',
 };
 const BINANCE_TO_INST: Record<string, string> = Object.fromEntries(
   Object.entries(BINANCE_SYMBOL).map(([k, v]) => [v, k])
@@ -35,8 +44,10 @@ const BINANCE_TO_INST: Record<string, string> = Object.fromEntries(
 const BINANCE_INTERVAL: Record<number, string> = { 1: '1m', 5: '5m', 15: '15m', 60: '1h' };
 
 const SEED_24H: Record<string, number> = {
-  'BTC/USDT': 2.14, 'ETH/USDT': -1.32, 'SOL/USDT': 3.45,
-  'BNB/USDT': 0.78, 'XRP/USDT': 1.95,
+  'BTC/USDT': 2.14,  'ETH/USDT': -1.32, 'SOL/USDT': 3.45,  'BNB/USDT': 0.78,
+  'XRP/USDT': 1.95,  'DOGE/USDT': 4.21, 'ADA/USDT': -0.87, 'AVAX/USDT': 2.63,
+  'MATIC/USDT': 1.14,'DOT/USDT': -1.55, 'LINK/USDT': 3.82, 'LTC/USDT': 0.44,
+  'TRX/USDT': 1.27,  'SHIB/USDT': 5.33,
 };
 
 const DURATIONS = [

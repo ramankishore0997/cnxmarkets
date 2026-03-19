@@ -8,6 +8,8 @@ import type { Server as SocketIOServer } from "socket.io";
 
 const VALID_INSTRUMENTS = [
   "BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT",
+  "DOGE/USDT", "ADA/USDT", "AVAX/USDT", "MATIC/USDT", "DOT/USDT",
+  "LINK/USDT", "LTC/USDT", "TRX/USDT", "SHIB/USDT",
 ];
 const VALID_DURATIONS = [30, 60, 120, 300];
 const MIN_TRADE = 100;
@@ -349,8 +351,11 @@ router.get("/recent", requireAuth, async (_req, res) => {
 });
 
 const BINANCE_SYMBOL: Record<string, string> = {
-  'BTC/USDT': 'BTCUSDT', 'ETH/USDT': 'ETHUSDT', 'SOL/USDT': 'SOLUSDT',
-  'BNB/USDT': 'BNBUSDT', 'XRP/USDT': 'XRPUSDT',
+  'BTC/USDT': 'BTCUSDT',  'ETH/USDT': 'ETHUSDT',   'SOL/USDT': 'SOLUSDT',
+  'BNB/USDT': 'BNBUSDT',  'XRP/USDT': 'XRPUSDT',   'DOGE/USDT': 'DOGEUSDT',
+  'ADA/USDT': 'ADAUSDT',  'AVAX/USDT': 'AVAXUSDT',  'MATIC/USDT': 'MATICUSDT',
+  'DOT/USDT': 'DOTUSDT',  'LINK/USDT': 'LINKUSDT',  'LTC/USDT': 'LTCUSDT',
+  'TRX/USDT': 'TRXUSDT',  'SHIB/USDT': 'SHIBUSDT',
 };
 const BINANCE_INTERVAL: Record<string, string> = { '1': '1m', '5': '5m', '15': '15m', '60': '1h' };
 
