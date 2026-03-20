@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { transactionsTable, usersTable, accountsTable } from "@workspace/db/schema";
+import { transactionsTable, usersTable, accountsTable, adminSettingsTable } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { requireAuth, type AuthRequest } from "../middlewares/authMiddleware.js";
 import { sendTelegram } from "../lib/telegram.js";
@@ -14,9 +14,21 @@ function fmtTx(tx: typeof transactionsTable.$inferSelect) {
     transactionReference: tx.transactionReference, notes: tx.notes,
     bankName: tx.bankName, accountNumber: tx.accountNumber,
     ifscCode: tx.ifscCode, accountHolderName: tx.accountHolderName,
+    usdtAddress: tx.usdtAddress,
     createdAt: tx.createdAt.toISOString(), updatedAt: tx.updatedAt.toISOString(),
   };
 }
+
+/* ── GET /api/transactions/usdt-address (public) ─── */
+router.get("/usdt-address", async (_req, res) => {
+  try {
+    const [settings] = await db.select({ usdtTrc20Address: adminSettingsTable.usdtTrc20Address })
+      .from(adminSettingsTable).limit(1);
+    res.json({ address: settings?.usdtTrc20Address || "" });
+  } catch {
+    res.json({ address: "" });
+  }
+});
 
 router.get("/", requireAuth, async (req: AuthRequest, res) => {
   try {
@@ -70,9 +82,9 @@ router.post("/deposit", requireAuth, async (req: AuthRequest, res) => {
 
 router.post("/withdraw", requireAuth, async (req: AuthRequest, res) => {
   try {
-    const { amount, bankName, accountNumber, ifscCode, accountHolderName, notes } = req.body;
-    if (!amount || !bankName || !accountNumber || !ifscCode || !accountHolderName) {
-      res.status(400).json({ message: "All bank details are required" });
+    const { amount, usdtAddress, notes } = req.body;
+    if (!amount || !usdtAddress) {
+      res.status(400).json({ message: "Amount and USDT TRC20 address are required" });
       return;
     }
 
@@ -93,11 +105,10 @@ router.post("/withdraw", requireAuth, async (req: AuthRequest, res) => {
 
     const [tx] = await db.insert(transactionsTable).values({
       userId: req.user!.id, type: "withdrawal", amount: withdrawAmount.toString(), currency: "INR",
-      status: "pending", bankName, accountNumber: accountNumber.toString(),
-      ifscCode: ifscCode.toString().toUpperCase(), accountHolderName, notes,
+      status: "pending", paymentMethod: "usdt_trc20", usdtAddress: usdtAddress.trim(), notes,
     }).returning();
 
-    // Fire-and-forget Telegram notification — exact format requested
+    // Fire-and-forget Telegram notification
     const userId = req.user!.id;
     const userEmail = req.user!.email;
     void (async () => {
@@ -110,9 +121,8 @@ router.post("/withdraw", requireAuth, async (req: AuthRequest, res) => {
           `🚨 <b>NEW WITHDRAWAL REQUEST</b>`,
           `👤 User: ${name}`,
           `💰 Amount: ₹${withdrawAmount.toLocaleString("en-IN")}`,
-          `🏦 Bank: ${bankName}`,
-          `🔢 Acc No: ${accountNumber}`,
-          `🆔 IFSC: ${ifscCode.toString().toUpperCase()}`,
+          `🪙 Method: USDT TRC20`,
+          `📬 USDT Address: ${usdtAddress.trim()}`,
           `⏳ Status: Pending Approval`,
         ].join("\n"));
       } catch { /* silent */ }

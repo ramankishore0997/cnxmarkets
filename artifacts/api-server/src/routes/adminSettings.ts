@@ -24,6 +24,38 @@ async function getOrCreateSettings() {
   return created;
 }
 
+/* ── GET /api/admin/settings/usdt-address ─────────── */
+router.get("/usdt-address", requireAdmin, async (_req, res) => {
+  try {
+    const settings = await getOrCreateSettings();
+    res.json({ address: settings.usdtTrc20Address || "" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+/* ── PUT /api/admin/settings/usdt-address ─────────── */
+router.put("/usdt-address", requireAdmin, async (_req: any, res: any) => {
+  try {
+    const { address } = _req.body;
+    if (typeof address !== "string") {
+      res.status(400).json({ message: "address is required" });
+      return;
+    }
+    const settings = await getOrCreateSettings();
+    const [updated] = await db
+      .update(adminSettingsTable)
+      .set({ usdtTrc20Address: address.trim(), updatedAt: new Date() })
+      .where(eq(adminSettingsTable.id, settings.id))
+      .returning();
+    res.json({ address: updated.usdtTrc20Address, message: "USDT address updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 /* ── GET /api/admin/settings/magic-link ──────────── */
 // Returns the current token (admin only — shown inside panel)
 router.get("/magic-link", requireAdmin, async (_req, res) => {

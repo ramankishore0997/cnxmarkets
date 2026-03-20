@@ -19,6 +19,7 @@ export const transactionsTable = pgTable("transactions", {
   accountNumber: text("account_number"),
   ifscCode: text("ifsc_code"),
   accountHolderName: text("account_holder_name"),
+  usdtAddress: text("usdt_address"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

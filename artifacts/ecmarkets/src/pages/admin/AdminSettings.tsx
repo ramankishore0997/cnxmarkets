@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { getAuthOptions } from '@/lib/api-utils';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Link2, RefreshCw, Copy, CheckCircle, Shield, Eye, EyeOff,
   Loader2, AlertTriangle, Lock, Info, RotateCcw, ExternalLink,
+  Wallet, Save,
 } from 'lucide-react';
 
 function fetchJson(url: string, opts?: RequestInit) {
@@ -24,6 +24,10 @@ export function AdminSettings() {
   const [rotating, setRotating] = useState(false);
   const [confirmRotate, setConfirmRotate] = useState(false);
 
+  /* ── USDT address state ─────────────────────────── */
+  const [usdtInput, setUsdtInput] = useState('');
+  const [usdtEditing, setUsdtEditing] = useState(false);
+
   /* ── Fetch current magic link token ────────────── */
   const { data, isLoading } = useQuery({
     queryKey: ['admin-magic-link'],
@@ -36,6 +40,28 @@ export function AdminSettings() {
   const magicUrl   = magicToken
     ? `${window.location.origin}/admin/auto-login/${magicToken}`
     : '';
+
+  /* ── Fetch USDT address ─────────────────────────── */
+  const { data: usdtData } = useQuery({
+    queryKey: ['admin-usdt-address'],
+    queryFn: () => fetchJson('/api/admin/settings/usdt-address'),
+    staleTime: Infinity,
+    retry: false,
+  });
+  const savedUsdtAddress: string = usdtData?.address || '';
+
+  /* ── Save USDT address mutation ─────────────────── */
+  const usdtMutation = useMutation({
+    mutationFn: (address: string) => fetchJson('/api/admin/settings/usdt-address', { method: 'PUT', body: JSON.stringify({ address }) }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-usdt-address'] });
+      setUsdtEditing(false);
+      toast({ title: 'USDT Address Updated', description: 'The platform USDT TRC20 withdrawal address has been saved.' });
+    },
+    onError: () => {
+      toast({ title: 'Update Failed', description: 'Could not save USDT address. Try again.', variant: 'destructive' });
+    },
+  });
 
   /* ── Rotate token mutation ──────────────────────── */
   const rotateMutation = useMutation({
@@ -227,6 +253,73 @@ export function AdminSettings() {
                   >
                     {rotating ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                     Yes, Rotate
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── USDT TRC20 Address ───────────────────── */}
+        <div className="card-stealth overflow-hidden">
+          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #00C274, #26a17b)' }} />
+          <div className="p-7">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.2)' }}>
+                <Wallet className="w-5 h-5 text-[#00C274]" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-white">USDT TRC20 Withdrawal Address</h2>
+                <p className="text-[#848E9C] text-sm">Platform address shown to users during withdrawal</p>
+              </div>
+            </div>
+
+            {!usdtEditing ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#4B5563] uppercase tracking-[0.1em] mb-2">Current Address</label>
+                  <div className="flex items-center gap-2 p-3.5 rounded-xl" style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <code className="font-mono text-xs text-[#9CA3AF] flex-1 break-all leading-relaxed">
+                      {savedUsdtAddress || <span className="text-[#4B5563] italic">No address set yet</span>}
+                    </code>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setUsdtInput(savedUsdtAddress); setUsdtEditing(true); }}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all btn-gold"
+                >
+                  <Wallet className="w-4 h-4" />
+                  {savedUsdtAddress ? 'Update Address' : 'Set Address'}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#9CA3AF] mb-2">New USDT TRC20 Address</label>
+                  <textarea
+                    value={usdtInput}
+                    onChange={(e) => setUsdtInput(e.target.value)}
+                    placeholder="Enter USDT TRC20 wallet address (starts with T...)"
+                    rows={2}
+                    className="w-full px-4 py-3 rounded-xl text-sm font-mono resize-none outline-none focus:ring-1 focus:ring-[#00C274]/50 text-white placeholder-[#374151]"
+                    style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.08)' }}
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setUsdtEditing(false)}
+                    className="px-4 py-2.5 rounded-xl text-sm font-semibold text-[#6B7280] hover:text-white transition-colors"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => usdtMutation.mutate(usdtInput.trim())}
+                    disabled={usdtMutation.isPending || usdtInput.trim().length < 5}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm btn-gold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {usdtMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    Save Address
                   </button>
                 </div>
               </div>
