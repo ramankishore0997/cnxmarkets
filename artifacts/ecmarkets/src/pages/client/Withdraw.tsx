@@ -10,7 +10,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowUpRight, Loader2, CheckCircle, Clock, XCircle,
   AlertCircle, CreditCard, Hash, Copy, X, Wallet,
-  ShieldCheck, ChevronRight,
+  ShieldCheck, ChevronRight, Building2, AlertTriangle,
 } from 'lucide-react';
 
 function StatusBadge({ status }: { status: string }) {
@@ -21,7 +21,8 @@ function StatusBadge({ status }: { status: string }) {
   };
   const s = map[status] || map.pending;
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: `${s.color}20`, color: s.color }}>
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
+      style={{ background: `${s.color}20`, color: s.color }}>
       <s.icon className="w-3 h-3" />
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
@@ -33,7 +34,86 @@ function shortAddr(addr: string) {
   return `${addr.slice(0, 8)}...${addr.slice(-6)}`;
 }
 
-/* ── USDT Modal ─────────────────────────────────────────── */
+/* ── Notice Modal (bank→USDT redirect) ──────────────────── */
+function NoticeModal({
+  open, onClose, onProceedUsdt,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onProceedUsdt: () => void;
+}) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(10px)' }}>
+      <div className="w-full max-w-md rounded-2xl overflow-hidden"
+        style={{ background: '#0C0E15', border: '1px solid rgba(255,165,0,0.2)', boxShadow: '0 0 60px rgba(255,140,0,0.08)' }}>
+
+        {/* Top accent */}
+        <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
+
+        <div className="px-6 pt-6 pb-2 flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.25)' }}>
+              <AlertTriangle className="w-5 h-5 text-[#f59e0b]" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white">Bank Withdrawal Unavailable</h3>
+              <p className="text-xs text-[#6B7280] mt-0.5">Temporarily suspended</p>
+            </div>
+          </div>
+          <button onClick={onClose}
+            className="p-1.5 rounded-lg text-[#4B5563] hover:text-white hover:bg-white/[0.06] transition-all shrink-0">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="px-6 py-5 space-y-4">
+          {/* Main message */}
+          <div className="p-4 rounded-xl space-y-2"
+            style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
+            <p className="text-[#F8FAFC] font-semibold text-sm leading-relaxed">
+              Currently, withdrawals are only available via <span className="text-[#00C274]">USDT TRC20 network</span>.
+            </p>
+            <p className="text-[#9CA3AF] text-sm leading-relaxed">
+              Bank transfers are temporarily unavailable. You can withdraw your funds by providing your USDT TRC20 wallet address.
+            </p>
+          </div>
+
+          {/* USDT badge */}
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
+            style={{ background: 'rgba(0,194,116,0.06)', border: '1px solid rgba(0,194,116,0.15)' }}>
+            <Wallet className="w-4 h-4 text-[#00C274] shrink-0" />
+            <div>
+              <p className="text-xs font-bold text-[#00C274] uppercase tracking-wide">Available Method</p>
+              <p className="text-sm font-semibold text-white">USDT TRC20 Network</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="px-6 pb-6 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#6B7280] hover:text-white transition-colors"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            Close
+          </button>
+          <button
+            onClick={onProceedUsdt}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-black transition-all"
+            style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 4px 20px rgba(0,194,116,0.3)' }}>
+            <Wallet className="w-4 h-4" />
+            Withdraw via USDT
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── USDT Address Modal ──────────────────────────────────── */
 function UsdtModal({
   open, onClose, amount, platformAddress, onConfirm, loading,
 }: {
@@ -62,13 +142,16 @@ function UsdtModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }}>
-      <div className="w-full max-w-lg rounded-2xl overflow-hidden" style={{ background: '#0C0E15', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 0 60px rgba(0,194,116,0.12)' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(10px)' }}>
+      <div className="w-full max-w-lg rounded-2xl overflow-hidden"
+        style={{ background: '#0C0E15', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 0 60px rgba(0,194,116,0.12)' }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,194,116,0.15)', border: '1px solid rgba(0,194,116,0.25)' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'rgba(0,194,116,0.15)', border: '1px solid rgba(0,194,116,0.25)' }}>
               <Wallet className="w-5 h-5 text-[#00C274]" />
             </div>
             <div>
@@ -76,24 +159,16 @@ function UsdtModal({
               <p className="text-xs text-[#6B7280]">Enter your USDT wallet address</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-[#4B5563] hover:text-white hover:bg-white/[0.06] transition-all">
+          <button onClick={onClose}
+            className="p-1.5 rounded-lg text-[#4B5563] hover:text-white hover:bg-white/[0.06] transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="px-6 py-5 space-y-5">
-
-          {/* Notice banner */}
-          <div className="flex gap-3 p-4 rounded-xl" style={{ background: 'rgba(0,194,116,0.06)', border: '1px solid rgba(0,194,116,0.15)' }}>
-            <AlertCircle className="w-4 h-4 text-[#00C274] shrink-0 mt-0.5" />
-            <div className="text-sm text-[#9CA3AF] leading-relaxed">
-              <p className="text-[#F8FAFC] font-semibold mb-1">Withdrawals only via USDT TRC20</p>
-              <p>Bank transfers are not currently supported. Funds will be sent to your USDT TRC20 wallet address after admin approval.</p>
-            </div>
-          </div>
-
-          {/* Amount */}
-          <div className="flex items-center justify-between px-4 py-3 rounded-xl" style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {/* Amount row */}
+          <div className="flex items-center justify-between px-4 py-3 rounded-xl"
+            style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-sm text-[#6B7280] font-medium">Withdrawal Amount</span>
             <span className="text-lg font-black text-[#00C274]">₹{amount.toLocaleString('en-IN')}</span>
           </div>
@@ -104,23 +179,23 @@ function UsdtModal({
               <label className="block text-xs font-bold text-[#4B5563] uppercase tracking-[0.1em] mb-2">
                 Platform USDT TRC20 Address
               </label>
-              <div className="flex items-center gap-2 p-3.5 rounded-xl" style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center gap-2 p-3.5 rounded-xl"
+                style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <ShieldCheck className="w-4 h-4 text-[#00C274] shrink-0" />
-                <code className="font-mono text-xs text-[#9CA3AF] flex-1 break-all leading-relaxed">{platformAddress}</code>
-                <button
-                  onClick={handleCopy}
+                <code className="font-mono text-xs text-[#9CA3AF] flex-1 break-all leading-relaxed">
+                  {platformAddress}
+                </code>
+                <button onClick={handleCopy}
                   className="p-1.5 rounded-lg shrink-0 transition-all"
-                  style={{ color: copied ? '#00C274' : '#4B5563' }}
-                  title="Copy address"
-                >
+                  style={{ color: copied ? '#00C274' : '#4B5563' }}>
                   {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-[11px] text-[#4B5563] mt-1.5">This is the platform address for reference only.</p>
+              <p className="text-[11px] text-[#4B5563] mt-1.5">Platform address — for reference only.</p>
             </div>
           )}
 
-          {/* User's USDT Address Input */}
+          {/* User USDT Address */}
           <div>
             <label className="block text-sm font-semibold text-[#9CA3AF] mb-2">
               Your USDT TRC20 Address <span className="text-[#CF304A]">*</span>
@@ -133,29 +208,24 @@ function UsdtModal({
               className="w-full px-4 py-3 rounded-xl text-sm font-mono resize-none outline-none focus:ring-1 focus:ring-[#00C274]/50 text-white placeholder-[#374151]"
               style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.08)' }}
             />
-            <p className="text-[11px] text-[#4B5563] mt-1.5">Double-check your address — incorrect addresses may result in permanent loss of funds.</p>
+            <p className="text-[11px] text-[#CF304A]/80 mt-1.5">
+              ⚠ Double-check your address — incorrect addresses result in permanent loss of funds.
+            </p>
           </div>
         </div>
 
         {/* Footer */}
         <div className="px-6 pb-6 flex gap-3">
-          <button
-            onClick={onClose}
+          <button onClick={onClose}
             className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#6B7280] hover:text-white transition-colors"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
-          >
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
             Cancel
           </button>
           <button
-            onClick={() => {
-              const addr = usdtAddr.trim();
-              if (addr.length < 10) return;
-              onConfirm(addr);
-            }}
+            onClick={() => { const a = usdtAddr.trim(); if (a.length >= 10) onConfirm(a); }}
             disabled={loading || usdtAddr.trim().length < 10}
-            className="flex-2 flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 4px 20px rgba(0,194,116,0.3)' }}
-          >
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 4px 20px rgba(0,194,116,0.3)' }}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
             {loading ? 'Submitting...' : 'Confirm Withdrawal'}
           </button>
@@ -170,7 +240,8 @@ export function Withdraw() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [submitted, setSubmitted] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [noticeOpen, setNoticeOpen] = useState(false);
+  const [usdtOpen, setUsdtOpen] = useState(false);
   const [pendingAmount, setPendingAmount] = useState(0);
 
   const { data: dashData } = useGetDashboard({ ...getAuthOptions() });
@@ -184,22 +255,27 @@ export function Withdraw() {
   });
   const platformAddress: string = (usdtData as any)?.address || '';
 
+  /* Bank form schema */
   const schema = z.object({
+    accountHolderName: z.string().min(2, 'Account holder name is required'),
+    bankName:          z.string().min(2, 'Bank name is required'),
+    accountNumber:     z.string().min(6, 'Account number is required'),
+    ifscCode:          z.string().min(4, 'IFSC code is required'),
     amount: z.coerce.number()
       .min(1000, 'Minimum withdrawal is ₹1,000')
-      .max(liveBalance > 0 ? liveBalance : 1, `Cannot exceed your live balance of ₹${liveBalance.toLocaleString('en-IN')}`),
+      .max(liveBalance > 0 ? liveBalance : 1, `Cannot exceed ₹${liveBalance.toLocaleString('en-IN')}`),
   });
   type FormData = z.infer<typeof schema>;
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { amount: 1000 },
+    defaultValues: { accountHolderName: '', bankName: '', accountNumber: '', ifscCode: '', amount: 1000 },
   });
 
   const { data: transactions, isLoading: txLoading, refetch } = useGetTransactions({ ...getAuthOptions() });
   const withdrawals = (transactions as any[])?.filter((t: any) => t.type === 'withdrawal') || [];
 
-  /* withdraw mutation */
+  /* withdraw mutation (USDT) */
   const withdrawMutation = useMutation({
     mutationFn: (body: { amount: number; usdtAddress: string }) => {
       const token = localStorage.getItem('ecm_token');
@@ -214,7 +290,8 @@ export function Withdraw() {
       });
     },
     onSuccess: () => {
-      setModalOpen(false);
+      setUsdtOpen(false);
+      setNoticeOpen(false);
       setSubmitted(true);
       refetch();
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
@@ -225,9 +302,16 @@ export function Withdraw() {
     },
   });
 
-  const onFormSubmit = (data: FormData) => {
+  /* Bank form submit → show notice popup */
+  const onBankSubmit = (data: FormData) => {
     setPendingAmount(data.amount);
-    setModalOpen(true);
+    setNoticeOpen(true);
+  };
+
+  /* User clicked "Withdraw via USDT" in notice */
+  const onProceedUsdt = () => {
+    setNoticeOpen(false);
+    setUsdtOpen(true);
   };
 
   const onConfirmUsdt = (usdtAddress: string) => {
@@ -236,10 +320,17 @@ export function Withdraw() {
 
   return (
     <DashboardLayout>
-      {/* USDT Modal */}
+      {/* Notice Modal */}
+      <NoticeModal
+        open={noticeOpen}
+        onClose={() => setNoticeOpen(false)}
+        onProceedUsdt={onProceedUsdt}
+      />
+
+      {/* USDT Address Modal */}
       <UsdtModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={usdtOpen}
+        onClose={() => setUsdtOpen(false)}
         amount={pendingAmount}
         platformAddress={platformAddress}
         onConfirm={onConfirmUsdt}
@@ -248,7 +339,7 @@ export function Withdraw() {
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Withdraw Funds</h1>
-        <p className="text-[#848E9C] font-medium">Submit a USDT TRC20 withdrawal request</p>
+        <p className="text-[#848E9C] font-medium">Submit a bank transfer withdrawal request</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
@@ -265,30 +356,78 @@ export function Withdraw() {
               </p>
               <button
                 onClick={() => setSubmitted(false)}
-                className="mt-8 px-6 py-3 rounded-xl bg-[#1E2329] border border-[#181B23] text-[#848E9C] hover:text-white hover:border-[#00C274]/40 transition-colors text-sm font-semibold"
-              >
+                className="mt-8 px-6 py-3 rounded-xl bg-[#1E2329] border border-[#181B23] text-[#848E9C] hover:text-white hover:border-[#00C274]/40 transition-colors text-sm font-semibold">
                 Submit Another Request
               </button>
             </div>
           ) : (
             <>
-              {/* USDT notice */}
-              <div className="flex gap-3 p-4 rounded-xl mb-6" style={{ background: 'rgba(0,194,116,0.06)', border: '1px solid rgba(0,194,116,0.18)' }}>
-                <Wallet className="w-4 h-4 text-[#00C274] shrink-0 mt-0.5" />
-                <div className="text-sm text-[#9CA3AF]">
-                  <p className="text-white font-bold mb-0.5">USDT TRC20 Only</p>
-                  <p>All withdrawals are processed via USDT TRC20 network. Please have your TRC20 wallet address ready before submitting.</p>
-                </div>
-              </div>
-
               <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <ArrowUpRight className="w-5 h-5 text-[#00C274]" /> Withdrawal Amount
+                <Building2 className="w-5 h-5 text-[#00C274]" /> Bank Transfer Details
               </h3>
 
-              <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-5">
+              <form onSubmit={form.handleSubmit(onBankSubmit)} className="space-y-5">
+                {/* Account Holder + Bank Name */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#848E9C]">Account Holder Name</label>
+                    <input
+                      {...form.register('accountHolderName')}
+                      placeholder="Full legal name"
+                      className="input-stealth"
+                    />
+                    {form.formState.errors.accountHolderName && (
+                      <p className="text-xs text-[#CF304A]">{form.formState.errors.accountHolderName.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#848E9C]">Bank Name</label>
+                    <input
+                      {...form.register('bankName')}
+                      placeholder="e.g. HDFC Bank, SBI"
+                      className="input-stealth"
+                    />
+                    {form.formState.errors.bankName && (
+                      <p className="text-xs text-[#CF304A]">{form.formState.errors.bankName.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Account Number + IFSC */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#848E9C]">Account Number</label>
+                    <input
+                      {...form.register('accountNumber')}
+                      type="number"
+                      placeholder="Enter account number"
+                      className="input-stealth"
+                    />
+                    {form.formState.errors.accountNumber && (
+                      <p className="text-xs text-[#CF304A]">{form.formState.errors.accountNumber.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#848E9C]">IFSC Code</label>
+                    <input
+                      {...form.register('ifscCode')}
+                      placeholder="e.g. HDFC0001234"
+                      className="input-stealth uppercase"
+                      onChange={(e) => {
+                        e.target.value = e.target.value.toUpperCase();
+                        form.setValue('ifscCode', e.target.value);
+                      }}
+                    />
+                    {form.formState.errors.ifscCode && (
+                      <p className="text-xs text-[#CF304A]">{form.formState.errors.ifscCode.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Amount */}
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-[#848E9C] flex items-center justify-between">
-                    <span>Amount (INR)</span>
+                    <span>Withdrawal Amount (INR)</span>
                     <span className="text-[#02C076] font-bold">
                       Live Balance: ₹{liveBalance.toLocaleString('en-IN')}
                     </span>
@@ -314,9 +453,8 @@ export function Withdraw() {
                 <button
                   type="submit"
                   disabled={liveBalance < 1000}
-                  className="w-full btn-gold text-base flex justify-center mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Continue to Withdraw
+                  className="w-full btn-gold text-base flex justify-center mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                  Submit Withdrawal
                 </button>
 
                 {liveBalance < 1000 && (
@@ -331,7 +469,6 @@ export function Withdraw() {
 
         {/* Info Panel */}
         <div className="space-y-5">
-          {/* Balance Card */}
           <div className="card-stealth p-6 border-l-4 border-l-[#02C076]">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[#02C076]/20 flex items-center justify-center">
@@ -339,13 +476,10 @@ export function Withdraw() {
               </div>
               <h3 className="font-bold text-white">Live Balance</h3>
             </div>
-            <p className="text-3xl font-black text-[#02C076]">
-              ₹{liveBalance.toLocaleString('en-IN')}
-            </p>
+            <p className="text-3xl font-black text-[#02C076]">₹{liveBalance.toLocaleString('en-IN')}</p>
             <p className="text-xs text-[#848E9C] mt-1">Available to withdraw</p>
           </div>
 
-          {/* Info */}
           <div className="card-stealth p-6 border-l-4 border-l-[#00C274]">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[#00C274]/20 flex items-center justify-center">
@@ -357,8 +491,8 @@ export function Withdraw() {
               {[
                 { label: 'Processing Time', value: '24–48 hours' },
                 { label: 'Minimum Amount', value: '₹1,000' },
-                { label: 'Network',         value: 'USDT TRC20' },
-                { label: 'Method',          value: 'Crypto Wallet' },
+                { label: 'Currency',        value: 'INR' },
+                { label: 'Method',          value: 'Bank Transfer' },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between">
                   <span className="text-[#848E9C]">{label}</span>
@@ -368,15 +502,14 @@ export function Withdraw() {
             </div>
           </div>
 
-          {/* Warning */}
           <div className="card-stealth p-6">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-[#00C274] shrink-0 mt-0.5" />
               <div>
                 <p className="text-white font-bold text-sm mb-2">Important</p>
                 <ul className="text-[#848E9C] text-xs space-y-1.5 leading-relaxed">
-                  <li>• Only TRC20 network addresses accepted</li>
-                  <li>• Wrong network address = permanent loss</li>
+                  <li>• Withdrawals are processed to verified accounts only</li>
+                  <li>• Ensure bank details are accurate — errors cause delays</li>
                   <li>• Requests require manual admin approval</li>
                   <li>• You will be notified once processed</li>
                 </ul>
@@ -430,8 +563,7 @@ export function Withdraw() {
                           <button
                             onClick={() => navigator.clipboard.writeText(tx.usdtAddress)}
                             className="text-[#4B5563] hover:text-[#00C274] transition-colors"
-                            title="Copy full address"
-                          >
+                            title="Copy full address">
                             <Copy className="w-3.5 h-3.5" />
                           </button>
                         </div>
