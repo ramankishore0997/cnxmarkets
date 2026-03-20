@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useGetAdminTransactions, useUpdateAdminTransaction } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import {
   Check, X, Loader2, Clock,
   ArrowDownLeft, ArrowUpRight,
   CheckCircle, XCircle,
   Smartphone, Bitcoin, Building2,
+  Pencil, Copy, Save,
 } from 'lucide-react';
 
 type Tab = 'all' | 'deposits' | 'withdrawals';
@@ -22,7 +23,8 @@ function StatusBadge({ status }: { status: string }) {
   };
   const s = map[status] || map.pending;
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: `${s.color}20`, color: s.color }}>
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
+      style={{ background: `${s.color}20`, color: s.color }}>
       <s.icon className="w-3 h-3" />
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
@@ -33,7 +35,7 @@ function MethodBadge({ method, type }: { method: string; type: string }) {
   if (type === 'withdrawal') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#00C274]/20 text-[#00C274]">
-        <Building2 className="w-3 h-3" /> Bank
+        <Building2 className="w-3 h-3" /> USDT
       </span>
     );
   }
@@ -60,6 +62,104 @@ function fmtAmount(tx: any) {
   return `${n} ${tx.currency}`;
 }
 
+/* ── Inline USDT Address editor ───────────────────────────── */
+function UsdtAddressCell({
+  txId, currentAddress, onSaved,
+}: {
+  txId: number;
+  currentAddress: string | null;
+  onSaved: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(currentAddress || '');
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+
+  const saveMutation = useMutation({
+    mutationFn: async (address: string) => {
+      const token = localStorage.getItem('ecm_token');
+      const r = await fetch(`/api/admin/transactions/${txId}/usdt-address`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ usdtAddress: address }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.message || 'Failed');
+      return data;
+    },
+    onSuccess: () => {
+      toast({ title: 'USDT Address Updated', description: 'The withdrawal address has been saved.' });
+      setEditing(false);
+      onSaved();
+    },
+    onError: (err: any) => {
+      toast({ title: 'Update Failed', description: err?.message || 'Please try again.', variant: 'destructive' });
+    },
+  });
+
+  const handleCopy = () => {
+    if (!currentAddress) return;
+    navigator.clipboard.writeText(currentAddress).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-2 min-w-[260px]">
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="USDT TRC20 address..."
+          className="flex-1 px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-[#060709] border border-[#00C274]/40 outline-none focus:ring-1 focus:ring-[#00C274]/60"
+          autoFocus
+        />
+        <button
+          onClick={() => { if (draft.trim().length >= 10) saveMutation.mutate(draft.trim()); }}
+          disabled={saveMutation.isPending || draft.trim().length < 10}
+          className="p-1.5 rounded-lg bg-[#02C076]/20 text-[#02C076] hover:bg-[#02C076]/40 border border-[#02C076]/30 transition-colors disabled:opacity-50"
+          title="Save"
+        >
+          {saveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+        </button>
+        <button
+          onClick={() => { setEditing(false); setDraft(currentAddress || ''); }}
+          className="p-1.5 rounded-lg bg-[#CF304A]/20 text-[#CF304A] hover:bg-[#CF304A]/40 border border-[#CF304A]/30 transition-colors"
+          title="Cancel"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 group">
+      {currentAddress ? (
+        <>
+          <code className="font-mono text-xs text-[#9CA3AF] bg-[#060709] border border-white/[0.06] px-2 py-1 rounded-lg break-all max-w-[200px]">
+            {currentAddress}
+          </code>
+          <button onClick={handleCopy} className="p-1 rounded text-[#4B5563] hover:text-[#00C274] transition-colors shrink-0" title="Copy">
+            {copied ? <CheckCircle className="w-3.5 h-3.5 text-[#00C274]" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+        </>
+      ) : (
+        <span className="text-[#4B5563] text-xs italic">No address</span>
+      )}
+      <button
+        onClick={() => { setDraft(currentAddress || ''); setEditing(true); }}
+        className="p-1 rounded text-[#4B5563] hover:text-[#f59e0b] opacity-0 group-hover:opacity-100 transition-all shrink-0"
+        title="Edit USDT address"
+      >
+        <Pencil className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
+/* ── Main Component ─────────────────────────────────────── */
 export function AdminTransactions() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -94,6 +194,8 @@ export function AdminTransactions() {
     updateMutation.mutate({ id, data: { status } });
   };
 
+  const refreshTx = () => queryClient.invalidateQueries({ queryKey: ['/api/admin/transactions'] });
+
   const allTx       = (transactions as any[]) || [];
   const deposits    = allTx.filter((t) => t.type === 'deposit');
   const withdrawals = allTx.filter((t) => t.type === 'withdrawal');
@@ -123,10 +225,10 @@ export function AdminTransactions() {
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Pending',      value: pending.length,                                       color: '#00C274' },
-          { label: 'Deposits',     value: deposits.length,                                      color: '#02C076' },
-          { label: 'Withdrawals',  value: withdrawals.length,                                   color: '#848E9C' },
-          { label: 'Approved',     value: allTx.filter((t) => t.status === 'approved').length,  color: '#02C076' },
+          { label: 'Pending',     value: pending.length,                                      color: '#00C274' },
+          { label: 'Deposits',    value: deposits.length,                                     color: '#02C076' },
+          { label: 'Withdrawals', value: withdrawals.length,                                  color: '#848E9C' },
+          { label: 'Approved',    value: allTx.filter((t) => t.status === 'approved').length, color: '#02C076' },
         ].map(({ label, value, color }) => (
           <div key={label} className="card-stealth p-4">
             <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-1">{label}</p>
@@ -138,17 +240,15 @@ export function AdminTransactions() {
       {/* Tab Nav */}
       <div className="flex gap-1 mb-6 p-1 bg-[#1E2329] rounded-xl w-fit border border-[#181B23]">
         {([
-          { key: 'all',         label: 'All Transactions',  count: allTx.length },
-          { key: 'deposits',    label: 'Deposits',           count: deposits.length },
-          { key: 'withdrawals', label: 'Withdrawals',        count: withdrawals.length },
+          { key: 'all',         label: 'All Transactions', count: allTx.length },
+          { key: 'deposits',    label: 'Deposits',          count: deposits.length },
+          { key: 'withdrawals', label: 'Withdrawals',       count: withdrawals.length },
         ] as { key: Tab; label: string; count: number }[]).map(({ key, label, count }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
             className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2 ${
-              tab === key
-                ? 'bg-[#00C274] text-black'
-                : 'text-[#848E9C] hover:text-white'
+              tab === key ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
             }`}
           >
             {label}
@@ -191,7 +291,7 @@ export function AdminTransactions() {
                         ? <ArrowDownLeft className="w-5 h-5 text-[#02C076]" />
                         : <ArrowUpRight  className="w-5 h-5 text-[#00C274]" />}
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="font-bold text-white text-sm">{tx.userName}</p>
                       <p className="text-xs text-[#848E9C] mb-2">{tx.userEmail}</p>
                       <div className="flex items-center gap-3 flex-wrap">
@@ -213,20 +313,12 @@ export function AdminTransactions() {
                         </div>
                       )}
 
-                      {/* Withdrawal: Bank Details */}
+                      {/* Withdrawal: USDT Address (editable) */}
                       {tx.type === 'withdrawal' && (
-                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                          <div className="px-3 py-2 rounded-lg bg-[#060709] border border-[#181B23]">
-                            <p className="text-[10px] text-[#848E9C] font-medium mb-0.5">Bank</p>
-                            <p className="text-xs font-bold text-[#EAECEF]">{tx.bankName || '—'}</p>
-                          </div>
-                          <div className="px-3 py-2 rounded-lg bg-[#060709] border border-[#181B23]">
-                            <p className="text-[10px] text-[#848E9C] font-medium mb-0.5">Account No.</p>
-                            <p className="text-xs font-bold text-[#EAECEF] font-mono">{tx.accountNumber || '—'}</p>
-                          </div>
-                          <div className="px-3 py-2 rounded-lg bg-[#060709] border border-[#181B23]">
-                            <p className="text-[10px] text-[#848E9C] font-medium mb-0.5">IFSC</p>
-                            <p className="text-xs font-bold text-[#EAECEF] font-mono uppercase">{tx.ifscCode || '—'}</p>
+                        <div className="mt-3 space-y-2">
+                          <div className="px-3 py-2.5 rounded-lg bg-[#060709] border border-[#181B23]">
+                            <p className="text-[10px] text-[#848E9C] font-medium mb-1.5">Client USDT TRC20 Address</p>
+                            <UsdtAddressCell txId={tx.id} currentAddress={tx.usdtAddress} onSaved={refreshTx} />
                           </div>
                         </div>
                       )}
@@ -274,7 +366,7 @@ export function AdminTransactions() {
           <table className="w-full text-left text-sm">
             <thead className="bg-[#181B23]/60">
               <tr>
-                {['User', 'Type', 'Amount', 'Method / Bank', 'Details', 'Date', 'Status', 'Actions'].map(h => (
+                {['User', 'Type', 'Amount', 'Method', 'USDT / Details', 'Date', 'Status', 'Actions'].map(h => (
                   <th key={h} className="px-5 py-3.5 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -295,18 +387,16 @@ export function AdminTransactions() {
                   </td>
                   <td className="px-5 py-4 font-black text-white whitespace-nowrap">{fmtAmount(tx)}</td>
                   <td className="px-5 py-4">
-                    {tx.type === 'withdrawal'
-                      ? <span className="text-xs text-[#EAECEF] font-medium">{tx.bankName || '—'}</span>
-                      : <MethodBadge method={tx.paymentMethod} type={tx.type} />
-                    }
+                    <MethodBadge method={tx.paymentMethod} type={tx.type} />
                   </td>
-                  <td className="px-5 py-4 font-mono text-xs text-[#848E9C]">
-                    {tx.type === 'deposit'
-                      ? (tx.transactionReference || '—')
-                      : tx.accountNumber
-                        ? <span>{tx.accountNumber}<span className="ml-1 text-[#00C274]">· {tx.ifscCode}</span></span>
-                        : '—'
-                    }
+                  <td className="px-5 py-4">
+                    {tx.type === 'withdrawal' ? (
+                      <UsdtAddressCell txId={tx.id} currentAddress={tx.usdtAddress} onSaved={refreshTx} />
+                    ) : (
+                      <span className="font-mono text-xs text-[#848E9C]">
+                        {tx.transactionReference || '—'}
+                      </span>
+                    )}
                   </td>
                   <td className="px-5 py-4 text-xs text-[#848E9C] whitespace-nowrap">
                     {new Date(tx.createdAt).toLocaleDateString('en-IN')}

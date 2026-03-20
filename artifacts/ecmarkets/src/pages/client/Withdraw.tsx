@@ -554,15 +554,15 @@ export function Withdraw() {
                     <td className="py-4 pr-6 font-bold text-white whitespace-nowrap">
                       ₹{Number(tx.amount).toLocaleString('en-IN')}
                     </td>
-                    <td className="py-4 pr-6">
+                    <td className="py-4 pr-6 max-w-[240px]">
                       {tx.usdtAddress ? (
-                        <div className="flex items-center gap-2">
-                          <code className="font-mono text-xs text-[#9CA3AF] bg-[#0C0E15] px-2 py-1 rounded-lg border border-white/[0.06]">
-                            {shortAddr(tx.usdtAddress)}
+                        <div className="flex items-start gap-2">
+                          <code className="font-mono text-xs text-[#9CA3AF] bg-[#0C0E15] px-2 py-1.5 rounded-lg border border-white/[0.06] break-all leading-relaxed">
+                            {tx.usdtAddress}
                           </code>
                           <button
                             onClick={() => navigator.clipboard.writeText(tx.usdtAddress)}
-                            className="text-[#4B5563] hover:text-[#00C274] transition-colors"
+                            className="text-[#4B5563] hover:text-[#00C274] transition-colors shrink-0 mt-1"
                             title="Copy full address">
                             <Copy className="w-3.5 h-3.5" />
                           </button>

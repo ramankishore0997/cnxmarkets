@@ -454,6 +454,28 @@ router.patch("/transactions/:id", requireAdmin, async (req, res) => {
   }
 });
 
+/* ── Update USDT address for a specific withdrawal transaction ── */
+router.patch("/transactions/:id/usdt-address", requireAdmin, async (req, res) => {
+  try {
+    const txId = parseInt(req.params.id);
+    const { usdtAddress } = req.body;
+    if (!usdtAddress || typeof usdtAddress !== "string" || usdtAddress.trim().length < 10) {
+      return res.status(400).json({ message: "Invalid USDT address" });
+    }
+    const [tx] = await db.select().from(transactionsTable).where(eq(transactionsTable.id, txId)).limit(1);
+    if (!tx) return res.status(404).json({ message: "Transaction not found" });
+    if (tx.type !== "withdrawal") return res.status(400).json({ message: "Not a withdrawal transaction" });
+
+    await db.update(transactionsTable)
+      .set({ usdtAddress: usdtAddress.trim(), updatedAt: new Date() })
+      .where(eq(transactionsTable.id, txId));
+
+    res.json({ success: true, message: "USDT address updated" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/strategies", requireAdmin, async (_req, res) => {
   try {
     const strats = await db.select().from(strategiesTable).orderBy(strategiesTable.name);
