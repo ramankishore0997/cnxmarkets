@@ -410,6 +410,7 @@ router.get("/transactions", requireAdmin, async (_req, res) => {
       notes: tx.notes,
       bankName: tx.bankName, accountNumber: tx.accountNumber,
       ifscCode: tx.ifscCode, accountHolderName: tx.accountHolderName,
+      usdtAddress: tx.usdtAddress || null,
       createdAt: tx.createdAt.toISOString(),
     })));
   } catch (err) {
