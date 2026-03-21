@@ -82,6 +82,14 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/** Returns true if current time is Saturday or Sunday in IST */
+function isWeekendIST(): boolean {
+  const istOffsetMs = 5.5 * 60 * 60 * 1_000;
+  const istNow = new Date(Date.now() + istOffsetMs);
+  const day = istNow.getUTCDay(); // 0 = Sunday, 6 = Saturday
+  return day === 0 || day === 6;
+}
+
 // ─── 2-Year Purge ────────────────────────────────────────────────────────────
 
 async function purgeOldTrades(): Promise<void> {
@@ -216,9 +224,14 @@ async function openTradesPhase(): Promise<void> {
         continue;
       }
 
+      // On weekends, forex markets are closed — only use crypto instruments
+      const availableInstruments = isWeekendIST()
+        ? INSTRUMENTS.filter(i => i.isCrypto)
+        : INSTRUMENTS;
+
       const count = randInt(2, 4);
       for (let i = 0; i < count; i++) {
-        const instr     = pickRandom(INSTRUMENTS);
+        const instr     = pickRandom(availableInstruments);
         const direction: "buy" | "sell" = Math.random() > 0.4 ? "buy" : "sell";
         const variance  = 1 + randomBetween(-0.004, 0.004);
         const entryPrice = instr.basePrice * variance;
