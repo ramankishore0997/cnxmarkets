@@ -680,7 +680,7 @@ export function BinaryTrading() {
               </div>
 
               {/* Chart canvas */}
-              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 260 }} />
+              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 'clamp(180px, 35vh, 280px)' }} />
             </div>
 
             {/* Active Trades */}
@@ -816,12 +816,11 @@ export function BinaryTrading() {
               </div>
             )}
 
-            {/* Trade Box */}
-            <div className="flex-1 rounded-2xl p-4 flex flex-col gap-3"
+            {/* Trade Box — DESKTOP */}
+            <div className="hidden md:flex flex-1 rounded-2xl p-4 flex-col gap-3"
               style={{ background: 'rgba(8,11,22,0.96)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,194,116,0.12)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)' }}>
-
-              {/* Live price — hidden on mobile (already in chart header) */}
-              <div className="hidden md:block text-center py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              {/* Live price */}
+              <div className="text-center py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
                 <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-widest mb-0.5">{instrument}</p>
                 <p className={`text-2xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmt(livePrice, instrument)}</p>
                 <div className="flex items-center justify-center gap-2 mt-0.5">
@@ -830,13 +829,6 @@ export function BinaryTrading() {
                   <span className={`text-[10px] font-bold ${ch24 >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch24 >= 0 ? '+' : ''}{ch24.toFixed(2)}%</span>
                 </div>
               </div>
-              {/* Mobile: compact price strip */}
-              <div className="md:hidden flex items-center justify-between px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                <span className="text-xs text-[#6B7280] font-semibold">{instrument}</span>
-                <span className={`text-lg font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmt(livePrice, instrument)}</span>
-                <span className={`text-xs font-bold ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{priceDirCurrent === 'up' ? '▲' : '▼'} {ch24 >= 0 ? '+' : ''}{ch24.toFixed(2)}%</span>
-              </div>
-
               {/* Amount */}
               <div>
                 <label className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mb-1.5 block">Investment Amount</label>
@@ -857,7 +849,6 @@ export function BinaryTrading() {
                   ))}
                 </div>
               </div>
-
               {/* Duration */}
               <div>
                 <label className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mb-1.5 block">Expiry Time</label>
@@ -871,7 +862,6 @@ export function BinaryTrading() {
                   ))}
                 </div>
               </div>
-
               {/* Profit Calculator */}
               <div className="rounded-xl px-3 py-2.5" style={{ background: 'rgba(0,194,116,0.05)', border: '1px solid rgba(0,194,116,0.1)' }}>
                 <div className="flex items-center justify-between mb-1.5">
@@ -888,44 +878,99 @@ export function BinaryTrading() {
                     <p className="text-base font-black text-white">₹{Math.round(amtNum * (1 + payoutPct/100)).toLocaleString('en-IN')}</p>
                   </div>
                 </div>
-                {/* Win probability bar */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[9px] text-[#6B7280] font-semibold">Win Probability</span>
                     <span className="text-[9px] font-black text-[#00C274]">{curMood}%</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-[#1F2937] overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#00C274] to-[#02C076] transition-all duration-500"
-                      style={{ width: `${curMood}%` }} />
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#00C274] to-[#02C076] transition-all duration-500" style={{ width: `${curMood}%` }} />
                   </div>
                 </div>
               </div>
-
-              {/* HIGHER / LOWER */}
+              {/* HIGHER / LOWER — desktop */}
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => handlePlace('call')} disabled={placing}
                   onMouseEnter={() => setCallHov(true)} onMouseLeave={() => { setCallHov(false); setCallPress(false); }}
                   onPointerDown={() => setCallPress(true)} onPointerUp={() => setCallPress(false)}
-                  className="flex flex-col items-center gap-1.5 py-4 md:py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
-                  style={{ paddingTop: 'clamp(16px, 5vw, 20px)', paddingBottom: 'clamp(16px, 5vw, 20px)',
-                    background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', border: '1px solid rgba(2,192,118,0.4)',
-                    boxShadow: placing ? 'none' : callHov ? '0 0 24px #10b981, 0 0 48px rgba(16,185,129,0.5)' : '0 0 24px rgba(2,192,118,0.4)',
-                    transform: callPress ? 'scale(0.95)' : callHov ? 'scale(1.03)' : 'scale(1)', transition: 'all 0.2s ease' }}>
-                  <TrendingUp className="w-6 h-6" />
-                  <span className="text-lg leading-tight">Higher</span>
-                  <span className="text-[11px] opacity-80 font-semibold">↑ CALL</span>
+                  className="flex flex-col items-center gap-1.5 py-5 rounded-2xl font-black text-white disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', border: '1px solid rgba(2,192,118,0.4)', boxShadow: placing ? 'none' : callHov ? '0 0 24px #10b981,0 0 48px rgba(16,185,129,0.5)' : '0 0 24px rgba(2,192,118,0.4)', transform: callPress ? 'scale(0.95)' : callHov ? 'scale(1.03)' : 'scale(1)', transition: 'all 0.2s ease' }}>
+                  <TrendingUp className="w-5 h-5" />
+                  <span className="text-base">Higher</span>
+                  <span className="text-[10px] opacity-80">↑ CALL</span>
                 </button>
                 <button onClick={() => handlePlace('put')} disabled={placing}
                   onMouseEnter={() => setPutHov(true)} onMouseLeave={() => { setPutHov(false); setPutPress(false); }}
                   onPointerDown={() => setPutPress(true)} onPointerUp={() => setPutPress(false)}
-                  className="flex flex-col items-center gap-1.5 rounded-2xl font-black text-white text-sm disabled:opacity-50"
-                  style={{ paddingTop: 'clamp(16px, 5vw, 20px)', paddingBottom: 'clamp(16px, 5vw, 20px)',
-                    background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', border: '1px solid rgba(207,48,74,0.4)',
-                    boxShadow: placing ? 'none' : putHov ? '0 0 24px #ef4444, 0 0 48px rgba(239,68,68,0.5)' : '0 0 24px rgba(207,48,74,0.4)',
-                    transform: putPress ? 'scale(0.95)' : putHov ? 'scale(1.03)' : 'scale(1)', transition: 'all 0.2s ease' }}>
-                  <TrendingDown className="w-6 h-6" />
-                  <span className="text-lg leading-tight">Lower</span>
-                  <span className="text-[11px] opacity-80 font-semibold">↓ PUT</span>
+                  className="flex flex-col items-center gap-1.5 py-5 rounded-2xl font-black text-white disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', border: '1px solid rgba(207,48,74,0.4)', boxShadow: placing ? 'none' : putHov ? '0 0 24px #ef4444,0 0 48px rgba(239,68,68,0.5)' : '0 0 24px rgba(207,48,74,0.4)', transform: putPress ? 'scale(0.95)' : putHov ? 'scale(1.03)' : 'scale(1)', transition: 'all 0.2s ease' }}>
+                  <TrendingDown className="w-5 h-5" />
+                  <span className="text-base">Lower</span>
+                  <span className="text-[10px] opacity-80">↓ PUT</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Trade Box — MOBILE (compact: no profit calculator, quick amounts 4-col, big buttons) */}
+            <div className="md:hidden rounded-2xl p-3 flex flex-col gap-2.5"
+              style={{ background: 'rgba(8,11,22,0.96)', border: '1px solid rgba(0,194,116,0.15)' }}>
+              {/* Amount */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider">Investment</span>
+                  <span className="text-[10px] font-black text-[#00C274]">Payout {payoutPct}% · Win +₹{Math.round(amtNum * payoutPct / 100).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="relative mb-1.5">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#848E9C] font-bold">₹</span>
+                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)}
+                    className="w-full pl-7 pr-3 py-2.5 rounded-xl text-white font-bold focus:outline-none"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 16 }}
+                    placeholder="1000" min="100" />
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {[500,1000,5000,10000,25000].map(v => (
+                    <button key={v} onClick={() => setAmount(String(v))}
+                      className="py-1.5 rounded-lg text-[10px] font-black transition-all"
+                      style={{ background: amount === String(v) ? 'rgba(0,194,116,0.2)' : 'rgba(255,255,255,0.05)', color: amount === String(v) ? '#00C274' : '#848E9C', border: `1px solid ${amount === String(v) ? 'rgba(0,194,116,0.4)' : 'rgba(255,255,255,0.06)'}` }}>
+                      {v >= 1000 ? `${v/1000}K` : v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Duration */}
+              <div>
+                <span className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mb-1 block">Expiry</span>
+                <div className="grid grid-cols-4 gap-1">
+                  {DURATIONS.map(d => (
+                    <button key={d.seconds} onClick={() => setDuration(d.seconds)}
+                      className="py-2 rounded-xl text-xs font-black transition-all"
+                      style={{ background: duration === d.seconds ? '#00C274' : 'rgba(255,255,255,0.05)', color: duration === d.seconds ? '#000' : '#848E9C' }}>
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* HIGHER / LOWER — mobile big buttons */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button onClick={() => handlePlace('call')} disabled={placing}
+                  onPointerDown={() => setCallPress(true)} onPointerUp={() => setCallPress(false)}
+                  className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-white text-base disabled:opacity-50 active:scale-95 transition-transform"
+                  style={{ background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', border: '1px solid rgba(2,192,118,0.4)', boxShadow: '0 0 20px rgba(2,192,118,0.35)' }}>
+                  <TrendingUp className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="text-base font-black leading-none">Higher</div>
+                    <div className="text-[10px] opacity-75 font-semibold">↑ CALL</div>
+                  </div>
+                </button>
+                <button onClick={() => handlePlace('put')} disabled={placing}
+                  onPointerDown={() => setPutPress(true)} onPointerUp={() => setPutPress(false)}
+                  className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-white text-base disabled:opacity-50 active:scale-95 transition-transform"
+                  style={{ background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', border: '1px solid rgba(207,48,74,0.4)', boxShadow: '0 0 20px rgba(207,48,74,0.35)' }}>
+                  <TrendingDown className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="text-base font-black leading-none">Lower</div>
+                    <div className="text-[10px] opacity-75 font-semibold">↓ PUT</div>
+                  </div>
                 </button>
               </div>
             </div>
