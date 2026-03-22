@@ -194,38 +194,36 @@ export function TradeHistory() {
 
       {/* Filter Bar */}
       <div className="card-stealth p-3 md:p-4 mb-5">
-        <div className="flex items-center gap-2 overflow-x-auto pb-0.5 -mx-1 px-1">
-          <div className="flex items-center gap-1 text-[#848E9C] shrink-0">
-            <Filter className="w-3.5 h-3.5" />
-            <span className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap">Period</span>
-          </div>
-          <div className="flex gap-1.5 md:gap-2 shrink-0">
-            {PRESETS.map(p => (
-              <button
-                key={p.key}
-                onClick={() => handlePreset(p.key)}
-                className={`px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
-                  preset === p.key
-                    ? 'bg-[#00C274] text-black shadow-[0_0_12px_rgba(0,194,116,0.35)]'
-                    : 'bg-[#060709] border border-[#181B23] text-[#848E9C] hover:border-[#00C274] hover:text-[#00C274]'
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-          {preset === 'custom' && (
-            <div className="flex items-center gap-2 ml-2 flex-wrap">
-              <input type="date" value={customFrom}
-                onChange={e => { setCustomFrom(e.target.value); setPage(1); }}
-                className="input-stealth !py-1.5 !text-sm w-36" />
-              <span className="text-[#848E9C] text-sm">to</span>
-              <input type="date" value={customTo}
-                onChange={e => { setCustomTo(e.target.value); setPage(1); }}
-                className="input-stealth !py-1.5 !text-sm w-36" />
-            </div>
-          )}
+        <div className="flex items-center gap-2 mb-2">
+          <Filter className="w-3.5 h-3.5 text-[#848E9C] shrink-0" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#848E9C]">Period</span>
         </div>
+        <div className="flex flex-wrap gap-1.5">
+          {PRESETS.map(p => (
+            <button
+              key={p.key}
+              onClick={() => handlePreset(p.key)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                preset === p.key
+                  ? 'bg-[#00C274] text-black shadow-[0_0_12px_rgba(0,194,116,0.35)]'
+                  : 'bg-[#060709] border border-[#181B23] text-[#848E9C] hover:border-[#00C274] hover:text-[#00C274]'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        {preset === 'custom' && (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-3">
+            <input type="date" value={customFrom}
+              onChange={e => { setCustomFrom(e.target.value); setPage(1); }}
+              className="input-stealth !py-1.5 !text-sm w-full sm:w-36" />
+            <span className="text-[#848E9C] text-sm hidden sm:inline">to</span>
+            <input type="date" value={customTo}
+              onChange={e => { setCustomTo(e.target.value); setPage(1); }}
+              className="input-stealth !py-1.5 !text-sm w-full sm:w-36" />
+          </div>
+        )}
       </div>
 
       {/* Summary Strip — full period stats */}
@@ -376,22 +374,50 @@ export function TradeHistory() {
                 const dt    = formatDateTime(trade.closedAt ?? trade.openedAt);
                 return (
                   <div key={trade.id} className="px-4 py-4">
-                    <div className="flex items-start justify-between mb-2">
+                    {/* Row 1: Instrument + P&L */}
+                    <div className="flex items-start justify-between mb-2.5">
                       <div>
-                        <p className="text-white font-bold">{trade.instrument}</p>
-                        <p className="text-[#848E9C] text-xs">{dt.date} · {dt.time}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-white font-bold text-sm">{trade.instrument}</p>
+                          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+                            trade.market === 'Forex' ? 'bg-blue-500/15 text-blue-400' : 'bg-orange-500/15 text-orange-400'
+                          }`}>{trade.market}</span>
+                          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                            trade.direction === 'buy'
+                              ? 'bg-[#02C076]/15 text-[#02C076]'
+                              : 'bg-[#CF304A]/15 text-[#CF304A]'
+                          }`}>
+                            {trade.direction === 'buy' ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+                            {trade.direction.toUpperCase()}
+                          </span>
+                        </div>
+                        <p className="text-[#848E9C] text-xs mt-0.5">{dt.date} · {dt.time}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0 ml-2">
                         <p className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmtPnl(trade.profit ?? 0)}</p>
-                        <span className={`text-[10px] font-bold ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{isWin ? '▲ WIN' : '▼ LOSS'}</span>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
+                          isWin ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                        }`}>{isWin ? '▲ WIN' : '▼ LOSS'}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-[#848E9C]">
-                      <span className={`px-1.5 py-0.5 rounded font-bold ${trade.direction === 'buy' ? 'text-[#02C076] bg-[#02C076]/10' : 'text-[#CF304A] bg-[#CF304A]/10'}`}>
-                        {trade.direction.toUpperCase()}
-                      </span>
-                      <span>{formatPrice(trade.entryPrice, trade.instrument)} → {trade.exitPrice ? formatPrice(trade.exitPrice, trade.instrument) : '—'}</span>
-                      <span>· {formatDuration(trade.openedAt, trade.closedAt)}</span>
+                    {/* Row 2: Price details grid */}
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs bg-[#0C0E15] rounded-lg px-3 py-2">
+                      <div>
+                        <span className="text-[#848E9C]">Entry </span>
+                        <span className="font-mono text-[#EAECEF]">{formatPrice(trade.entryPrice, trade.instrument)}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#848E9C]">Exit </span>
+                        <span className="font-mono text-[#EAECEF]">{trade.exitPrice ? formatPrice(trade.exitPrice, trade.instrument) : '—'}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#848E9C]">Lot </span>
+                        <span className="text-[#EAECEF]">{trade.lotSize}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#848E9C]">Duration </span>
+                        <span className="text-[#EAECEF]">{formatDuration(trade.openedAt, trade.closedAt)}</span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -499,34 +525,53 @@ export function TradeHistory() {
                 const isWin  = profit > 0;
                 const isOpen = trade.status === 'open';
                 const dt     = formatDateTime(trade.closedAt ?? trade.openedAt);
+                const isCall = trade.direction === 'call' || trade.direction === 'up';
                 return (
                   <div key={trade.id} className="px-4 py-4">
-                    <div className="flex items-start justify-between mb-2">
+                    {/* Row 1: Instrument + P&L */}
+                    <div className="flex items-start justify-between mb-2.5">
                       <div>
-                        <p className="text-white font-bold">{trade.instrument}
-                          <span className="ml-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400">Binary</span>
-                        </p>
-                        <p className="text-[#848E9C] text-xs">{dt.date} · {dt.time}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-white font-bold text-sm">{trade.instrument}</p>
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400">Binary</span>
+                          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                            isCall ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                          }`}>
+                            {isCall ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+                            {trade.direction.toUpperCase()}
+                          </span>
+                        </div>
+                        <p className="text-[#848E9C] text-xs mt-0.5">{dt.date} · {dt.time}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0 ml-2">
                         {isOpen ? (
-                          <p className="text-[#848E9C] text-xs">Pending…</p>
+                          <p className="text-yellow-400 text-xs font-semibold">Pending…</p>
                         ) : (
                           <p className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmtPnl(profit)}</p>
                         )}
-                        <span className={`text-[10px] font-bold ${isOpen ? 'text-yellow-400' : isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
-                          {isOpen ? '● OPEN' : isWin ? '▲ WIN' : '▼ LOSS'}
-                        </span>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
+                          isOpen ? 'bg-yellow-500/15 text-yellow-400' : isWin ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                        }`}>{isOpen ? '● OPEN' : isWin ? '▲ WIN' : '▼ LOSS'}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-[#848E9C]">
-                      <span className={`px-1.5 py-0.5 rounded font-bold ${
-                        trade.direction === 'call' || trade.direction === 'up'
-                          ? 'text-[#02C076] bg-[#02C076]/10' : 'text-[#CF304A] bg-[#CF304A]/10'
-                      }`}>{trade.direction.toUpperCase()}</span>
-                      <span>₹{trade.amount.toLocaleString('en-IN')}</span>
-                      <span>· {trade.duration}s</span>
-                      <span>· {trade.payoutPct}% payout</span>
+                    {/* Row 2: Trade detail grid */}
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs bg-[#0C0E15] rounded-lg px-3 py-2">
+                      <div>
+                        <span className="text-[#848E9C]">Invested </span>
+                        <span className="text-[#EAECEF] font-semibold">₹{trade.amount.toLocaleString('en-IN')}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#848E9C]">Duration </span>
+                        <span className="text-[#EAECEF]">{trade.duration}s</span>
+                      </div>
+                      <div>
+                        <span className="text-[#848E9C]">Payout </span>
+                        <span className="text-[#F0B90B] font-bold">{trade.payoutPct}%</span>
+                      </div>
+                      <div>
+                        <span className="text-[#848E9C]">Entry </span>
+                        <span className="font-mono text-[#EAECEF]">{trade.entryPrice ? formatPrice(trade.entryPrice, trade.instrument) : '—'}</span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -537,16 +582,17 @@ export function TradeHistory() {
 
         {/* Pagination */}
         {activePages > 1 && (
-          <div className="px-5 py-4 border-t border-[#181B23] flex items-center justify-between">
+          <div className="px-4 py-4 border-t border-[#181B23] flex items-center justify-between gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
             >
               <ChevronLeft className="w-4 h-4" /> Prev
             </button>
 
-            <div className="flex items-center gap-1">
+            {/* Desktop: numbered pages */}
+            <div className="hidden sm:flex items-center gap-1">
               {Array.from({ length: Math.min(7, activePages) }, (_, i) => {
                 const pg = activePages <= 7 ? i + 1 : i === 0 ? 1 : i === 6 ? activePages : page - 2 + i;
                 return (
@@ -558,10 +604,15 @@ export function TradeHistory() {
               })}
             </div>
 
+            {/* Mobile: page X / Y */}
+            <span className="sm:hidden text-xs font-semibold text-[#848E9C]">
+              Page <span className="text-white">{page}</span> / {activePages}
+            </span>
+
             <button
               onClick={() => setPage(p => Math.min(activePages, p + 1))}
               disabled={page >= activePages}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>
