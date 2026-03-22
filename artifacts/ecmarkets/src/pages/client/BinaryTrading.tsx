@@ -7,7 +7,7 @@ import {
 } from 'lightweight-charts';
 import { useGetDashboard } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
-import { TrendingUp, TrendingDown, Zap, RefreshCw, Wallet, Activity, Clock, History, Flame, BarChart2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Zap, RefreshCw, Wallet, Activity, Clock, History, Flame, BarChart2, Monitor } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -544,7 +544,38 @@ export function BinaryTrading() {
   /* ─── JSX ────────────────────────────────────────────────────── */
   return (
     <DashboardLayout>
-      <div className="flex flex-col binary-terminal-h"
+
+      {/* ── MOBILE: Desktop Required ─────────────────────────────── */}
+      <div className="md:hidden flex flex-col items-center justify-center min-h-[75vh] px-6">
+        <div className="flex flex-col items-center text-center gap-5 max-w-xs">
+          {/* Icon */}
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <Monitor className="w-10 h-10" style={{ color: 'rgba(255,255,255,0.35)' }} />
+          </div>
+
+          {/* Heading */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-xl font-bold text-white tracking-tight">Desktop Required</h2>
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Binary Trading is only available on desktop. Please open CNXMarkets on your computer for the full trading experience.
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div className="w-12 h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+
+          {/* Back button */}
+          <a href="/dashboard"
+            className="w-full py-3 rounded-xl text-sm font-semibold text-center transition-all active:scale-95"
+            style={{ background: '#00C274', color: '#000' }}>
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+
+      {/* ── DESKTOP: Full Trading Terminal ───────────────────────── */}
+      <div className="hidden md:flex flex-col binary-terminal-h"
         style={{ borderRadius: 16, boxShadow: screenGlow, transition: 'box-shadow 0.8s ease', gap: 8 }}>
 
         {/* ── MOBILE: pair chips (compact — tap to switch chart) ── */}
