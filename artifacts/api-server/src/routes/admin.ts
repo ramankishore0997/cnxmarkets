@@ -820,6 +820,46 @@ router.get("/binary-trades", requireAdmin, async (req: AuthRequest, res) => {
   }
 });
 
+router.patch("/binary-trades/:id", requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) { res.status(400).json({ message: "Invalid ID" }); return; }
+    const { status, profit, amount, payoutPct } = req.body;
+
+    const [existing] = await db.select().from(binaryTradesTable).where(eq(binaryTradesTable.id, id)).limit(1);
+    if (!existing) { res.status(404).json({ message: "Trade not found" }); return; }
+
+    const updates: Partial<typeof binaryTradesTable.$inferInsert> = {};
+    if (status !== undefined) updates.status = status;
+    if (profit !== undefined) updates.profit = String(profit);
+    if (amount !== undefined) updates.amount = String(amount);
+    if (payoutPct !== undefined) updates.payoutPct = String(payoutPct);
+    if (status === 'won' || status === 'lost') updates.closedAt = new Date();
+
+    await db.update(binaryTradesTable).set(updates).where(eq(binaryTradesTable.id, id));
+
+    // Recalculate account balance if trade is closed with a profit value
+    if (profit !== undefined && existing.userId) {
+      const [acct] = await db.select().from(accountsTable).where(eq(accountsTable.userId, existing.userId)).limit(1);
+      if (acct) {
+        const oldProfit = parseFloat(String(existing.profit ?? '0')) || 0;
+        const newProfit = parseFloat(String(profit)) || 0;
+        const diff = newProfit - oldProfit;
+        const newTotalProfit = (parseFloat(String(acct.totalProfit ?? '0')) || 0) + diff;
+        await db.update(accountsTable).set({
+          totalProfit: newTotalProfit.toFixed(2),
+          updatedAt: new Date(),
+        }).where(eq(accountsTable.userId, existing.userId));
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.delete("/binary-trades/:id", requireAdmin, async (req: AuthRequest, res) => {
   try {
     const id = parseInt(req.params.id);

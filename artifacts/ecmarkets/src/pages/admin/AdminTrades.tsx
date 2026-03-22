@@ -1,13 +1,13 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { useGetAdminUsers, useGetAdminUserTrades } from '@workspace/api-client-react';
 import { getAuthOptions } from '@/lib/api-utils';
 import { useToast } from '@/hooks/use-toast';
 import {
-  TrendingUp, Loader2, History,
+  TrendingUp, TrendingDown, Loader2, History,
   ChevronLeft, ChevronRight, CalendarDays,
   Activity, RefreshCw, Wifi, Users, ArrowUp, ArrowDown, Clock,
-  Plus, Zap, BarChart2, CheckCircle2
+  Plus, Zap, BarChart2, CheckCircle2, Trash2, Pencil, X, Save
 } from 'lucide-react';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -622,10 +622,268 @@ function InjectTradePanel({ users }: { users: any[] }) {
   );
 }
 
+// ─── Binary Trades Panel ──────────────────────────────────────────────────────
+
+function BinaryTradesPanel({ users }: { users: any[] }) {
+  const { toast } = useToast();
+  const [loading, setLoading]     = useState(false);
+  const [trades,  setTrades]      = useState<any[]>([]);
+  const [total,   setTotal]       = useState(0);
+  const [pages,   setPages]       = useState(1);
+  const [page,    setPage]        = useState(1);
+  const [userId,  setUserId]      = useState('');
+  const [status,  setStatus]      = useState('all');
+  const [editId,  setEditId]      = useState<number | null>(null);
+  const [editData, setEditData]   = useState({ status: '', profit: '' });
+  const [saving,  setSaving]      = useState(false);
+  const [deleting, setDeleting]   = useState<number | null>(null);
+  const LIMIT = 50;
+
+  const fetchTrades = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('ecm_token');
+      const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
+      if (userId) params.set('userId', userId);
+      if (status && status !== 'all') params.set('status', status);
+      const res = await fetch(`/api/admin/binary-trades?${params}`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error('Failed');
+      const json = await res.json();
+      setTrades(json.trades ?? []);
+      setTotal(json.total ?? 0);
+      setPages(json.pages ?? 1);
+    } catch {
+      toast({ title: 'Error', description: 'Could not load binary trades.', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  }, [page, userId, status]);
+
+  useEffect(() => { fetchTrades(); }, [fetchTrades]);
+
+  const openEdit = (t: any) => {
+    setEditId(t.id);
+    setEditData({ status: t.status, profit: String(t.profit ?? '') });
+  };
+
+  const handleSave = async () => {
+    if (!editId) return;
+    setSaving(true);
+    try {
+      const token = localStorage.getItem('ecm_token');
+      const body: any = { status: editData.status };
+      if (editData.profit !== '') body.profit = parseFloat(editData.profit);
+      const res = await fetch(`/api/admin/binary-trades/${editId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error((await res.json()).message || 'Failed');
+      toast({ title: 'Trade Updated', description: 'Binary trade has been updated successfully.' });
+      setEditId(null);
+      fetchTrades();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Delete this binary trade? This action cannot be undone.')) return;
+    setDeleting(id);
+    try {
+      const token = localStorage.getItem('ecm_token');
+      const res = await fetch(`/api/admin/binary-trades/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error('Failed');
+      toast({ title: 'Deleted', description: 'Binary trade removed.' });
+      fetchTrades();
+    } catch {
+      toast({ title: 'Error', description: 'Could not delete trade.', variant: 'destructive' });
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const clientUsers = users.filter((u: any) => u.role !== 'admin');
+  const statusColors: Record<string, string> = {
+    open: '#2a6df4', won: '#02C076', lost: '#CF304A', expired: '#848E9C',
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Edit Modal */}
+      {editId !== null && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+          <div className="w-full max-w-md rounded-2xl p-6 space-y-4" style={{ background: '#0C0E15', border: '1px solid #1A1D27' }}>
+            <div className="flex items-center justify-between">
+              <p className="text-white font-bold">Edit Binary Trade #{editId}</p>
+              <button onClick={() => setEditId(null)} className="text-[#848E9C] hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-1.5 block">Status</label>
+              <div className="grid grid-cols-4 gap-1.5">
+                {['open', 'won', 'lost', 'expired'].map(s => (
+                  <button key={s} onClick={() => setEditData(d => ({ ...d, status: s }))}
+                    className="py-2 rounded-xl text-xs font-black capitalize transition-all"
+                    style={{ background: editData.status === s ? (statusColors[s] + '30') : 'rgba(255,255,255,0.04)', color: editData.status === s ? statusColors[s] : '#848E9C', border: `1px solid ${editData.status === s ? statusColors[s] + '60' : 'transparent'}` }}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-1.5 block">Profit / Loss (₹)</label>
+              <input type="number" value={editData.profit} onChange={e => setEditData(d => ({ ...d, profit: e.target.value }))}
+                placeholder="e.g. 900 for win, -1000 for loss"
+                className="w-full bg-[#181B23] border border-[#1A1D27] rounded-xl px-4 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-[#00C274]" />
+              {editData.profit !== '' && (
+                <p className={`text-xs font-bold mt-1 ${parseFloat(editData.profit) >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                  {parseFloat(editData.profit) >= 0 ? `+₹${parseFloat(editData.profit).toLocaleString('en-IN')} added to balance` : `₹${Math.abs(parseFloat(editData.profit)).toLocaleString('en-IN')} deducted`}
+                </p>
+              )}
+            </div>
+            <button onClick={handleSave} disabled={saving}
+              className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              style={{ background: '#00C274', color: 'black' }}>
+              {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : <><Save className="w-4 h-4" /> Save Changes</>}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Filters */}
+      <div className="card-stealth p-4 flex flex-wrap gap-3 items-center">
+        <select value={userId} onChange={e => { setUserId(e.target.value); setPage(1); }} className="input-stealth min-w-[200px]">
+          <option value="">— All Clients —</option>
+          {clientUsers.map((u: any) => (
+            <option key={u.id} value={u.id}>{u.firstName} {u.lastName} ({u.email})</option>
+          ))}
+        </select>
+        <div className="flex gap-1">
+          {['all', 'open', 'won', 'lost', 'expired'].map(s => (
+            <button key={s} onClick={() => { setStatus(s); setPage(1); }}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all"
+              style={{ background: status === s ? '#00C274' : '#181B23', color: status === s ? 'black' : '#848E9C' }}>
+              {s === 'all' ? 'All' : s}
+            </button>
+          ))}
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <span className="text-xs text-[#848E9C]">{total} trades</span>
+          <button onClick={fetchTrades} disabled={loading} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white text-xs font-bold">
+            <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="card-stealth overflow-hidden">
+        {loading && trades.length === 0 ? (
+          <div className="p-16 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
+        ) : trades.length === 0 ? (
+          <div className="p-16 text-center">
+            <BarChart2 className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
+            <p className="text-[#848E9C] font-medium">No binary trades found.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-[#848E9C] text-xs uppercase tracking-wider border-b border-[#181B23]">
+                  <th className="px-4 py-3 text-left font-semibold">ID</th>
+                  <th className="px-4 py-3 text-left font-semibold">Client</th>
+                  <th className="px-4 py-3 text-left font-semibold">Instrument</th>
+                  <th className="px-4 py-3 text-left font-semibold">Direction</th>
+                  <th className="px-4 py-3 text-right font-semibold">Amount</th>
+                  <th className="px-4 py-3 text-right font-semibold">Payout</th>
+                  <th className="px-4 py-3 text-left font-semibold">Status</th>
+                  <th className="px-4 py-3 text-right font-semibold">P&L</th>
+                  <th className="px-4 py-3 text-right font-semibold">Date</th>
+                  <th className="px-4 py-3 text-center font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#181B23]">
+                {trades.map((t: any) => {
+                  const isWin = t.status === 'won';
+                  const isLoss = t.status === 'lost';
+                  const pnl = parseFloat(String(t.profit ?? '0')) || 0;
+                  const userName = `${t.userFirstName || ''} ${t.userLastName || ''}`.trim() || t.userEmail || `#${t.userId}`;
+                  return (
+                    <tr key={t.id} className="hover:bg-[#181B23]/30 transition-colors">
+                      <td className="px-4 py-3 text-[#848E9C] text-xs font-mono">#{t.id}</td>
+                      <td className="px-4 py-3">
+                        <p className="text-white text-xs font-bold">{userName}</p>
+                        <p className="text-[#848E9C] text-[10px]">{t.userEmail}</p>
+                      </td>
+                      <td className="px-4 py-3 font-bold text-white">{t.instrument}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${t.direction === 'call' ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'}`}>
+                          {t.direction === 'call' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                          {t.direction === 'call' ? 'Higher' : 'Lower'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono text-white text-xs">₹{parseFloat(String(t.amount || '0')).toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-3 text-right text-[#00C274] text-xs font-bold">{t.payoutPct ?? '—'}%</td>
+                      <td className="px-4 py-3">
+                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full capitalize"
+                          style={{ background: `${statusColors[t.status] ?? '#848E9C'}20`, color: statusColors[t.status] ?? '#848E9C' }}>
+                          {t.status === 'open' && <span className="w-1.5 h-1.5 rounded-full bg-[#2a6df4] animate-pulse" />}
+                          {t.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {t.status === 'open' ? <span className="text-[#848E9C] text-xs">—</span> : (
+                          <span className={`font-black text-sm ${isWin ? 'text-[#02C076]' : isLoss ? 'text-[#CF304A]' : 'text-[#848E9C]'}`}>
+                            {pnl >= 0 ? '+' : ''}₹{Math.abs(pnl).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right text-[#848E9C] text-xs">
+                        {t.openedAt ? new Date(t.openedAt).toLocaleDateString('en-IN') : '—'}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button onClick={() => openEdit(t)} className="p-1.5 rounded-lg hover:bg-[#00C274]/15 text-[#848E9C] hover:text-[#00C274] transition-colors" title="Edit">
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button onClick={() => handleDelete(t.id)} disabled={deleting === t.id}
+                            className="p-1.5 rounded-lg hover:bg-[#CF304A]/15 text-[#848E9C] hover:text-[#CF304A] transition-colors" title="Delete">
+                            {deleting === t.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {pages > 1 && (
+          <div className="flex items-center justify-between px-5 py-4 border-t border-[#181B23]">
+            <span className="text-[#848E9C] text-xs">{total} total binary trades</span>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white disabled:opacity-30">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <span className="text-white text-sm font-bold">{page} / {pages}</span>
+              <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white disabled:opacity-30">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main AdminTrades ─────────────────────────────────────────────────────────
 
 export function AdminTrades() {
-  const [tab, setTab] = useState<'live' | 'history' | 'inject'>('live');
+  const [tab, setTab] = useState<'live' | 'history' | 'binary' | 'inject'>('live');
   const { data: users } = useGetAdminUsers({ ...getAuthOptions() });
   const allUsers = (users as any[]) || [];
 
@@ -633,13 +891,13 @@ export function AdminTrades() {
     <AdminLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Trade Monitor</h1>
-        <p className="text-[#848E9C] font-medium">Live positions and closed trade history across all clients</p>
+        <p className="text-[#848E9C] font-medium">Live positions, trade history and binary options across all clients</p>
       </div>
 
-      <div className="flex gap-1 p-1 bg-[#0C0E15] border border-[#181B23] rounded-xl mb-6 w-fit">
+      <div className="flex flex-wrap gap-1 p-1 bg-[#0C0E15] border border-[#181B23] rounded-xl mb-6 w-fit">
         <button
           onClick={() => setTab('live')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
             tab === 'live' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
           }`}
         >
@@ -648,15 +906,23 @@ export function AdminTrades() {
         </button>
         <button
           onClick={() => setTab('history')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
             tab === 'history' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
           }`}
         >
           <History className="w-4 h-4" /> Trade History
         </button>
         <button
+          onClick={() => setTab('binary')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
+            tab === 'binary' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+          }`}
+        >
+          <BarChart2 className="w-4 h-4" /> Binary Trades
+        </button>
+        <button
           onClick={() => setTab('inject')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
             tab === 'inject' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
           }`}
         >
@@ -664,9 +930,10 @@ export function AdminTrades() {
         </button>
       </div>
 
-      {tab === 'live' && <LiveTradesPanel />}
+      {tab === 'live'    && <LiveTradesPanel />}
       {tab === 'history' && <TradeHistoryPanel users={allUsers} />}
-      {tab === 'inject' && <InjectTradePanel users={allUsers} />}
+      {tab === 'binary'  && <BinaryTradesPanel users={allUsers} />}
+      {tab === 'inject'  && <InjectTradePanel users={allUsers} />}
     </AdminLayout>
   );
 }
