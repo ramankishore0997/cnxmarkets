@@ -644,8 +644,8 @@ export function BinaryTrading() {
                 </div>
               </div>
 
-              {/* AI Signal + Market Mood + Timeframes */}
-              <div className="flex items-center gap-2 px-3 py-1.5 flex-shrink-0 flex-wrap"
+              {/* AI Signal + Market Mood + Timeframes — desktop only */}
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 flex-shrink-0 flex-wrap"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(255,255,255,0.01)' }}>
                 {/* AI Signal */}
                 <div className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black"
@@ -678,7 +678,7 @@ export function BinaryTrading() {
               </div>
 
               {/* Chart canvas */}
-              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 'clamp(200px, 48vh, 340px)' }} />
+              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 'clamp(160px, 36vh, 280px)' }} />
             </div>
 
             {/* Active Trades — desktop only */}
