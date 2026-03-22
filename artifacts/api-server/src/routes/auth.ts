@@ -146,4 +146,98 @@ router.post("/logout", requireAuth, (_req, res) => {
   res.json({ message: "Logged out successfully", success: true });
 });
 
+/* ── Google OAuth — exchange Supabase access token for our JWT ── */
+router.post("/google", async (req, res) => {
+  try {
+    const { accessToken } = req.body;
+    if (!accessToken) {
+      res.status(400).json({ message: "Access token is required" });
+      return;
+    }
+
+    const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+    if (!serviceKey) {
+      res.status(500).json({ message: "Auth service not configured" });
+      return;
+    }
+
+    // Verify token with Supabase and get user info
+    const supaRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        apikey: serviceKey,
+      },
+    });
+
+    if (!supaRes.ok) {
+      res.status(401).json({ message: "Invalid or expired Google token" });
+      return;
+    }
+
+    const supaUser = (await supaRes.json()) as {
+      email?: string;
+      user_metadata?: { full_name?: string; name?: string; avatar_url?: string };
+    };
+
+    if (!supaUser.email) {
+      res.status(401).json({ message: "Could not retrieve email from Google account" });
+      return;
+    }
+
+    const email = supaUser.email.trim().toLowerCase();
+    const fullName = supaUser.user_metadata?.full_name || supaUser.user_metadata?.name || "";
+    const nameParts = fullName.trim().split(" ");
+    const firstName = nameParts[0] || "User";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    // Find existing user or create new one
+    let [user] = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+
+    if (!user) {
+      // New Google user — create account
+      [user] = await db.insert(usersTable).values({
+        email,
+        firstName,
+        lastName,
+        passwordHash: "",  // Google users have no password
+        phone: "",
+        role: "client",
+        kycStatus: "pending",
+        isActive: true,
+      }).returning();
+
+      await db.insert(accountsTable).values({
+        userId: user.id,
+        totalBalance: "0",
+        totalProfit: "0",
+        totalDeposits: "0",
+        totalWithdrawals: "0",
+      });
+
+      // Notify via Telegram
+      await sendTelegram(
+        `🆕 *New Google Sign-Up*\n\n*Name:* ${firstName} ${lastName}\n*Email:* \`${email}\`\n*User ID:* ${user.id}`
+      ).catch(() => {});
+    }
+
+    if (!user.isActive) {
+      res.status(401).json({ message: "Account is deactivated. Please contact support." });
+      return;
+    }
+
+    const token = generateToken({ id: user.id, email: user.email, role: user.role });
+    res.json({
+      token,
+      user: {
+        id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName,
+        phone: user.phone, country: user.country, role: user.role, kycStatus: user.kycStatus,
+        isActive: user.isActive, createdAt: user.createdAt.toISOString(),
+      },
+    });
+  } catch (err) {
+    console.error("Google auth error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;

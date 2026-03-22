@@ -18,6 +18,7 @@ import { RiskDisclosure } from "@/pages/public/RiskDisclosure";
 // Auth Pages
 import { Login } from "@/pages/auth/Login";
 import { Register } from "@/pages/auth/Register";
+import { AuthCallback } from "@/pages/auth/AuthCallback";
 
 // Client Pages
 import { Dashboard } from "@/pages/client/Dashboard";
@@ -71,6 +72,7 @@ function Router() {
       {/* Auth Routes */}
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
+      <Route path="/auth/callback" component={AuthCallback} />
 
       {/* Client Routes */}
       <Route path="/dashboard">
