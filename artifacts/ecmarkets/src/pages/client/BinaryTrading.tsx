@@ -548,7 +548,7 @@ export function BinaryTrading() {
         style={{ borderRadius: 16, boxShadow: screenGlow, transition: 'box-shadow 0.8s ease', gap: 8 }}>
 
         {/* ── MOBILE: pair chips ── */}
-        <div className="md:hidden flex gap-1.5 overflow-x-auto pb-1 flex-shrink-0" style={{ scrollbarWidth: 'none' }}>
+        <div className="md:hidden flex gap-2 overflow-x-auto pb-1 flex-shrink-0" style={{ scrollbarWidth: 'none' }}>
           {INSTRUMENTS.map(inst => {
             const p  = prices[inst.id] ?? inst.base;
             const ch = SEED_24H[inst.id] ?? 0;
@@ -556,12 +556,12 @@ export function BinaryTrading() {
             const pd = priceDir[inst.id] ?? 'up';
             return (
               <button key={inst.id} onClick={() => setInstrument(inst.id)}
-                className="flex-shrink-0 flex flex-col items-start px-2.5 py-1.5 rounded-xl transition-all relative"
-                style={{ background: isActive ? 'rgba(0,194,116,0.12)' : 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? 'rgba(0,194,116,0.35)' : 'rgba(255,255,255,0.06)'}`, minWidth: 72 }}>
-                {hotPairs.includes(inst.id) && <span className="absolute -top-1 -right-1 text-[8px]">🔥</span>}
-                <span className={`text-[10px] font-black leading-tight ${isActive ? 'text-[#00C274]' : 'text-[#9CA3AF]'}`}>{inst.label}</span>
-                <span className={`text-[9px] font-mono leading-tight ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{p.toFixed(Math.min(inst.decimals, 4))}</span>
-                <span className={`text-[8px] font-bold ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
+                className="flex-shrink-0 flex flex-col items-start px-3 py-2 rounded-xl transition-all relative"
+                style={{ background: isActive ? 'rgba(0,194,116,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${isActive ? 'rgba(0,194,116,0.4)' : 'rgba(255,255,255,0.08)'}`, minWidth: 86 }}>
+                {hotPairs.includes(inst.id) && <span className="absolute -top-1 -right-1 text-[9px]">🔥</span>}
+                <span className={`text-[11px] font-black leading-tight ${isActive ? 'text-[#00C274]' : 'text-[#C9D1D9]'}`}>{inst.label}</span>
+                <span className={`text-[11px] font-mono font-bold leading-tight mt-0.5 ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{p.toFixed(Math.min(inst.decimals, 4))}</span>
+                <span className={`text-[10px] font-bold mt-0.5 ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
               </button>
             );
           })}
@@ -680,7 +680,7 @@ export function BinaryTrading() {
               </div>
 
               {/* Chart canvas */}
-              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 180 }} />
+              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 260 }} />
             </div>
 
             {/* Active Trades */}
@@ -757,8 +757,8 @@ export function BinaryTrading() {
           {/* ── RIGHT: Trading Panel ── */}
           <div className="md:w-[272px] flex-shrink-0 flex flex-col gap-2">
 
-            {/* Stats row */}
-            <div className="grid grid-cols-3 gap-1.5 flex-shrink-0">
+            {/* Stats row — desktop: 3 cards, mobile: compact horizontal bar */}
+            <div className="hidden md:grid grid-cols-3 gap-1.5 flex-shrink-0">
               <div className="rounded-xl px-2 py-1.5 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <Wallet className="w-3 h-3 text-[#6B7280] mx-auto mb-0.5" />
                 <p className="text-[9px] text-[#6B7280]">Balance</p>
@@ -773,6 +773,33 @@ export function BinaryTrading() {
                 <Flame className="w-3 h-3 mx-auto mb-0.5" style={{ color: streak >= 2 ? '#F59E0B' : '#374151' }} />
                 <p className="text-[9px] text-[#6B7280]">Streak</p>
                 <p className="text-[11px] font-black" style={{ color: streak >= 2 ? '#F59E0B' : '#6B7280' }}>{streak}🔥</p>
+              </div>
+            </div>
+            {/* Mobile compact stats bar */}
+            <div className="md:hidden flex items-center justify-between px-4 py-2.5 rounded-xl flex-shrink-0"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="flex items-center gap-1.5">
+                <Wallet className="w-3.5 h-3.5 text-[#848E9C]" />
+                <div>
+                  <p className="text-[9px] text-[#6B7280] leading-none">Balance</p>
+                  <p className="text-sm font-black text-white leading-tight">₹{balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                </div>
+              </div>
+              <div className="w-px h-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
+              <div className="flex items-center gap-1.5">
+                <BarChart2 className="w-3.5 h-3.5 text-[#00C274]" />
+                <div>
+                  <p className="text-[9px] text-[#6B7280] leading-none">Win Rate</p>
+                  <p className="text-sm font-black text-[#00C274] leading-tight">{winRate}%</p>
+                </div>
+              </div>
+              <div className="w-px h-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
+              <div className="flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5" style={{ color: streak >= 2 ? '#F59E0B' : '#374151' }} />
+                <div>
+                  <p className="text-[9px] text-[#6B7280] leading-none">Streak</p>
+                  <p className="text-sm font-black leading-tight" style={{ color: streak >= 2 ? '#F59E0B' : '#6B7280' }}>{streak} 🔥</p>
+                </div>
               </div>
             </div>
 
@@ -793,8 +820,8 @@ export function BinaryTrading() {
             <div className="flex-1 rounded-2xl p-4 flex flex-col gap-3"
               style={{ background: 'rgba(8,11,22,0.96)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,194,116,0.12)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)' }}>
 
-              {/* Live price */}
-              <div className="text-center py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              {/* Live price — hidden on mobile (already in chart header) */}
+              <div className="hidden md:block text-center py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
                 <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-widest mb-0.5">{instrument}</p>
                 <p className={`text-2xl font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmt(livePrice, instrument)}</p>
                 <div className="flex items-center justify-center gap-2 mt-0.5">
@@ -802,6 +829,12 @@ export function BinaryTrading() {
                   <span className="text-[10px] text-[#374151]">·</span>
                   <span className={`text-[10px] font-bold ${ch24 >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch24 >= 0 ? '+' : ''}{ch24.toFixed(2)}%</span>
                 </div>
+              </div>
+              {/* Mobile: compact price strip */}
+              <div className="md:hidden flex items-center justify-between px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                <span className="text-xs text-[#6B7280] font-semibold">{instrument}</span>
+                <span className={`text-lg font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmt(livePrice, instrument)}</span>
+                <span className={`text-xs font-bold ${priceDirCurrent === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{priceDirCurrent === 'up' ? '▲' : '▼'} {ch24 >= 0 ? '+' : ''}{ch24.toFixed(2)}%</span>
               </div>
 
               {/* Amount */}
@@ -873,24 +906,26 @@ export function BinaryTrading() {
                 <button onClick={() => handlePlace('call')} disabled={placing}
                   onMouseEnter={() => setCallHov(true)} onMouseLeave={() => { setCallHov(false); setCallPress(false); }}
                   onPointerDown={() => setCallPress(true)} onPointerUp={() => setCallPress(false)}
-                  className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', border: '1px solid rgba(2,192,118,0.4)',
+                  className="flex flex-col items-center gap-1.5 py-4 md:py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
+                  style={{ paddingTop: 'clamp(16px, 5vw, 20px)', paddingBottom: 'clamp(16px, 5vw, 20px)',
+                    background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', border: '1px solid rgba(2,192,118,0.4)',
                     boxShadow: placing ? 'none' : callHov ? '0 0 24px #10b981, 0 0 48px rgba(16,185,129,0.5)' : '0 0 24px rgba(2,192,118,0.4)',
                     transform: callPress ? 'scale(0.95)' : callHov ? 'scale(1.03)' : 'scale(1)', transition: 'all 0.2s ease' }}>
-                  <TrendingUp className="w-5 h-5" />
-                  <span className="text-base">Higher</span>
-                  <span className="text-[10px] opacity-80 font-semibold">↑ CALL</span>
+                  <TrendingUp className="w-6 h-6" />
+                  <span className="text-lg leading-tight">Higher</span>
+                  <span className="text-[11px] opacity-80 font-semibold">↑ CALL</span>
                 </button>
                 <button onClick={() => handlePlace('put')} disabled={placing}
                   onMouseEnter={() => setPutHov(true)} onMouseLeave={() => { setPutHov(false); setPutPress(false); }}
                   onPointerDown={() => setPutPress(true)} onPointerUp={() => setPutPress(false)}
-                  className="flex flex-col items-center gap-1.5 py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', border: '1px solid rgba(207,48,74,0.4)',
+                  className="flex flex-col items-center gap-1.5 rounded-2xl font-black text-white text-sm disabled:opacity-50"
+                  style={{ paddingTop: 'clamp(16px, 5vw, 20px)', paddingBottom: 'clamp(16px, 5vw, 20px)',
+                    background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', border: '1px solid rgba(207,48,74,0.4)',
                     boxShadow: placing ? 'none' : putHov ? '0 0 24px #ef4444, 0 0 48px rgba(239,68,68,0.5)' : '0 0 24px rgba(207,48,74,0.4)',
                     transform: putPress ? 'scale(0.95)' : putHov ? 'scale(1.03)' : 'scale(1)', transition: 'all 0.2s ease' }}>
-                  <TrendingDown className="w-5 h-5" />
-                  <span className="text-base">Lower</span>
-                  <span className="text-[10px] opacity-80 font-semibold">↓ PUT</span>
+                  <TrendingDown className="w-6 h-6" />
+                  <span className="text-lg leading-tight">Lower</span>
+                  <span className="text-[11px] opacity-80 font-semibold">↓ PUT</span>
                 </button>
               </div>
             </div>
