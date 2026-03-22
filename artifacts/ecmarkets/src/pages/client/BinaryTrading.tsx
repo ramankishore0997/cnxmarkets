@@ -547,21 +547,19 @@ export function BinaryTrading() {
       <div className="flex flex-col binary-terminal-h"
         style={{ borderRadius: 16, boxShadow: screenGlow, transition: 'box-shadow 0.8s ease', gap: 8 }}>
 
-        {/* ── MOBILE: pair chips ── */}
-        <div className="md:hidden flex gap-2 overflow-x-auto pb-1 flex-shrink-0" style={{ scrollbarWidth: 'none' }}>
+        {/* ── MOBILE: pair chips (compact — tap to switch chart) ── */}
+        <div className="md:hidden flex gap-1.5 overflow-x-auto pb-0.5 flex-shrink-0" style={{ scrollbarWidth: 'none' }}>
           {INSTRUMENTS.map(inst => {
-            const p  = prices[inst.id] ?? inst.base;
             const ch = SEED_24H[inst.id] ?? 0;
             const isActive = instrument === inst.id;
             const pd = priceDir[inst.id] ?? 'up';
             return (
               <button key={inst.id} onClick={() => setInstrument(inst.id)}
-                className="flex-shrink-0 flex flex-col items-start px-3 py-2 rounded-xl transition-all relative"
-                style={{ background: isActive ? 'rgba(0,194,116,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${isActive ? 'rgba(0,194,116,0.4)' : 'rgba(255,255,255,0.08)'}`, minWidth: 86 }}>
-                {hotPairs.includes(inst.id) && <span className="absolute -top-1 -right-1 text-[9px]">🔥</span>}
-                <span className={`text-[11px] font-black leading-tight ${isActive ? 'text-[#00C274]' : 'text-[#C9D1D9]'}`}>{inst.label}</span>
-                <span className={`text-[11px] font-mono font-bold leading-tight mt-0.5 ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{p.toFixed(Math.min(inst.decimals, 4))}</span>
-                <span className={`text-[10px] font-bold mt-0.5 ${ch >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
+                className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all relative"
+                style={{ background: isActive ? 'rgba(0,194,116,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${isActive ? 'rgba(0,194,116,0.45)' : 'rgba(255,255,255,0.08)'}` }}>
+                {hotPairs.includes(inst.id) && <span className="text-[8px] leading-none">🔥</span>}
+                <span className={`text-[11px] font-black ${isActive ? 'text-[#00C274]' : 'text-[#C9D1D9]'}`}>{inst.label}</span>
+                <span className={`text-[9px] font-bold ${pd === 'up' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{pd === 'up' ? '▲' : '▼'}{Math.abs(ch).toFixed(1)}%</span>
               </button>
             );
           })}
@@ -680,12 +678,12 @@ export function BinaryTrading() {
               </div>
 
               {/* Chart canvas */}
-              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 'clamp(180px, 35vh, 280px)' }} />
+              <div ref={chartRef} className="flex-1 w-full" style={{ minHeight: 'clamp(200px, 48vh, 340px)' }} />
             </div>
 
-            {/* Active Trades */}
+            {/* Active Trades — desktop only */}
             {activeTrades.length > 0 && (
-              <div className="flex-shrink-0 rounded-xl px-3 py-2 flex gap-2 overflow-x-auto"
+              <div className="hidden md:flex flex-shrink-0 rounded-xl px-3 py-2 gap-2 overflow-x-auto"
                 style={{ background: 'rgba(0,194,116,0.04)', border: '1px solid rgba(0,194,116,0.12)', scrollbarWidth: 'none' }}>
                 {activeTrades.map(trade => {
                   const cp      = prices[trade.instrument] ?? trade.entryPrice;
@@ -773,33 +771,6 @@ export function BinaryTrading() {
                 <Flame className="w-3 h-3 mx-auto mb-0.5" style={{ color: streak >= 2 ? '#F59E0B' : '#374151' }} />
                 <p className="text-[9px] text-[#6B7280]">Streak</p>
                 <p className="text-[11px] font-black" style={{ color: streak >= 2 ? '#F59E0B' : '#6B7280' }}>{streak}🔥</p>
-              </div>
-            </div>
-            {/* Mobile compact stats bar */}
-            <div className="md:hidden flex items-center justify-between px-4 py-2.5 rounded-xl flex-shrink-0"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <div className="flex items-center gap-1.5">
-                <Wallet className="w-3.5 h-3.5 text-[#848E9C]" />
-                <div>
-                  <p className="text-[9px] text-[#6B7280] leading-none">Balance</p>
-                  <p className="text-sm font-black text-white leading-tight">₹{balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
-                </div>
-              </div>
-              <div className="w-px h-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
-              <div className="flex items-center gap-1.5">
-                <BarChart2 className="w-3.5 h-3.5 text-[#00C274]" />
-                <div>
-                  <p className="text-[9px] text-[#6B7280] leading-none">Win Rate</p>
-                  <p className="text-sm font-black text-[#00C274] leading-tight">{winRate}%</p>
-                </div>
-              </div>
-              <div className="w-px h-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
-              <div className="flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5" style={{ color: streak >= 2 ? '#F59E0B' : '#374151' }} />
-                <div>
-                  <p className="text-[9px] text-[#6B7280] leading-none">Streak</p>
-                  <p className="text-sm font-black leading-tight" style={{ color: streak >= 2 ? '#F59E0B' : '#6B7280' }}>{streak} 🔥</p>
-                </div>
               </div>
             </div>
 
@@ -911,106 +882,47 @@ export function BinaryTrading() {
               </div>
             </div>
 
-            {/* Trade Box — MOBILE (compact: no profit calculator, quick amounts 4-col, big buttons) */}
-            <div className="md:hidden rounded-2xl p-3 flex flex-col gap-2.5"
-              style={{ background: 'rgba(8,11,22,0.96)', border: '1px solid rgba(0,194,116,0.15)' }}>
-              {/* Amount */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider">Investment</span>
-                  <span className="text-[10px] font-black text-[#00C274]">Payout {payoutPct}% · Win +₹{Math.round(amtNum * payoutPct / 100).toLocaleString('en-IN')}</span>
-                </div>
-                <div className="relative mb-1.5">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#848E9C] font-bold">₹</span>
-                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)}
-                    className="w-full pl-7 pr-3 py-2.5 rounded-xl text-white font-bold focus:outline-none"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 16 }}
-                    placeholder="1000" min="100" />
-                </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {[500,1000,5000,10000,25000].map(v => (
-                    <button key={v} onClick={() => setAmount(String(v))}
-                      className="py-1.5 rounded-lg text-[10px] font-black transition-all"
-                      style={{ background: amount === String(v) ? 'rgba(0,194,116,0.2)' : 'rgba(255,255,255,0.05)', color: amount === String(v) ? '#00C274' : '#848E9C', border: `1px solid ${amount === String(v) ? 'rgba(0,194,116,0.4)' : 'rgba(255,255,255,0.06)'}` }}>
-                      {v >= 1000 ? `${v/1000}K` : v}
-                    </button>
-                  ))}
-                </div>
+            {/* Trade Box — MOBILE (minimal: amount + duration + buttons only) */}
+            <div className="md:hidden flex flex-col gap-2 flex-shrink-0">
+              {/* Row 1: Amount input */}
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#848E9C] font-bold text-sm">₹</span>
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)}
+                  className="w-full pl-7 pr-3 py-3 rounded-xl text-white font-bold focus:outline-none"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 16 }}
+                  placeholder="Enter amount" min="100" />
               </div>
-              {/* Duration */}
-              <div>
-                <span className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mb-1 block">Expiry</span>
-                <div className="grid grid-cols-4 gap-1">
-                  {DURATIONS.map(d => (
-                    <button key={d.seconds} onClick={() => setDuration(d.seconds)}
-                      className="py-2 rounded-xl text-xs font-black transition-all"
-                      style={{ background: duration === d.seconds ? '#00C274' : 'rgba(255,255,255,0.05)', color: duration === d.seconds ? '#000' : '#848E9C' }}>
-                      {d.label}
-                    </button>
-                  ))}
-                </div>
+
+              {/* Row 2: Duration pills */}
+              <div className="grid grid-cols-4 gap-1.5">
+                {DURATIONS.map(d => (
+                  <button key={d.seconds} onClick={() => setDuration(d.seconds)}
+                    className="py-2 rounded-xl text-xs font-black transition-all"
+                    style={{ background: duration === d.seconds ? '#00C274' : 'rgba(255,255,255,0.06)', color: duration === d.seconds ? '#000' : '#848E9C', border: `1px solid ${duration === d.seconds ? 'rgba(0,194,116,0.6)' : 'rgba(255,255,255,0.06)'}` }}>
+                    {d.label}
+                  </button>
+                ))}
               </div>
-              {/* HIGHER / LOWER — mobile big buttons */}
-              <div className="grid grid-cols-2 gap-2 pt-1">
+
+              {/* Row 3: HIGHER / LOWER */}
+              <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => handlePlace('call')} disabled={placing}
                   onPointerDown={() => setCallPress(true)} onPointerUp={() => setCallPress(false)}
-                  className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-white text-base disabled:opacity-50 active:scale-95 transition-transform"
-                  style={{ background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', border: '1px solid rgba(2,192,118,0.4)', boxShadow: '0 0 20px rgba(2,192,118,0.35)' }}>
+                  className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-white disabled:opacity-50 active:scale-95 transition-transform"
+                  style={{ background: 'linear-gradient(135deg,#02C076 0%,#018a53 100%)', boxShadow: '0 4px 20px rgba(2,192,118,0.4)' }}>
                   <TrendingUp className="w-5 h-5" />
-                  <div className="text-left">
-                    <div className="text-base font-black leading-none">Higher</div>
-                    <div className="text-[10px] opacity-75 font-semibold">↑ CALL</div>
-                  </div>
+                  <span className="text-base">Higher</span>
                 </button>
                 <button onClick={() => handlePlace('put')} disabled={placing}
                   onPointerDown={() => setPutPress(true)} onPointerUp={() => setPutPress(false)}
-                  className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-white text-base disabled:opacity-50 active:scale-95 transition-transform"
-                  style={{ background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', border: '1px solid rgba(207,48,74,0.4)', boxShadow: '0 0 20px rgba(207,48,74,0.35)' }}>
+                  className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-white disabled:opacity-50 active:scale-95 transition-transform"
+                  style={{ background: 'linear-gradient(135deg,#CF304A 0%,#8b0e21 100%)', boxShadow: '0 4px 20px rgba(207,48,74,0.4)' }}>
                   <TrendingDown className="w-5 h-5" />
-                  <div className="text-left">
-                    <div className="text-base font-black leading-none">Lower</div>
-                    <div className="text-[10px] opacity-75 font-semibold">↓ PUT</div>
-                  </div>
+                  <span className="text-base">Lower</span>
                 </button>
               </div>
             </div>
 
-            {/* Mobile: Trade History Tab */}
-            <div className="md:hidden">
-              <div className="flex rounded-xl overflow-hidden mb-2" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
-                {(['chart','history'] as const).map(tab => (
-                  <button key={tab} onClick={() => setMobileTab(tab)}
-                    className="flex-1 py-2 text-xs font-black capitalize transition-all"
-                    style={{ background: mobileTab === tab ? '#00C274' : 'rgba(255,255,255,0.02)', color: mobileTab === tab ? '#000' : '#6B7280' }}>
-                    {tab === 'chart' ? 'Active' : 'History'}
-                  </button>
-                ))}
-              </div>
-              {mobileTab === 'history' && (
-                <div className="rounded-2xl overflow-hidden" style={{ background: '#050810', border: '1px solid rgba(255,255,255,0.06)', maxHeight: 220 }}>
-                  <div className="overflow-y-auto" style={{ maxHeight: 220, scrollbarWidth: 'none' }}>
-                    {myHistory.length === 0 && <div className="flex items-center justify-center py-8 text-[#374151] text-xs">No trades yet</div>}
-                    {myHistory.map((h, i) => {
-                      const won = h.status === 'won', push = h.status === 'push';
-                      return (
-                        <div key={h.id ?? i} className="flex items-center gap-2 px-3 py-2"
-                          style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', borderLeft: `2px solid ${won ? '#02C076' : push ? '#00C274' : '#CF304A'}` }}>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1">
-                              <span className="text-[10px] font-black text-white">{h.instrument}</span>
-                              <span className={`text-[9px] font-black ${h.direction === 'call' ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{h.direction === 'call' ? '↑' : '↓'}</span>
-                            </div>
-                          </div>
-                          <p className={`text-xs font-black ${won ? 'text-[#02C076]' : push ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>
-                            {won ? `+₹${(h.profit ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : push ? 'Push' : `−₹${(h.amount ?? 0).toLocaleString('en-IN')}`}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>
