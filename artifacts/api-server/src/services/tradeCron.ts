@@ -401,28 +401,37 @@ function scheduleOpenPhase(): void {
 }
 
 function scheduleClosePhase(): void {
-  const delay = randomBetween(15 * 60_000, 25 * 60_000);
+  const delay = randomBetween(30 * 60_000, 45 * 60_000);
   console.log(`[TradeCron] Next close-phase in ${(delay / 60_000).toFixed(0)} min.`);
   setTimeout(async () => {
-    await purgeOldTrades();
     await closeTradesPhase();
     scheduleClosePhase();
   }, delay);
 }
 
+function scheduleDailyPurge(): void {
+  // Run purge once every 24 hours instead of every close cycle
+  setInterval(async () => {
+    await purgeOldTrades();
+    console.log("[TradeCron] Daily purge complete.");
+  }, 24 * 60 * 60_000);
+}
+
 export function startTradeCron(): void {
   console.log("[TradeCron] Trade automation initialised.");
 
-  // Open phase: first run after 1 min
+  // Open phase: first run after 2 min
   setTimeout(async () => {
     await openTradesPhase();
     scheduleOpenPhase();
-  }, 60_000);
+  }, 2 * 60_000);
 
-  // Close phase: first run after 15 min (target 30–50 min total trade duration)
+  // Close phase: first run after 30 min
   setTimeout(async () => {
-    await purgeOldTrades();
     await closeTradesPhase();
     scheduleClosePhase();
-  }, 15 * 60_000);
+  }, 30 * 60_000);
+
+  // Daily purge: old trades cleanup once per day
+  scheduleDailyPurge();
 }

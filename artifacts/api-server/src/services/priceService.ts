@@ -52,9 +52,9 @@ let pollInterval: NodeJS.Timeout | null = null;
 let pauseTimer: NodeJS.Timeout | null = null;
 let isRunning = false;
 
-/* ─── FIX 1 constants: slower intervals ─────────────────────────── */
-const POLL_INTERVAL_MS = 10_000;   // was 3 000 — 3× fewer API calls
-const SIM_INTERVAL_MS  =  2_000;   // was   800 — 2.5× less CPU
+/* ─── Aggressive intervals: minimum compute ─────────────────────── */
+const POLL_INTERVAL_MS = 30_000;   // 30 s — prices change slowly enough
+const SIM_INTERVAL_MS  =  5_000;   // 5 s  — fallback sim, barely visible
 
 export function getCurrentPrice(instrument: string): number {
   return prices[instrument]?.price ?? 0;
@@ -101,7 +101,7 @@ function startSimulation(): void {
       processTick(sym, next, now);
     }
   }, SIM_INTERVAL_MS);
-  console.log("[Price] Simulation started (interval: 2 s).");
+  console.log(`[Price] Simulation started (interval: ${SIM_INTERVAL_MS / 1000} s).`);
 }
 
 function stopSimulation(): void {
@@ -130,7 +130,7 @@ async function fetchBinancePrices(): Promise<void> {
 export function startPriceService(): void {
   if (isRunning) return;
   isRunning = true;
-  console.log("[Price] Starting — Binance REST polling (14 pairs, every 10 s)…");
+  console.log(`[Price] Starting — Binance REST polling (14 pairs, every ${POLL_INTERVAL_MS / 1000} s)…`);
 
   fetchBinancePrices().then(() => {
     console.log("[Price] Initial prices fetched from Binance.");
@@ -176,5 +176,5 @@ export function scheduleIdlePause(getClientCount: () => number): void {
     if (getClientCount() === 0) {
       pausePriceService();
     }
-  }, 60_000);
+  }, 30_000);
 }

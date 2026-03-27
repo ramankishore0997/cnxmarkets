@@ -84,10 +84,10 @@ export function AdminKyc() {
     ...getAuthOptions(),
     query: {
       refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      refetchInterval: 15000,
-      staleTime: 0,
-      retry: 2,
+      refetchOnWindowFocus: false,
+      refetchInterval: 120_000,
+      staleTime: 60_000,
+      retry: 1,
     }
   });
 

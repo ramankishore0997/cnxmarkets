@@ -240,7 +240,7 @@ export function Dashboard() {
 
   const { data, isLoading } = useGetDashboard({
     ...getAuthOptions(),
-    query: { refetchInterval: 30_000 },
+    query: { refetchInterval: 120_000, staleTime: 60_000, refetchOnWindowFocus: false },
   });
 
   const totalBalance  = data?.totalBalance  ?? 0;
