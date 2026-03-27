@@ -49,6 +49,12 @@ const DECIMALS: Record<string, number> = {
 let io: SocketIOServer | null = null;
 let simInterval: NodeJS.Timeout | null = null;
 let pollInterval: NodeJS.Timeout | null = null;
+let pauseTimer: NodeJS.Timeout | null = null;
+let isRunning = false;
+
+/* ─── FIX 1 constants: slower intervals ─────────────────────────── */
+const POLL_INTERVAL_MS = 10_000;   // was 3 000 — 3× fewer API calls
+const SIM_INTERVAL_MS  =  2_000;   // was   800 — 2.5× less CPU
 
 export function getCurrentPrice(instrument: string): number {
   return prices[instrument]?.price ?? 0;
@@ -62,7 +68,10 @@ function broadcastTick(instrument: string): void {
   if (!io) return;
   const state = prices[instrument];
   const minuteTs = Math.floor(Date.now() / 60000) * 60;
-  io.emit("price:tick", { instrument, price: state.price, open: state.open, high: state.high, low: state.low, time: minuteTs });
+  io.emit("price:tick", {
+    instrument, price: state.price,
+    open: state.open, high: state.high, low: state.low, time: minuteTs,
+  });
 }
 
 function processTick(instrument: string, newPrice: number, tsMs: number): void {
@@ -84,22 +93,26 @@ function startSimulation(): void {
   simInterval = setInterval(() => {
     const now = Date.now();
     for (const sym of Object.keys(prices)) {
-      const v = SIM_VOL[sym] ?? 0.01;
+      const v   = SIM_VOL[sym] ?? 0.01;
       const dec = DECIMALS[sym] ?? 2;
-      const prev = prices[sym].price;
+      const prev  = prices[sym].price;
       const delta = (Math.random() - 0.5) * 2 * v;
-      const next = parseFloat((prev + delta).toFixed(dec));
+      const next  = parseFloat((prev + delta).toFixed(dec));
       processTick(sym, next, now);
     }
-  }, 800);
-  console.log("[Price] Simulation fallback started for all crypto instruments.");
+  }, SIM_INTERVAL_MS);
+  console.log("[Price] Simulation started (interval: 2 s).");
+}
+
+function stopSimulation(): void {
+  if (simInterval) { clearInterval(simInterval); simInterval = null; }
 }
 
 async function fetchBinancePrices(): Promise<void> {
   try {
     const symsJson = encodeURIComponent(JSON.stringify(Object.values(BINANCE_SYMBOLS)));
     const url = `https://api.binance.com/api/v3/ticker/price?symbols=${symsJson}`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
     if (!res.ok) return;
     const data = await res.json() as { symbol: string; price: string }[];
     const now = Date.now();
@@ -112,10 +125,15 @@ async function fetchBinancePrices(): Promise<void> {
   } catch {}
 }
 
+/* ─── FIX 2: Smart start / pause ────────────────────────────────── */
+
 export function startPriceService(): void {
-  console.log("[Price] Starting Binance REST price polling (14 pairs, every 3s)…");
+  if (isRunning) return;
+  isRunning = true;
+  console.log("[Price] Starting — Binance REST polling (14 pairs, every 10 s)…");
+
   fetchBinancePrices().then(() => {
-    console.log("[Price] Initial Binance prices fetched for all crypto pairs.");
+    console.log("[Price] Initial prices fetched from Binance.");
   }).catch(() => {
     console.log("[Price] Initial Binance fetch failed — simulation active.");
     startSimulation();
@@ -123,13 +141,40 @@ export function startPriceService(): void {
 
   pollInterval = setInterval(async () => {
     await fetchBinancePrices();
-  }, 3000);
+  }, POLL_INTERVAL_MS);
 
   setTimeout(() => {
     const anyLive = Object.values(prices).some(p => p.candle_time > 0);
     if (!anyLive) {
-      console.log("[Price] Binance polling not returning data — simulation fallback.");
+      console.log("[Price] Binance not responding — simulation fallback.");
       startSimulation();
     }
-  }, 10000);
+  }, 12000);
+}
+
+export function pausePriceService(): void {
+  if (!isRunning) return;
+  isRunning = false;
+  if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+  stopSimulation();
+  console.log("[Price] Paused — no active clients. Compute saved.");
+}
+
+export function resumePriceService(): void {
+  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+  if (isRunning) return;
+  console.log("[Price] Resuming — client connected.");
+  startPriceService();
+}
+
+/* Called from index.ts when a Socket.IO client disconnects.
+   Waits 60 s before pausing — handles quick page refreshes gracefully. */
+export function scheduleIdlePause(getClientCount: () => number): void {
+  if (pauseTimer) return;
+  pauseTimer = setTimeout(() => {
+    pauseTimer = null;
+    if (getClientCount() === 0) {
+      pausePriceService();
+    }
+  }, 60_000);
 }
