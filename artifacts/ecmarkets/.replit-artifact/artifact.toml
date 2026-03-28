@@ -15,7 +15,7 @@ name = "web"
 paths = ["/"]
 
 [services.development]
-run = "pnpm --filter @workspace/ecmarkets run dev"
+run = "pnpm --filter @workspace/ecmarkets run start"
 
 [services.env]
 PORT = "23494"
