@@ -3,7 +3,7 @@ builder = "nixpacks"
 buildCommand = "pnpm --filter @workspace/ecmarkets run build && pnpm --filter @workspace/api-server run build"
 
 [deploy]
-startCommand = "pnpm --filter @workspace/api-server run start"
+startCommand = "NODE_ENV=production NODE_TLS_REJECT_UNAUTHORIZED=0 node artifacts/api-server/dist/index.cjs"
 healthcheckPath = "/api/healthz"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
