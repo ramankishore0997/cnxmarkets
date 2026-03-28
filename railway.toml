@@ -5,6 +5,6 @@ buildCommand = "pnpm --filter @workspace/ecmarkets run build && pnpm --filter @w
 [deploy]
 startCommand = "pnpm --filter @workspace/api-server run start"
 healthcheckPath = "/api/healthz"
-healthcheckTimeout = 60
+healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
