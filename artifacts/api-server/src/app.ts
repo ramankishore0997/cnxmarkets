@@ -44,7 +44,7 @@ app.use("/api", router);
 if (process.env.NODE_ENV === "production") {
   const frontendDist = path.resolve(process.cwd(), "artifacts/ecmarkets/dist/public");
   app.use(express.static(frontendDist));
-  app.get("*", (_req: Request, res: Response) => {
+  app.get("/{*path}", (_req: Request, res: Response) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 } else {
