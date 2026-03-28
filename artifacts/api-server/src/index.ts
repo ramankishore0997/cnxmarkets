@@ -73,5 +73,5 @@ httpServer.listen(port, () => {
   console.log(`Server listening on port ${port}`);
   runStartupSeed();
   startTradeCron();
-  startPriceService(); /* Warm start — will auto-pause if no clients connect */
+  /* Price service starts ONLY when first client connects — saves compute at idle */
 });

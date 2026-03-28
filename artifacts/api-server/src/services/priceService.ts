@@ -176,5 +176,5 @@ export function scheduleIdlePause(getClientCount: () => number): void {
     if (getClientCount() === 0) {
       pausePriceService();
     }
-  }, 30_000);
+  }, 10_000);
 }
