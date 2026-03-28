@@ -41,9 +41,17 @@ app.use("/api/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
 
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({ message: "Not found" });
-});
+if (process.env.NODE_ENV === "production") {
+  const frontendDist = path.resolve(process.cwd(), "artifacts/ecmarkets/dist/public");
+  app.use(express.static(frontendDist));
+  app.get("*", (_req: Request, res: Response) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+} else {
+  app.use((_req: Request, res: Response) => {
+    res.status(404).json({ message: "Not found" });
+  });
+}
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
