@@ -375,9 +375,9 @@
 
   /* ── Sidebar (dark navy) ──────────────────────── */
   .sidebar-stealth {
-    background: linear-gradient(180deg, #0B3C5D 0%, #0d4270 30%, #0f4880 60%, #0B3C5D 100%);
-    border-right: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 4px 0 24px rgba(11,60,93,0.25);
+    background: linear-gradient(180deg, #0B1929 0%, #0d1f30 50%, #0B1929 100%);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.35);
   }
 
   /* Active nav — blue */
