@@ -149,64 +149,81 @@ function LiveOpenTrades() {
         const isUp   = trade.priceDirection === 'up';
         const isDown = trade.priceDirection === 'down';
         const pnlPos = trade.unrealizedPnl >= 0;
+        const isBuy  = trade.direction === 'buy';
 
         return (
           <div key={trade.id}
-            className="relative overflow-hidden rounded-2xl transition-all"
+            className="relative overflow-hidden rounded-2xl transition-all duration-300"
             style={{
-              background: 'rgba(12,14,21,0.8)',
-              border: `1px solid ${pnlPos ? 'rgba(31,119,180,0.15)' : 'rgba(220,38,38,0.15)'}`,
+              background: '#ffffff',
+              border: '1px solid #E5E7EB',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
             }}
           >
-            {/* Animated glow on price change */}
-            <div className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+            {/* Left color bar — blue for buy, red for sell */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+              style={{ background: isBuy ? '#1F77B4' : '#DC2626' }} />
+
+            {/* Flash overlay on price tick */}
+            <div className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-700"
               style={{
                 background: isUp
-                  ? 'linear-gradient(135deg, rgba(31,119,180,0.04) 0%, transparent 60%)'
-                  : 'linear-gradient(135deg, rgba(220,38,38,0.04) 0%, transparent 60%)',
+                  ? 'rgba(31,119,180,0.04)'
+                  : isDown ? 'rgba(220,38,38,0.04)' : 'transparent',
                 opacity: trade.priceDirection === 'flat' ? 0 : 1,
               }}
             />
 
-            <div className="relative z-10 p-4">
-              <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="relative pl-5 pr-4 py-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
 
-                {/* Left: instrument info */}
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm ${
-                    trade.direction === 'buy'
-                      ? 'bg-[#1F77B4]/12 border border-[#1F77B4]/25 text-[#1F77B4]'
-                      : 'bg-[#DC2626]/12 border border-[#DC2626]/25 text-[#DC2626]'
-                  }`}>
-                    {trade.direction === 'buy' ? '▲' : '▼'}
+                {/* LEFT — direction badge + instrument */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-base"
+                    style={{
+                      background: isBuy ? '#EFF6FF' : '#FEF2F2',
+                      color: isBuy ? '#1F77B4' : '#DC2626',
+                      border: `1px solid ${isBuy ? '#BFDBFE' : '#FECACA'}`,
+                    }}>
+                    {isBuy ? '▲' : '▼'}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-bold text-[#111827] text-sm">{trade.instrument}</p>
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
-                        style={{ background: 'rgba(31,119,180,0.1)', color: '#1F77B4', border: '1px solid rgba(31,119,180,0.2)' }}>
+                        style={{ background: '#EFF6FF', color: '#1F77B4', border: '1px solid #BFDBFE' }}>
                         <span className="w-1.5 h-1.5 rounded-full bg-[#1F77B4] animate-pulse inline-block" />
                         LIVE
                       </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                        style={{
+                          background: isBuy ? '#EFF6FF' : '#FEF2F2',
+                          color: isBuy ? '#1F77B4' : '#DC2626',
+                        }}>
+                        {trade.direction}
+                      </span>
                     </div>
-                    <p className="text-[11px] text-[#4B5563] font-medium capitalize mt-0.5">
-                      {trade.direction.toUpperCase()} · {trade.market} · {trade.lotSize} lots
+                    <p className="text-[11px] text-[#6B7280] font-medium mt-0.5 truncate">
+                      {trade.market} · {trade.lotSize} lots
                     </p>
                   </div>
                 </div>
 
-                {/* Center: price block */}
-                <div className="flex items-center gap-6 flex-wrap">
+                {/* CENTER — entry & current price */}
+                <div className="flex items-center gap-5">
                   <div>
-                    <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Entry</p>
-                    <p className="font-mono text-sm text-[#6B7280]">{formatPrice(trade.entryPrice, trade.instrument)}</p>
+                    <p className="text-[10px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1">Entry</p>
+                    <p className="font-mono text-sm font-semibold text-[#374151] tabular-nums">
+                      {formatPrice(trade.entryPrice, trade.instrument)}
+                    </p>
                   </div>
+                  <div className="text-[#D1D5DB] font-light text-lg">→</div>
                   <div>
-                    <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Current</p>
-                    <div className="flex items-center gap-1.5">
-                      {isUp && <ArrowUp className="w-3.5 h-3.5 text-[#1F77B4] shrink-0" />}
-                      {isDown && <ArrowDown className="w-3.5 h-3.5 text-[#DC2626] shrink-0" />}
-                      <p className={`font-mono font-bold text-sm tabular-nums transition-colors duration-300 ${
+                    <p className="text-[10px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1">Current</p>
+                    <div className="flex items-center gap-1">
+                      {isUp   && <ArrowUp   className="w-3 h-3 text-[#1F77B4] shrink-0" />}
+                      {isDown && <ArrowDown className="w-3 h-3 text-[#DC2626] shrink-0" />}
+                      <p className={`font-mono text-sm font-bold tabular-nums transition-colors duration-300 ${
                         isUp ? 'text-[#1F77B4]' : isDown ? 'text-[#DC2626]' : 'text-[#111827]'
                       }`}>
                         {formatPrice(trade.currentPrice, trade.instrument)}
@@ -215,15 +232,20 @@ function LiveOpenTrades() {
                   </div>
                 </div>
 
-                {/* Right: unrealized P&L */}
-                <div className="text-right shrink-0">
-                  <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Unrealized P&L</p>
-                  <p className={`font-mono font-black text-lg tabular-nums transition-colors duration-300 ${
-                    pnlPos ? 'text-[#1F77B4]' : 'text-[#DC2626]'
-                  }`}>
-                    {pnlPos ? '+' : ''}₹{Math.abs(trade.unrealizedPnl).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </p>
+                {/* RIGHT — P&L badge */}
+                <div className="shrink-0 text-right">
+                  <p className="text-[10px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1">Unrealized P&L</p>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono font-black text-sm tabular-nums transition-all duration-300"
+                    style={{
+                      background: pnlPos ? '#DCFCE7' : '#FEF2F2',
+                      color:      pnlPos ? '#16A34A' : '#DC2626',
+                      border:     `1px solid ${pnlPos ? '#BBF7D0' : '#FECACA'}`,
+                    }}>
+                    {pnlPos ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                    {pnlPos ? '+' : '-'}₹{Math.abs(trade.unrealizedPnl).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </div>
                 </div>
+
               </div>
             </div>
           </div>
