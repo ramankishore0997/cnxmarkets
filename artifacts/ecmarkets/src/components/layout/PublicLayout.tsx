@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Globe, Shield, Lock, Phone } from 'lucide-react';
 import { TradingWidget } from '../shared/TradingWidget';
-import { EcmLogo } from '../shared/EcmLogo';
+import { BrandLogo } from '../shared/EcmLogo';
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
@@ -51,13 +51,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="shrink-0">
-              <EcmLogo size={34} />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white">
-              ECMarket<span style={{ color: '#60C0F0' }}> Pro</span>
-            </span>
+          <Link href="/" className="flex items-center group">
+            <BrandLogo theme="dark" size="md" />
           </Link>
 
           {/* Desktop Nav */}
@@ -201,11 +196,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
             <div className="lg:col-span-2">
-              <Link href="/" className="flex items-center gap-2.5 mb-6">
-                <EcmLogo size={32} />
-                <span className="text-2xl font-bold tracking-tight text-white">
-                  ECMarket<span style={{ color: '#60C0F0' }}> Pro</span>
-                </span>
+              <Link href="/" className="flex items-center mb-6">
+                <BrandLogo theme="dark" size="md" />
               </Link>
               <p className="text-sm mb-5 leading-relaxed max-w-sm" style={{ color: '#EAF2F8', opacity: 0.75 }}>
                 UAE-regulated forex broker offering 200+ instruments including Forex, Crypto, Indices and Commodities with spreads from 0.0 pips and leverage up to 1:2000.

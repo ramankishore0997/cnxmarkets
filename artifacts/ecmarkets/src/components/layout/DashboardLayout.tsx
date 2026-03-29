@@ -17,7 +17,7 @@ import {
   ChevronRight,
   MoreHorizontal
 } from 'lucide-react';
-import { EcmLogo } from '@/components/shared/EcmLogo';
+import { EcmLogo, BrandLogo } from '@/components/shared/EcmLogo';
 import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
@@ -40,14 +40,8 @@ const bottomNavItems = [
 
 function SidebarLogo() {
   return (
-    <Link href="/" className="flex items-center gap-3 group">
-      <div className="shrink-0">
-        <EcmLogo size={36} />
-      </div>
-      <div className="leading-none">
-        <span className="text-lg font-black tracking-tight text-white">ECMarket</span>
-        <span className="text-lg font-black tracking-tight" style={{ color: '#60C0F0' }}> Pro</span>
-      </div>
+    <Link href="/" className="flex items-center group">
+      <BrandLogo theme="dark" size="md" />
     </Link>
   );
 }
@@ -288,9 +282,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
 
-          <div className="md:hidden flex items-center gap-2">
-            <EcmLogo size={26} />
-            <span className="text-sm font-black tracking-tight" style={{ color: '#0B3C5D' }}>ECMarket<span style={{ color: '#1F77B4' }}> Pro</span></span>
+          <div className="md:hidden flex items-center">
+            <BrandLogo theme="light" size="sm" />
           </div>
 
           <div className="hidden md:flex items-center gap-3">
