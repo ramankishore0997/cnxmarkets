@@ -297,13 +297,13 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── WHY CNXMarkets ── */}
+      {/* ── WHY ECMarket Pro ── */}
       <section className="bg-[#060709] py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
               <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-4">
-                Why Traders Choose CNXMarkets
+                Why Traders Choose ECMarket Pro
               </motion.h2>
               <motion.p variants={fadeUp} className="text-[#848E9C] mb-8 leading-relaxed">
                 We combine institutional-grade algorithms with a client-first approach — transparent fees, real-time reporting, and funds you can withdraw anytime.
@@ -390,7 +390,7 @@ export function Home() {
             {[
               { name: 'Rahul Sharma', city: 'Mumbai', ret: '+38% in 4 months', text: 'Platform ne meri zindagi badal di. Ek baar fund karo, algo baaki sab karta hai.', stars: 5 },
               { name: 'Priya Nair', city: 'Bangalore', ret: '+52% in 6 months', text: 'Withdrawal process bahut smooth hai. 24 hours me paise aa gaye bina kisi issue ke.', stars: 5 },
-              { name: 'Amit Verma', city: 'Delhi', ret: '+29% in 3 months', text: 'Best decision tha jo maine CNXMarkets join kiya. Transparent aur professional platform.', stars: 5 },
+              { name: 'Amit Verma', city: 'Delhi', ret: '+29% in 3 months', text: 'Best decision tha jo maine ECMarket Pro join kiya. Transparent aur professional platform.', stars: 5 },
             ].map(r => (
               <motion.div key={r.name} variants={fadeUp}
                 className="rounded-2xl border border-[#1A1D27] bg-[#060709] p-6">
@@ -465,7 +465,7 @@ export function Home() {
               Ready to Let Your <span className="text-[#00C274]">Money Work</span> for You?
             </motion.h2>
             <motion.p variants={fadeUp} className="text-[#848E9C] mb-8 text-lg">
-              Join 10 Lakh+ traders already growing with CNXMarkets.
+              Join 10 Lakh+ traders already growing with ECMarket Pro.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center">
               <Link href="/auth/register">

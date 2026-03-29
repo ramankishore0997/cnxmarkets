@@ -49,7 +49,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <EcmLogo size={34} />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
-              CNX<span className="text-[#00C274]">Markets</span>
+              ECMarket<span className="text-[#00C274]"> Pro</span>
             </span>
           </Link>
 
@@ -198,7 +198,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                   <EcmLogo size={32} />
                 </div>
                 <span className="text-2xl font-bold tracking-tight text-white">
-                  CNX<span className="text-[#00C274]">Markets</span>
+                  ECMarket<span className="text-[#00C274]"> Pro</span>
                 </span>
               </Link>
               <p className="text-[#848E9C] text-sm mb-5 leading-relaxed max-w-sm">
@@ -262,7 +262,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         </div>
         <div className="bg-[#060709] py-6 border-t border-[#181B23]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p className="text-[#848E9C]">&copy; {new Date().getFullYear()} CNXMarkets. All rights reserved.</p>
+            <p className="text-[#848E9C]">&copy; {new Date().getFullYear()} ECMarket Pro. All rights reserved.</p>
             <p className="text-[#CF304A] font-medium">Trading in financial markets involves significant risk and may not be suitable for all investors. Past performance does not guarantee future results.</p>
           </div>
         </div>

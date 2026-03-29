@@ -71,7 +71,7 @@ export function DownloadApp() {
             </motion.div>
 
             <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-              CNXMarkets
+              ECMarket Pro
               <span className="block" style={{ color: '#00C274' }}>App Download</span>
             </motion.h1>
 
@@ -118,7 +118,7 @@ export function DownloadApp() {
               </div>
 
               <p className="text-[#848E9C] text-sm leading-relaxed mb-8">
-                Install CNXMarkets as a desktop app directly from your browser. Works on Chrome, Edge, and Brave. No download from any store required.
+                Install ECMarket Pro as a desktop app directly from your browser. Works on Chrome, Edge, and Brave. No download from any store required.
               </p>
 
               {/* Steps */}
@@ -210,7 +210,7 @@ export function DownloadApp() {
               </div>
 
               <p className="text-[#848E9C] text-sm leading-relaxed mb-8">
-                Add CNXMarkets to your home screen for a full-screen, app-like experience. Instant access with one tap — just like a native app.
+                Add ECMarket Pro to your home screen for a full-screen, app-like experience. Instant access with one tap — just like a native app.
               </p>
 
               {/* Android Steps */}

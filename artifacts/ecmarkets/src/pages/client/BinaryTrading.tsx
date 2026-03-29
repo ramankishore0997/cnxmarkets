@@ -558,7 +558,7 @@ export function BinaryTrading() {
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-bold text-white tracking-tight">Desktop Required</h2>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              Binary Trading is only available on desktop. Please open CNXMarkets on your computer for the full trading experience.
+              Binary Trading is only available on desktop. Please open ECMarket Pro on your computer for the full trading experience.
             </p>
           </div>
 

@@ -20,7 +20,7 @@ export function RiskDisclosure() {
           <div className="space-y-10 text-[#848E9C] leading-relaxed">
 
             <Section title="1. General Risk Warning">
-              Algorithmic trading and financial market investments carry a high level of risk. The value of your investments can go up as well as down, and you may receive back less than you originally invested. Past performance of any trading strategy, algorithm, or fund is not indicative of future results. CNXMarkets does not guarantee any particular level of return.
+              Algorithmic trading and financial market investments carry a high level of risk. The value of your investments can go up as well as down, and you may receive back less than you originally invested. Past performance of any trading strategy, algorithm, or fund is not indicative of future results. ECMarket Pro does not guarantee any particular level of return.
             </Section>
 
             <Section title="2. Market Risk">
@@ -54,19 +54,19 @@ export function RiskDisclosure() {
             </Section>
 
             <Section title="8. Counterparty Risk">
-              Transactions executed on the Platform are subject to counterparty risk — the risk that the other party to a transaction may default or be unable to fulfil their obligations. While CNXMarkets takes measures to mitigate this risk, it cannot be entirely eliminated.
+              Transactions executed on the Platform are subject to counterparty risk — the risk that the other party to a transaction may default or be unable to fulfil their obligations. While ECMarket Pro takes measures to mitigate this risk, it cannot be entirely eliminated.
             </Section>
 
             <Section title="9. Client Fund Segregation">
-              CNXMarkets maintains client funds in segregated accounts, separate from operational funds. However, in the event of insolvency, regulatory action, or other extraordinary circumstances, there is no absolute guarantee that segregated funds will be fully protected. Clients are encouraged to regularly review their account balances and withdrawal history.
+              ECMarket Pro maintains client funds in segregated accounts, separate from operational funds. However, in the event of insolvency, regulatory action, or other extraordinary circumstances, there is no absolute guarantee that segregated funds will be fully protected. Clients are encouraged to regularly review their account balances and withdrawal history.
             </Section>
 
             <Section title="10. No Guaranteed Returns">
-              Any references to expected returns, daily growth targets, or historical strategy performance are provided for illustrative purposes only and do not constitute a guarantee or promise of future results. Investment returns are inherently variable and uncertain. CNXMarkets strongly advises clients not to invest funds they cannot afford to lose.
+              Any references to expected returns, daily growth targets, or historical strategy performance are provided for illustrative purposes only and do not constitute a guarantee or promise of future results. Investment returns are inherently variable and uncertain. ECMarket Pro strongly advises clients not to invest funds they cannot afford to lose.
             </Section>
 
             <Section title="11. Seek Independent Advice">
-              Before making any investment decision, you should seek independent financial, legal, and tax advice appropriate to your individual circumstances. CNXMarkets does not provide personalised investment advice and the content on this Platform should not be construed as such.
+              Before making any investment decision, you should seek independent financial, legal, and tax advice appropriate to your individual circumstances. ECMarket Pro does not provide personalised investment advice and the content on this Platform should not be construed as such.
             </Section>
 
             <Section title="12. Contact and Complaints">

@@ -64,7 +64,7 @@ export function PWAInstallPrompt() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-white font-bold text-sm leading-tight">CNXMarkets App</p>
+          <p className="text-white font-bold text-sm leading-tight">ECMarket Pro App</p>
           <p className="text-[#848E9C] text-xs mt-0.5 leading-snug">
             {pwaManager.isIOS
               ? 'Add to Home Screen for an app-like experience!'

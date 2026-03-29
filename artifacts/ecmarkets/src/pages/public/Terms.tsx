@@ -14,7 +14,7 @@ export function Terms() {
           <div className="space-y-10 text-[#848E9C] leading-relaxed">
 
             <Section title="1. Acceptance of Terms">
-              By accessing or using CNXMarkets (the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Platform. These Terms constitute a legally binding agreement between you and CNXMarkets.
+              By accessing or using ECMarket Pro (the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Platform. These Terms constitute a legally binding agreement between you and ECMarket Pro.
             </Section>
 
             <Section title="2. Eligibility">
@@ -22,25 +22,25 @@ export function Terms() {
             </Section>
 
             <Section title="3. Account Registration and KYC">
-              To access trading features, you must complete our Know Your Customer (KYC) verification process. You agree to provide accurate, current, and complete documentation as requested. CNXMarkets reserves the right to suspend or terminate accounts where verification requirements are not met or where fraudulent information is detected.
+              To access trading features, you must complete our Know Your Customer (KYC) verification process. You agree to provide accurate, current, and complete documentation as requested. ECMarket Pro reserves the right to suspend or terminate accounts where verification requirements are not met or where fraudulent information is detected.
             </Section>
 
             <Section title="4. Trading Services">
-              CNXMarkets provides algorithmic trading services on your behalf based on strategies you select. Past performance of any strategy does not guarantee future results. All trading involves risk, and you may lose some or all of your invested capital. You acknowledge that:
+              ECMarket Pro provides algorithmic trading services on your behalf based on strategies you select. Past performance of any strategy does not guarantee future results. All trading involves risk, and you may lose some or all of your invested capital. You acknowledge that:
               <ul className="list-disc list-inside mt-3 space-y-1 ml-4">
                 <li>Algorithmic strategies operate automatically without manual intervention</li>
                 <li>Market conditions can result in losses despite automated risk controls</li>
                 <li>Daily growth targets are estimates and are not guaranteed</li>
-                <li>CNXMarkets does not provide personalised financial advice</li>
+                <li>ECMarket Pro does not provide personalised financial advice</li>
               </ul>
             </Section>
 
             <Section title="5. Deposits and Withdrawals">
-              Deposits are processed through verified payment channels. Withdrawal requests are processed within 24 business hours to your registered bank account, subject to completed KYC and compliance checks. CNXMarkets reserves the right to delay or refuse withdrawals if there is suspicion of fraudulent activity, money laundering, or breach of these Terms.
+              Deposits are processed through verified payment channels. Withdrawal requests are processed within 24 business hours to your registered bank account, subject to completed KYC and compliance checks. ECMarket Pro reserves the right to delay or refuse withdrawals if there is suspicion of fraudulent activity, money laundering, or breach of these Terms.
             </Section>
 
             <Section title="6. Fees and Charges">
-              CNXMarkets may charge performance fees, management fees, or transaction fees as disclosed on the Platform. All applicable fees will be clearly communicated prior to activation of any trading strategy. Fees are subject to change with prior notice.
+              ECMarket Pro may charge performance fees, management fees, or transaction fees as disclosed on the Platform. All applicable fees will be clearly communicated prior to activation of any trading strategy. Fees are subject to change with prior notice.
             </Section>
 
             <Section title="7. Prohibited Activities">
@@ -55,15 +55,15 @@ export function Terms() {
             </Section>
 
             <Section title="8. Intellectual Property">
-              All content, algorithms, software, designs, and trademarks on the Platform are the exclusive property of CNXMarkets and are protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without express written permission.
+              All content, algorithms, software, designs, and trademarks on the Platform are the exclusive property of ECMarket Pro and are protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without express written permission.
             </Section>
 
             <Section title="9. Limitation of Liability">
-              To the maximum extent permitted by law, CNXMarkets shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, arising out of or in connection with your use of the Platform. Our total liability to you shall not exceed the amount of fees paid by you to CNXMarkets in the three months preceding the claim.
+              To the maximum extent permitted by law, ECMarket Pro shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, arising out of or in connection with your use of the Platform. Our total liability to you shall not exceed the amount of fees paid by you to ECMarket Pro in the three months preceding the claim.
             </Section>
 
             <Section title="10. Termination">
-              CNXMarkets reserves the right to suspend or terminate your account at any time, with or without notice, for violation of these Terms or for any reason we deem necessary to protect the integrity of the Platform or comply with legal obligations. Upon termination, your funds (if any) will be processed for withdrawal subject to applicable checks.
+              ECMarket Pro reserves the right to suspend or terminate your account at any time, with or without notice, for violation of these Terms or for any reason we deem necessary to protect the integrity of the Platform or comply with legal obligations. Upon termination, your funds (if any) will be processed for withdrawal subject to applicable checks.
             </Section>
 
             <Section title="11. Governing Law">
@@ -71,7 +71,7 @@ export function Terms() {
             </Section>
 
             <Section title="12. Changes to Terms">
-              CNXMarkets may update these Terms from time to time. We will notify registered users of material changes via email or platform notification. Continued use of the Platform after such notification constitutes acceptance of the updated Terms.
+              ECMarket Pro may update these Terms from time to time. We will notify registered users of material changes via email or platform notification. Continued use of the Platform after such notification constitutes acceptance of the updated Terms.
             </Section>
 
             <Section title="13. Contact Us">

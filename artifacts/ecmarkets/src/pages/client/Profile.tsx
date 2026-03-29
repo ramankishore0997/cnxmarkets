@@ -685,7 +685,7 @@ export function Profile() {
             <div>
               <p className="text-xs font-bold text-[#00C274] mb-1">Coming Soon</p>
               <p className="text-[11px] text-[#4B5563] leading-relaxed">
-                Algo trading integration is launching soon. Your API key is ready — connect your trading algorithm to auto-execute orders directly on your CNXMarkets account.
+                Algo trading integration is launching soon. Your API key is ready — connect your trading algorithm to auto-execute orders directly on your ECMarket Pro account.
               </p>
             </div>
           </div>

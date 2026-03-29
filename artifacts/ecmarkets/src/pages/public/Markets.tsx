@@ -167,7 +167,7 @@ export function Markets() {
         {/* DETAILED FOREX PAIRS */}
         <div className="mt-24">
           <h2 className="text-2xl font-bold text-white mb-4">Complete Tradable Instruments</h2>
-          <p className="text-[#848E9C] mb-8">All instruments available on CNXMarkets, organised by category and liquidity tier.</p>
+          <p className="text-[#848E9C] mb-8">All instruments available on ECMarket Pro, organised by category and liquidity tier.</p>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div>
               <h3 className="text-[#00C274] font-bold uppercase tracking-wider text-sm mb-4">Major Forex Pairs</h3>
@@ -274,7 +274,7 @@ export function Markets() {
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-4">🌐 Global Market Access via Algorithmic Infrastructure</h2>
                 <p className="text-[#848E9C] mb-4 leading-relaxed">
-                  CNXMarkets provides access to global financial markets through institutional-grade algorithmic trading infrastructure. Our platform connects to Tier-1 liquidity providers and global exchanges, delivering professional execution across forex, commodities, and indices.
+                  ECMarket Pro provides access to global financial markets through institutional-grade algorithmic trading infrastructure. Our platform connects to Tier-1 liquidity providers and global exchanges, delivering professional execution across forex, commodities, and indices.
                 </p>
                 <ul className="space-y-2 text-sm">
                   {[

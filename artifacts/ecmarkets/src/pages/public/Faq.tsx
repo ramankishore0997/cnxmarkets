@@ -18,12 +18,12 @@ export function Faq() {
     {
       category: 'General',
       q: "Do I need trading experience?",
-      a: "No prior trading experience is required. CNXMarkets is a fully managed quantitative solution. Once you deposit funds and allocate them to a strategy, our systems handle 100% of the analysis, execution, and risk management."
+      a: "No prior trading experience is required. ECMarket Pro is a fully managed quantitative solution. Once you deposit funds and allocate them to a strategy, our systems handle 100% of the analysis, execution, and risk management."
     },
     {
       category: 'General',
-      q: "How does CNXMarkets protect client funds?",
-      a: "CNXMarkets maintains strict AML (Anti-Money Laundering) policies and rigorous KYC verification for all clients. All client funds are held in segregated tier-1 bank accounts entirely separate from company operating capital. We have trading authority only — we cannot move or withdraw client funds. For jurisdiction-specific compliance queries, please contact our compliance team."
+      q: "How does ECMarket Pro protect client funds?",
+      a: "ECMarket Pro maintains strict AML (Anti-Money Laundering) policies and rigorous KYC verification for all clients. All client funds are held in segregated tier-1 bank accounts entirely separate from company operating capital. We have trading authority only — we cannot move or withdraw client funds. For jurisdiction-specific compliance queries, please contact our compliance team."
     },
     {
       category: 'General',
@@ -37,8 +37,8 @@ export function Faq() {
     },
     {
       category: 'General',
-      q: "Can I use CNXMarkets alongside manual trading?",
-      a: "Absolutely. Many of our clients use CNXMarkets as a passive algorithmic income stream alongside their existing manual trading or investment portfolios. The accounts are completely independent."
+      q: "Can I use ECMarket Pro alongside manual trading?",
+      a: "Absolutely. Many of our clients use ECMarket Pro as a passive algorithmic income stream alongside their existing manual trading or investment portfolios. The accounts are completely independent."
     },
     {
       category: 'Accounts',
@@ -122,7 +122,7 @@ export function Faq() {
     },
     {
       category: 'Security',
-      q: "What happens if CNXMarkets shuts down?",
+      q: "What happens if ECMarket Pro shuts down?",
       a: "Client funds are completely segregated from company operating funds in separate tier-1 bank accounts. In the unlikely event of company closure, client funds are fully protected and returned immediately. We are also fully insured against operational risk."
     },
     {

@@ -154,7 +154,7 @@ export function Register() {
             <div className="flex items-center gap-3 cursor-pointer">
               <EcmLogo size={40} />
               <span className="text-white font-bold text-xl tracking-tight">
-                CNX<span style={{ color: '#00C274' }}>Markets</span>
+                ECMarket<span style={{ color: '#00C274' }}> Pro</span>
               </span>
             </div>
           </Link>
@@ -166,7 +166,7 @@ export function Register() {
               <span style={{ color: '#00C274' }}>Smarter Today</span>
             </h2>
             <p style={{ color: '#848E9C' }} className="text-lg leading-relaxed">
-              Join thousands of traders using CNXMarkets's algorithmic platform to grow their wealth.
+              Join thousands of traders using ECMarket Pro's algorithmic platform to grow their wealth.
             </p>
           </div>
           <div className="space-y-4">
@@ -185,7 +185,7 @@ export function Register() {
         </div>
         <div className="relative z-10">
           <p className="text-sm" style={{ color: '#848E9C' }}>
-            © 2024 CNXMarkets. Regulated algorithmic trading platform.
+            © 2024 ECMarket Pro. Regulated algorithmic trading platform.
           </p>
         </div>
       </div>
@@ -197,7 +197,7 @@ export function Register() {
               <div className="flex items-center gap-3 cursor-pointer">
                 <EcmLogo size={36} />
                 <span className="text-white font-bold text-lg">
-                  CNX<span style={{ color: '#00C274' }}>Markets</span>
+                  ECMarket<span style={{ color: '#00C274' }}> Pro</span>
                 </span>
               </div>
             </Link>

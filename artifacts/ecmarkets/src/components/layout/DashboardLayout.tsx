@@ -47,8 +47,8 @@ function SidebarLogo() {
         <EcmLogo size={36} />
       </div>
       <div className="leading-none">
-        <span className="text-lg font-black tracking-tight text-gradient-metallic">CNX</span>
-        <span className="text-lg font-black tracking-tight text-[#00C274]">Markets</span>
+        <span className="text-lg font-black tracking-tight text-gradient-metallic">ECMarket</span>
+        <span className="text-lg font-black tracking-tight text-[#00C274]"> Pro</span>
       </div>
     </Link>
   );
@@ -291,7 +291,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
           <div className="md:hidden flex items-center gap-2">
             <EcmLogo size={26} />
-            <span className="text-sm font-black tracking-tight text-white">CNX<span className="text-[#00C274]">Markets</span></span>
+            <span className="text-sm font-black tracking-tight text-white">ECMarket<span className="text-[#00C274]"> Pro</span></span>
           </div>
 
           <div className="hidden md:flex items-center gap-3">

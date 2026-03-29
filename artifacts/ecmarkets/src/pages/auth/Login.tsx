@@ -96,9 +96,9 @@ export function Login() {
   };
 
   const onForgotSubmit = (data: z.infer<typeof forgotSchema>) => {
-    const subject = encodeURIComponent('Password Reset Request — CNXMarkets');
+    const subject = encodeURIComponent('Password Reset Request — ECMarket Pro');
     const body = encodeURIComponent(
-      `Hello CNXMarkets Support,\n\nI would like to reset my account password. Please find my details below:\n\n` +
+      `Hello ECMarket Pro Support,\n\nI would like to reset my account password. Please find my details below:\n\n` +
       `Registered Email: ${data.email.trim().toLowerCase()}\nRequested New Password: ${data.newPassword}\n\n` +
       `Kindly update my password at the earliest.\n\nThank you.`
     );
@@ -132,7 +132,7 @@ export function Login() {
             <div className="flex items-center gap-3 cursor-pointer">
               <EcmLogo size={40} />
               <span className="text-white font-bold text-xl tracking-tight">
-                CNX<span style={{ color: '#00C274' }}>Markets</span>
+                ECMarket<span style={{ color: '#00C274' }}> Pro</span>
               </span>
             </div>
           </Link>
@@ -167,7 +167,7 @@ export function Login() {
         </div>
         <div className="relative z-10">
           <p className="text-sm" style={{ color: '#848E9C' }}>
-            © 2025 CNXMarkets. Regulated algorithmic trading platform.
+            © 2025 ECMarket Pro. Regulated algorithmic trading platform.
           </p>
         </div>
       </div>
@@ -182,7 +182,7 @@ export function Login() {
               <div className="flex items-center gap-3 cursor-pointer">
                 <EcmLogo size={36} />
                 <span className="text-white font-bold text-lg">
-                  CNX<span style={{ color: '#00C274' }}>Markets</span>
+                  ECMarket<span style={{ color: '#00C274' }}> Pro</span>
                 </span>
               </div>
             </Link>

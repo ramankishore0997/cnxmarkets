@@ -44,7 +44,7 @@ export function About() {
             transition={{ delay: 0.1 }}
             className="text-xl text-[#848E9C] max-w-3xl mx-auto"
           >
-            CNXMarkets is a technology-driven global trading platform, built by quantitative researchers and software engineers to deliver institutional-grade algorithmic strategies, analytics tools, and market monitoring infrastructure to investors worldwide.
+            ECMarket Pro is a technology-driven global trading platform, built by quantitative researchers and software engineers to deliver institutional-grade algorithmic strategies, analytics tools, and market monitoring infrastructure to investors worldwide.
           </motion.p>
         </div>
       </section>
@@ -59,7 +59,7 @@ export function About() {
                 For decades, the most profitable trading strategies have been locked behind the high entry barriers of proprietary trading firms and quantitative hedge funds. Retail investors were left to compete using manual execution and delayed data.
               </p>
               <p className="text-[#848E9C] mb-4 leading-relaxed text-lg">
-                We built CNXMarkets to change this paradigm. By pooling capital and running our proprietary algorithms on tier-1 liquidity providers, we achieve economies of scale that allow us to offer institutional execution to individual accounts.
+                We built ECMarket Pro to change this paradigm. By pooling capital and running our proprietary algorithms on tier-1 liquidity providers, we achieve economies of scale that allow us to offer institutional execution to individual accounts.
               </p>
               <p className="text-[#848E9C] leading-relaxed text-lg">
                 Our infrastructure is built on C++ and Rust for execution, paired with Python-based machine learning models for strategy generation, all hosted on co-located servers in Equinix LD4 and NY4.
@@ -93,7 +93,7 @@ export function About() {
                     <div className="flex items-center justify-between space-x-2 mb-1">
                       <div className="font-bold text-white">2023</div>
                     </div>
-                    <div className="text-[#848E9C] text-sm">Launch of retail platform CNXMarkets.</div>
+                    <div className="text-[#848E9C] text-sm">Launch of retail platform ECMarket Pro.</div>
                   </div>
                 </div>
                 <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">

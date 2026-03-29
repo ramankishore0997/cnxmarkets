@@ -136,7 +136,7 @@ export function Leaderboard() {
               <h1 className="text-xl font-black text-[#F8FAFC]">Leaderboard</h1>
             </div>
             <p className="text-[12px] text-[#4B5563]">
-              <span className="text-[#00C274] font-bold">{TOTAL_TRADERS.toLocaleString()}</span> active traders on CNXMarkets
+              <span className="text-[#00C274] font-bold">{TOTAL_TRADERS.toLocaleString()}</span> active traders on ECMarket Pro
             </p>
           </div>
 
