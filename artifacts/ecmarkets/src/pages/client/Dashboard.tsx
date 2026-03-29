@@ -318,8 +318,8 @@ export function Dashboard() {
                 <Download className="w-4 h-4" /> Deposit
               </Link>
               <Link href="/dashboard/withdraw"
-                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border border-white/10 text-[#374151] hover:border-white/25 hover:text-white transition-all"
-                style={{ background: 'rgba(255,255,255,0.04)' }}>
+                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
+                style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.35)', color: '#FFFFFF' }}>
                 <Upload className="w-4 h-4" /> Withdraw
               </Link>
             </div>

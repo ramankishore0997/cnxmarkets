@@ -261,7 +261,7 @@ export function TradeHistory() {
             </div>
             <div className="min-w-0">
               <p className="text-xs text-[#6B7280] font-medium truncate">{s.label}</p>
-              <p className="text-lg font-bold leading-tight" style={{ color: s.color === '#DC2626' ? '#DC2626' : '#fff' }}>
+              <p className="text-lg font-bold leading-tight" style={{ color: s.color === '#DC2626' ? '#DC2626' : s.color === '#16A34A' ? '#16A34A' : '#111827' }}>
                 {s.value}
               </p>
               <p className="text-[10px] text-[#6B7280] truncate">{s.sub}</p>
@@ -275,7 +275,7 @@ export function TradeHistory() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB]">
           <div className="flex items-center gap-2">
             <CalendarDays className="w-4 h-4 text-[#1F77B4]" />
-            <span className="text-white font-bold text-sm">
+            <span className="text-[#111827] font-bold text-sm">
               {tab === 'algo' ? 'Algo Trades' : 'Binary Trades'} — Closed Positions
             </span>
             {loading && <Loader2 className="w-4 h-4 animate-spin text-[#6B7280] ml-1" />}
@@ -321,9 +321,9 @@ export function TradeHistory() {
                           <p className="text-[#6B7280] text-[11px]">{dt.time}</p>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <p className="text-white font-bold text-sm">{trade.instrument}</p>
+                          <p className="text-[#111827] font-bold text-sm">{trade.instrument}</p>
                           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-                            trade.market === 'Forex' ? 'bg-blue-500/15 text-blue-400' : 'bg-orange-500/15 text-orange-400'
+                            trade.market === 'Forex' ? 'bg-blue-500/15 text-blue-600' : 'bg-orange-500/15 text-orange-600'
                           }`}>{trade.market}</span>
                         </td>
                         <td className="px-4 py-3">
@@ -378,9 +378,9 @@ export function TradeHistory() {
                     <div className="flex items-start justify-between mb-2.5">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-white font-bold text-sm">{trade.instrument}</p>
+                          <p className="text-[#111827] font-bold text-sm">{trade.instrument}</p>
                           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-                            trade.market === 'Forex' ? 'bg-blue-500/15 text-blue-400' : 'bg-orange-500/15 text-orange-400'
+                            trade.market === 'Forex' ? 'bg-blue-500/15 text-blue-600' : 'bg-orange-500/15 text-orange-600'
                           }`}>{trade.market}</span>
                           <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             trade.direction === 'buy'
@@ -462,8 +462,8 @@ export function TradeHistory() {
                           <p className="text-[#6B7280] text-[11px]">{dt.time}</p>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <p className="text-white font-bold text-sm">{trade.instrument}</p>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400">Binary</span>
+                          <p className="text-[#111827] font-bold text-sm">{trade.instrument}</p>
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-600">Binary</span>
                         </td>
                         <td className="px-4 py-3">
                           <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ${
@@ -532,8 +532,8 @@ export function TradeHistory() {
                     <div className="flex items-start justify-between mb-2.5">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-white font-bold text-sm">{trade.instrument}</p>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400">Binary</span>
+                          <p className="text-[#111827] font-bold text-sm">{trade.instrument}</p>
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-600">Binary</span>
                           <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             isCall ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                           }`}>
@@ -586,7 +586,7 @@ export function TradeHistory() {
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#6B7280] hover:text-white hover:bg-[#E5E7EB] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#374151] hover:text-[#111827] hover:bg-[#E5E7EB] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
             >
               <ChevronLeft className="w-4 h-4" /> Prev
             </button>
@@ -598,7 +598,7 @@ export function TradeHistory() {
                 return (
                   <button key={pg} onClick={() => setPage(pg)}
                     className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                      pg === page ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:bg-[#E5E7EB] hover:text-white'
+                      pg === page ? 'bg-[#1F77B4] text-white' : 'text-[#374151] hover:bg-[#E5E7EB] hover:text-[#111827]'
                     }`}>{pg}</button>
                 );
               })}
@@ -606,13 +606,13 @@ export function TradeHistory() {
 
             {/* Mobile: page X / Y */}
             <span className="sm:hidden text-xs font-semibold text-[#6B7280]">
-              Page <span className="text-white">{page}</span> / {activePages}
+              Page <span className="text-[#111827] font-bold">{page}</span> / {activePages}
             </span>
 
             <button
               onClick={() => setPage(p => Math.min(activePages, p + 1))}
               disabled={page >= activePages}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#6B7280] hover:text-white hover:bg-[#E5E7EB] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#374151] hover:text-[#111827] hover:bg-[#E5E7EB] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>

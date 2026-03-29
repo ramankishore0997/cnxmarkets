@@ -188,7 +188,7 @@ export function Deposit() {
                         type="number"
                         value={upiAmount}
                         onChange={e => { setUpiAmount(e.target.value); setUpiError(''); }}
-                        className="flex-1 bg-transparent text-white placeholder-[#4B5563] text-sm font-medium px-4 outline-none w-0 min-w-0"
+                        className="flex-1 bg-transparent text-[#111827] placeholder-[#9CA3AF] text-sm font-medium px-4 outline-none w-0 min-w-0"
                         placeholder="Enter amount (Min ₹5,000)"
                         min={5000}
                       />
@@ -215,7 +215,7 @@ export function Deposit() {
                         type="text"
                         value={upiId}
                         onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
-                        className="flex-1 bg-transparent text-white placeholder-[#4B5563] text-sm font-medium px-4 outline-none w-0 min-w-0"
+                        className="flex-1 bg-transparent text-[#111827] placeholder-[#9CA3AF] text-sm font-medium px-4 outline-none w-0 min-w-0"
                         placeholder="Enter your UPI ID (e.g., user@upi)"
                       />
                     </div>

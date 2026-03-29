@@ -106,7 +106,7 @@ function FileUploadBox({
               <FileImage className="w-5 h-5 text-[#1F77B4]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">{file.name}</p>
+              <p className="text-xs font-semibold text-[#111827] truncate">{file.name}</p>
               <p className="text-[10px] text-[#6B7280]">{(file.size / 1024).toFixed(0)} KB</p>
             </div>
             <div className="flex gap-1.5">

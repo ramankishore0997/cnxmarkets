@@ -39,7 +39,6 @@ import { AdminForceLogin } from "@/pages/admin/AdminForceLogin";
 import { AdminKyc } from "@/pages/admin/AdminKyc";
 import { TradeHistory } from "@/pages/client/TradeHistory";
 import { BinaryTrading } from "@/pages/client/BinaryTrading";
-import { Leaderboard } from "@/pages/client/Leaderboard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -101,10 +100,6 @@ function Router() {
           <ProtectedRoute component={BinaryTrading} />
         </ErrorBoundary>
       </Route>
-      <Route path="/dashboard/leaderboard">
-        <ProtectedRoute component={Leaderboard} />
-      </Route>
-
       {/* Admin Routes */}
       <Route path="/admin">
         <ProtectedRoute component={AdminDashboard} adminOnly={true} />

@@ -15,8 +15,7 @@ import {
   History,
   TrendingUp,
   ChevronRight,
-  MoreHorizontal,
-  Trophy
+  MoreHorizontal
 } from 'lucide-react';
 import { EcmLogo } from '@/components/shared/EcmLogo';
 import { useAuthState } from '@/hooks/use-auth-state';
@@ -24,7 +23,6 @@ import { useAuthState } from '@/hooks/use-auth-state';
 const navItems = [
   { name: 'Overview',       href: '/dashboard',              icon: LayoutDashboard },
   { name: 'Crypto Trading', href: '/dashboard/binary',       icon: TrendingUp, highlight: true },
-  { name: 'Leaderboard',   href: '/dashboard/leaderboard',  icon: Trophy },
   { name: 'Analytics',     href: '/dashboard/analytics',    icon: LineChart },
   { name: 'Trade History', href: '/dashboard/trades',       icon: History },
   { name: 'Deposit',       href: '/dashboard/deposit',      icon: Wallet },
