@@ -36,7 +36,7 @@ export function About() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl font-bold text-white mb-6"
           >
-            Engineering <span className="text-gradient-gold">Alpha</span>
+            Trade Global Markets <span className="text-gradient-gold">Smarter</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -116,7 +116,7 @@ export function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Core Principles</h2>
-            <p className="text-lg text-[#848E9C]">The philosophies that drive our algorithms and our business.</p>
+            <p className="text-lg text-[#848E9C]">What makes ECMarket Pro the broker of choice for serious traders.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, i) => (

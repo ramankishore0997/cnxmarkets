@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield, Zap, TrendingUp, ChevronDown, ChevronUp,
   ArrowRight, Users, Globe, Lock, BarChart2, Wallet, Clock,
-  Star, CheckCircle2
+  Star, CheckCircle2, Activity
 } from 'lucide-react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 
@@ -108,17 +108,33 @@ export function Home() {
       <LiveTicker />
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-[#060709] pt-14 pb-24 md:pt-20 md:pb-32">
-        {/* subtle radial glow */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-[600px] w-[600px] rounded-full bg-[#00C274]/5 blur-[120px]" />
+      <section className="relative overflow-hidden bg-[#060709] pt-14 pb-20 md:pt-20 md:pb-28">
+        {/* Animated gradient orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <motion.div
+            animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-20 left-1/4 w-[500px] h-[500px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.08) 0%, transparent 70%)' }}
+          />
+          <motion.div
+            animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+            className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.05) 0%, transparent 70%)' }}
+          />
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }} />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
             {/* Left */}
             <motion.div initial="hidden" animate="visible" variants={stagger}>
-              <motion.div variants={fadeUp} className="mb-5">
+              <motion.div variants={fadeUp} className="mb-6">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#00C274]/30 bg-[#00C274]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[#00C274]">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C274] opacity-75" />
@@ -130,21 +146,24 @@ export function Home() {
 
               <motion.h1 variants={fadeUp} className="text-5xl md:text-6xl lg:text-[68px] font-black text-white leading-[1.05] tracking-tight mb-6">
                 Trade Forex,<br />
-                <span className="text-[#00C274]">Crypto & More.</span>
+                <span style={{ background: 'linear-gradient(90deg, #00C274, #00E68A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Crypto & More.
+                </span>
               </motion.h1>
 
               <motion.p variants={fadeUp} className="text-lg text-[#848E9C] mb-8 max-w-md leading-relaxed">
-                Access 200+ global markets with leverage up to 1:2000, spreads from 0.0 pips, instant deposits & withdrawals within 1 hour.
+                Access 200+ global markets with leverage up to <span className="text-white font-semibold">1:2000</span>, spreads from <span className="text-white font-semibold">0.0 pips</span>, instant deposits & <span className="text-white font-semibold">1-hour withdrawals</span>.
               </motion.p>
 
-              <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-8">
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-10">
                 <Link href="/auth/register">
-                  <a className="btn-green flex items-center gap-2 px-7 py-3.5 text-base font-bold rounded-xl">
+                  <a className="btn-green flex items-center gap-2 px-7 py-3.5 text-base font-bold rounded-xl shadow-lg shadow-[#00C274]/20">
                     Open Live Account <ArrowRight className="h-4 w-4" />
                   </a>
                 </Link>
                 <Link href="/auth/login">
-                  <a className="flex items-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-[#181B23] hover:bg-[#1E222D] border border-[#2A2D3A] rounded-xl transition-colors">
+                  <a className="flex items-center gap-2 px-7 py-3.5 text-base font-semibold text-white rounded-xl transition-all"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)' }}>
                     Sign In
                   </a>
                 </Link>
@@ -154,7 +173,7 @@ export function Home() {
                 {[
                   'Spreads from 0.0 pips',
                   'Leverage up to 1:2000',
-                  'Segregated client funds',
+                  'Funds in 1 hour',
                 ].map(t => (
                   <span key={t} className="flex items-center gap-1.5 text-[13px] text-[#848E9C]">
                     <CheckCircle2 className="h-3.5 w-3.5 text-[#00C274] shrink-0" /> {t}
@@ -163,43 +182,128 @@ export function Home() {
               </motion.div>
             </motion.div>
 
-            {/* Right — Dashboard card */}
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
-              <div className="relative rounded-2xl border border-[#1A1D27] bg-[#0C0E15] p-6 shadow-2xl shadow-black/50">
-                {/* top bar */}
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-widest text-[#848E9C]">Total Portfolio Value</p>
-                    <p className="text-3xl font-black text-white mt-1">₹4,85,290<span className="text-lg">.00</span></p>
+            {/* Right — Live Markets Terminal */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="relative"
+            >
+              {/* Glow behind card */}
+              <div className="absolute inset-0 rounded-3xl blur-3xl" style={{ background: 'radial-gradient(ellipse, rgba(0,194,116,0.12) 0%, transparent 70%)' }} />
+
+              {/* Main terminal card */}
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60"
+                style={{ background: 'rgba(12,14,21,0.85)', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)' }}>
+
+                {/* Terminal header */}
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+                  <div className="flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-[#00C274]" />
+                    <span className="text-xs font-bold text-white tracking-wider uppercase">Live Markets</span>
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-full bg-[#00C274]/15 px-3 py-1.5 text-[#00C274] text-sm font-bold">
-                    <TrendingUp className="h-3.5 w-3.5" /> +12.4% MTD
+                  <div className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C274] opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00C274]" />
+                    </span>
+                    <span className="text-[10px] font-bold text-[#00C274]">LIVE</span>
                   </div>
                 </div>
 
-                {/* mini chart */}
-                <div className="h-28 mb-5 rounded-xl bg-[#060709] flex items-end overflow-hidden px-1 gap-[3px]">
-                  {[40,55,45,65,58,72,68,80,75,90,85,95,88,100].map((h, i) => (
-                    <div key={i} className="flex-1 rounded-t" style={{ height: `${h}%`, background: `linear-gradient(to top, #00C274, #00C27440)` }} />
-                  ))}
-                </div>
-
-                {/* stats grid */}
-                <div className="grid grid-cols-2 gap-3">
+                {/* Instrument rows */}
+                <div className="divide-y divide-white/[0.04]">
                   {[
-                    { label: "Today's Profit", value: '+₹2,840', green: true },
-                    { label: 'Active Strategy', value: 'Quantum Algo', green: true },
-                    { label: 'Monthly ROI', value: '+8.3%', green: true },
-                    { label: 'Status', value: '● Live', green: true },
-                  ].map(s => (
-                    <div key={s.label} className="rounded-xl bg-[#060709] p-3">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-[#848E9C] mb-1">{s.label}</p>
-                      <p className={`text-sm font-bold ${s.green ? 'text-[#00C274]' : 'text-white'}`}>{s.value}</p>
+                    { sym: 'EUR/USD', price: '1.0921', chg: '+0.12%', up: true, bars: [35,50,42,58,52,68,62,75,70,82] },
+                    { sym: 'GBP/USD', price: '1.2748', chg: '-0.08%', up: false, bars: [80,72,78,65,70,58,62,55,50,45] },
+                    { sym: 'XAU/USD', price: '2,341.5', chg: '+0.82%', up: true, bars: [40,52,48,60,55,70,65,78,72,88] },
+                    { sym: 'BTC/USD', price: '67,200', chg: '+1.24%', up: true, bars: [30,45,38,55,50,65,60,72,68,85] },
+                  ].map(item => (
+                    <div key={item.sym} className="flex items-center gap-3 px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
+                      <div className="w-20 shrink-0">
+                        <p className="text-[12px] font-bold text-white">{item.sym}</p>
+                        <p className={`text-[10px] font-semibold ${item.up ? 'text-[#00C274]' : 'text-red-400'}`}>{item.chg}</p>
+                      </div>
+                      <div className="flex-1 h-8 flex items-end gap-[2px]">
+                        {item.bars.map((h, i) => (
+                          <div key={i} className="flex-1 rounded-sm transition-all"
+                            style={{ height: `${h}%`, background: item.up ? `rgba(0,194,116,${0.3 + (i/item.bars.length)*0.5})` : `rgba(239,68,68,${0.3 + (i/item.bars.length)*0.5})` }} />
+                        ))}
+                      </div>
+                      <div className="w-16 text-right shrink-0">
+                        <p className="text-[12px] font-black text-white tabular-nums">{item.price}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
+
+                {/* Buy/Sell strip */}
+                <div className="px-5 py-4 border-t border-white/[0.05]" style={{ background: 'rgba(0,0,0,0.3)' }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[11px] text-[#848E9C]">EUR/USD</span>
+                    <div className="flex items-center gap-1 text-[10px] text-[#848E9C]">
+                      <span>Spread:</span>
+                      <span className="text-[#00C274] font-bold">0.0 pips</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button className="py-2.5 rounded-xl text-xs font-black tracking-wide text-white transition-all hover:opacity-90"
+                      style={{ background: 'linear-gradient(135deg, #CF304A, #A52040)' }}>
+                      SELL<br/><span className="text-[11px] font-normal opacity-80">1.0918</span>
+                    </button>
+                    <button className="py-2.5 rounded-xl text-xs font-black tracking-wide text-white transition-all hover:opacity-90"
+                      style={{ background: 'linear-gradient(135deg, #00A85E, #00C274)' }}>
+                      BUY<br/><span className="text-[11px] font-normal opacity-80">1.0921</span>
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              {/* Floating badge — top left */}
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -top-4 -left-4 rounded-2xl px-4 py-3 shadow-xl"
+                style={{ background: 'rgba(12,14,21,0.92)', border: '1px solid rgba(0,194,116,0.3)', backdropFilter: 'blur(16px)' }}
+              >
+                <p className="text-[10px] text-[#848E9C] font-medium">Max Leverage</p>
+                <p className="text-lg font-black text-[#00C274]">1:2000</p>
+              </motion.div>
+
+              {/* Floating badge — bottom right */}
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                className="absolute -bottom-4 -right-4 rounded-2xl px-4 py-3 shadow-xl"
+                style={{ background: 'rgba(12,14,21,0.92)', border: '1px solid rgba(0,194,116,0.3)', backdropFilter: 'blur(16px)' }}
+              >
+                <p className="text-[10px] text-[#848E9C] font-medium">Withdrawal</p>
+                <p className="text-lg font-black text-[#00C274]">≤ 1 Hour</p>
+              </motion.div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRUST BAR ── */}
+      <section className="border-y border-white/[0.05]" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(8px)' }}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-0">
+            {[
+              { icon: '⭐', label: '4.8/5 Rating', sub: '10,000+ reviews' },
+              { icon: '👥', label: '10 Lakh+ Traders', sub: 'Worldwide' },
+              { icon: '🏛️', label: 'UAE Regulated', sub: 'Licensed broker' },
+              { icon: '🔒', label: 'Segregated Funds', sub: 'Tier-1 banks' },
+              { icon: '⚡', label: 'Since 2018', sub: '7+ years experience' },
+            ].map(item => (
+              <div key={item.label} className="flex items-center gap-2.5">
+                <span className="text-xl">{item.icon}</span>
+                <div>
+                  <p className="text-[12px] font-bold text-white leading-tight">{item.label}</p>
+                  <p className="text-[10px] text-[#848E9C]">{item.sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
