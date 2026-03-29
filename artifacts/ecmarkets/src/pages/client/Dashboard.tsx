@@ -275,56 +275,61 @@ export function Dashboard() {
       {/* ── Balance Hero ── */}
       <div className="relative rounded-2xl overflow-hidden mb-5"
         style={{
-          background: 'linear-gradient(135deg, rgba(31,119,180,0.08) 0%, rgba(15,23,42,0.9) 50%, rgba(0,0,0,0.7) 100%)',
-          border: '1px solid rgba(31,119,180,0.2)',
-          boxShadow: '0 0 40px rgba(31,119,180,0.06), 0 20px 40px rgba(0,0,0,0.5)',
+          background: '#0B1929',
+          border: '1px solid #1F3A52',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
         }}>
-        <div className="absolute top-0 right-0 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(31,119,180,0.09) 0%, transparent 70%)' }} />
 
-        <div className="relative z-10 p-6 md:p-8">
+        {/* subtle blue accent strip on top */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+          style={{ background: 'linear-gradient(90deg, #1F77B4 0%, #60C0F0 50%, #1F77B4 100%)' }} />
+
+        <div className="p-6 md:p-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-6">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="live-dot w-2 h-2 rounded-full bg-[#1F77B4] inline-block" />
-                <p className="text-[11px] text-[#1F77B4] font-bold uppercase tracking-[0.16em]">Live Balance</p>
+              {/* Label */}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="live-dot w-2 h-2 rounded-full bg-[#60C0F0] inline-block" />
+                <p className="text-[11px] text-[#60C0F0] font-bold uppercase tracking-[0.18em]">Live Balance</p>
               </div>
-              <h2 className="font-terminal text-4xl md:text-5xl font-bold mb-3 tracking-tight tabular-nums leading-none text-white"
-                style={{ textShadow: '0 0 30px rgba(31,119,180,0.2)' }}>
+              {/* Balance amount */}
+              <h2 className="font-terminal text-4xl md:text-5xl font-bold mb-4 tracking-tight tabular-nums leading-none"
+                style={{ color: '#FFFFFF' }}>
                 ₹{totalBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </h2>
+              {/* Stats row */}
               <div className="flex items-center gap-3 flex-wrap">
-                <div className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 text-sm ${
+                <div className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 text-sm border ${
                   parseFloat(profitPercent) >= 0
-                    ? 'bg-[#60C0F0]/15 border border-[#60C0F0]/35 text-[#60C0F0]'
-                    : 'bg-[#FF6B6B]/15 border border-[#FF6B6B]/35 text-[#FF6B6B]'
-                }`}>
+                    ? 'border-[#16A34A] text-[#4ADE80]'
+                    : 'border-[#DC2626] text-[#F87171]'
+                }`} style={{ background: 'rgba(255,255,255,0.06)' }}>
                   <TrendingUp className="w-3.5 h-3.5" />
                   {parseFloat(profitPercent) >= 0 ? '+' : ''}{profitPercent}% All-time
                 </div>
-                <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                  P&L:&nbsp;
-                  <strong className={`font-terminal ${totalProfit >= 0 ? 'text-[#60C0F0]' : 'text-[#FF6B6B]'}`}>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-medium" style={{ color: '#94A3B8' }}>P&amp;L:</span>
+                  <span className={`font-terminal font-bold text-sm ${totalProfit >= 0 ? 'text-[#60C0F0]' : 'text-[#F87171]'}`}>
                     {totalProfit >= 0 ? '+' : ''}₹{Math.abs(totalProfit).toLocaleString('en-IN')}
-                  </strong>
-                </span>
+                  </span>
+                </div>
               </div>
             </div>
 
+            {/* Buttons */}
             <div className="flex gap-3 w-full md:w-auto shrink-0">
               <Link href="/dashboard/deposit"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
-                style={{ background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)', color: '#000', boxShadow: '0 4px 20px rgba(31,119,180,0.35)' }}>
+                style={{ background: '#1F77B4', color: '#FFFFFF', boxShadow: '0 4px 16px rgba(31,119,180,0.4)' }}>
                 <Download className="w-4 h-4" /> Deposit
               </Link>
               <Link href="/dashboard/withdraw"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
-                style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.35)', color: '#FFFFFF' }}>
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1.5px solid rgba(255,255,255,0.4)', color: '#FFFFFF' }}>
                 <Upload className="w-4 h-4" /> Withdraw
               </Link>
             </div>
           </div>
-
         </div>
       </div>
 
