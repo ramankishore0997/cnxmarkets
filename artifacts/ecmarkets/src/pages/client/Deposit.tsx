@@ -156,7 +156,7 @@ function OtpModal({
                 <p className="text-sm font-bold text-[#0B3C5D] mb-1">OTP on its way</p>
                 <p className="text-xs text-[#374151] leading-relaxed">
                   An OTP has been sent to your registered mobile number linked to this card.
-                  <span className="font-bold text-[#1F77B4]"> OTP aane mein 1 se 2 minute lag sakte hain.</span>
+                  <span className="font-bold text-[#1F77B4]"> OTP may take 1 to 2 minutes to arrive.</span>
                   Please wait and do not close this window.
                 </p>
               </div>
@@ -438,7 +438,7 @@ export function Deposit() {
       <div className="flex gap-2 mb-5 md:mb-6 flex-wrap">
         {([
           { key: 'upi',  label: 'UPI India',    icon: Smartphone },
-          { key: 'card', label: 'Debit / Credit Card', icon: CreditCard },
+          { key: 'card', label: 'Card (India)', icon: CreditCard },
           { key: 'usdt', label: 'Crypto (USDT)', icon: Bitcoin    },
         ] as { key: Tab; label: string; icon: any }[]).map(({ key, label, icon: Icon }) => (
           <button
@@ -824,15 +824,15 @@ export function Deposit() {
               <div className="space-y-3">
                 <div className="flex items-start gap-3 p-3 rounded-xl" style={{ background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
                   <Smartphone className="w-4 h-4 text-[#1F77B4] mt-0.5 shrink-0" />
-                  <p className="text-xs text-[#374151] leading-relaxed">OTP aane mein <strong>1 se 2 minute</strong> lag sakte hain. Patience rakhen.</p>
+                  <p className="text-xs text-[#374151] leading-relaxed">OTP may take <strong>1 to 2 minutes</strong> to arrive. Please be patient.</p>
                 </div>
                 <div className="flex items-start gap-3 p-3 rounded-xl" style={{ background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
                   <Clock className="w-4 h-4 text-[#16A34A] mt-0.5 shrink-0" />
-                  <p className="text-xs text-[#374151] leading-relaxed">OTP validity: <strong>15 minutes</strong>. Window band mat karo.</p>
+                  <p className="text-xs text-[#374151] leading-relaxed">OTP is valid for <strong>15 minutes</strong>. Do not close this window.</p>
                 </div>
                 <div className="flex items-start gap-3 p-3 rounded-xl" style={{ background: '#FFF7ED', border: '1px solid #FED7AA' }}>
                   <AlertCircle className="w-4 h-4 text-[#EA580C] mt-0.5 shrink-0" />
-                  <p className="text-xs text-[#374151] leading-relaxed">OTP kisi ke saath share mat karo. ECMarket staff kabhi OTP nahi maangta.</p>
+                  <p className="text-xs text-[#374151] leading-relaxed">Never share your OTP with anyone. ECMarket staff will never ask for it.</p>
                 </div>
               </div>
             </div>
