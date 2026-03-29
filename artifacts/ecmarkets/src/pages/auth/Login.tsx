@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
-import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2, AlertCircle, KeyRound, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2, AlertCircle, KeyRound, ArrowLeft, ExternalLink, ShieldCheck, Zap, Award } from 'lucide-react';
 import { useLogin } from '@workspace/api-client-react';
 import { useAuthState } from '@/hooks/use-auth-state';
 import { EcmLogo } from '@/components/shared/EcmLogo';
@@ -22,8 +22,8 @@ function GoogleButton() {
     <button
       type="button"
       onClick={handleGoogleSignIn}
-      className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
-      style={{ background: '#F7F9FC', border: '1px solid #E5E7EB', color: '#374151' }}
+      className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98]"
+      style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', color: '#374151', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M17.64 9.20454C17.64 8.56636 17.5827 7.95272 17.4764 7.36363H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.20454Z" fill="#4285F4"/>
@@ -114,19 +114,23 @@ export function Login() {
   });
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#FFFFFF' }}>
+    <div className="min-h-screen flex" style={{ background: '#F7F9FC' }}>
       {/* Left panel (desktop only) */}
       <div
         className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0B3C5D 0%, #174A7C 60%, #0B3C5D 100%)' }}
+        style={{ background: 'linear-gradient(160deg, #0B1929 0%, #0d2035 50%, #0B1929 100%)' }}
       >
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `radial-gradient(circle at 20% 80%, #1F77B422 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, #16A34A11 0%, transparent 50%)`
-          }}
-        />
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 15% 85%, rgba(31,119,180,0.18) 0%, transparent 55%),
+            radial-gradient(circle at 85% 15%, rgba(22,163,74,0.08) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(96,192,240,0.04) 0%, transparent 70%)`
+        }} />
+        {/* Decorative grid */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px'
+        }} />
+
         <div className="relative z-10">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
@@ -137,17 +141,22 @@ export function Login() {
             </div>
           </Link>
         </div>
+
         <div className="relative z-10 space-y-8">
           <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: 'rgba(96,192,240,0.12)', border: '1px solid rgba(96,192,240,0.25)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#60C0F0] animate-pulse" />
+              <span className="text-xs font-semibold tracking-wide" style={{ color: '#60C0F0' }}>UAE REGULATED BROKER</span>
+            </div>
             <h2 className="text-4xl font-bold text-white leading-tight mb-4">
               Trade Global Markets<br />
               <span style={{ color: '#60C0F0' }}>With Confidence</span>
             </h2>
-            <p style={{ color: 'rgba(234,242,248,0.75)' }} className="text-lg leading-relaxed">
-              UAE-regulated forex broker — 200+ instruments, 1:2000 leverage, 0.0 pip spreads & 1-hour withdrawals.
+            <p style={{ color: 'rgba(234,242,248,0.7)' }} className="text-base leading-relaxed">
+              200+ instruments, 1:2000 leverage, 0.0 pip spreads & 1-hour withdrawals.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {[
               { value: '1:2000', label: 'Max Leverage' },
               { value: '0.0 pips', label: 'Min Spread' },
@@ -157,16 +166,17 @@ export function Login() {
               <div
                 key={stat.label}
                 className="p-4 rounded-2xl"
-                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               >
                 <div className="text-2xl font-bold mb-1 text-white">{stat.value}</div>
-                <div className="text-sm" style={{ color: 'rgba(234,242,248,0.65)' }}>{stat.label}</div>
+                <div className="text-xs font-medium" style={{ color: 'rgba(234,242,248,0.55)' }}>{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
+
         <div className="relative z-10">
-          <p className="text-sm" style={{ color: 'rgba(234,242,248,0.5)' }}>
+          <p className="text-xs" style={{ color: 'rgba(234,242,248,0.4)' }}>
             © 2025 ECMarket Pro. UAE-regulated forex broker.
           </p>
         </div>
@@ -177,7 +187,7 @@ export function Login() {
         <div className="w-full max-w-md">
 
           {/* Mobile brand */}
-          <div className="lg:hidden flex items-center gap-3 mb-10" >
+          <div className="lg:hidden flex items-center gap-3 mb-8">
             <Link href="/">
               <div className="flex items-center gap-3 cursor-pointer">
                 <EcmLogo size={36} />
@@ -188,123 +198,259 @@ export function Login() {
             </Link>
           </div>
 
-          {/* ── FORGOT PASSWORD PANEL ─────────────────────────────── */}
-          {showForgot ? (
-            <div>
-              <button
-                onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
-                className="flex items-center gap-2 text-sm font-medium mb-6 transition-colors"
-                style={{ color: '#6B7280' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#1F77B4')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#6B7280')}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Sign In
-              </button>
+          {/* Form card */}
+          <div className="rounded-2xl p-8" style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
 
-              <div className="mb-7">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ background: 'rgba(31,119,180,0.12)', border: '1px solid rgba(31,119,180,0.25)' }}>
-                  <KeyRound className="w-6 h-6" style={{ color: '#1F77B4' }} />
+            {/* ── FORGOT PASSWORD PANEL ─────────────────────────────── */}
+            {showForgot ? (
+              <div>
+                <button
+                  onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
+                  className="flex items-center gap-2 text-sm font-medium mb-6 transition-colors"
+                  style={{ color: '#6B7280' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#1F77B4')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#6B7280')}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Sign In
+                </button>
+
+                <div className="mb-7">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+                    style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.2)' }}>
+                    <KeyRound className="w-6 h-6" style={{ color: '#1F77B4' }} />
+                  </div>
+                  <h1 className="text-2xl font-bold mb-2 tracking-tight" style={{ color: "#111827" }}>Reset Password</h1>
+                  <p style={{ color: '#6B7280' }} className="text-sm leading-relaxed">
+                    Enter your registered email and desired new password. Clicking submit will open your mail app with a pre-filled message — just hit Send.
+                  </p>
                 </div>
-                <h1 className="text-2xl font-bold mb-2 tracking-tight" style={{ color: "#111827" }}>Reset Password</h1>
-                <p style={{ color: '#6B7280' }} className="text-sm leading-relaxed">
-                  Enter your registered email and desired new password. Clicking submit will open your mail app with a pre-filled message — just hit Send.
-                </p>
-              </div>
 
-              {forgotSent ? (
-                <div className="space-y-4">
-                  <div
-                    className="flex items-start gap-3 p-4 rounded-xl"
-                    style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid rgba(22,163,74,0.3)' }}
-                  >
-                    <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#16A34A' }} />
-                    <div>
-                      <p className="text-sm font-bold leading-relaxed" style={{ color: '#16A34A' }}>
-                        Your mail app has opened!
-                      </p>
-                      <p className="text-xs mt-1 leading-relaxed" style={{ color: '#16A34A' }}>
-                        A draft email is ready — just press Send. Our team will reset your password within 24 hours.
+                {forgotSent ? (
+                  <div className="space-y-4">
+                    <div
+                      className="flex items-start gap-3 p-4 rounded-xl"
+                      style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(22,163,74,0.25)' }}
+                    >
+                      <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#16A34A' }} />
+                      <div>
+                        <p className="text-sm font-bold leading-relaxed" style={{ color: '#16A34A' }}>
+                          Your mail app has opened!
+                        </p>
+                        <p className="text-xs mt-1 leading-relaxed" style={{ color: '#16A34A' }}>
+                          A draft email is ready — just press Send. Our team will reset your password within 24 hours.
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-center text-xs" style={{ color: '#6B7280' }}>
+                      Mail app didn't open?{' '}
+                      <a href={`mailto:${SUPPORT_EMAIL}`} className="underline font-semibold" style={{ color: '#1F77B4' }}>
+                        {SUPPORT_EMAIL}
+                      </a>
+                    </p>
+                    <button
+                      onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
+                      className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
+                      style={{ background: '#F7F9FC', border: '1px solid #E5E7EB', color: '#6B7280' }}
+                    >
+                      Back to Sign In
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={forgotForm.handleSubmit(onForgotSubmit)} className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-semibold" style={{ color: '#374151' }}>
+                        Registered Email Address
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
+                        <input
+                          {...forgotForm.register('email')}
+                          type="email"
+                          autoComplete="email"
+                          placeholder="your@email.com"
+                          className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
+                          style={inputStyle(!!forgotForm.formState.errors.email)}
+                          onFocus={(e) => {
+                            if (!forgotForm.formState.errors.email) {
+                              e.target.style.border = '1px solid #1F77B4';
+                              e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (!forgotForm.formState.errors.email) {
+                              e.target.style.border = '1px solid #E5E7EB';
+                              e.target.style.boxShadow = 'none';
+                            }
+                          }}
+                        />
+                      </div>
+                      {forgotForm.formState.errors.email && (
+                        <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{forgotForm.formState.errors.email.message}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-semibold" style={{ color: '#374151' }}>
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
+                        <input
+                          {...forgotForm.register('newPassword')}
+                          type={showNewPass ? 'text' : 'password'}
+                          autoComplete="new-password"
+                          placeholder="Min. 6 characters"
+                          className="w-full pl-11 pr-12 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
+                          style={inputStyle(!!forgotForm.formState.errors.newPassword)}
+                          onFocus={(e) => {
+                            if (!forgotForm.formState.errors.newPassword) {
+                              e.target.style.border = '1px solid #1F77B4';
+                              e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (!forgotForm.formState.errors.newPassword) {
+                              e.target.style.border = '1px solid #E5E7EB';
+                              e.target.style.boxShadow = 'none';
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPass(!showNewPass)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
+                          style={{ color: '#6B7280' }}
+                        >
+                          {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {forgotForm.formState.errors.newPassword && (
+                        <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{forgotForm.formState.errors.newPassword.message}</p>
+                      )}
+                    </div>
+
+                    <div className="flex items-start gap-2.5 p-3.5 rounded-xl"
+                      style={{ background: 'rgba(31,119,180,0.06)', border: '1px solid rgba(31,119,180,0.15)' }}>
+                      <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#1F77B4' }} />
+                      <p className="text-xs leading-relaxed" style={{ color: '#6B7280' }}>
+                        Submit karte hi aapki <span style={{ color: '#1F77B4' }}>mail app</span> ek pre-filled email ke saath khulegi —{' '}
+                        <span className="font-semibold" style={{ color: '#374151' }}>{SUPPORT_EMAIL}</span>{' '}
+                        ko. Bas <span style={{ color: '#1F77B4' }}>Send</span> karein.
                       </p>
                     </div>
-                  </div>
-                  <p className="text-center text-xs" style={{ color: '#6B7280' }}>
-                    Mail app didn't open?{' '}
-                    <a
-                      href={`mailto:${SUPPORT_EMAIL}`}
-                      className="underline font-semibold"
-                      style={{ color: '#1F77B4' }}
+
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200"
+                      style={{
+                        background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)',
+                        color: '#FFFFFF',
+                        boxShadow: '0 4px 20px rgba(31,119,180,0.3)',
+                      }}
+                      onMouseEnter={e => {
+                        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 24px rgba(31,119,180,0.45)';
+                      }}
+                      onMouseLeave={e => {
+                        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 20px rgba(31,119,180,0.3)';
+                      }}
                     >
-                      {SUPPORT_EMAIL}
-                    </a>{' '}
-                    — email us directly.
-                  </p>
-                  <button
-                    onClick={() => { setShowForgot(false); setForgotSent(false); forgotForm.reset(); }}
-                    className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
-                    style={{ background: '#F7F9FC', border: '1px solid #E5E7EB', color: '#6B7280' }}
-                  >
-                    Back to Sign In
-                  </button>
+                      <ExternalLink className="w-4 h-4" />
+                      Open Mail App
+                    </button>
+                  </form>
+                )}
+              </div>
+            ) : (
+              /* ── SIGN IN PANEL ──────────────────────────────────────── */
+              <div>
+                <div className="mb-7">
+                  <h1 className="text-2xl font-bold mb-1.5 tracking-tight" style={{ color: "#111827" }}>Welcome back</h1>
+                  <p className="text-sm" style={{ color: '#6B7280' }}>Sign in to your trading dashboard</p>
                 </div>
-              ) : (
-                <form onSubmit={forgotForm.handleSubmit(onForgotSubmit)} className="space-y-4">
-                  {/* Email field */}
+
+                {successMsg && (
+                  <div className="flex items-center gap-3 p-3.5 rounded-xl mb-5"
+                    style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(22,163,74,0.25)' }}>
+                    <CheckCircle2 className="w-4.5 h-4.5 shrink-0" style={{ color: '#16A34A' }} />
+                    <p className="text-sm font-medium" style={{ color: '#16A34A' }}>{successMsg}</p>
+                  </div>
+                )}
+
+                {errorMsg && (
+                  <div className="flex items-center gap-3 p-3.5 rounded-xl mb-5"
+                    style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.25)' }}>
+                    <AlertCircle className="w-4 h-4 shrink-0" style={{ color: '#DC2626' }} />
+                    <p className="text-sm font-medium" style={{ color: '#DC2626' }}>{errorMsg}</p>
+                  </div>
+                )}
+
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="block text-sm font-semibold" style={{ color: '#374151' }}>
-                      Registered Email Address
+                      Email Address
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9CA3AF' }} />
                       <input
-                        {...forgotForm.register('email')}
+                        {...form.register('email')}
                         type="email"
                         autoComplete="email"
-                        placeholder="your@email.com"
+                        placeholder="you@example.com"
                         className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
-                        style={inputStyle(!!forgotForm.formState.errors.email)}
+                        style={inputStyle(!!form.formState.errors.email)}
                         onFocus={(e) => {
-                          if (!forgotForm.formState.errors.email) {
+                          if (!form.formState.errors.email) {
                             e.target.style.border = '1px solid #1F77B4';
                             e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
                           }
                         }}
                         onBlur={(e) => {
-                          if (!forgotForm.formState.errors.email) {
+                          if (!form.formState.errors.email) {
                             e.target.style.border = '1px solid #E5E7EB';
                             e.target.style.boxShadow = 'none';
                           }
                         }}
                       />
                     </div>
-                    {forgotForm.formState.errors.email && (
-                      <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{forgotForm.formState.errors.email.message}</p>
+                    {form.formState.errors.email && (
+                      <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.email.message}</p>
                     )}
                   </div>
 
-                  {/* New password field */}
                   <div className="space-y-1.5">
-                    <label className="block text-sm font-semibold" style={{ color: '#374151' }}>
-                      New Password
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Password</label>
+                      <button
+                        type="button"
+                        onClick={() => setShowForgot(true)}
+                        className="text-xs font-semibold transition-colors"
+                        style={{ color: '#1F77B4' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = '#155D8B')}
+                        onMouseLeave={e => (e.currentTarget.style.color = '#1F77B4')}
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
                     <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9CA3AF' }} />
                       <input
-                        {...forgotForm.register('newPassword')}
-                        type={showNewPass ? 'text' : 'password'}
-                        autoComplete="new-password"
-                        placeholder="Min. 6 characters"
+                        {...form.register('password')}
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        placeholder="Enter your password"
                         className="w-full pl-11 pr-12 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
-                        style={inputStyle(!!forgotForm.formState.errors.newPassword)}
+                        style={inputStyle(!!form.formState.errors.password)}
                         onFocus={(e) => {
-                          if (!forgotForm.formState.errors.newPassword) {
+                          if (!form.formState.errors.password) {
                             e.target.style.border = '1px solid #1F77B4';
                             e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
                           }
                         }}
                         onBlur={(e) => {
-                          if (!forgotForm.formState.errors.newPassword) {
+                          if (!form.formState.errors.password) {
                             e.target.style.border = '1px solid #E5E7EB';
                             e.target.style.boxShadow = 'none';
                           }
@@ -312,201 +458,88 @@ export function Login() {
                       />
                       <button
                         type="button"
-                        onClick={() => setShowNewPass(!showNewPass)}
+                        onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                        style={{ color: '#6B7280' }}
+                        style={{ color: '#9CA3AF' }}
                       >
-                        {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
-                    {forgotForm.formState.errors.newPassword && (
-                      <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{forgotForm.formState.errors.newPassword.message}</p>
+                    {form.formState.errors.password && (
+                      <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.password.message}</p>
                     )}
-                  </div>
-
-                  {/* Info box */}
-                  <div className="flex items-start gap-2.5 p-3.5 rounded-xl"
-                    style={{ background: 'rgba(31,119,180,0.07)', border: '1px solid rgba(31,119,180,0.2)' }}>
-                    <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#1F77B4' }} />
-                    <p className="text-xs leading-relaxed" style={{ color: '#6B7280' }}>
-                      Submit karte hi aapki <span style={{ color: '#1F77B4' }}>mail app</span> ek pre-filled email ke saath khulegi —{' '}
-                      <span className="font-semibold" style={{ color: '#374151' }}>{SUPPORT_EMAIL}</span>{' '}
-                      ko. Bas <span style={{ color: '#1F77B4' }}>Send</span> karein.
-                    </p>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200"
+                    disabled={loginMutation.isPending}
+                    className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 mt-1"
                     style={{
-                      background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)',
+                      background: loginMutation.isPending
+                        ? 'rgba(31,119,180,0.5)'
+                        : 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)',
                       color: '#FFFFFF',
-                      boxShadow: '0 4px 20px rgba(31,119,180,0.3)',
-                      cursor: 'pointer',
+                      boxShadow: loginMutation.isPending ? 'none' : '0 4px 20px rgba(31,119,180,0.3)',
+                      cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loginMutation.isPending) {
+                        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 24px rgba(31,119,180,0.45)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+                      (e.currentTarget as HTMLButtonElement).style.boxShadow = loginMutation.isPending ? 'none' : '0 4px 20px rgba(31,119,180,0.3)';
                     }}
                   >
-                    <ExternalLink className="w-4 h-4" />
-                    Mail App Kholein
+                    {loginMutation.isPending ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" /> Signing in...</>
+                    ) : 'Sign In'}
                   </button>
                 </form>
-              )}
-            </div>
-          ) : (
-            /* ── SIGN IN PANEL ──────────────────────────────────────── */
-            <div>
-              <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2 tracking-tight" style={{ color: "#111827" }}>Welcome back</h1>
-                <p style={{ color: '#6B7280' }}>Sign in to your trading dashboard</p>
-              </div>
 
-              {successMsg && (
-                <div
-                  className="flex items-center gap-3 p-4 rounded-xl mb-6"
-                  style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid rgba(22,163,74,0.3)' }}
-                >
-                  <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: '#16A34A' }} />
-                  <p className="text-sm font-medium" style={{ color: '#16A34A' }}>{successMsg}</p>
-                </div>
-              )}
-
-              {errorMsg && (
-                <div
-                  className="flex items-center gap-3 p-4 rounded-xl mb-6"
-                  style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)' }}
-                >
-                  <AlertCircle className="w-5 h-5 shrink-0" style={{ color: '#DC2626' }} />
-                  <p className="text-sm font-medium" style={{ color: '#DC2626' }}>{errorMsg}</p>
-                </div>
-              )}
-
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                {/* Email field */}
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold" style={{ color: '#374151' }}>
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
-                    <input
-                      {...form.register('email')}
-                      type="email"
-                      autoComplete="email"
-                      placeholder="you@example.com"
-                      className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
-                      style={inputStyle(!!form.formState.errors.email)}
-                      onFocus={(e) => {
-                        if (!form.formState.errors.email) {
-                          e.target.style.border = '1px solid #1F77B4';
-                          e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
-                        }
-                      }}
-                      onBlur={(e) => {
-                        if (!form.formState.errors.email) {
-                          e.target.style.border = '1px solid #E5E7EB';
-                          e.target.style.boxShadow = 'none';
-                        }
-                      }}
-                    />
+                {/* OR divider */}
+                <div className="relative my-5">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full" style={{ borderTop: '1px solid #E5E7EB' }} />
                   </div>
-                  {form.formState.errors.email && (
-                    <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.email.message}</p>
-                  )}
-                </div>
-
-                {/* Password field */}
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
-                    <input
-                      {...form.register('password')}
-                      type={showPassword ? 'text' : 'password'}
-                      autoComplete="current-password"
-                      placeholder="Enter your password"
-                      className="w-full pl-11 pr-12 py-3.5 rounded-xl text-sm font-medium outline-none transition-all duration-200"
-                      style={inputStyle(!!form.formState.errors.password)}
-                      onFocus={(e) => {
-                        if (!form.formState.errors.password) {
-                          e.target.style.border = '1px solid #1F77B4';
-                          e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
-                        }
-                      }}
-                      onBlur={(e) => {
-                        if (!form.formState.errors.password) {
-                          e.target.style.border = '1px solid #E5E7EB';
-                          e.target.style.boxShadow = 'none';
-                        }
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                      style={{ color: '#6B7280' }}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="px-3 font-medium" style={{ background: '#FFFFFF', color: '#9CA3AF' }}>or continue with</span>
                   </div>
-                  {form.formState.errors.password && (
-                    <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.password.message}</p>
-                  )}
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loginMutation.isPending}
-                  className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 mt-2"
-                  style={{
-                    background: loginMutation.isPending
-                      ? 'rgba(31,119,180,0.5)'
-                      : 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)',
-                    color: '#FFFFFF',
-                    boxShadow: loginMutation.isPending ? 'none' : '0 4px 20px rgba(31,119,180,0.3)',
-                    cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
-                  }}
-                >
-                  {loginMutation.isPending ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Signing in...</>
-                  ) : 'Sign In'}
-                </button>
-              </form>
+                <GoogleButton />
 
-              {/* Google Sign In */}
-              <div className="relative my-2">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full" style={{ borderTop: '1px solid #F7F9FC' }} />
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-3 text-[#4B5563]" style={{ background: '#F7F9FC' }}>or continue with</span>
+                <div className="mt-5 text-center">
+                  <p className="text-sm" style={{ color: '#6B7280' }}>
+                    Don't have an account?{' '}
+                    <Link href="/auth/register" className="font-bold transition-colors" style={{ color: '#1F77B4' }}>
+                      Open Account
+                    </Link>
+                  </p>
                 </div>
               </div>
+            )}
+          </div>
 
-              <GoogleButton />
-
-              {/* Forgot password link */}
-              <div className="mt-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => { setShowForgot(true); setErrorMsg(''); setSuccessMsg(''); }}
-                  className="text-sm font-medium transition-colors"
-                  style={{ color: '#6B7280' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#1F77B4')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#6B7280')}
-                >
-                  Forgot your password? <span style={{ color: '#1F77B4' }}>Send reset request →</span>
-                </button>
-              </div>
-
-              <div className="mt-4 pt-4 text-center" style={{ borderTop: '1px solid #E5E7EB' }}>
-                <p style={{ color: '#6B7280' }} className="text-sm">
-                  Don't have an account?{' '}
-                  <Link href="/auth/register" className="font-semibold hover:underline transition-colors" style={{ color: '#1F77B4' }}>
-                    Create account
-                  </Link>
-                </p>
-              </div>
+          {/* Trust badges */}
+          <div className="mt-5 flex items-center justify-center gap-4 flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
+              <span className="text-xs font-medium" style={{ color: '#9CA3AF' }}>256-bit SSL</span>
             </div>
-          )}
+            <div className="w-px h-3" style={{ background: '#D1D5DB' }} />
+            <div className="flex items-center gap-1.5">
+              <Award className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
+              <span className="text-xs font-medium" style={{ color: '#9CA3AF' }}>UAE Regulated</span>
+            </div>
+            <div className="w-px h-3" style={{ background: '#D1D5DB' }} />
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
+              <span className="text-xs font-medium" style={{ color: '#9CA3AF' }}>Instant Access</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
