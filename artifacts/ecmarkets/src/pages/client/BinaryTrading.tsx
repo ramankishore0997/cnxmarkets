@@ -547,28 +547,30 @@ export function BinaryTrading() {
 
       {/* ── MOBILE: Desktop Required ─────────────────────────────── */}
       <div className="md:hidden flex flex-col items-center justify-center min-h-[75vh] px-6">
-        <div className="flex flex-col items-center text-center gap-5 max-w-xs">
+        <div className="flex flex-col items-center text-center gap-5 max-w-xs w-full p-8 rounded-2xl"
+          style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', boxShadow: '0 4px 24px rgba(11,60,93,0.08)' }}>
+
           {/* Icon */}
           <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <Monitor className="w-10 h-10" style={{ color: 'rgba(255,255,255,0.35)' }} />
+            style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.25)' }}>
+            <Monitor className="w-10 h-10" style={{ color: '#1F77B4' }} />
           </div>
 
           {/* Heading */}
           <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold text-white tracking-tight">Desktop Required</h2>
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <h2 className="text-xl font-bold tracking-tight" style={{ color: '#111827' }}>Desktop Required</h2>
+            <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>
               Binary Trading is only available on desktop. Please open ECMarket Pro on your computer for the full trading experience.
             </p>
           </div>
 
           {/* Divider */}
-          <div className="w-12 h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+          <div className="w-12 h-px" style={{ background: '#E5E7EB' }} />
 
           {/* Back button */}
           <a href="/dashboard"
-            className="w-full py-3 rounded-xl text-sm font-semibold text-center transition-all active:scale-95"
-            style={{ background: '#1F77B4', color: '#000' }}>
+            className="w-full py-3 rounded-xl text-sm font-bold text-center transition-all active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)', color: '#FFFFFF', boxShadow: '0 4px 16px rgba(31,119,180,0.3)' }}>
             Back to Dashboard
           </a>
         </div>
