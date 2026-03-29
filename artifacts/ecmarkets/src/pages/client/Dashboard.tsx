@@ -296,15 +296,15 @@ export function Dashboard() {
               <div className="flex items-center gap-3 flex-wrap">
                 <div className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 text-sm ${
                   parseFloat(profitPercent) >= 0
-                    ? 'bg-[#1F77B4]/12 border border-[#1F77B4]/30 text-[#1F77B4]'
-                    : 'bg-[#DC2626]/12 border border-[#DC2626]/30 text-[#DC2626]'
+                    ? 'bg-[#60C0F0]/15 border border-[#60C0F0]/35 text-[#60C0F0]'
+                    : 'bg-[#FF6B6B]/15 border border-[#FF6B6B]/35 text-[#FF6B6B]'
                 }`}>
                   <TrendingUp className="w-3.5 h-3.5" />
                   {parseFloat(profitPercent) >= 0 ? '+' : ''}{profitPercent}% All-time
                 </div>
-                <span className="text-[#4B5563] text-sm font-medium">
+                <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>
                   P&L:&nbsp;
-                  <strong className={`font-terminal ${totalProfit >= 0 ? 'text-[#1F77B4]' : 'text-[#DC2626]'}`}>
+                  <strong className={`font-terminal ${totalProfit >= 0 ? 'text-[#60C0F0]' : 'text-[#FF6B6B]'}`}>
                     {totalProfit >= 0 ? '+' : ''}₹{Math.abs(totalProfit).toLocaleString('en-IN')}
                   </strong>
                 </span>
