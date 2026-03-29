@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/premium-site/"
+title = "Premium Animated Website"
+version = "1.0.0"
+id = "artifacts/premium-site"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/premium-site/" ]
+localPort = 18444
+
+[services.development]
+run = "pnpm --filter @workspace/premium-site run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/premium-site", "run", "build" ]
+publicDir = "artifacts/premium-site/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18444"
+BASE_PATH = "/premium-site/"
