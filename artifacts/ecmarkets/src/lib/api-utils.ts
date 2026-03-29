@@ -13,3 +13,10 @@ export function getAuthOptions() {
     }
   };
 }
+
+/**
+ * Returns the API base URL (empty string in dev — proxy handles it, or explicit in prod)
+ */
+export function getApiBase(): string {
+  return "";
+}

