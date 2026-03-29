@@ -93,11 +93,11 @@ function Counter({ end, suffix = '', prefix = '', decimals = 0 }: { end: number;
 
 // --- FAQ ---
 const FAQS = [
-  { q: 'How long does it take to process a withdrawal?', a: 'Withdrawal requests are processed within 24 hours. The amount is transferred directly to your registered bank account.' },
-  { q: 'What is algorithmic trading?', a: 'Algorithmic trading uses pre-programmed rules to automatically execute trades — eliminating emotional bias and operating 24/7 with precision.' },
-  { q: 'Do I need any trading experience?', a: 'Not at all. Our platform is designed for beginners and professionals alike. Simply select a strategy and let the system handle the rest.' },
-  { q: 'Are my funds safe?', a: 'Yes. Client funds are held in segregated accounts and the platform uses 256-bit SSL encryption to protect all data and transactions.' },
-  { q: 'How do I get started?', a: 'Register an account, complete your KYC verification, make a deposit, and activate your preferred trading strategy — it takes just a few minutes.' },
+  { q: 'How long does it take to process a withdrawal?', a: 'Withdrawals are processed within 1 hour to your registered bank account, UPI ID, or crypto wallet — one of the fastest in the industry.' },
+  { q: 'What leverage does ECMarket Pro offer?', a: 'We offer leverage up to 1:2000 on major forex pairs, allowing you to maximise your trading power with minimal capital.' },
+  { q: 'What are the spreads on ECMarket Pro?', a: 'Our spreads start from 0.0 pips on major pairs like EUR/USD and GBP/USD, giving you the most competitive trading conditions available.' },
+  { q: 'Are my funds safe?', a: 'Yes. Client funds are held in segregated accounts at tier-1 banks, completely separate from company operating funds. We are regulated and headquartered in the UAE.' },
+  { q: 'What deposit methods are accepted?', a: 'We support UPI, Bank Transfer (NEFT/RTGS/IMPS), and Crypto deposits. All deposits are instant and there are no deposit fees.' },
 ];
 
 export function Home() {
@@ -124,17 +124,17 @@ export function Home() {
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C274] opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00C274]" />
                   </span>
-                  Live Algo Trading — Active Now
+                  UAE Regulated Forex Broker
                 </span>
               </motion.div>
 
               <motion.h1 variants={fadeUp} className="text-5xl md:text-6xl lg:text-[68px] font-black text-white leading-[1.05] tracking-tight mb-6">
-                Trade Smarter.<br />
-                <span className="text-[#00C274]">Profit Daily.</span>
+                Trade Forex,<br />
+                <span className="text-[#00C274]">Crypto & More.</span>
               </motion.h1>
 
               <motion.p variants={fadeUp} className="text-lg text-[#848E9C] mb-8 max-w-md leading-relaxed">
-                Driven by precision algorithms, built to grow your wealth consistently. No trading experience required.
+                Access 200+ global markets with leverage up to 1:2000, spreads from 0.0 pips, instant deposits & withdrawals within 1 hour.
               </motion.p>
 
               <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-8">
@@ -152,8 +152,8 @@ export function Home() {
 
               <motion.div variants={fadeUp} className="flex flex-wrap gap-5">
                 {[
-                  'No trading experience needed',
-                  '100% secure & transparent',
+                  'Spreads from 0.0 pips',
+                  'Leverage up to 1:2000',
                   'Segregated client funds',
                 ].map(t => (
                   <span key={t} className="flex items-center gap-1.5 text-[13px] text-[#848E9C]">
@@ -207,11 +207,12 @@ export function Home() {
       {/* ── PLATFORM STATS ── */}
       <section className="bg-[#0C0E15] border-y border-[#1A1D27] py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { display: '10 Lakh+', label: 'Active Traders' },
-              { display: '₹1.2 Lakh Cr+', label: 'Assets Managed' },
-              { display: '10 Years', label: 'In the Market' },
+              { display: '200+', label: 'Instruments' },
+              { display: '1:2000', label: 'Max Leverage' },
+              { display: '0.0', label: 'Spreads From (pips)' },
+              { display: 'UAE', label: 'Regulated & HQ' },
             ].map(s => (
               <div key={s.label}>
                 <p className="text-3xl md:text-4xl font-black text-[#00C274]">{s.display}</p>
@@ -231,14 +232,14 @@ export function Home() {
               Trade the World's Best Markets
             </motion.h2>
             <motion.p variants={fadeUp} className="text-[#848E9C] max-w-xl mx-auto">
-              Forex, Commodities, Indices, and Crypto — all under one algorithmic roof.
+              200+ instruments across Forex, Crypto, Commodities, Indices & Stocks — all from one account.
             </motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
-              { name: 'Forex', icon: '💱', desc: '40+ pairs', color: '#00C274' },
+              { name: 'Forex', icon: '💱', desc: '80+ pairs', color: '#00C274' },
               { name: 'Gold', icon: '🥇', desc: 'XAU/USD', color: '#FFD700' },
               { name: 'Indices', icon: '📊', desc: 'US30, NAS100', color: '#00C274' },
               { name: 'Crypto', icon: '₿', desc: 'BTC, ETH', color: '#F7931A' },
@@ -264,7 +265,7 @@ export function Home() {
             <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
               Start in 3 Simple Steps
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#848E9C]">No experience needed. We do the heavy lifting.</motion.p>
+            <motion.p variants={fadeUp} className="text-[#848E9C]">Simple, fast, and fully online — trade live in minutes.</motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
@@ -276,11 +277,11 @@ export function Home() {
               },
               {
                 step: '02', icon: <Wallet className="h-7 w-7" />, title: 'Fund Your Account',
-                desc: 'Deposit from ₹20,000 via UPI, IMPS, or bank transfer. Instant credit.',
+                desc: 'Instant deposit via UPI, Bank Transfer, or Crypto. No deposit fees, credited immediately.',
               },
               {
-                step: '03', icon: <BarChart2 className="h-7 w-7" />, title: 'Algo Trades for You',
-                desc: 'Our algorithms execute trades 24/7. Monitor profits from your dashboard.',
+                step: '03', icon: <BarChart2 className="h-7 w-7" />, title: 'Start Trading',
+                desc: 'Access 200+ instruments with leverage up to 1:2000 and spreads from 0.0 pips.',
               },
             ].map((s, i) => (
               <motion.div key={s.step} variants={fadeUp}
@@ -306,14 +307,14 @@ export function Home() {
                 Why Traders Choose ECMarket Pro
               </motion.h2>
               <motion.p variants={fadeUp} className="text-[#848E9C] mb-8 leading-relaxed">
-                We combine institutional-grade algorithms with a client-first approach — transparent fees, real-time reporting, and funds you can withdraw anytime.
+                Institutional-grade trading conditions, local payment methods, and the fastest withdrawals — all from a UAE regulated broker.
               </motion.p>
               <motion.div variants={stagger} className="space-y-4">
                 {[
-                  { icon: <Zap className="h-5 w-5" />, title: 'Millisecond Execution', desc: 'Orders placed in &lt;50ms with co-located servers.' },
-                  { icon: <Shield className="h-5 w-5" />, title: 'Segregated Funds', desc: 'Your money is held separately — never used for operations.' },
-                  { icon: <Clock className="h-5 w-5" />, title: '24/7 Automation', desc: 'Algorithms trade round the clock, even when you sleep.' },
-                  { icon: <Globe className="h-5 w-5" />, title: 'Global Markets', desc: 'Access Forex, Crypto, Indices, and Commodities from one account.' },
+                  { icon: <Zap className="h-5 w-5" />, title: 'Spreads From 0.0 Pips', desc: 'Ultra-competitive spreads on all major forex pairs and crypto.' },
+                  { icon: <TrendingUp className="h-5 w-5" />, title: 'Up to 1:2000 Leverage', desc: 'Maximise your trading power with industry-leading leverage.' },
+                  { icon: <Clock className="h-5 w-5" />, title: '1 Hour Withdrawals', desc: 'Funds in your account within 1 hour — anytime, any day.' },
+                  { icon: <Globe className="h-5 w-5" />, title: '200+ Instruments', desc: 'Forex, Crypto, Indices, Commodities & Stocks from one account.' },
                 ].map(f => (
                   <motion.div key={f.title} variants={fadeUp}
                     className="flex items-start gap-4 rounded-xl border border-[#1A1D27] bg-[#0C0E15] p-4">
@@ -374,8 +375,86 @@ export function Home() {
         </div>
       </section>
 
+      {/* ── DEPOSIT & WITHDRAWAL ── */}
+      <section className="bg-[#0C0E15] py-20 border-y border-[#1A1D27]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+            className="text-center mb-12">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
+              Local Deposits & Fast Withdrawals
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-[#848E9C] max-w-xl mx-auto">
+              Fund your account instantly and withdraw within 1 hour using your preferred local method.
+            </motion.p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-10">
+            {/* Deposit */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="rounded-2xl border border-[#1A1D27] bg-[#060709] p-7">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="rounded-xl bg-[#00C274]/10 p-2.5 text-[#00C274]"><Wallet className="h-6 w-6" /></div>
+                <div>
+                  <p className="font-bold text-white">Deposit Methods</p>
+                  <p className="text-xs text-[#00C274] font-semibold">⚡ Instant Credit</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { method: 'UPI', detail: 'PhonePe, GPay, Paytm & all UPI apps', time: 'Instant' },
+                  { method: 'Bank Transfer', detail: 'NEFT / RTGS / IMPS', time: 'Instant' },
+                  { method: 'Crypto', detail: 'USDT, BTC, ETH & more', time: 'Instant' },
+                ].map(m => (
+                  <div key={m.method} className="flex items-center justify-between rounded-xl bg-[#0C0E15] border border-[#1A1D27] px-4 py-3">
+                    <div>
+                      <p className="text-sm font-bold text-white">{m.method}</p>
+                      <p className="text-[11px] text-[#848E9C]">{m.detail}</p>
+                    </div>
+                    <span className="text-xs font-bold text-[#00C274] bg-[#00C274]/10 px-2.5 py-1 rounded-full">{m.time}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Withdrawal */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="rounded-2xl border border-[#1A1D27] bg-[#060709] p-7">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="rounded-xl bg-[#00C274]/10 p-2.5 text-[#00C274]"><Clock className="h-6 w-6" /></div>
+                <div>
+                  <p className="font-bold text-white">Withdrawal Methods</p>
+                  <p className="text-xs text-[#00C274] font-semibold">🕐 Within 1 Hour</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { method: 'Bank Transfer', detail: 'Direct to your registered bank account', time: '≤ 1 Hour' },
+                  { method: 'UPI', detail: 'Instant UPI payout to your ID', time: '≤ 1 Hour' },
+                  { method: 'Crypto', detail: 'USDT, BTC, ETH withdrawal', time: '≤ 1 Hour' },
+                ].map(m => (
+                  <div key={m.method} className="flex items-center justify-between rounded-xl bg-[#0C0E15] border border-[#1A1D27] px-4 py-3">
+                    <div>
+                      <p className="text-sm font-bold text-white">{m.method}</p>
+                      <p className="text-[11px] text-[#848E9C]">{m.detail}</p>
+                    </div>
+                    <span className="text-xs font-bold text-[#00C274] bg-[#00C274]/10 px-2.5 py-1 rounded-full">{m.time}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="rounded-2xl border border-[#00C274]/20 bg-[#00C274]/5 p-5 text-center">
+            <p className="text-sm text-[#848E9C]">
+              <span className="text-white font-semibold">Zero deposit fees</span> · <span className="text-white font-semibold">No hidden charges</span> · <span className="text-white font-semibold">Funds always in your control</span>
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── TESTIMONIALS ── */}
-      <section className="bg-[#0C0E15] py-20">
+      <section className="bg-[#060709] py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="text-center mb-12">

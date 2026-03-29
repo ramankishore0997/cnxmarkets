@@ -1,28 +1,28 @@
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Target, Cpu, TrendingUp } from 'lucide-react';
+import { ShieldCheck, Target, Globe, TrendingUp } from 'lucide-react';
 
 export function About() {
   const values = [
     {
       icon: Target,
       title: "Our Mission",
-      description: "To democratize access to institutional-grade quantitative trading strategies, empowering retail investors with the same tools used by elite hedge funds."
+      description: "To give every trader access to institutional-grade trading conditions — tight spreads, high leverage, and fast execution — regardless of their account size."
     },
     {
-      icon: Cpu,
-      title: "Technology First",
-      description: "We invest heavily in ultra-low latency infrastructure, co-located servers, and machine learning models to maintain our trading edge."
+      icon: Globe,
+      title: "Global Reach, Local Methods",
+      description: "We are headquartered in the UAE and serve clients globally, offering local deposit and withdrawal methods including UPI, Bank Transfer, and Crypto."
     },
     {
       icon: ShieldCheck,
-      title: "Risk Management",
-      description: "Capital preservation is our highest priority. Our systems feature hard-coded risk limits, automated kill switches, and strict drawdown controls."
+      title: "Client Fund Safety",
+      description: "Client funds are held in fully segregated tier-1 bank accounts, completely separate from company operating capital. Your money is always yours."
     },
     {
       icon: TrendingUp,
       title: "Transparency",
-      description: "We provide complete visibility into our algorithmic logic, historical performance, and real-time execution statistics."
+      description: "Zero hidden fees, real-time trade reporting, and complete visibility into your account activity — always."
     }
   ];
 
@@ -44,7 +44,7 @@ export function About() {
             transition={{ delay: 0.1 }}
             className="text-xl text-[#848E9C] max-w-3xl mx-auto"
           >
-            ECMarket Pro is a technology-driven global trading platform, built by quantitative researchers and software engineers to deliver institutional-grade algorithmic strategies, analytics tools, and market monitoring infrastructure to investors worldwide.
+            ECMarket Pro is a UAE-regulated global forex broker, offering traders access to 200+ instruments including Forex, Crypto, Indices, and Commodities with spreads from 0.0 pips and leverage up to 1:2000.
           </motion.p>
         </div>
       </section>
@@ -54,15 +54,15 @@ export function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">The Next Evolution of Retail Trading</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">A Broker Built for Today's Trader</h2>
               <p className="text-[#848E9C] mb-4 leading-relaxed text-lg">
-                For decades, the most profitable trading strategies have been locked behind the high entry barriers of proprietary trading firms and quantitative hedge funds. Retail investors were left to compete using manual execution and delayed data.
+                Retail traders deserved better — better spreads, faster execution, and payment methods that actually work locally. ECMarket Pro was built to bridge the gap between global forex markets and Indian traders.
               </p>
               <p className="text-[#848E9C] mb-4 leading-relaxed text-lg">
-                We built ECMarket Pro to change this paradigm. By pooling capital and running our proprietary algorithms on tier-1 liquidity providers, we achieve economies of scale that allow us to offer institutional execution to individual accounts.
+                We are headquartered in the UAE and offer access to 200+ instruments including major and minor Forex pairs, Cryptocurrencies, Commodities, Indices, and Stocks — all from a single trading account.
               </p>
               <p className="text-[#848E9C] leading-relaxed text-lg">
-                Our infrastructure is built on C++ and Rust for execution, paired with Python-based machine learning models for strategy generation, all hosted on co-located servers in Equinix LD4 and NY4.
+                With leverage up to 1:2000, spreads starting from 0.0 pips, and local payment methods including UPI, Bank Transfer, and Crypto — we have made professional trading accessible to everyone.
               </p>
             </div>
             
@@ -144,10 +144,10 @@ export function About() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Our Team</h2>
           <p className="text-xl text-[#848E9C] leading-relaxed mb-8">
-            We are a collective of quants, traders, and engineers who believe that code outperforms emotion. We don't employ salespeople or "trading gurus" — our entire focus is on mathematics, execution speed, and absolute returns.
+            We are a team of traders, technologists, and compliance professionals committed to providing the best trading conditions in the industry. Our focus is on execution quality, client fund safety, and zero-compromise transparency.
           </p>
           <div className="inline-flex items-center gap-2 border border-[#00C274] text-[#00C274] px-6 py-2 rounded-full font-semibold">
-            Globally Distributed · Algorithmically Driven
+            UAE Regulated · Globally Trusted · Locally Accessible
           </div>
         </div>
       </section>

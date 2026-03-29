@@ -12,128 +12,113 @@ export function Faq() {
   const faqs = [
     {
       category: 'General',
-      q: "What exactly is algorithmic trading?",
-      a: "Algorithmic trading uses computer programs to execute trades based on predefined rules. Our systems analyze market data, identify patterns, and execute trades in milliseconds without human emotional bias or hesitation."
+      q: "What is ECMarket Pro?",
+      a: "ECMarket Pro is a UAE-regulated global forex broker offering traders access to 200+ instruments including Forex pairs, Cryptocurrencies, Commodities, Indices, and Stocks — all from one account with spreads from 0.0 pips and leverage up to 1:2000."
     },
     {
       category: 'General',
-      q: "Do I need trading experience?",
-      a: "No prior trading experience is required. ECMarket Pro is a fully managed quantitative solution. Once you deposit funds and allocate them to a strategy, our systems handle 100% of the analysis, execution, and risk management."
+      q: "Is ECMarket Pro regulated?",
+      a: "Yes. ECMarket Pro is a regulated forex broker headquartered in the UAE. We operate under strict financial compliance standards and maintain full client fund segregation at all times."
     },
     {
       category: 'General',
       q: "How does ECMarket Pro protect client funds?",
-      a: "ECMarket Pro maintains strict AML (Anti-Money Laundering) policies and rigorous KYC verification for all clients. All client funds are held in segregated tier-1 bank accounts entirely separate from company operating capital. We have trading authority only — we cannot move or withdraw client funds. For jurisdiction-specific compliance queries, please contact our compliance team."
+      a: "Client funds are held in fully segregated tier-1 bank accounts, completely separate from company operating capital. Only you can initiate deposits and withdrawals — we never have access to move your funds without your authorization."
     },
     {
       category: 'General',
-      q: "Who manages the algorithms?",
-      a: "Our dedicated quant research team of 15+ professionals manages all algorithmic strategies. The team includes quantitative analysts, software engineers, and former institutional traders with backgrounds from leading hedge funds and investment banks."
+      q: "Do I need prior trading experience?",
+      a: "No experience is required to open an account. However, please be aware that trading in financial markets carries risk. We provide educational resources and a demo environment to help you get started responsibly."
     },
     {
       category: 'General',
-      q: "What is the track record of your algorithms?",
-      a: "Our flagship strategies have a verified 5-year live trading track record. Average annual returns range from 28% to 72% depending on the risk tier, with maximum drawdowns below 12%. All performance data is available for verified clients on the dashboard."
-    },
-    {
-      category: 'General',
-      q: "Can I use ECMarket Pro alongside manual trading?",
-      a: "Absolutely. Many of our clients use ECMarket Pro as a passive algorithmic income stream alongside their existing manual trading or investment portfolios. The accounts are completely independent."
+      q: "Which countries can use ECMarket Pro?",
+      a: "ECMarket Pro serves clients globally with a strong focus on Indian and South Asian traders. Our local payment methods (UPI, Bank Transfer) are specifically designed for the Indian market."
     },
     {
       category: 'Accounts',
-      q: "What is the minimum deposit?",
-      a: "The minimum deposit to activate the Starter Algo is ₹20,000. However, to access the full suite of strategies and optimal risk diversification, we recommend the Professional tier starting at ₹1,00,000."
-    },
-    {
-      category: 'Accounts',
-      q: "What does the analytics dashboard show?",
-      a: "Your dashboard provides a real-time view of your portfolio: live equity curve, open positions, closed trade log with full details (entry, exit, P&L), strategy allocation breakdown, and historical performance metrics. All data is updated tick-by-tick."
-    },
-    {
-      category: 'Accounts',
-      q: "Can I switch between account tiers?",
-      a: "Yes. You can upgrade your tier at any time by depositing additional capital to meet the new threshold. Your strategy access and execution priority are upgraded immediately after confirmation. Downgrading is also possible with a withdrawal request."
-    },
-    {
-      category: 'Accounts',
-      q: "How do I open an account?",
-      a: "Opening an account takes under 10 minutes. Register online, complete your KYC (Aadhaar, PAN, selfie), fund your account via UPI/NEFT/IMPS, and activate your chosen strategy. You'll receive live dashboard access immediately after KYC approval."
-    },
-    {
-      category: 'Accounts',
-      q: "Can I have multiple strategies running simultaneously?",
-      a: "Yes, Professional and Institutional tier clients can run multiple strategies concurrently with custom capital allocation. For example, you can allocate 40% to RazrMarket, 30% to Gold Breakout, and 30% to Momentum Alpha."
+      q: "How do I open a live account?",
+      a: "Opening an account takes under 5 minutes. Register online, complete your KYC (Aadhaar + PAN for Indian residents), fund your account via UPI, Bank Transfer, or Crypto, and start trading immediately after verification."
     },
     {
       category: 'Accounts',
       q: "What documents are required for KYC?",
-      a: "For Indian residents: Aadhaar card (front & back), PAN card, a recent bank statement (last 3 months), and a live selfie for identity verification. For NRIs: Passport, OCI card, proof of overseas address, and NRE/NRO bank statement."
+      a: "For Indian residents: Aadhaar card (front & back), PAN card, a recent bank statement (last 3 months), and a selfie for identity verification. For NRIs: Passport, proof of overseas address, and bank statement."
+    },
+    {
+      category: 'Accounts',
+      q: "What does the trading dashboard show?",
+      a: "Your dashboard shows your live portfolio balance, open positions, closed trade history with full P&L details, deposit and withdrawal history, and real-time market data."
+    },
+    {
+      category: 'Accounts',
+      q: "Can I have multiple accounts?",
+      a: "Each verified identity can hold one live account. If you require additional account types (e.g., for different trading styles), please contact our support team."
     },
     {
       category: 'Trading',
-      q: "Which markets do your algorithms trade?",
-      a: "Our core strategies operate primarily on major Forex pairs (EUR/USD, GBP/USD, USD/JPY) and high-liquidity commodities like Gold (XAU/USD). We focus on markets with deep liquidity to minimize slippage."
+      q: "What instruments can I trade?",
+      a: "You can trade 200+ instruments including 80+ Forex pairs (majors, minors, exotics), Cryptocurrencies (BTC, ETH, SOL and more), Gold & Silver, Oil, Global Indices (US30, NAS100, S&P500), and top Stocks."
     },
     {
       category: 'Trading',
-      q: "How do I monitor performance?",
-      a: "You get access to a real-time dashboard showing your live equity curve, open positions, historical trades, and performance metrics. Everything is completely transparent with trade-by-trade detail."
+      q: "What is the maximum leverage offered?",
+      a: "ECMarket Pro offers leverage up to 1:2000 on major forex pairs. Leverage on crypto and commodities varies by instrument. Higher leverage amplifies both profits and losses — please trade responsibly."
     },
     {
       category: 'Trading',
-      q: "How often do the algorithms trade?",
-      a: "Trading frequency varies by strategy. Our HFT strategies like Velocity FX may execute 50-200+ trades per day. Swing strategies like Atlas and Macro Flow may execute 2-5 trades per week. The dashboard shows all open and closed positions in real time."
+      q: "What are the spreads?",
+      a: "Spreads start from 0.0 pips on major pairs like EUR/USD and GBP/USD during peak liquidity hours. All spreads are displayed in real time on the trading platform before order execution."
     },
     {
       category: 'Trading',
-      q: "What happens during extreme market events (crashes, flash crashes)?",
-      a: "Our platform has platform-level circuit breakers that automatically pause all trading during extreme events. Individual strategies also have hard drawdown limits. During black swan events like COVID-19 or the 2015 CHF unpeg, our risk systems would trigger automatic deactivation before significant losses."
+      q: "What are the trading hours?",
+      a: "Forex markets are open 24 hours a day, 5 days a week (Monday to Friday). Crypto markets are available 24/7. Indices and commodities have specific session hours as listed on the platform."
     },
     {
       category: 'Trading',
-      q: "Can I see individual trade details?",
-      a: "Yes. Your dashboard shows a complete trade log including entry price, exit price, lot size, P&L per trade, strategy source, and duration. You can export your full trade history as a CSV/PDF for tax reporting."
+      q: "Can I see my full trade history?",
+      a: "Yes. Your dashboard shows a complete trade log including entry price, exit price, lot size, P&L per trade, and duration. You can export your full history for tax reporting purposes."
     },
     {
       category: 'Deposits & Withdrawals',
-      q: "Can I withdraw my money at any time?",
-      a: "Absolutely. There is zero lock-in period. You can pause trading and request a withdrawal at any time from your dashboard. Withdrawals are typically processed within 24 hours for Professional accounts."
-    },
-    {
-      category: 'Deposits & Withdrawals',
-      q: "What deposit methods are accepted?",
-      a: "We accept UPI, NEFT, RTGS, IMPS, and bank wire for domestic Indian clients. NRI clients can fund via NRE/NRO account wire transfer. Minimum deposit amounts: Starter ₹20,000 | Professional ₹1,00,000 | Institutional ₹5,00,000."
+      q: "What deposit methods are available?",
+      a: "We accept UPI (PhonePe, GPay, Paytm & all UPI apps), Bank Transfer (NEFT, RTGS, IMPS), and Crypto (USDT, BTC, ETH and more). All deposits are instant with zero deposit fees."
     },
     {
       category: 'Deposits & Withdrawals',
       q: "How long do withdrawals take?",
-      a: "Starter accounts: Within 24 hours (business days). Professional accounts: Priority 4-hour processing. Institutional accounts: Instant settlement available. All withdrawals are processed only to verified bank accounts in your name — never third-party accounts."
+      a: "Withdrawals are processed within 1 hour to your registered bank account, UPI ID, or crypto wallet — 24 hours a day, 7 days a week. This is one of the fastest withdrawal times in the industry."
     },
     {
       category: 'Deposits & Withdrawals',
-      q: "Can I add capital to an existing account?",
-      a: "Yes. You can top up your account at any time via UPI, NEFT, RTGS, or IMPS. Additional deposits are reflected in your portfolio within one business day. There is no restriction on how many times you can deposit."
+      q: "Are there any withdrawal fees?",
+      a: "No. ECMarket Pro charges zero withdrawal fees. The full amount you request is transferred to your account without any deductions from our side."
+    },
+    {
+      category: 'Deposits & Withdrawals',
+      q: "Can I withdraw at any time?",
+      a: "Yes. There is no lock-in period. You can request a withdrawal at any time from your dashboard. Your funds are always available — no restrictions or waiting periods."
     },
     {
       category: 'Security',
       q: "Is my money safe?",
-      a: "Yes. Funds are held in segregated tier-1 bank accounts entirely separate from company assets. We hold trading authority only — we cannot withdraw your funds under any circumstances. Only you can initiate deposits and withdrawals to accounts matching your verified identity."
+      a: "Yes. Funds are held in segregated tier-1 bank accounts entirely separate from company assets. We are UAE regulated and maintain strict AML/KYC compliance to protect client funds at all times."
     },
     {
       category: 'Security',
       q: "What happens if ECMarket Pro shuts down?",
-      a: "Client funds are completely segregated from company operating funds in separate tier-1 bank accounts. In the unlikely event of company closure, client funds are fully protected and returned immediately. We are also fully insured against operational risk."
+      a: "Client funds are completely segregated from company operating funds. In the unlikely event of closure, client funds are fully protected and returned immediately — they are never used for company operations."
     },
     {
       category: 'Security',
       q: "How is my personal data protected?",
-      a: "All personal data is encrypted using 256-bit AES encryption both in transit and at rest. We are fully compliant with PDPA (Personal Data Protection Act) guidelines. We never sell, share, or rent your personal data to third parties."
+      a: "All personal data is encrypted using 256-bit AES encryption both in transit and at rest. We never sell, share, or rent your personal data to third parties."
     },
     {
       category: 'Security',
       q: "What security features protect my account?",
-      a: "Two-factor authentication (2FA) via Google Authenticator or SMS is mandatory for all account actions. Login activity is monitored for suspicious behavior. Withdrawal requests require both 2FA confirmation and email OTP verification."
+      a: "Two-factor authentication (2FA) is available for all accounts. Login activity is monitored for suspicious behavior. Withdrawal requests are verified against your registered identity."
     },
   ];
 
@@ -145,7 +130,7 @@ export function Faq() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Frequently Asked <span className="text-gradient-gold">Questions</span></h1>
           <p className="text-xl text-[#848E9C] mb-8">
-            Everything you need to know about our algorithms, security, and operations.
+            Everything you need to know about trading with ECMarket Pro — accounts, instruments, leverage, and withdrawals.
           </p>
           
           <div className="relative max-w-xl mx-auto">
