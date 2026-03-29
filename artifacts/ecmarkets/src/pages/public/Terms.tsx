@@ -76,8 +76,8 @@ export function Terms() {
 
             <Section title="13. Contact Us">
               For questions regarding these Terms, please contact us at{' '}
-              <a href="mailto:support@cnxmarkets.com" className="text-[#1F77B4] hover:underline">
-                support@cnxmarkets.com
+              <a href="mailto:support@ecmarketpro.in" className="text-[#1F77B4] hover:underline">
+                support@ecmarketpro.in
               </a>
               .
             </Section>

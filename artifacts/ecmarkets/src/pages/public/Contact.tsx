@@ -57,7 +57,7 @@ export function Contact() {
                 <div>
                   <h3 className="text-xl font-bold text-[#111827] mb-2">Email Support</h3>
                   <p className="text-[#6B7280] text-sm mb-1">Support & inquiries:</p>
-                  <a href="mailto:support@cnxmarkets.com" className="text-[#1F77B4] hover:text-[#174A7C] transition-colors font-medium block mb-3">support@cnxmarkets.com</a>
+                  <a href="mailto:support@ecmarketpro.in" className="text-[#1F77B4] hover:text-[#174A7C] transition-colors font-medium block mb-3">support@ecmarketpro.in</a>
                 </div>
               </div>
 

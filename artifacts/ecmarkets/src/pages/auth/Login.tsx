@@ -46,7 +46,7 @@ const forgotSchema = z.object({
   newPassword: z.string().min(6, "New password must be at least 6 characters"),
 });
 
-const SUPPORT_EMAIL = 'support@cnxmarkets.com';
+const SUPPORT_EMAIL = 'support@ecmarketpro.in';
 
 export function Login() {
   const [, setLocation] = useLocation();

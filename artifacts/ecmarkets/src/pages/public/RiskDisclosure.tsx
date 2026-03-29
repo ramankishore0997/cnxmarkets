@@ -71,8 +71,8 @@ export function RiskDisclosure() {
 
             <Section title="12. Contact and Complaints">
               If you have any concerns or questions regarding risk or your account, please contact our support team at{' '}
-              <a href="mailto:support@cnxmarkets.com" className="text-[#1F77B4] hover:underline">
-                support@cnxmarkets.com
+              <a href="mailto:support@ecmarketpro.in" className="text-[#1F77B4] hover:underline">
+                support@ecmarketpro.in
               </a>
               . We are committed to transparent communication and client protection.
             </Section>
