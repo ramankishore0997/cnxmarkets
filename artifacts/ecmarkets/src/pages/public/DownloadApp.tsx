@@ -13,7 +13,7 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } }
 function FeaturePill({ icon: Icon, text }: { icon: any; text: string }) {
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
-      style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.2)', color: '#00C274' }}>
+      style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.2)', color: '#1F77B4' }}>
       <Icon className="w-3.5 h-3.5" />
       {text}
     </div>
@@ -23,7 +23,7 @@ function FeaturePill({ icon: Icon, text }: { icon: any; text: string }) {
 function StepBadge({ n }: { n: number }) {
   return (
     <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-      style={{ background: 'linear-gradient(135deg, #00C274, #E68A00)', color: '#060709' }}>
+      style={{ background: 'linear-gradient(135deg, #1F77B4, #E68A00)', color: '#FFFFFF' }}>
       {n}
     </div>
   );
@@ -65,17 +65,17 @@ export function DownloadApp() {
         <section className="pt-24 pb-16 px-4 text-center">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-3xl mx-auto">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-8"
-              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)', color: '#00C274' }}>
+              style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.25)', color: '#1F77B4' }}>
               <Zap className="w-3.5 h-3.5" />
               Free · No App Store Required
             </motion.div>
 
             <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
               ECMarket Pro
-              <span className="block" style={{ color: '#00C274' }}>App Download</span>
+              <span className="block" style={{ color: '#1F77B4' }}>App Download</span>
             </motion.h1>
 
-            <motion.p variants={fadeUp} className="text-lg text-[#848E9C] max-w-xl mx-auto mb-10 leading-relaxed">
+            <motion.p variants={fadeUp} className="text-lg text-[#6B7280] max-w-xl mx-auto mb-10 leading-relaxed">
               Install our Progressive Web App directly on your device. Works exactly like a native app — no Play Store, no App Store needed.
             </motion.p>
 
@@ -96,28 +96,28 @@ export function DownloadApp() {
             {/* ── PC / DESKTOP CARD ─────────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-              className={`rounded-3xl p-8 flex flex-col ${!isMobile ? 'ring-2 ring-[#00C274]/40' : ''}`}
+              className={`rounded-3xl p-8 flex flex-col ${!isMobile ? 'ring-2 ring-[#1F77B4]/40' : ''}`}
               style={{ background: 'linear-gradient(135deg, #0F1923 0%, #111923 100%)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
               {!isMobile && (
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full mb-5 self-start"
-                  style={{ background: 'rgba(0,194,116,0.15)', color: '#00C274', border: '1px solid rgba(0,194,116,0.3)' }}>
+                  style={{ background: 'rgba(31,119,180,0.15)', color: '#1F77B4', border: '1px solid rgba(31,119,180,0.3)' }}>
                   ✦ Your Device
                 </div>
               )}
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #1E2D4A, #162540)', border: '1px solid rgba(0,194,116,0.2)' }}>
-                  <Monitor className="w-7 h-7" style={{ color: '#00C274' }} />
+                  style={{ background: 'linear-gradient(135deg, #1E2D4A, #162540)', border: '1px solid rgba(31,119,180,0.2)' }}>
+                  <Monitor className="w-7 h-7" style={{ color: '#1F77B4' }} />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-white">PC / Laptop</h2>
-                  <p className="text-sm text-[#848E9C]">Windows · macOS · Linux</p>
+                  <p className="text-sm text-[#6B7280]">Windows · macOS · Linux</p>
                 </div>
               </div>
 
-              <p className="text-[#848E9C] text-sm leading-relaxed mb-8">
+              <p className="text-[#6B7280] text-sm leading-relaxed mb-8">
                 Install ECMarket Pro as a desktop app directly from your browser. Works on Chrome, Edge, and Brave. No download from any store required.
               </p>
 
@@ -132,8 +132,8 @@ export function DownloadApp() {
                   <div key={i} className="flex items-start gap-3">
                     <StepBadge n={i + 1} />
                     <div className="flex-1 flex items-start gap-2.5 py-1">
-                      <step.icon className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#848E9C' }} />
-                      <p className="text-sm text-[#EAECEF] leading-relaxed">{step.text}</p>
+                      <step.icon className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#6B7280' }} />
+                      <p className="text-sm text-[#374151] leading-relaxed">{step.text}</p>
                     </div>
                   </div>
                 ))}
@@ -143,7 +143,7 @@ export function DownloadApp() {
               <div className="mt-auto">
                 {alreadyInstalled ? (
                   <div className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-sm"
-                    style={{ background: 'rgba(2,192,118,0.1)', border: '1px solid rgba(2,192,118,0.3)', color: '#02C076' }}>
+                    style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid rgba(22,163,74,0.3)', color: '#16A34A' }}>
                     <CheckCircle2 className="w-5 h-5" />
                     App Already Installed!
                   </div>
@@ -153,9 +153,9 @@ export function DownloadApp() {
                     disabled={installing}
                     className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98]"
                     style={{
-                      background: installing ? 'rgba(0,194,116,0.5)' : 'linear-gradient(135deg, #00C274 0%, #E68A00 100%)',
-                      color: '#060709',
-                      boxShadow: installing ? 'none' : '0 8px 32px rgba(0,194,116,0.35)',
+                      background: installing ? 'rgba(31,119,180,0.5)' : 'linear-gradient(135deg, #1F77B4 0%, #E68A00 100%)',
+                      color: '#FFFFFF',
+                      boxShadow: installing ? 'none' : '0 8px 32px rgba(31,119,180,0.35)',
                     }}
                   >
                     {installing ? (
@@ -173,11 +173,11 @@ export function DownloadApp() {
                 ) : (
                   <div className="space-y-3">
                     <div className="flex items-center justify-center gap-2 py-4 rounded-2xl font-semibold text-sm"
-                      style={{ background: 'rgba(0,194,116,0.07)', border: '1px solid rgba(0,194,116,0.2)', color: '#848E9C' }}>
-                      <Globe className="w-4 h-4 text-[#00C274]" />
+                      style={{ background: 'rgba(31,119,180,0.07)', border: '1px solid rgba(31,119,180,0.2)', color: '#6B7280' }}>
+                      <Globe className="w-4 h-4 text-[#1F77B4]" />
                       Open in Chrome or Edge to install
                     </div>
-                    <p className="text-center text-xs text-[#848E9C]">
+                    <p className="text-center text-xs text-[#6B7280]">
                       Firefox and Safari do not support desktop PWA installation. Use Chrome or Edge.
                     </p>
                   </div>
@@ -188,28 +188,28 @@ export function DownloadApp() {
             {/* ── MOBILE CARD ───────────────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-              className={`rounded-3xl p-8 flex flex-col ${isMobile ? 'ring-2 ring-[#00C274]/40' : ''}`}
+              className={`rounded-3xl p-8 flex flex-col ${isMobile ? 'ring-2 ring-[#1F77B4]/40' : ''}`}
               style={{ background: 'linear-gradient(135deg, #0F1923 0%, #111923 100%)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
               {isMobile && (
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full mb-5 self-start"
-                  style={{ background: 'rgba(0,194,116,0.15)', color: '#00C274', border: '1px solid rgba(0,194,116,0.3)' }}>
+                  style={{ background: 'rgba(31,119,180,0.15)', color: '#1F77B4', border: '1px solid rgba(31,119,180,0.3)' }}>
                   ✦ Your Device
                 </div>
               )}
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #1A2D1E, #152515)', border: '1px solid rgba(2,192,118,0.2)' }}>
-                  <Smartphone className="w-7 h-7" style={{ color: '#02C076' }} />
+                  style={{ background: 'linear-gradient(135deg, #1A2D1E, #152515)', border: '1px solid rgba(22,163,74,0.2)' }}>
+                  <Smartphone className="w-7 h-7" style={{ color: '#16A34A' }} />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-white">Mobile Phone</h2>
-                  <p className="text-sm text-[#848E9C]">Android · iPhone · iPad</p>
+                  <p className="text-sm text-[#6B7280]">Android · iPhone · iPad</p>
                 </div>
               </div>
 
-              <p className="text-[#848E9C] text-sm leading-relaxed mb-8">
+              <p className="text-[#6B7280] text-sm leading-relaxed mb-8">
                 Add ECMarket Pro to your home screen for a full-screen, app-like experience. Instant access with one tap — just like a native app.
               </p>
 
@@ -231,7 +231,7 @@ export function DownloadApp() {
                     ].map((text, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <StepBadge n={i + 1} />
-                        <p className="text-sm text-[#EAECEF] leading-relaxed py-1">{text}</p>
+                        <p className="text-sm text-[#374151] leading-relaxed py-1">{text}</p>
                       </div>
                     ))}
                   </div>
@@ -240,16 +240,16 @@ export function DownloadApp() {
 
               {/* iOS Steps */}
               {(!isMobile || isIOS) && (
-                <div className={!isMobile || isAndroid ? 'pt-6 border-t border-[#181B23]' : ''}>
+                <div className={!isMobile || isAndroid ? 'pt-6 border-t border-[#E5E7EB]' : ''}>
                   {!isMobile && (
                     <div className="flex items-center gap-2 mb-4">
-                      <Apple className="w-5 h-5" style={{ color: '#EAECEF' }} />
+                      <Apple className="w-5 h-5" style={{ color: '#374151' }} />
                       <h3 className="text-sm font-bold text-white">iPhone / iPad (Safari)</h3>
                     </div>
                   )}
                   {isIOS && (
                     <div className="flex items-center gap-2 mb-4">
-                      <Apple className="w-5 h-5" style={{ color: '#EAECEF' }} />
+                      <Apple className="w-5 h-5" style={{ color: '#374151' }} />
                       <h3 className="text-sm font-bold text-white">iPhone / iPad</h3>
                     </div>
                   )}
@@ -257,17 +257,17 @@ export function DownloadApp() {
                     {[
                       'Open ecmarketsindia.com in Safari browser',
                       { text: 'Tap the Share button', icon: Share2, iconColor: '#007AFF' },
-                      { text: 'Scroll down and tap "Add to Home Screen"', icon: Plus, iconColor: '#00C274' },
+                      { text: 'Scroll down and tap "Add to Home Screen"', icon: Plus, iconColor: '#1F77B4' },
                       'Tap "Add" — app icon appears on your home screen',
                     ].map((step, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <StepBadge n={i + 1} />
                         {typeof step === 'string' ? (
-                          <p className="text-sm text-[#EAECEF] leading-relaxed py-1">{step}</p>
+                          <p className="text-sm text-[#374151] leading-relaxed py-1">{step}</p>
                         ) : (
                           <div className="flex items-center gap-2 py-1">
                             <step.icon className="w-4 h-4 flex-shrink-0" style={{ color: step.iconColor }} />
-                            <p className="text-sm text-[#EAECEF] leading-relaxed">{step.text}</p>
+                            <p className="text-sm text-[#374151] leading-relaxed">{step.text}</p>
                           </div>
                         )}
                       </div>
@@ -280,7 +280,7 @@ export function DownloadApp() {
               <div className="mt-8">
                 {alreadyInstalled ? (
                   <div className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-sm"
-                    style={{ background: 'rgba(2,192,118,0.1)', border: '1px solid rgba(2,192,118,0.3)', color: '#02C076' }}>
+                    style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid rgba(22,163,74,0.3)', color: '#16A34A' }}>
                     <CheckCircle2 className="w-5 h-5" />
                     App Already Installed!
                   </div>
@@ -290,9 +290,9 @@ export function DownloadApp() {
                     disabled={installing}
                     className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-[0.98]"
                     style={{
-                      background: installing ? 'rgba(2,192,118,0.5)' : 'linear-gradient(135deg, #02C076 0%, #01a863 100%)',
+                      background: installing ? 'rgba(22,163,74,0.5)' : 'linear-gradient(135deg, #16A34A 0%, #01a863 100%)',
                       color: '#fff',
-                      boxShadow: installing ? 'none' : '0 8px 32px rgba(2,192,118,0.3)',
+                      boxShadow: installing ? 'none' : '0 8px 32px rgba(22,163,74,0.3)',
                     }}
                   >
                     {installing ? (
@@ -315,8 +315,8 @@ export function DownloadApp() {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2 py-4 rounded-2xl font-semibold text-sm"
-                    style={{ background: 'rgba(2,192,118,0.07)', border: '1px solid rgba(2,192,118,0.2)', color: '#848E9C' }}>
-                    <Smartphone className="w-4 h-4 text-[#02C076]" />
+                    style={{ background: 'rgba(22,163,74,0.07)', border: '1px solid rgba(22,163,74,0.2)', color: '#6B7280' }}>
+                    <Smartphone className="w-4 h-4 text-[#16A34A]" />
                     Follow the steps above on your phone
                   </div>
                 )}
@@ -330,20 +330,20 @@ export function DownloadApp() {
           <motion.div
             initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto text-center rounded-3xl p-10"
-            style={{ background: 'linear-gradient(135deg, #0F172A, #111923)', border: '1px solid rgba(0,194,116,0.15)' }}
+            style={{ background: 'linear-gradient(135deg, #0F172A, #111923)', border: '1px solid rgba(31,119,180,0.15)' }}
           >
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-              style={{ background: 'linear-gradient(135deg, #00C274, #E68A00)' }}>
+              style={{ background: 'linear-gradient(135deg, #1F77B4, #E68A00)' }}>
               <span className="text-black font-black text-2xl">EC</span>
             </div>
             <h3 className="text-2xl font-black text-white mb-3">Questions? We're here to help.</h3>
-            <p className="text-[#848E9C] mb-6 text-sm leading-relaxed">
+            <p className="text-[#6B7280] mb-6 text-sm leading-relaxed">
               If you face any issues during installation, reach out to our support team and we'll guide you step by step.
             </p>
             <a
               href="mailto:support@cnxmarkets.com"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
-              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.3)', color: '#00C274' }}
+              style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.3)', color: '#1F77B4' }}
             >
               support@cnxmarkets.com
             </a>

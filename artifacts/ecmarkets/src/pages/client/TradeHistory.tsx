@@ -162,8 +162,8 @@ export function TradeHistory() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-5">
-        <h1 className="text-xl md:text-3xl font-bold text-white mb-1">Trade History</h1>
-        <p className="text-[#848E9C] text-sm font-medium">Complete record of all closed positions</p>
+        <h1 className="text-xl md:text-3xl font-bold text-[#111827] mb-1">Trade History</h1>
+        <p className="text-[#6B7280] text-sm font-medium">Complete record of all closed positions</p>
       </div>
 
       {/* Tab Switcher */}
@@ -172,8 +172,8 @@ export function TradeHistory() {
           onClick={() => switchTab('algo')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
             tab === 'algo'
-              ? 'bg-[#00C274] text-black shadow-[0_0_14px_rgba(0,194,116,0.35)]'
-              : 'bg-[#0C0E15] border border-[#1A1D27] text-[#848E9C] hover:border-[#00C274] hover:text-[#00C274]'
+              ? 'bg-[#1F77B4] text-black shadow-[0_0_14px_rgba(31,119,180,0.35)]'
+              : 'bg-[#FFFFFF] border border-[#E5E7EB] text-[#6B7280] hover:border-[#1F77B4] hover:text-[#1F77B4]'
           }`}
         >
           <BarChart className="w-4 h-4" />
@@ -184,7 +184,7 @@ export function TradeHistory() {
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
             tab === 'binary'
               ? 'bg-[#F0B90B] text-black shadow-[0_0_14px_rgba(240,185,11,0.35)]'
-              : 'bg-[#0C0E15] border border-[#1A1D27] text-[#848E9C] hover:border-[#F0B90B] hover:text-[#F0B90B]'
+              : 'bg-[#FFFFFF] border border-[#E5E7EB] text-[#6B7280] hover:border-[#F0B90B] hover:text-[#F0B90B]'
           }`}
         >
           <Zap className="w-4 h-4" />
@@ -195,8 +195,8 @@ export function TradeHistory() {
       {/* Filter Bar */}
       <div className="card-stealth p-3 md:p-4 mb-5">
         <div className="flex items-center gap-2 mb-2">
-          <Filter className="w-3.5 h-3.5 text-[#848E9C] shrink-0" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#848E9C]">Period</span>
+          <Filter className="w-3.5 h-3.5 text-[#6B7280] shrink-0" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]">Period</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {PRESETS.map(p => (
@@ -205,8 +205,8 @@ export function TradeHistory() {
               onClick={() => handlePreset(p.key)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                 preset === p.key
-                  ? 'bg-[#00C274] text-black shadow-[0_0_12px_rgba(0,194,116,0.35)]'
-                  : 'bg-[#060709] border border-[#181B23] text-[#848E9C] hover:border-[#00C274] hover:text-[#00C274]'
+                  ? 'bg-[#1F77B4] text-black shadow-[0_0_12px_rgba(31,119,180,0.35)]'
+                  : 'bg-[#FFFFFF] border border-[#E5E7EB] text-[#6B7280] hover:border-[#1F77B4] hover:text-[#1F77B4]'
               }`}
             >
               {p.label}
@@ -218,7 +218,7 @@ export function TradeHistory() {
             <input type="date" value={customFrom}
               onChange={e => { setCustomFrom(e.target.value); setPage(1); }}
               className="input-stealth !py-1.5 !text-sm w-full sm:w-36" />
-            <span className="text-[#848E9C] text-sm hidden sm:inline">to</span>
+            <span className="text-[#6B7280] text-sm hidden sm:inline">to</span>
             <input type="date" value={customTo}
               onChange={e => { setCustomTo(e.target.value); setPage(1); }}
               className="input-stealth !py-1.5 !text-sm w-full sm:w-36" />
@@ -233,25 +233,25 @@ export function TradeHistory() {
             label: 'Total Trades',
             value: activeTotal.toLocaleString('en-IN'),
             sub: preset === 'today' ? 'Today' : `${preset === 'all' ? 'All time' : preset}`,
-            icon: Filter, color: '#00C274',
+            icon: Filter, color: '#1F77B4',
           },
           {
             label: 'Win Rate',
             value: `${winRate}%`,
             sub: `${activeWins}W / ${activeTotal - activeWins}L`,
-            icon: Target, color: '#02C076',
+            icon: Target, color: '#16A34A',
           },
           {
             label: 'Net P&L',
             value: fmtPnl(activePnl),
             sub: 'For selected period',
-            icon: BarChart2, color: activePnl >= 0 ? '#02C076' : '#CF304A',
+            icon: BarChart2, color: activePnl >= 0 ? '#16A34A' : '#DC2626',
           },
           {
             label: 'Best Trade',
             value: `₹${Math.abs(activeBest).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
             sub: 'From current page',
-            icon: Trophy, color: '#00C274',
+            icon: Trophy, color: '#1F77B4',
           },
         ].map(s => (
           <div key={s.label} className="card-stealth p-4 flex items-center gap-3">
@@ -260,11 +260,11 @@ export function TradeHistory() {
               <s.icon className="w-5 h-5" style={{ color: s.color }} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs text-[#848E9C] font-medium truncate">{s.label}</p>
-              <p className="text-lg font-bold leading-tight" style={{ color: s.color === '#CF304A' ? '#CF304A' : '#fff' }}>
+              <p className="text-xs text-[#6B7280] font-medium truncate">{s.label}</p>
+              <p className="text-lg font-bold leading-tight" style={{ color: s.color === '#DC2626' ? '#DC2626' : '#fff' }}>
                 {s.value}
               </p>
-              <p className="text-[10px] text-[#848E9C] truncate">{s.sub}</p>
+              <p className="text-[10px] text-[#6B7280] truncate">{s.sub}</p>
             </div>
           </div>
         ))}
@@ -272,15 +272,15 @@ export function TradeHistory() {
 
       {/* Table */}
       <div className="card-stealth overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#181B23]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB]">
           <div className="flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-[#00C274]" />
+            <CalendarDays className="w-4 h-4 text-[#1F77B4]" />
             <span className="text-white font-bold text-sm">
               {tab === 'algo' ? 'Algo Trades' : 'Binary Trades'} — Closed Positions
             </span>
-            {loading && <Loader2 className="w-4 h-4 animate-spin text-[#848E9C] ml-1" />}
+            {loading && <Loader2 className="w-4 h-4 animate-spin text-[#6B7280] ml-1" />}
           </div>
-          <span className="text-xs text-[#848E9C] font-medium">
+          <span className="text-xs text-[#6B7280] font-medium">
             {activeTotal > 0
               ? `${(page - 1) * LIMIT + 1}–${Math.min(page * LIMIT, activeTotal)} of ${activeTotal}`
               : '0 records'}
@@ -293,32 +293,32 @@ export function TradeHistory() {
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#181B23]">
+                  <tr className="border-b border-[#E5E7EB]">
                     {['Date & Time','Instrument','Type','Entry','Exit','Lot','P&L (₹)','Duration','Result'].map(h => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#6B7280] uppercase tracking-wider whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {algoLoading ? (
                     <tr><td colSpan={9} className="text-center py-16">
-                      <Loader2 className="w-8 h-8 animate-spin text-[#00C274] mx-auto" />
-                      <p className="text-[#848E9C] text-sm mt-3">Loading trades…</p>
+                      <Loader2 className="w-8 h-8 animate-spin text-[#1F77B4] mx-auto" />
+                      <p className="text-[#6B7280] text-sm mt-3">Loading trades…</p>
                     </td></tr>
                   ) : algoTrades.length === 0 ? (
                     <tr><td colSpan={9} className="text-center py-16">
-                      <AlertCircle className="w-10 h-10 text-[#181B23] mx-auto mb-3" />
-                      <p className="text-[#848E9C] text-sm">No algo trades found for this period.</p>
+                      <AlertCircle className="w-10 h-10 text-[#E5E7EB] mx-auto mb-3" />
+                      <p className="text-[#6B7280] text-sm">No algo trades found for this period.</p>
                     </td></tr>
                   ) : algoTrades.map((trade: any, idx: number) => {
                     const isWin = (trade.profit ?? 0) >= 0;
                     const dt    = formatDateTime(trade.closedAt ?? trade.openedAt);
                     return (
                       <tr key={trade.id}
-                        className={`border-b border-[#181B23]/60 transition-colors hover:bg-[#1E2329]/60 ${idx % 2 === 0 ? 'bg-[#060709]/40' : ''}`}>
+                        className={`border-b border-[#E5E7EB]/60 transition-colors hover:bg-[#F7F9FC]/60 ${idx % 2 === 0 ? 'bg-[#FFFFFF]/40' : ''}`}>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <p className="text-[#EAECEF] font-medium text-xs">{dt.date}</p>
-                          <p className="text-[#848E9C] text-[11px]">{dt.time}</p>
+                          <p className="text-[#374151] font-medium text-xs">{dt.date}</p>
+                          <p className="text-[#6B7280] text-[11px]">{dt.time}</p>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <p className="text-white font-bold text-sm">{trade.instrument}</p>
@@ -329,25 +329,25 @@ export function TradeHistory() {
                         <td className="px-4 py-3">
                           <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ${
                             trade.direction === 'buy'
-                              ? 'bg-[#02C076]/15 text-[#02C076] border border-[#02C076]/20'
-                              : 'bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/20'
+                              ? 'bg-[#16A34A]/15 text-[#16A34A] border border-[#16A34A]/20'
+                              : 'bg-[#DC2626]/15 text-[#DC2626] border border-[#DC2626]/20'
                           }`}>
                             {trade.direction === 'buy' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                             {trade.direction.toUpperCase()}
                           </div>
                         </td>
-                        <td className="px-4 py-3 font-mono text-[#EAECEF] text-xs whitespace-nowrap">{formatPrice(trade.entryPrice, trade.instrument)}</td>
-                        <td className="px-4 py-3 font-mono text-[#EAECEF] text-xs whitespace-nowrap">{trade.exitPrice ? formatPrice(trade.exitPrice, trade.instrument) : '—'}</td>
-                        <td className="px-4 py-3 text-[#848E9C] text-xs">{trade.lotSize}</td>
+                        <td className="px-4 py-3 font-mono text-[#374151] text-xs whitespace-nowrap">{formatPrice(trade.entryPrice, trade.instrument)}</td>
+                        <td className="px-4 py-3 font-mono text-[#374151] text-xs whitespace-nowrap">{trade.exitPrice ? formatPrice(trade.exitPrice, trade.instrument) : '—'}</td>
+                        <td className="px-4 py-3 text-[#6B7280] text-xs">{trade.lotSize}</td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <span className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                          <span className={`font-bold text-sm ${isWin ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                             {fmtPnl(trade.profit ?? 0)}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-[#848E9C] text-xs whitespace-nowrap">{formatDuration(trade.openedAt, trade.closedAt)}</td>
+                        <td className="px-4 py-3 text-[#6B7280] text-xs whitespace-nowrap">{formatDuration(trade.openedAt, trade.closedAt)}</td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                            isWin ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                            isWin ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                           }`}>{isWin ? '▲ WIN' : '▼ LOSS'}</span>
                         </td>
                       </tr>
@@ -358,16 +358,16 @@ export function TradeHistory() {
             </div>
 
             {/* Algo mobile */}
-            <div className="md:hidden divide-y divide-[#181B23]">
+            <div className="md:hidden divide-y divide-[#E5E7EB]">
               {algoLoading ? (
                 <div className="flex flex-col items-center py-12 gap-3">
-                  <Loader2 className="w-8 h-8 animate-spin text-[#00C274]" />
-                  <p className="text-[#848E9C] text-sm">Loading trades…</p>
+                  <Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" />
+                  <p className="text-[#6B7280] text-sm">Loading trades…</p>
                 </div>
               ) : algoTrades.length === 0 ? (
                 <div className="text-center py-12">
-                  <AlertCircle className="w-10 h-10 text-[#181B23] mx-auto mb-3" />
-                  <p className="text-[#848E9C] text-sm">No algo trades found.</p>
+                  <AlertCircle className="w-10 h-10 text-[#E5E7EB] mx-auto mb-3" />
+                  <p className="text-[#6B7280] text-sm">No algo trades found.</p>
                 </div>
               ) : algoTrades.map((trade: any) => {
                 const isWin = (trade.profit ?? 0) >= 0;
@@ -384,39 +384,39 @@ export function TradeHistory() {
                           }`}>{trade.market}</span>
                           <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             trade.direction === 'buy'
-                              ? 'bg-[#02C076]/15 text-[#02C076]'
-                              : 'bg-[#CF304A]/15 text-[#CF304A]'
+                              ? 'bg-[#16A34A]/15 text-[#16A34A]'
+                              : 'bg-[#DC2626]/15 text-[#DC2626]'
                           }`}>
                             {trade.direction === 'buy' ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
                             {trade.direction.toUpperCase()}
                           </span>
                         </div>
-                        <p className="text-[#848E9C] text-xs mt-0.5">{dt.date} · {dt.time}</p>
+                        <p className="text-[#6B7280] text-xs mt-0.5">{dt.date} · {dt.time}</p>
                       </div>
                       <div className="text-right shrink-0 ml-2">
-                        <p className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmtPnl(trade.profit ?? 0)}</p>
+                        <p className={`font-bold text-sm ${isWin ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>{fmtPnl(trade.profit ?? 0)}</p>
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
-                          isWin ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                          isWin ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                         }`}>{isWin ? '▲ WIN' : '▼ LOSS'}</span>
                       </div>
                     </div>
                     {/* Row 2: Price details grid */}
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs bg-[#0C0E15] rounded-lg px-3 py-2">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs bg-[#FFFFFF] rounded-lg px-3 py-2">
                       <div>
-                        <span className="text-[#848E9C]">Entry </span>
-                        <span className="font-mono text-[#EAECEF]">{formatPrice(trade.entryPrice, trade.instrument)}</span>
+                        <span className="text-[#6B7280]">Entry </span>
+                        <span className="font-mono text-[#374151]">{formatPrice(trade.entryPrice, trade.instrument)}</span>
                       </div>
                       <div>
-                        <span className="text-[#848E9C]">Exit </span>
-                        <span className="font-mono text-[#EAECEF]">{trade.exitPrice ? formatPrice(trade.exitPrice, trade.instrument) : '—'}</span>
+                        <span className="text-[#6B7280]">Exit </span>
+                        <span className="font-mono text-[#374151]">{trade.exitPrice ? formatPrice(trade.exitPrice, trade.instrument) : '—'}</span>
                       </div>
                       <div>
-                        <span className="text-[#848E9C]">Lot </span>
-                        <span className="text-[#EAECEF]">{trade.lotSize}</span>
+                        <span className="text-[#6B7280]">Lot </span>
+                        <span className="text-[#374151]">{trade.lotSize}</span>
                       </div>
                       <div>
-                        <span className="text-[#848E9C]">Duration </span>
-                        <span className="text-[#EAECEF]">{formatDuration(trade.openedAt, trade.closedAt)}</span>
+                        <span className="text-[#6B7280]">Duration </span>
+                        <span className="text-[#374151]">{formatDuration(trade.openedAt, trade.closedAt)}</span>
                       </div>
                     </div>
                   </div>
@@ -432,9 +432,9 @@ export function TradeHistory() {
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#181B23]">
+                  <tr className="border-b border-[#E5E7EB]">
                     {['Date & Time','Instrument','Direction','Invested','Duration','Payout %','Profit / Loss','Result'].map(h => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#6B7280] uppercase tracking-wider whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -442,12 +442,12 @@ export function TradeHistory() {
                   {binLoading ? (
                     <tr><td colSpan={8} className="text-center py-16">
                       <Loader2 className="w-8 h-8 animate-spin text-[#F0B90B] mx-auto" />
-                      <p className="text-[#848E9C] text-sm mt-3">Loading binary trades…</p>
+                      <p className="text-[#6B7280] text-sm mt-3">Loading binary trades…</p>
                     </td></tr>
                   ) : binTrades.length === 0 ? (
                     <tr><td colSpan={8} className="text-center py-16">
-                      <AlertCircle className="w-10 h-10 text-[#181B23] mx-auto mb-3" />
-                      <p className="text-[#848E9C] text-sm">No binary trades found for this period.</p>
+                      <AlertCircle className="w-10 h-10 text-[#E5E7EB] mx-auto mb-3" />
+                      <p className="text-[#6B7280] text-sm">No binary trades found for this period.</p>
                     </td></tr>
                   ) : binTrades.map((trade, idx) => {
                     const profit = trade.profit ?? 0;
@@ -456,10 +456,10 @@ export function TradeHistory() {
                     const dt     = formatDateTime(trade.closedAt ?? trade.openedAt);
                     return (
                       <tr key={trade.id}
-                        className={`border-b border-[#181B23]/60 transition-colors hover:bg-[#1E2329]/60 ${idx % 2 === 0 ? 'bg-[#060709]/40' : ''}`}>
+                        className={`border-b border-[#E5E7EB]/60 transition-colors hover:bg-[#F7F9FC]/60 ${idx % 2 === 0 ? 'bg-[#FFFFFF]/40' : ''}`}>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <p className="text-[#EAECEF] font-medium text-xs">{dt.date}</p>
-                          <p className="text-[#848E9C] text-[11px]">{dt.time}</p>
+                          <p className="text-[#374151] font-medium text-xs">{dt.date}</p>
+                          <p className="text-[#6B7280] text-[11px]">{dt.time}</p>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <p className="text-white font-bold text-sm">{trade.instrument}</p>
@@ -468,24 +468,24 @@ export function TradeHistory() {
                         <td className="px-4 py-3">
                           <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ${
                             trade.direction === 'call' || trade.direction === 'up'
-                              ? 'bg-[#02C076]/15 text-[#02C076] border border-[#02C076]/20'
-                              : 'bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/20'
+                              ? 'bg-[#16A34A]/15 text-[#16A34A] border border-[#16A34A]/20'
+                              : 'bg-[#DC2626]/15 text-[#DC2626] border border-[#DC2626]/20'
                           }`}>
                             {(trade.direction === 'call' || trade.direction === 'up')
                               ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                             {trade.direction.toUpperCase()}
                           </div>
                         </td>
-                        <td className="px-4 py-3 font-bold text-[#EAECEF] text-sm">
+                        <td className="px-4 py-3 font-bold text-[#374151] text-sm">
                           ₹{trade.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
-                        <td className="px-4 py-3 text-[#848E9C] text-xs">{trade.duration}s</td>
+                        <td className="px-4 py-3 text-[#6B7280] text-xs">{trade.duration}s</td>
                         <td className="px-4 py-3 text-[#F0B90B] font-bold text-sm">{trade.payoutPct}%</td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           {isOpen ? (
-                            <span className="text-[#848E9C] text-xs">Pending…</span>
+                            <span className="text-[#6B7280] text-xs">Pending…</span>
                           ) : (
-                            <span className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                            <span className={`font-bold text-sm ${isWin ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                               {fmtPnl(profit)}
                             </span>
                           )}
@@ -497,7 +497,7 @@ export function TradeHistory() {
                             </span>
                           ) : (
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                              isWin ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                              isWin ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                             }`}>{isWin ? '▲ WIN' : '▼ LOSS'}</span>
                           )}
                         </td>
@@ -509,16 +509,16 @@ export function TradeHistory() {
             </div>
 
             {/* Binary mobile */}
-            <div className="md:hidden divide-y divide-[#181B23]">
+            <div className="md:hidden divide-y divide-[#E5E7EB]">
               {binLoading ? (
                 <div className="flex flex-col items-center py-12 gap-3">
                   <Loader2 className="w-8 h-8 animate-spin text-[#F0B90B]" />
-                  <p className="text-[#848E9C] text-sm">Loading…</p>
+                  <p className="text-[#6B7280] text-sm">Loading…</p>
                 </div>
               ) : binTrades.length === 0 ? (
                 <div className="text-center py-12">
-                  <AlertCircle className="w-10 h-10 text-[#181B23] mx-auto mb-3" />
-                  <p className="text-[#848E9C] text-sm">No binary trades found.</p>
+                  <AlertCircle className="w-10 h-10 text-[#E5E7EB] mx-auto mb-3" />
+                  <p className="text-[#6B7280] text-sm">No binary trades found.</p>
                 </div>
               ) : binTrades.map(trade => {
                 const profit = trade.profit ?? 0;
@@ -535,42 +535,42 @@ export function TradeHistory() {
                           <p className="text-white font-bold text-sm">{trade.instrument}</p>
                           <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400">Binary</span>
                           <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                            isCall ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                            isCall ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                           }`}>
                             {isCall ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
                             {trade.direction.toUpperCase()}
                           </span>
                         </div>
-                        <p className="text-[#848E9C] text-xs mt-0.5">{dt.date} · {dt.time}</p>
+                        <p className="text-[#6B7280] text-xs mt-0.5">{dt.date} · {dt.time}</p>
                       </div>
                       <div className="text-right shrink-0 ml-2">
                         {isOpen ? (
                           <p className="text-yellow-400 text-xs font-semibold">Pending…</p>
                         ) : (
-                          <p className={`font-bold text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>{fmtPnl(profit)}</p>
+                          <p className={`font-bold text-sm ${isWin ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>{fmtPnl(profit)}</p>
                         )}
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5 ${
-                          isOpen ? 'bg-yellow-500/15 text-yellow-400' : isWin ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                          isOpen ? 'bg-yellow-500/15 text-yellow-400' : isWin ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                         }`}>{isOpen ? '● OPEN' : isWin ? '▲ WIN' : '▼ LOSS'}</span>
                       </div>
                     </div>
                     {/* Row 2: Trade detail grid */}
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs bg-[#0C0E15] rounded-lg px-3 py-2">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs bg-[#FFFFFF] rounded-lg px-3 py-2">
                       <div>
-                        <span className="text-[#848E9C]">Invested </span>
-                        <span className="text-[#EAECEF] font-semibold">₹{trade.amount.toLocaleString('en-IN')}</span>
+                        <span className="text-[#6B7280]">Invested </span>
+                        <span className="text-[#374151] font-semibold">₹{trade.amount.toLocaleString('en-IN')}</span>
                       </div>
                       <div>
-                        <span className="text-[#848E9C]">Duration </span>
-                        <span className="text-[#EAECEF]">{trade.duration}s</span>
+                        <span className="text-[#6B7280]">Duration </span>
+                        <span className="text-[#374151]">{trade.duration}s</span>
                       </div>
                       <div>
-                        <span className="text-[#848E9C]">Payout </span>
+                        <span className="text-[#6B7280]">Payout </span>
                         <span className="text-[#F0B90B] font-bold">{trade.payoutPct}%</span>
                       </div>
                       <div>
-                        <span className="text-[#848E9C]">Entry </span>
-                        <span className="font-mono text-[#EAECEF]">{trade.entryPrice ? formatPrice(trade.entryPrice, trade.instrument) : '—'}</span>
+                        <span className="text-[#6B7280]">Entry </span>
+                        <span className="font-mono text-[#374151]">{trade.entryPrice ? formatPrice(trade.entryPrice, trade.instrument) : '—'}</span>
                       </div>
                     </div>
                   </div>
@@ -582,11 +582,11 @@ export function TradeHistory() {
 
         {/* Pagination */}
         {activePages > 1 && (
-          <div className="px-4 py-4 border-t border-[#181B23] flex items-center justify-between gap-2">
+          <div className="px-4 py-4 border-t border-[#E5E7EB] flex items-center justify-between gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#6B7280] hover:text-white hover:bg-[#E5E7EB] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
             >
               <ChevronLeft className="w-4 h-4" /> Prev
             </button>
@@ -598,21 +598,21 @@ export function TradeHistory() {
                 return (
                   <button key={pg} onClick={() => setPage(pg)}
                     className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                      pg === page ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:bg-[#181B23] hover:text-white'
+                      pg === page ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:bg-[#E5E7EB] hover:text-white'
                     }`}>{pg}</button>
                 );
               })}
             </div>
 
             {/* Mobile: page X / Y */}
-            <span className="sm:hidden text-xs font-semibold text-[#848E9C]">
+            <span className="sm:hidden text-xs font-semibold text-[#6B7280]">
               Page <span className="text-white">{page}</span> / {activePages}
             </span>
 
             <button
               onClick={() => setPage(p => Math.min(activePages, p + 1))}
               disabled={page >= activePages}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#848E9C] hover:text-white hover:bg-[#181B23] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#6B7280] hover:text-white hover:bg-[#E5E7EB] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>

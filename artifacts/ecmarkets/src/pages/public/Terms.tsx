@@ -3,15 +3,15 @@ import { PublicLayout } from '@/components/layout/PublicLayout';
 export function Terms() {
   return (
     <PublicLayout>
-      <div className="bg-[#060709] min-h-screen py-20">
+      <div className="bg-[#FFFFFF] min-h-screen py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
-            <p className="text-sm text-[#00C274] font-semibold uppercase tracking-widest mb-3">Legal</p>
+            <p className="text-sm text-[#1F77B4] font-semibold uppercase tracking-widest mb-3">Legal</p>
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Terms of Service</h1>
-            <p className="text-[#848E9C]">Last updated: March 2026</p>
+            <p className="text-[#6B7280]">Last updated: March 2026</p>
           </div>
 
-          <div className="space-y-10 text-[#848E9C] leading-relaxed">
+          <div className="space-y-10 text-[#6B7280] leading-relaxed">
 
             <Section title="1. Acceptance of Terms">
               By accessing or using ECMarket Pro (the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Platform. These Terms constitute a legally binding agreement between you and ECMarket Pro.
@@ -76,7 +76,7 @@ export function Terms() {
 
             <Section title="13. Contact Us">
               For questions regarding these Terms, please contact us at{' '}
-              <a href="mailto:support@cnxmarkets.com" className="text-[#00C274] hover:underline">
+              <a href="mailto:support@cnxmarkets.com" className="text-[#1F77B4] hover:underline">
                 support@cnxmarkets.com
               </a>
               .
@@ -91,9 +91,9 @@ export function Terms() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-[#1A1D27] pt-8">
+    <div className="border-t border-[#E5E7EB] pt-8">
       <h2 className="text-xl font-bold text-white mb-4">{title}</h2>
-      <div className="text-[#848E9C] leading-relaxed">{children}</div>
+      <div className="text-[#6B7280] leading-relaxed">{children}</div>
     </div>
   );
 }

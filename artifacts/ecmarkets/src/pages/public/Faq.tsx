@@ -126,15 +126,15 @@ export function Faq() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 text-center section-dark border-b border-[#181B23]">
+      <div className="pt-24 pb-16 text-center section-dark border-b border-[#E5E7EB]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Frequently Asked <span className="text-gradient-gold">Questions</span></h1>
-          <p className="text-xl text-[#848E9C] mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-6">Frequently Asked <span className="text-gradient-gold">Questions</span></h1>
+          <p className="text-xl text-[#6B7280] mb-8">
             Everything you need to know about trading with ECMarket Pro — accounts, instruments, leverage, and withdrawals.
           </p>
           
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-[#848E9C]" />
+            <Search className="absolute left-4 top-3.5 h-5 w-5 text-[#6B7280]" />
             <input 
               type="text" 
               placeholder="Search for answers..." 
@@ -146,7 +146,7 @@ export function Faq() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 mb-20 flex flex-col md:flex-row gap-12">
         <div className="w-full md:w-64 shrink-0">
-          <h3 className="font-bold text-white mb-4 uppercase tracking-wider text-sm">Categories</h3>
+          <h3 className="font-bold text-[#111827] mb-4 uppercase tracking-wider text-sm">Categories</h3>
           <ul className="space-y-2">
             {categories.map(cat => (
               <li key={cat}>
@@ -154,8 +154,8 @@ export function Faq() {
                   onClick={() => { setActiveCategory(cat); setOpenIndex(0); }}
                   className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     activeCategory === cat 
-                      ? 'bg-[#1E2329] text-[#00C274] border-l-2 border-[#00C274]' 
-                      : 'text-[#848E9C] hover:bg-[#1E2329] hover:text-white'
+                      ? 'bg-[#F7F9FC] text-[#1F77B4] border-l-2 border-[#1F77B4]' 
+                      : 'text-[#6B7280] hover:bg-[#F7F9FC] hover:text-white'
                   }`}
                 >
                   {cat}
@@ -166,19 +166,19 @@ export function Faq() {
         </div>
         
         <div className="flex-1 space-y-4">
-          <h2 className="text-2xl font-bold text-white mb-6">{activeCategory}</h2>
+          <h2 className="text-2xl font-bold text-[#111827] mb-6">{activeCategory}</h2>
           {filteredFaqs.length > 0 ? filteredFaqs.map((faq, i) => (
             <div 
               key={i} 
-              className={`card-stealth overflow-hidden transition-colors ${openIndex === i ? 'border-l-2 border-l-[#00C274]' : ''}`}
+              className={`card-stealth overflow-hidden transition-colors ${openIndex === i ? 'border-l-2 border-l-[#1F77B4]' : ''}`}
             >
               <button
                 className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
               >
-                <span className={`font-semibold text-lg pr-8 ${openIndex === i ? 'text-white' : 'text-[#848E9C]'}`}>{faq.q}</span>
+                <span className={`font-semibold text-lg pr-8 ${openIndex === i ? 'text-[#111827]' : 'text-[#6B7280]'}`}>{faq.q}</span>
                 <ChevronDown 
-                  className={`w-5 h-5 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-[#00C274]' : 'text-[#848E9C]'}`} 
+                  className={`w-5 h-5 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-[#1F77B4]' : 'text-[#6B7280]'}`} 
                 />
               </button>
               <AnimatePresence>
@@ -189,7 +189,7 @@ export function Faq() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <div className="px-6 pb-5 text-[#848E9C] leading-relaxed border-t border-[#181B23] pt-4">
+                    <div className="px-6 pb-5 text-[#6B7280] leading-relaxed border-t border-[#E5E7EB] pt-4">
                       {faq.a}
                     </div>
                   </motion.div>
@@ -197,7 +197,7 @@ export function Faq() {
               </AnimatePresence>
             </div>
           )) : (
-            <div className="text-[#848E9C] py-8 text-center">No questions found for this category.</div>
+            <div className="text-[#6B7280] py-8 text-center">No questions found for this category.</div>
           )}
         </div>
       </div>

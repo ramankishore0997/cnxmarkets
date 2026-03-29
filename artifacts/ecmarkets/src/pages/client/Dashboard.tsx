@@ -128,7 +128,7 @@ function LiveOpenTrades() {
   if (loading) {
     return (
       <div className="card-stealth p-8 flex justify-center">
-        <div className="w-8 h-8 border-t-2 border-[#00C274] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-t-2 border-[#1F77B4] rounded-full animate-spin" />
       </div>
     );
   }
@@ -155,15 +155,15 @@ function LiveOpenTrades() {
             className="relative overflow-hidden rounded-2xl transition-all"
             style={{
               background: 'rgba(12,14,21,0.8)',
-              border: `1px solid ${pnlPos ? 'rgba(0,194,116,0.15)' : 'rgba(207,48,74,0.15)'}`,
+              border: `1px solid ${pnlPos ? 'rgba(31,119,180,0.15)' : 'rgba(220,38,38,0.15)'}`,
             }}
           >
             {/* Animated glow on price change */}
             <div className="absolute inset-0 pointer-events-none transition-opacity duration-500"
               style={{
                 background: isUp
-                  ? 'linear-gradient(135deg, rgba(0,194,116,0.04) 0%, transparent 60%)'
-                  : 'linear-gradient(135deg, rgba(207,48,74,0.04) 0%, transparent 60%)',
+                  ? 'linear-gradient(135deg, rgba(31,119,180,0.04) 0%, transparent 60%)'
+                  : 'linear-gradient(135deg, rgba(220,38,38,0.04) 0%, transparent 60%)',
                 opacity: trade.priceDirection === 'flat' ? 0 : 1,
               }}
             />
@@ -175,17 +175,17 @@ function LiveOpenTrades() {
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm ${
                     trade.direction === 'buy'
-                      ? 'bg-[#00C274]/12 border border-[#00C274]/25 text-[#00C274]'
-                      : 'bg-[#CF304A]/12 border border-[#CF304A]/25 text-[#CF304A]'
+                      ? 'bg-[#1F77B4]/12 border border-[#1F77B4]/25 text-[#1F77B4]'
+                      : 'bg-[#DC2626]/12 border border-[#DC2626]/25 text-[#DC2626]'
                   }`}>
                     {trade.direction === 'buy' ? '▲' : '▼'}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-bold text-[#F8FAFC] text-sm">{trade.instrument}</p>
+                      <p className="font-bold text-[#111827] text-sm">{trade.instrument}</p>
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
-                        style={{ background: 'rgba(0,194,116,0.1)', color: '#00C274', border: '1px solid rgba(0,194,116,0.2)' }}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#00C274] animate-pulse inline-block" />
+                        style={{ background: 'rgba(31,119,180,0.1)', color: '#1F77B4', border: '1px solid rgba(31,119,180,0.2)' }}>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#1F77B4] animate-pulse inline-block" />
                         LIVE
                       </span>
                     </div>
@@ -199,15 +199,15 @@ function LiveOpenTrades() {
                 <div className="flex items-center gap-6 flex-wrap">
                   <div>
                     <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Entry</p>
-                    <p className="font-mono text-sm text-[#848E9C]">{formatPrice(trade.entryPrice, trade.instrument)}</p>
+                    <p className="font-mono text-sm text-[#6B7280]">{formatPrice(trade.entryPrice, trade.instrument)}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Current</p>
                     <div className="flex items-center gap-1.5">
-                      {isUp && <ArrowUp className="w-3.5 h-3.5 text-[#00C274] shrink-0" />}
-                      {isDown && <ArrowDown className="w-3.5 h-3.5 text-[#CF304A] shrink-0" />}
+                      {isUp && <ArrowUp className="w-3.5 h-3.5 text-[#1F77B4] shrink-0" />}
+                      {isDown && <ArrowDown className="w-3.5 h-3.5 text-[#DC2626] shrink-0" />}
                       <p className={`font-mono font-bold text-sm tabular-nums transition-colors duration-300 ${
-                        isUp ? 'text-[#00C274]' : isDown ? 'text-[#CF304A]' : 'text-[#F8FAFC]'
+                        isUp ? 'text-[#1F77B4]' : isDown ? 'text-[#DC2626]' : 'text-[#111827]'
                       }`}>
                         {formatPrice(trade.currentPrice, trade.instrument)}
                       </p>
@@ -219,7 +219,7 @@ function LiveOpenTrades() {
                 <div className="text-right shrink-0">
                   <p className="text-[10px] text-[#4B5563] font-semibold uppercase tracking-wider mb-0.5">Unrealized P&L</p>
                   <p className={`font-mono font-black text-lg tabular-nums transition-colors duration-300 ${
-                    pnlPos ? 'text-[#00C274]' : 'text-[#CF304A]'
+                    pnlPos ? 'text-[#1F77B4]' : 'text-[#DC2626]'
                   }`}>
                     {pnlPos ? '+' : ''}₹{Math.abs(trade.unrealizedPnl).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
@@ -252,7 +252,7 @@ export function Dashboard() {
         <div className="flex h-[60vh] items-center justify-center">
           <div className="relative w-16 h-16">
             <div className="absolute inset-0 border-4 border-white/[0.06] rounded-full" />
-            <div className="absolute inset-0 border-t-4 border-[#00C274] rounded-full animate-spin" />
+            <div className="absolute inset-0 border-t-4 border-[#1F77B4] rounded-full animate-spin" />
           </div>
         </div>
       </DashboardLayout>
@@ -275,36 +275,36 @@ export function Dashboard() {
       {/* ── Balance Hero ── */}
       <div className="relative rounded-2xl overflow-hidden mb-5"
         style={{
-          background: 'linear-gradient(135deg, rgba(0,194,116,0.08) 0%, rgba(15,23,42,0.9) 50%, rgba(0,0,0,0.7) 100%)',
-          border: '1px solid rgba(0,194,116,0.2)',
-          boxShadow: '0 0 40px rgba(0,194,116,0.06), 0 20px 40px rgba(0,0,0,0.5)',
+          background: 'linear-gradient(135deg, rgba(31,119,180,0.08) 0%, rgba(15,23,42,0.9) 50%, rgba(0,0,0,0.7) 100%)',
+          border: '1px solid rgba(31,119,180,0.2)',
+          boxShadow: '0 0 40px rgba(31,119,180,0.06), 0 20px 40px rgba(0,0,0,0.5)',
         }}>
         <div className="absolute top-0 right-0 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.09) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(31,119,180,0.09) 0%, transparent 70%)' }} />
 
         <div className="relative z-10 p-6 md:p-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <span className="live-dot w-2 h-2 rounded-full bg-[#00C274] inline-block" />
-                <p className="text-[11px] text-[#00C274] font-bold uppercase tracking-[0.16em]">Live Balance</p>
+                <span className="live-dot w-2 h-2 rounded-full bg-[#1F77B4] inline-block" />
+                <p className="text-[11px] text-[#1F77B4] font-bold uppercase tracking-[0.16em]">Live Balance</p>
               </div>
               <h2 className="font-terminal text-4xl md:text-5xl font-bold mb-3 tracking-tight tabular-nums leading-none text-white"
-                style={{ textShadow: '0 0 30px rgba(0,194,116,0.2)' }}>
+                style={{ textShadow: '0 0 30px rgba(31,119,180,0.2)' }}>
                 ₹{totalBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </h2>
               <div className="flex items-center gap-3 flex-wrap">
                 <div className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 text-sm ${
                   parseFloat(profitPercent) >= 0
-                    ? 'bg-[#00C274]/12 border border-[#00C274]/30 text-[#00C274]'
-                    : 'bg-[#CF304A]/12 border border-[#CF304A]/30 text-[#CF304A]'
+                    ? 'bg-[#1F77B4]/12 border border-[#1F77B4]/30 text-[#1F77B4]'
+                    : 'bg-[#DC2626]/12 border border-[#DC2626]/30 text-[#DC2626]'
                 }`}>
                   <TrendingUp className="w-3.5 h-3.5" />
                   {parseFloat(profitPercent) >= 0 ? '+' : ''}{profitPercent}% All-time
                 </div>
                 <span className="text-[#4B5563] text-sm font-medium">
                   P&L:&nbsp;
-                  <strong className={`font-terminal ${totalProfit >= 0 ? 'text-[#00C274]' : 'text-[#CF304A]'}`}>
+                  <strong className={`font-terminal ${totalProfit >= 0 ? 'text-[#1F77B4]' : 'text-[#DC2626]'}`}>
                     {totalProfit >= 0 ? '+' : ''}₹{Math.abs(totalProfit).toLocaleString('en-IN')}
                   </strong>
                 </span>
@@ -314,11 +314,11 @@ export function Dashboard() {
             <div className="flex gap-3 w-full md:w-auto shrink-0">
               <Link href="/dashboard/deposit"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all"
-                style={{ background: 'linear-gradient(135deg, #00C274 0%, #00A85E 100%)', color: '#000', boxShadow: '0 4px 20px rgba(0,194,116,0.35)' }}>
+                style={{ background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)', color: '#000', boxShadow: '0 4px 20px rgba(31,119,180,0.35)' }}>
                 <Download className="w-4 h-4" /> Deposit
               </Link>
               <Link href="/dashboard/withdraw"
-                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border border-white/10 text-[#EAECEF] hover:border-white/25 hover:text-white transition-all"
+                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border border-white/10 text-[#374151] hover:border-white/25 hover:text-white transition-all"
                 style={{ background: 'rgba(255,255,255,0.04)' }}>
                 <Upload className="w-4 h-4" /> Withdraw
               </Link>
@@ -333,12 +333,12 @@ export function Dashboard() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C274] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00C274]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1F77B4] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1F77B4]"></span>
             </span>
-            <h3 className="text-base font-bold text-[#F8FAFC]">Live Open Trades</h3>
+            <h3 className="text-base font-bold text-[#111827]">Live Open Trades</h3>
           </div>
-          <Link href="/dashboard/trades" className="text-xs font-semibold text-[#00C274] hover:text-[#33d494] transition-colors">
+          <Link href="/dashboard/trades" className="text-xs font-semibold text-[#1F77B4] hover:text-[#60a5fa] transition-colors">
             Full History →
           </Link>
         </div>
@@ -349,7 +349,7 @@ export function Dashboard() {
       <div className="card-stealth p-6 pb-10">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-base font-bold text-[#F8FAFC]">Equity Curve</h3>
+            <h3 className="text-base font-bold text-[#111827]">Equity Curve</h3>
             {equityData.length === 0 && (
               <p className="text-xs text-[#4B5563] mt-0.5">Appears after your first closed trade</p>
             )}
@@ -362,8 +362,8 @@ export function Dashboard() {
               <AreaChart data={equityData}>
                 <defs>
                   <linearGradient id="equityFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#00C274" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#00C274" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="#1F77B4" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#1F77B4" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.03)" vertical={false} />
@@ -371,14 +371,14 @@ export function Dashboard() {
                 <YAxis stroke="#374151" fontSize={11} tickLine={false} axisLine={false}
                   tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(12px)', borderColor: 'rgba(0,194,116,0.2)', borderRadius: '10px', color: '#F8FAFC', fontSize: 12 }}
-                  itemStyle={{ color: '#00C274', fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}
+                  contentStyle={{ backgroundColor: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(12px)', borderColor: 'rgba(31,119,180,0.2)', borderRadius: '10px', color: '#111827', fontSize: 12 }}
+                  itemStyle={{ color: '#1F77B4', fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}
                   labelStyle={{ color: '#6B7280', fontSize: 11 }}
                   formatter={(v: any) => [`₹${Number(v).toLocaleString('en-IN')}`, 'Equity']}
                 />
-                <Area type="monotone" dataKey="value" stroke="#00C274" strokeWidth={2}
+                <Area type="monotone" dataKey="value" stroke="#1F77B4" strokeWidth={2}
                   fillOpacity={1} fill="url(#equityFill)" dot={false}
-                  activeDot={{ r: 4, fill: '#00C274', stroke: 'rgba(15,23,42,0.9)', strokeWidth: 2 }} />
+                  activeDot={{ r: 4, fill: '#1F77B4', stroke: 'rgba(15,23,42,0.9)', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

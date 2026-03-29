@@ -59,16 +59,16 @@ export function LivePriceTicker({ compact = false }: Props) {
   if (compact) {
     return (
       <div className="flex items-center gap-1 overflow-hidden">
-        <Activity className="w-3.5 h-3.5 text-[#02C076] animate-pulse shrink-0" />
+        <Activity className="w-3.5 h-3.5 text-[#16A34A] animate-pulse shrink-0" />
         <div className="flex gap-5 overflow-x-auto scrollbar-none">
           {items.map(item => (
             <span key={item.symbol} className="flex items-center gap-1.5 whitespace-nowrap text-xs">
-              <span className="text-[#848E9C] font-semibold">{item.symbol}</span>
+              <span className="text-[#6B7280] font-semibold">{item.symbol}</span>
               <span className={`font-bold transition-colors duration-300 ${
-                flashRef.current[item.symbol] === 'up' ? 'text-[#02C076]' :
-                flashRef.current[item.symbol] === 'down' ? 'text-[#CF304A]' : 'text-white'
+                flashRef.current[item.symbol] === 'up' ? 'text-[#16A34A]' :
+                flashRef.current[item.symbol] === 'down' ? 'text-[#DC2626]' : 'text-white'
               }`}>{formatPrice(item)}</span>
-              <span className={`font-bold ${item.change >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+              <span className={`font-bold ${item.change >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                 {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
               </span>
             </span>
@@ -79,36 +79,36 @@ export function LivePriceTicker({ compact = false }: Props) {
   }
 
   return (
-    <div className="w-full bg-[#060709] border border-[#181B23] rounded-2xl p-4 overflow-hidden">
+    <div className="w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#02C076] animate-pulse" />
-          <span className="text-xs font-bold text-[#02C076] uppercase tracking-widest">Live Market Feed</span>
+          <div className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+          <span className="text-xs font-bold text-[#16A34A] uppercase tracking-widest">Live Market Feed</span>
         </div>
-        <span className="text-[10px] text-[#848E9C] font-medium">Forex &amp; Crypto · Simulated · 1.2s updates</span>
+        <span className="text-[10px] text-[#6B7280] font-medium">Forex &amp; Crypto · Simulated · 1.2s updates</span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         {items.map(item => (
           <div
             key={item.symbol}
-            className="bg-[#1E2329] border border-[#181B23] rounded-xl p-3 transition-all hover:border-[#00C274]/30"
+            className="bg-[#F7F9FC] border border-[#E5E7EB] rounded-xl p-3 transition-all hover:border-[#1F77B4]/30"
           >
             <div className="flex items-center justify-between mb-1">
               <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide ${
-                item.isCrypto ? 'bg-[#00C274]/15 text-[#00C274]' : 'bg-[#02C076]/15 text-[#02C076]'
+                item.isCrypto ? 'bg-[#1F77B4]/15 text-[#1F77B4]' : 'bg-[#16A34A]/15 text-[#16A34A]'
               }`}>
                 {item.isCrypto ? 'CRYPTO' : 'FX'}
               </span>
-              <span className={`flex items-center gap-0.5 text-[10px] font-bold ${item.change >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+              <span className={`flex items-center gap-0.5 text-[10px] font-bold ${item.change >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                 {item.change >= 0 ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
                 {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
               </span>
             </div>
-            <p className="text-[11px] font-semibold text-[#848E9C] mb-0.5">{item.symbol}</p>
+            <p className="text-[11px] font-semibold text-[#6B7280] mb-0.5">{item.symbol}</p>
             <p className={`text-sm font-bold transition-colors duration-300 ${
-              flashRef.current[item.symbol] === 'up' ? 'text-[#02C076]' :
-              flashRef.current[item.symbol] === 'down' ? 'text-[#CF304A]' : 'text-white'
+              flashRef.current[item.symbol] === 'up' ? 'text-[#16A34A]' :
+              flashRef.current[item.symbol] === 'down' ? 'text-[#DC2626]' : 'text-white'
             }`}>
               {formatPrice(item)}
             </p>

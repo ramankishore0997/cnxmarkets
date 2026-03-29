@@ -82,10 +82,10 @@ function FileUploadBox({
 
   return (
     <div className="space-y-1.5">
-      <p className="text-xs font-semibold text-[#EAECEF] flex items-center gap-1.5">
+      <p className="text-xs font-semibold text-[#374151] flex items-center gap-1.5">
         {label}
-        {!file && <span className="text-[#CF304A] text-[10px]">required</span>}
-        {file  && <CheckCircle2 className="w-3 h-3 text-[#00C274]" />}
+        {!file && <span className="text-[#DC2626] text-[10px]">required</span>}
+        {file  && <CheckCircle2 className="w-3 h-3 text-[#1F77B4]" />}
       </p>
       <div
         onDragOver={e => e.preventDefault()}
@@ -93,43 +93,43 @@ function FileUploadBox({
         onClick={() => !file && inputRef.current?.click()}
         className={`relative rounded-xl border-2 border-dashed transition-all cursor-pointer
           ${file
-            ? 'border-[#00C274]/60 bg-[#00C274]/5'
+            ? 'border-[#1F77B4]/60 bg-[#1F77B4]/5'
             : missing
-              ? 'border-[#CF304A]/50 bg-[#CF304A]/5'
-              : 'border-[#2A2D3A] bg-[#0C0E15] hover:border-[#00C274]/40 hover:bg-[#00C274]/5'
+              ? 'border-[#DC2626]/50 bg-[#DC2626]/5'
+              : 'border-[#E5E7EB] bg-[#FFFFFF] hover:border-[#1F77B4]/40 hover:bg-[#1F77B4]/5'
           }`}
         style={{ minHeight: 90 }}
       >
         {file ? (
           <div className="flex items-center gap-3 p-3">
-            <div className="w-10 h-10 rounded-lg bg-[#00C274]/20 flex items-center justify-center shrink-0">
-              <FileImage className="w-5 h-5 text-[#00C274]" />
+            <div className="w-10 h-10 rounded-lg bg-[#1F77B4]/20 flex items-center justify-center shrink-0">
+              <FileImage className="w-5 h-5 text-[#1F77B4]" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-white truncate">{file.name}</p>
-              <p className="text-[10px] text-[#848E9C]">{(file.size / 1024).toFixed(0)} KB</p>
+              <p className="text-[10px] text-[#6B7280]">{(file.size / 1024).toFixed(0)} KB</p>
             </div>
             <div className="flex gap-1.5">
               <button
                 type="button"
                 onClick={e => { e.stopPropagation(); onPreview(URL.createObjectURL(file)); }}
-                className="w-7 h-7 rounded-lg bg-[#1E2329] hover:bg-[#2A2D3A] flex items-center justify-center transition-colors"
+                className="w-7 h-7 rounded-lg bg-[#F7F9FC] hover:bg-[#E5E7EB] flex items-center justify-center transition-colors"
               >
-                <Eye className="w-3.5 h-3.5 text-[#848E9C]" />
+                <Eye className="w-3.5 h-3.5 text-[#6B7280]" />
               </button>
               <button
                 type="button"
                 onClick={e => { e.stopPropagation(); onSet(fieldKey, null); }}
-                className="w-7 h-7 rounded-lg bg-[#CF304A]/10 hover:bg-[#CF304A]/20 flex items-center justify-center transition-colors"
+                className="w-7 h-7 rounded-lg bg-[#DC2626]/10 hover:bg-[#DC2626]/20 flex items-center justify-center transition-colors"
               >
-                <X className="w-3.5 h-3.5 text-[#CF304A]" />
+                <X className="w-3.5 h-3.5 text-[#DC2626]" />
               </button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-1.5 py-5 px-3 text-center">
-            <Upload className={`w-5 h-5 ${missing ? 'text-[#CF304A]/60' : 'text-[#848E9C]'}`} />
-            <p className={`text-xs ${missing ? 'text-[#CF304A]/80' : 'text-[#848E9C]'}`}>Click or drag & drop</p>
+            <Upload className={`w-5 h-5 ${missing ? 'text-[#DC2626]/60' : 'text-[#6B7280]'}`} />
+            <p className={`text-xs ${missing ? 'text-[#DC2626]/80' : 'text-[#6B7280]'}`}>Click or drag & drop</p>
             <p className="text-[10px] text-[#3D4450]">JPG, PNG, WEBP · Max 10 MB</p>
           </div>
         )}
@@ -189,7 +189,7 @@ export function Kyc() {
 
   if (isLoading) return (
     <DashboardLayout>
-      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
+      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" /></div>
     </DashboardLayout>
   );
 
@@ -209,7 +209,7 @@ export function Kyc() {
           <div className="relative max-w-2xl w-full" onClick={e => e.stopPropagation()}>
             <button
               onClick={() => setPreviewUrl(null)}
-              className="absolute -top-10 right-0 text-white hover:text-[#CF304A] transition-colors"
+              className="absolute -top-10 right-0 text-white hover:text-[#DC2626] transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -220,47 +220,47 @@ export function Kyc() {
 
       <div className="max-w-xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Identity Verification</h1>
-          <p className="text-[#848E9C] font-medium">Submit your PAN & Aadhaar details + photos to unlock full trading access</p>
+          <h1 className="text-3xl font-bold text-[#111827] mb-2">Identity Verification</h1>
+          <p className="text-[#6B7280] font-medium">Submit your PAN & Aadhaar details + photos to unlock full trading access</p>
         </div>
 
         {isApprovedOrUnderReview ? (
           <div className="card-stealth p-12 text-center">
-            <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center ${kycDoc.status === 'approved' ? 'bg-[#02C076]/20' : 'bg-[#00C274]/20'}`}>
-              <ShieldCheck className={`w-10 h-10 ${kycDoc.status === 'approved' ? 'text-[#02C076]' : 'text-[#00C274]'}`} />
+            <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center ${kycDoc.status === 'approved' ? 'bg-[#16A34A]/20' : 'bg-[#1F77B4]/20'}`}>
+              <ShieldCheck className={`w-10 h-10 ${kycDoc.status === 'approved' ? 'text-[#16A34A]' : 'text-[#1F77B4]'}`} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-3">
+            <h2 className="text-2xl font-bold text-[#111827] mb-3">
               {kycDoc.status === 'approved' ? 'Verification Complete' : 'Under Review'}
             </h2>
-            <p className="text-[#848E9C] max-w-sm mx-auto leading-relaxed mb-6">
+            <p className="text-[#6B7280] max-w-sm mx-auto leading-relaxed mb-6">
               {kycDoc.status === 'approved'
                 ? 'Your identity has been verified. You now have full access to all platform features.'
                 : 'Our compliance team is reviewing your details. This usually takes 1–2 business days.'}
             </p>
             <div className="flex flex-col gap-3 items-center">
               {kycDoc.panNumber && (
-                <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#181B23] rounded-xl px-5 py-3">
-                  <CreditCard className="w-4 h-4 text-[#00C274]" />
-                  <span className="text-sm text-[#848E9C]">PAN:</span>
-                  <span className="text-sm font-mono font-bold text-white">{kycDoc.panNumber}</span>
+                <div className="inline-flex items-center gap-2 bg-[#F7F9FC] border border-[#E5E7EB] rounded-xl px-5 py-3">
+                  <CreditCard className="w-4 h-4 text-[#1F77B4]" />
+                  <span className="text-sm text-[#6B7280]">PAN:</span>
+                  <span className="text-sm font-mono font-bold text-[#111827]">{kycDoc.panNumber}</span>
                 </div>
               )}
               {kycDoc.aadharNumber && (
-                <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#181B23] rounded-xl px-5 py-3">
+                <div className="inline-flex items-center gap-2 bg-[#F7F9FC] border border-[#E5E7EB] rounded-xl px-5 py-3">
                   <Hash className="w-4 h-4 text-[#2a6df4]" />
-                  <span className="text-sm text-[#848E9C]">Aadhaar:</span>
-                  <span className="text-sm font-mono font-bold text-white">XXXX XXXX {String(kycDoc.aadharNumber).slice(-4)}</span>
+                  <span className="text-sm text-[#6B7280]">Aadhaar:</span>
+                  <span className="text-sm font-mono font-bold text-[#111827]">XXXX XXXX {String(kycDoc.aadharNumber).slice(-4)}</span>
                 </div>
               )}
-              <div className="inline-flex items-center gap-2 bg-[#1E2329] border border-[#181B23] rounded-xl px-5 py-3">
-                <FileImage className="w-4 h-4 text-[#848E9C]" />
-                <span className="text-sm text-[#848E9C]">
+              <div className="inline-flex items-center gap-2 bg-[#F7F9FC] border border-[#E5E7EB] rounded-xl px-5 py-3">
+                <FileImage className="w-4 h-4 text-[#6B7280]" />
+                <span className="text-sm text-[#6B7280]">
                   {[kycDoc.aadharCardFrontUrl, kycDoc.aadharCardBackUrl, kycDoc.panCardFrontUrl, kycDoc.panCardBackUrl].filter(Boolean).length}/4 documents uploaded
                 </span>
               </div>
             </div>
             {kycDoc.status === 'approved' && (
-              <div className="mt-6 flex items-center justify-center gap-2 text-[#02C076] text-sm font-semibold">
+              <div className="mt-6 flex items-center justify-center gap-2 text-[#16A34A] text-sm font-semibold">
                 <CheckCircle2 className="w-4 h-4" /> Verified & Active
               </div>
             )}
@@ -270,7 +270,7 @@ export function Kyc() {
 
             {/* Rejected banner */}
             {isRejected && (
-              <div className="bg-[#CF304A]/10 border border-[#CF304A]/30 text-[#CF304A] p-4 rounded-xl mb-6 flex items-start gap-3">
+              <div className="bg-[#DC2626]/10 border border-[#DC2626]/30 text-[#DC2626] p-4 rounded-xl mb-6 flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 mt-0.5 shrink-0" />
                 <div>
                   <strong className="block mb-1">Verification Failed — Please Resubmit</strong>
@@ -294,9 +294,9 @@ export function Kyc() {
 
               {/* PAN Number */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-[#EAECEF]">
-                  <CreditCard className="w-4 h-4 text-[#00C274]" />
-                  PAN Number <span className="text-[#CF304A]">*</span>
+                <label className="flex items-center gap-2 text-sm font-semibold text-[#374151]">
+                  <CreditCard className="w-4 h-4 text-[#1F77B4]" />
+                  PAN Number <span className="text-[#DC2626]">*</span>
                 </label>
                 <input
                   {...register('panNumber')}
@@ -305,9 +305,9 @@ export function Kyc() {
                   className="input-stealth font-mono uppercase tracking-widest text-lg"
                   style={{ textTransform: 'uppercase' }}
                 />
-                <p className="text-xs text-[#848E9C]">10-character alphanumeric PAN as printed on your card</p>
+                <p className="text-xs text-[#6B7280]">10-character alphanumeric PAN as printed on your card</p>
                 {errors.panNumber && (
-                  <p className="text-xs text-[#CF304A] flex items-center gap-1">
+                  <p className="text-xs text-[#DC2626] flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />{errors.panNumber.message}
                   </p>
                 )}
@@ -315,9 +315,9 @@ export function Kyc() {
 
               {/* Aadhaar Number */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-[#EAECEF]">
+                <label className="flex items-center gap-2 text-sm font-semibold text-[#374151]">
                   <Hash className="w-4 h-4 text-[#2a6df4]" />
-                  Aadhaar Number <span className="text-[#CF304A]">*</span>
+                  Aadhaar Number <span className="text-[#DC2626]">*</span>
                 </label>
                 <input
                   {...register('aadharNumber')}
@@ -326,33 +326,33 @@ export function Kyc() {
                   className="input-stealth font-mono tracking-widest text-lg"
                   inputMode="numeric"
                 />
-                <p className="text-xs text-[#848E9C]">12-digit Aadhaar number (no spaces)</p>
+                <p className="text-xs text-[#6B7280]">12-digit Aadhaar number (no spaces)</p>
                 {errors.aadharNumber && (
-                  <p className="text-xs text-[#CF304A] flex items-center gap-1">
+                  <p className="text-xs text-[#DC2626] flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />{errors.aadharNumber.message}
                   </p>
                 )}
               </div>
 
               {/* Document Photos */}
-              <div className="border-t border-[#1A1D27] pt-4">
+              <div className="border-t border-[#E5E7EB] pt-4">
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
-                    <FileImage className="w-4 h-4 text-[#848E9C]" />
-                    Document Photos <span className="text-[#CF304A]">*</span>
+                  <p className="text-sm font-semibold text-[#374151] flex items-center gap-2">
+                    <FileImage className="w-4 h-4 text-[#6B7280]" />
+                    Document Photos <span className="text-[#DC2626]">*</span>
                   </p>
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${
                     allFilesUploaded
-                      ? 'bg-[#00C274]/20 text-[#00C274]'
-                      : 'bg-[#1E2329] text-[#848E9C]'
+                      ? 'bg-[#1F77B4]/20 text-[#1F77B4]'
+                      : 'bg-[#F7F9FC] text-[#6B7280]'
                   }`}>
                     {uploadedCount}/4 uploaded
                   </span>
                 </div>
-                <p className="text-xs text-[#848E9C] mb-4">All 4 photos are required. Upload clear, readable photos for faster approval.</p>
+                <p className="text-xs text-[#6B7280] mb-4">All 4 photos are required. Upload clear, readable photos for faster approval.</p>
 
                 {/* Aadhaar photos */}
-                <p className="text-xs font-semibold text-[#00C274] uppercase tracking-widest mb-2">Aadhaar Card</p>
+                <p className="text-xs font-semibold text-[#1F77B4] uppercase tracking-widest mb-2">Aadhaar Card</p>
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <FileUploadBox label="Front Side" fieldKey="aadhaarFront" file={files.aadhaarFront} onSet={setFile} onPreview={setPreviewUrl} required allUploaded={allFilesUploaded || !attemptedSubmit ? undefined : false} />
                   <FileUploadBox label="Back Side"  fieldKey="aadhaarBack"  file={files.aadhaarBack}  onSet={setFile} onPreview={setPreviewUrl} required allUploaded={allFilesUploaded || !attemptedSubmit ? undefined : false} />
@@ -367,7 +367,7 @@ export function Kyc() {
 
                 {/* Missing photos warning */}
                 {attemptedSubmit && !allFilesUploaded && (
-                  <p className="mt-3 text-xs text-[#CF304A] flex items-center gap-1.5">
+                  <p className="mt-3 text-xs text-[#DC2626] flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                     Please upload all 4 photos before submitting ({4 - uploadedCount} remaining)
                   </p>
@@ -382,7 +382,7 @@ export function Kyc() {
                   className={`w-full flex justify-center items-center gap-2 text-base py-3 rounded-xl font-bold transition-all
                     ${canSubmit
                       ? 'btn-gold cursor-pointer'
-                      : 'bg-[#1A1D27] text-[#4B5563] border border-[#2A2D3A] cursor-not-allowed'
+                      : 'bg-[#E5E7EB] text-[#4B5563] border border-[#E5E7EB] cursor-not-allowed'
                     }`}
                 >
                   {submitting
@@ -397,26 +397,26 @@ export function Kyc() {
                     <p className="text-[10px] text-[#3D4450] font-semibold uppercase tracking-wider">Complete to enable submit:</p>
                     <div className="flex items-center gap-1.5 text-xs">
                       {panValue.length === 10
-                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#1F77B4] shrink-0" />
                         : <div className="w-3.5 h-3.5 rounded-full border border-[#3D4450] shrink-0" />}
-                      <span className={panValue.length === 10 ? 'text-[#00C274]' : 'text-[#848E9C]'}>PAN number (10 characters)</span>
+                      <span className={panValue.length === 10 ? 'text-[#1F77B4]' : 'text-[#6B7280]'}>PAN number (10 characters)</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs">
                       {aadharValue.length === 12
-                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#1F77B4] shrink-0" />
                         : <div className="w-3.5 h-3.5 rounded-full border border-[#3D4450] shrink-0" />}
-                      <span className={aadharValue.length === 12 ? 'text-[#00C274]' : 'text-[#848E9C]'}>Aadhaar number (12 digits)</span>
+                      <span className={aadharValue.length === 12 ? 'text-[#1F77B4]' : 'text-[#6B7280]'}>Aadhaar number (12 digits)</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs">
                       {allFilesUploaded
-                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                        ? <CheckCircle2 className="w-3.5 h-3.5 text-[#1F77B4] shrink-0" />
                         : <div className="w-3.5 h-3.5 rounded-full border border-[#3D4450] shrink-0" />}
-                      <span className={allFilesUploaded ? 'text-[#00C274]' : 'text-[#848E9C]'}>All 4 document photos ({uploadedCount}/4)</span>
+                      <span className={allFilesUploaded ? 'text-[#1F77B4]' : 'text-[#6B7280]'}>All 4 document photos ({uploadedCount}/4)</span>
                     </div>
                   </div>
                 )}
 
-                <p className="text-center text-xs text-[#848E9C] mt-4 flex items-center justify-center gap-1.5">
+                <p className="text-center text-xs text-[#6B7280] mt-4 flex items-center justify-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Your details are encrypted and stored securely. We comply with DPDP Act 2023.
                 </p>

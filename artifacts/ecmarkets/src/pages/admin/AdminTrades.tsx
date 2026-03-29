@@ -90,20 +90,20 @@ function LiveTradesPanel() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C274] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00C274]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1F77B4] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#1F77B4]"></span>
           </span>
-          <span className="text-[#00C274] font-bold text-sm uppercase tracking-wider">Live</span>
-          <span className="text-[#848E9C] text-sm">
+          <span className="text-[#1F77B4] font-bold text-sm uppercase tracking-wider">Live</span>
+          <span className="text-[#6B7280] text-sm">
             {trades.length} open position{trades.length !== 1 ? 's' : ''} across {byUser.length} client{byUser.length !== 1 ? 's' : ''}
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-[#848E9C]">Updated {lastRefresh.toLocaleTimeString()}</span>
+          <span className="text-xs text-[#6B7280]">Updated {lastRefresh.toLocaleTimeString()}</span>
           <button
             onClick={fetchLive}
             disabled={loading}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white text-xs font-bold transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white text-xs font-bold transition-all"
           >
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </button>
@@ -113,19 +113,19 @@ function LiveTradesPanel() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Open Positions', value: trades.length,  color: '#00C274', Icon: Activity },
+          { label: 'Open Positions', value: trades.length,  color: '#1F77B4', Icon: Activity },
           { label: 'Active Clients', value: byUser.length,  color: '#2a6df4', Icon: Users },
           { label: 'Buy / Sell',
             value: `${trades.filter(t => t.direction === 'buy').length} / ${trades.filter(t => t.direction === 'sell').length}`,
-            color: '#00C274', Icon: TrendingUp },
+            color: '#1F77B4', Icon: TrendingUp },
         ].map((s, i) => (
           <div key={i} className="card-stealth p-4 flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${s.color}15` }}>
               <s.Icon className="w-4 h-4" style={{ color: s.color }} />
             </div>
             <div>
-              <p className="text-lg font-black text-white">{s.value}</p>
-              <p className="text-[#848E9C] text-xs font-medium">{s.label}</p>
+              <p className="text-lg font-black text-[#111827]">{s.value}</p>
+              <p className="text-[#6B7280] text-xs font-medium">{s.label}</p>
             </div>
           </div>
         ))}
@@ -134,34 +134,34 @@ function LiveTradesPanel() {
       {/* List */}
       {loading && trades.length === 0 ? (
         <div className="card-stealth p-16 flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-[#00C274]" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" />
         </div>
       ) : trades.length === 0 ? (
         <div className="card-stealth p-16 text-center">
-          <Wifi className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
-          <p className="text-[#848E9C] font-medium">No open positions right now.</p>
+          <Wifi className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+          <p className="text-[#6B7280] font-medium">No open positions right now.</p>
           <p className="text-[#3d4450] text-sm mt-1">Live trades appear here as soon as the trade engine opens them.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {byUser.map(({ userId, name, email, trades: uTrades }) => (
             <div key={userId} className="card-stealth overflow-hidden">
-              <div className="px-5 py-3 border-b border-[#181B23] flex items-center gap-3 bg-[#0C0E15]/60">
-                <div className="w-7 h-7 rounded-full bg-[#00C274] flex items-center justify-center text-black font-black text-xs shrink-0">
+              <div className="px-5 py-3 border-b border-[#E5E7EB] flex items-center gap-3 bg-[#FFFFFF]/60">
+                <div className="w-7 h-7 rounded-full bg-[#1F77B4] flex items-center justify-center text-black font-black text-xs shrink-0">
                   {name[0] || '?'}
                 </div>
                 <div>
-                  <p className="font-bold text-white text-sm">{name}</p>
-                  <p className="text-[#848E9C] text-xs">{email}</p>
+                  <p className="font-bold text-[#111827] text-sm">{name}</p>
+                  <p className="text-[#6B7280] text-xs">{email}</p>
                 </div>
-                <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-[#00C274]/15 text-[#00C274]">
+                <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-[#1F77B4]/15 text-[#1F77B4]">
                   {uTrades.length} live
                 </span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-[#848E9C] text-xs uppercase tracking-wider border-b border-[#181B23]">
+                    <tr className="text-[#6B7280] text-xs uppercase tracking-wider border-b border-[#E5E7EB]">
                       <th className="px-5 py-3 text-left font-semibold">Instrument</th>
                       <th className="px-4 py-3 text-left font-semibold">Market</th>
                       <th className="px-4 py-3 text-left font-semibold">Direction</th>
@@ -170,30 +170,30 @@ function LiveTradesPanel() {
                       <th className="px-4 py-3 text-right font-semibold">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#181B23]">
+                  <tbody className="divide-y divide-[#E5E7EB]">
                     {uTrades.map((trade: any) => (
-                      <tr key={trade.id} className="hover:bg-[#181B23]/30 transition-colors">
-                        <td className="px-5 py-3 font-bold text-white">{trade.instrument}</td>
-                        <td className="px-4 py-3 text-[#848E9C]">{trade.market}</td>
+                      <tr key={trade.id} className="hover:bg-[#E5E7EB]/30 transition-colors">
+                        <td className="px-5 py-3 font-bold text-[#111827]">{trade.instrument}</td>
+                        <td className="px-4 py-3 text-[#6B7280]">{trade.market}</td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${
-                            trade.direction === 'buy' ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                            trade.direction === 'buy' ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                           }`}>
                             {trade.direction === 'buy' ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                             {trade.direction.toUpperCase()}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-right font-mono text-[#EAECEF] text-xs">
+                        <td className="px-4 py-3 text-right font-mono text-[#374151] text-xs">
                           {formatPrice(trade.entryPrice, trade.instrument)}
                         </td>
-                        <td className="px-4 py-3 text-right text-[#848E9C] text-xs">
+                        <td className="px-4 py-3 text-right text-[#6B7280] text-xs">
                           <span className="flex items-center justify-end gap-1">
                             <Clock className="w-3 h-3" />{formatDuration(trade.openedAt)}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-full bg-[#00C274]/15 text-[#00C274]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#00C274] animate-pulse"></span>LIVE
+                          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-full bg-[#1F77B4]/15 text-[#1F77B4]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#1F77B4] animate-pulse"></span>LIVE
                           </span>
                         </td>
                       </tr>
@@ -260,7 +260,7 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
               key={p}
               onClick={() => { setPreset(p); setPage(1); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                preset === p ? 'bg-[#00C274] text-black' : 'bg-[#181B23] text-[#848E9C] hover:text-white'
+                preset === p ? 'bg-[#1F77B4] text-black' : 'bg-[#E5E7EB] text-[#6B7280] hover:text-white'
               }`}
             >
               {p === 'today' ? 'Today' : p === 'all' ? 'All Time' : p === 'custom' ? 'Custom' : p}
@@ -270,9 +270,9 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
 
         {preset === 'custom' && (
           <div className="flex gap-2 items-center">
-            <CalendarDays className="w-4 h-4 text-[#848E9C]" />
+            <CalendarDays className="w-4 h-4 text-[#6B7280]" />
             <input type="date" value={customFrom} onChange={e => { setCustomFrom(e.target.value); setPage(1); }} className="input-stealth text-sm" />
-            <span className="text-[#848E9C]">—</span>
+            <span className="text-[#6B7280]">—</span>
             <input type="date" value={customTo} onChange={e => { setCustomTo(e.target.value); setPage(1); }} className="input-stealth text-sm" />
           </div>
         )}
@@ -280,23 +280,23 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
 
       {!selectedUserId ? (
         <div className="card-stealth p-16 text-center">
-          <History className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
-          <p className="text-[#848E9C] font-medium">Select a client to view their trade history.</p>
+          <History className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+          <p className="text-[#6B7280] font-medium">Select a client to view their trade history.</p>
         </div>
       ) : (
         <>
           {trades.length > 0 && (
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: 'Wins',    value: stats.wins,   color: '#02C076' },
-                { label: 'Losses',  value: stats.losses, color: '#CF304A' },
+                { label: 'Wins',    value: stats.wins,   color: '#16A34A' },
+                { label: 'Losses',  value: stats.losses, color: '#DC2626' },
                 { label: 'Net P&L',
                   value: `${stats.pnl >= 0 ? '+' : ''}₹${Math.abs(stats.pnl).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`,
-                  color: stats.pnl >= 0 ? '#02C076' : '#CF304A' },
+                  color: stats.pnl >= 0 ? '#16A34A' : '#DC2626' },
               ].map((s, i) => (
                 <div key={i} className="card-stealth p-4 text-center">
                   <p className="text-2xl font-black" style={{ color: s.color }}>{s.value}</p>
-                  <p className="text-[#848E9C] text-xs font-medium mt-0.5">{s.label}</p>
+                  <p className="text-[#6B7280] text-xs font-medium mt-0.5">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -304,17 +304,17 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
 
           <div className="card-stealth overflow-hidden">
             {(isLoading || isFetching) && trades.length === 0 ? (
-              <div className="p-16 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
+              <div className="p-16 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" /></div>
             ) : trades.length === 0 ? (
               <div className="p-16 text-center">
-                <History className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
-                <p className="text-[#848E9C]">No closed trades found for this period.</p>
+                <History className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+                <p className="text-[#6B7280]">No closed trades found for this period.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-[#848E9C] text-xs uppercase tracking-wider border-b border-[#181B23]">
+                    <tr className="text-[#6B7280] text-xs uppercase tracking-wider border-b border-[#E5E7EB]">
                       <th className="px-5 py-3 text-left font-semibold">Instrument</th>
                       <th className="px-4 py-3 text-left font-semibold">Dir.</th>
                       <th className="px-4 py-3 text-right font-semibold">Entry</th>
@@ -324,38 +324,38 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
                       <th className="px-4 py-3 text-right font-semibold">Closed</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#181B23]">
+                  <tbody className="divide-y divide-[#E5E7EB]">
                     {trades.map((t: any) => {
                       const isWin = (t.profit ?? 0) >= 0;
                       return (
-                        <tr key={t.id} className="hover:bg-[#181B23]/30 transition-colors">
+                        <tr key={t.id} className="hover:bg-[#E5E7EB]/30 transition-colors">
                           <td className="px-5 py-3">
-                            <p className="font-bold text-white">{t.instrument}</p>
-                            <p className="text-xs text-[#848E9C]">{t.market}</p>
+                            <p className="font-bold text-[#111827]">{t.instrument}</p>
+                            <p className="text-xs text-[#6B7280]">{t.market}</p>
                           </td>
                           <td className="px-4 py-3">
                             <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${
-                              t.direction === 'buy' ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'
+                              t.direction === 'buy' ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'
                             }`}>
                               {t.direction === 'buy' ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                               {t.direction?.toUpperCase()}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right font-mono text-[#EAECEF] text-xs">
+                          <td className="px-4 py-3 text-right font-mono text-[#374151] text-xs">
                             {formatPrice(t.entryPrice, t.instrument)}
                           </td>
-                          <td className="px-4 py-3 text-right font-mono text-[#EAECEF] text-xs">
+                          <td className="px-4 py-3 text-right font-mono text-[#374151] text-xs">
                             {t.exitPrice ? formatPrice(t.exitPrice, t.instrument) : '—'}
                           </td>
-                          <td className="px-4 py-3 text-right text-[#848E9C] text-xs">
+                          <td className="px-4 py-3 text-right text-[#6B7280] text-xs">
                             {formatDuration(t.openedAt, t.closedAt)}
                           </td>
                           <td className="px-4 py-3 text-right">
-                            <span className={`font-black text-sm ${isWin ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                            <span className={`font-black text-sm ${isWin ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                               {isWin ? '+' : ''}₹{Number(t.profit ?? 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right text-xs text-[#848E9C]">
+                          <td className="px-4 py-3 text-right text-xs text-[#6B7280]">
                             {t.closedAt ? new Date(t.closedAt).toLocaleDateString('en-IN') : '—'}
                           </td>
                         </tr>
@@ -367,13 +367,13 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
             )}
 
             {pages > 1 && (
-              <div className="flex items-center justify-between px-5 py-4 border-t border-[#181B23]">
-                <span className="text-[#848E9C] text-xs">{total} total trades</span>
+              <div className="flex items-center justify-between px-5 py-4 border-t border-[#E5E7EB]">
+                <span className="text-[#6B7280] text-xs">{total} total trades</span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page <= 1}
-                    className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white disabled:opacity-30 transition-colors"
+                    className="p-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white disabled:opacity-30 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -381,7 +381,7 @@ function TradeHistoryPanel({ users }: { users: any[] }) {
                   <button
                     onClick={() => setPage(p => Math.min(pages, p + 1))}
                     disabled={page >= pages}
-                    className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white disabled:opacity-30 transition-colors"
+                    className="p-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white disabled:opacity-30 transition-colors"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -487,23 +487,23 @@ function InjectTradePanel({ users }: { users: any[] }) {
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div className="card-stealth p-5 flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#00C27420', border: '1px solid #00C27440' }}>
-          <Zap className="w-5 h-5 text-[#00C274]" />
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#1F77B420', border: '1px solid #1F77B440' }}>
+          <Zap className="w-5 h-5 text-[#1F77B4]" />
         </div>
         <div>
           <p className="text-white font-bold">Manual Trade Injection</p>
-          <p className="text-[#848E9C] text-sm">Add a simulated trade directly to a client's account</p>
+          <p className="text-[#6B7280] text-sm">Add a simulated trade directly to a client's account</p>
         </div>
       </div>
 
       <div className="card-stealth p-6 space-y-6">
         {/* User */}
         <div>
-          <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Client *</label>
+          <label className="block text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-2">Client *</label>
           <select
             value={userId}
             onChange={e => setUserId(e.target.value)}
-            className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00C274] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1F77B4] transition-colors"
           >
             <option value="">— Select a client —</option>
             {users.map((u: any) => (
@@ -513,7 +513,7 @@ function InjectTradePanel({ users }: { users: any[] }) {
             ))}
           </select>
           {selectedUser && (
-            <p className="text-xs text-[#00C274] mt-1.5">
+            <p className="text-xs text-[#1F77B4] mt-1.5">
               Balance: ₹{(selectedUser.totalBalance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </p>
           )}
@@ -521,11 +521,11 @@ function InjectTradePanel({ users }: { users: any[] }) {
 
         {/* Instrument */}
         <div>
-          <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Instrument *</label>
+          <label className="block text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-2">Instrument *</label>
           <select
             value={instrKey}
             onChange={e => setInstrKey(e.target.value)}
-            className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#00C274] transition-colors"
+            className="w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#1F77B4] transition-colors"
           >
             <optgroup label="Forex">
               {INSTRUMENTS_DATA.filter(i => i.market === 'Forex').map(i => (
@@ -538,10 +538,10 @@ function InjectTradePanel({ users }: { users: any[] }) {
               ))}
             </optgroup>
           </select>
-          <p className="text-xs text-[#848E9C] mt-1.5">
+          <p className="text-xs text-[#6B7280] mt-1.5">
             Market: <span className="text-white">{instr.market}</span>
             <span className="mx-2">·</span>
-            Entry: <span className="text-[#00C274] font-mono">{instr.basePrice} (auto)</span>
+            Entry: <span className="text-[#1F77B4] font-mono">{instr.basePrice} (auto)</span>
             <span className="mx-2">·</span>
             Lot: <span className="text-white font-mono">{instr.lotSize}</span>
           </p>
@@ -550,28 +550,28 @@ function InjectTradePanel({ users }: { users: any[] }) {
         {/* Direction + Status */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Direction *</label>
-            <div className="flex rounded-xl overflow-hidden border border-[#1A1D27]">
+            <label className="block text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-2">Direction *</label>
+            <div className="flex rounded-xl overflow-hidden border border-[#E5E7EB]">
               <button
                 onClick={() => setDirection('buy')}
-                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${direction === 'buy' ? 'bg-[#02C076] text-black' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${direction === 'buy' ? 'bg-[#16A34A] text-black' : 'bg-[#FFFFFF] text-[#6B7280] hover:text-white'}`}
               >▲ BUY</button>
               <button
                 onClick={() => setDirection('sell')}
-                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${direction === 'sell' ? 'bg-[#CF304A] text-white' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${direction === 'sell' ? 'bg-[#DC2626] text-white' : 'bg-[#FFFFFF] text-[#6B7280] hover:text-white'}`}
               >▼ SELL</button>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Status *</label>
-            <div className="flex rounded-xl overflow-hidden border border-[#1A1D27]">
+            <label className="block text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-2">Status *</label>
+            <div className="flex rounded-xl overflow-hidden border border-[#E5E7EB]">
               <button
                 onClick={() => setTradeStatus('closed')}
-                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${tradeStatus === 'closed' ? 'bg-[#00C274] text-black' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${tradeStatus === 'closed' ? 'bg-[#1F77B4] text-black' : 'bg-[#FFFFFF] text-[#6B7280] hover:text-white'}`}
               >Closed</button>
               <button
                 onClick={() => setTradeStatus('open')}
-                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${tradeStatus === 'open' ? 'bg-[#2a6df4] text-white' : 'bg-[#0C0E15] text-[#848E9C] hover:text-white'}`}
+                className={`flex-1 py-2.5 text-sm font-bold transition-colors ${tradeStatus === 'open' ? 'bg-[#2a6df4] text-white' : 'bg-[#FFFFFF] text-[#6B7280] hover:text-white'}`}
               >Open</button>
             </div>
           </div>
@@ -580,17 +580,17 @@ function InjectTradePanel({ users }: { users: any[] }) {
         {/* Profit — only for closed trades */}
         {tradeStatus === 'closed' && (
           <div>
-            <label className="block text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-2">Profit / Loss (₹) *</label>
+            <label className="block text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-2">Profit / Loss (₹) *</label>
             <input
               type="number"
               step="any"
               value={profit}
               onChange={e => setProfit(e.target.value)}
               placeholder="e.g. 1500 for profit, -300 for loss"
-              className="w-full bg-[#0C0E15] border border-[#1A1D27] rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-[#00C274] transition-colors placeholder-[#3d4450]"
+              className="w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-[#1F77B4] transition-colors placeholder-[#3d4450]"
             />
             {profit !== '' && (
-              <p className={`text-sm font-bold mt-1.5 ${parseFloat(profit) >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+              <p className={`text-sm font-bold mt-1.5 ${parseFloat(profit) >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                 {parseFloat(profit) >= 0 ? `+₹${parseFloat(profit).toLocaleString('en-IN')} will be added to balance` : `₹${Math.abs(parseFloat(profit)).toLocaleString('en-IN')} will be deducted from balance`}
               </p>
             )}
@@ -602,7 +602,7 @@ function InjectTradePanel({ users }: { users: any[] }) {
           onClick={handleSubmit}
           disabled={submitting || !userId}
           className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ background: success ? '#02C076' : '#00C274', color: 'black' }}
+          style={{ background: success ? '#16A34A' : '#1F77B4', color: 'black' }}
         >
           {submitting ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Injecting...</>
@@ -707,7 +707,7 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
 
   const clientUsers = users.filter((u: any) => u.role !== 'admin');
   const statusColors: Record<string, string> = {
-    open: '#2a6df4', won: '#02C076', lost: '#CF304A', expired: '#848E9C',
+    open: '#2a6df4', won: '#16A34A', lost: '#DC2626', expired: '#6B7280',
   };
 
   return (
@@ -715,37 +715,37 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
       {/* Edit Modal */}
       {editId !== null && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-2xl p-6 space-y-4" style={{ background: '#0C0E15', border: '1px solid #1A1D27' }}>
+          <div className="w-full max-w-md rounded-2xl p-6 space-y-4" style={{ background: '#FFFFFF', border: '1px solid #E5E7EB' }}>
             <div className="flex items-center justify-between">
               <p className="text-white font-bold">Edit Binary Trade #{editId}</p>
-              <button onClick={() => setEditId(null)} className="text-[#848E9C] hover:text-white"><X className="w-5 h-5" /></button>
+              <button onClick={() => setEditId(null)} className="text-[#6B7280] hover:text-white"><X className="w-5 h-5" /></button>
             </div>
             <div>
-              <label className="text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-1.5 block">Status</label>
+              <label className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-1.5 block">Status</label>
               <div className="grid grid-cols-4 gap-1.5">
                 {['open', 'won', 'lost', 'expired'].map(s => (
                   <button key={s} onClick={() => setEditData(d => ({ ...d, status: s }))}
                     className="py-2 rounded-xl text-xs font-black capitalize transition-all"
-                    style={{ background: editData.status === s ? (statusColors[s] + '30') : 'rgba(255,255,255,0.04)', color: editData.status === s ? statusColors[s] : '#848E9C', border: `1px solid ${editData.status === s ? statusColors[s] + '60' : 'transparent'}` }}>
+                    style={{ background: editData.status === s ? (statusColors[s] + '30') : 'rgba(255,255,255,0.04)', color: editData.status === s ? statusColors[s] : '#6B7280', border: `1px solid ${editData.status === s ? statusColors[s] + '60' : 'transparent'}` }}>
                     {s}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-[#848E9C] uppercase tracking-wider mb-1.5 block">Profit / Loss (₹)</label>
+              <label className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-1.5 block">Profit / Loss (₹)</label>
               <input type="number" value={editData.profit} onChange={e => setEditData(d => ({ ...d, profit: e.target.value }))}
                 placeholder="e.g. 900 for win, -1000 for loss"
-                className="w-full bg-[#181B23] border border-[#1A1D27] rounded-xl px-4 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-[#00C274]" />
+                className="w-full bg-[#E5E7EB] border border-[#E5E7EB] rounded-xl px-4 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-[#1F77B4]" />
               {editData.profit !== '' && (
-                <p className={`text-xs font-bold mt-1 ${parseFloat(editData.profit) >= 0 ? 'text-[#02C076]' : 'text-[#CF304A]'}`}>
+                <p className={`text-xs font-bold mt-1 ${parseFloat(editData.profit) >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                   {parseFloat(editData.profit) >= 0 ? `+₹${parseFloat(editData.profit).toLocaleString('en-IN')} added to balance` : `₹${Math.abs(parseFloat(editData.profit)).toLocaleString('en-IN')} deducted`}
                 </p>
               )}
             </div>
             <button onClick={handleSave} disabled={saving}
               className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
-              style={{ background: '#00C274', color: 'black' }}>
+              style={{ background: '#1F77B4', color: 'black' }}>
               {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : <><Save className="w-4 h-4" /> Save Changes</>}
             </button>
           </div>
@@ -764,14 +764,14 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
           {['all', 'open', 'won', 'lost', 'expired'].map(s => (
             <button key={s} onClick={() => { setStatus(s); setPage(1); }}
               className="px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all"
-              style={{ background: status === s ? '#00C274' : '#181B23', color: status === s ? 'black' : '#848E9C' }}>
+              style={{ background: status === s ? '#1F77B4' : '#E5E7EB', color: status === s ? 'black' : '#6B7280' }}>
               {s === 'all' ? 'All' : s}
             </button>
           ))}
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-[#848E9C]">{total} trades</span>
-          <button onClick={fetchTrades} disabled={loading} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white text-xs font-bold">
+          <span className="text-xs text-[#6B7280]">{total} trades</span>
+          <button onClick={fetchTrades} disabled={loading} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white text-xs font-bold">
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </button>
         </div>
@@ -780,17 +780,17 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
       {/* Table */}
       <div className="card-stealth overflow-hidden">
         {loading && trades.length === 0 ? (
-          <div className="p-16 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
+          <div className="p-16 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" /></div>
         ) : trades.length === 0 ? (
           <div className="p-16 text-center">
-            <BarChart2 className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
-            <p className="text-[#848E9C] font-medium">No binary trades found.</p>
+            <BarChart2 className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+            <p className="text-[#6B7280] font-medium">No binary trades found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-[#848E9C] text-xs uppercase tracking-wider border-b border-[#181B23]">
+                <tr className="text-[#6B7280] text-xs uppercase tracking-wider border-b border-[#E5E7EB]">
                   <th className="px-4 py-3 text-left font-semibold">ID</th>
                   <th className="px-4 py-3 text-left font-semibold">Client</th>
                   <th className="px-4 py-3 text-left font-semibold">Instrument</th>
@@ -803,52 +803,52 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
                   <th className="px-4 py-3 text-center font-semibold">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#181B23]">
+              <tbody className="divide-y divide-[#E5E7EB]">
                 {trades.map((t: any) => {
                   const isWin = t.status === 'won';
                   const isLoss = t.status === 'lost';
                   const pnl = parseFloat(String(t.profit ?? '0')) || 0;
                   const userName = `${t.userFirstName || ''} ${t.userLastName || ''}`.trim() || t.userEmail || `#${t.userId}`;
                   return (
-                    <tr key={t.id} className="hover:bg-[#181B23]/30 transition-colors">
-                      <td className="px-4 py-3 text-[#848E9C] text-xs font-mono">#{t.id}</td>
+                    <tr key={t.id} className="hover:bg-[#E5E7EB]/30 transition-colors">
+                      <td className="px-4 py-3 text-[#6B7280] text-xs font-mono">#{t.id}</td>
                       <td className="px-4 py-3">
                         <p className="text-white text-xs font-bold">{userName}</p>
-                        <p className="text-[#848E9C] text-[10px]">{t.userEmail}</p>
+                        <p className="text-[#6B7280] text-[10px]">{t.userEmail}</p>
                       </td>
-                      <td className="px-4 py-3 font-bold text-white">{t.instrument}</td>
+                      <td className="px-4 py-3 font-bold text-[#111827]">{t.instrument}</td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${t.direction === 'call' ? 'bg-[#02C076]/15 text-[#02C076]' : 'bg-[#CF304A]/15 text-[#CF304A]'}`}>
+                        <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${t.direction === 'call' ? 'bg-[#16A34A]/15 text-[#16A34A]' : 'bg-[#DC2626]/15 text-[#DC2626]'}`}>
                           {t.direction === 'call' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                           {t.direction === 'call' ? 'Higher' : 'Lower'}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right font-mono text-white text-xs">₹{parseFloat(String(t.amount || '0')).toLocaleString('en-IN')}</td>
-                      <td className="px-4 py-3 text-right text-[#00C274] text-xs font-bold">{t.payoutPct ?? '—'}%</td>
+                      <td className="px-4 py-3 text-right text-[#1F77B4] text-xs font-bold">{t.payoutPct ?? '—'}%</td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full capitalize"
-                          style={{ background: `${statusColors[t.status] ?? '#848E9C'}20`, color: statusColors[t.status] ?? '#848E9C' }}>
+                          style={{ background: `${statusColors[t.status] ?? '#6B7280'}20`, color: statusColors[t.status] ?? '#6B7280' }}>
                           {t.status === 'open' && <span className="w-1.5 h-1.5 rounded-full bg-[#2a6df4] animate-pulse" />}
                           {t.status}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        {t.status === 'open' ? <span className="text-[#848E9C] text-xs">—</span> : (
-                          <span className={`font-black text-sm ${isWin ? 'text-[#02C076]' : isLoss ? 'text-[#CF304A]' : 'text-[#848E9C]'}`}>
+                        {t.status === 'open' ? <span className="text-[#6B7280] text-xs">—</span> : (
+                          <span className={`font-black text-sm ${isWin ? 'text-[#16A34A]' : isLoss ? 'text-[#DC2626]' : 'text-[#6B7280]'}`}>
                             {pnl >= 0 ? '+' : ''}₹{Math.abs(pnl).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-right text-[#848E9C] text-xs">
+                      <td className="px-4 py-3 text-right text-[#6B7280] text-xs">
                         {t.openedAt ? new Date(t.openedAt).toLocaleDateString('en-IN') : '—'}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center gap-1.5">
-                          <button onClick={() => openEdit(t)} className="p-1.5 rounded-lg hover:bg-[#00C274]/15 text-[#848E9C] hover:text-[#00C274] transition-colors" title="Edit">
+                          <button onClick={() => openEdit(t)} className="p-1.5 rounded-lg hover:bg-[#1F77B4]/15 text-[#6B7280] hover:text-[#1F77B4] transition-colors" title="Edit">
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
                           <button onClick={() => handleDelete(t.id)} disabled={deleting === t.id}
-                            className="p-1.5 rounded-lg hover:bg-[#CF304A]/15 text-[#848E9C] hover:text-[#CF304A] transition-colors" title="Delete">
+                            className="p-1.5 rounded-lg hover:bg-[#DC2626]/15 text-[#6B7280] hover:text-[#DC2626] transition-colors" title="Delete">
                             {deleting === t.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                           </button>
                         </div>
@@ -862,14 +862,14 @@ function BinaryTradesPanel({ users }: { users: any[] }) {
         )}
 
         {pages > 1 && (
-          <div className="flex items-center justify-between px-5 py-4 border-t border-[#181B23]">
-            <span className="text-[#848E9C] text-xs">{total} total binary trades</span>
+          <div className="flex items-center justify-between px-5 py-4 border-t border-[#E5E7EB]">
+            <span className="text-[#6B7280] text-xs">{total} total binary trades</span>
             <div className="flex items-center gap-2">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white disabled:opacity-30">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white disabled:opacity-30">
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="text-white text-sm font-bold">{page} / {pages}</span>
-              <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="p-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white disabled:opacity-30">
+              <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page >= pages} className="p-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white disabled:opacity-30">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -890,15 +890,15 @@ export function AdminTrades() {
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Trade Monitor</h1>
-        <p className="text-[#848E9C] font-medium">Live positions, trade history and binary options across all clients</p>
+        <h1 className="text-3xl font-bold text-[#111827] mb-2">Trade Monitor</h1>
+        <p className="text-[#6B7280] font-medium">Live positions, trade history and binary options across all clients</p>
       </div>
 
-      <div className="flex flex-wrap gap-1 p-1 bg-[#0C0E15] border border-[#181B23] rounded-xl mb-6 w-fit">
+      <div className="flex flex-wrap gap-1 p-1 bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl mb-6 w-fit">
         <button
           onClick={() => setTab('live')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            tab === 'live' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+            tab === 'live' ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:text-white'
           }`}
         >
           <Activity className="w-4 h-4" /> Live Trades
@@ -907,7 +907,7 @@ export function AdminTrades() {
         <button
           onClick={() => setTab('history')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            tab === 'history' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+            tab === 'history' ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:text-white'
           }`}
         >
           <History className="w-4 h-4" /> Trade History
@@ -915,7 +915,7 @@ export function AdminTrades() {
         <button
           onClick={() => setTab('binary')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            tab === 'binary' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+            tab === 'binary' ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:text-white'
           }`}
         >
           <BarChart2 className="w-4 h-4" /> Binary Trades
@@ -923,7 +923,7 @@ export function AdminTrades() {
         <button
           onClick={() => setTab('inject')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            tab === 'inject' ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+            tab === 'inject' ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:text-white'
           }`}
         >
           <Zap className="w-4 h-4" /> Inject Trade

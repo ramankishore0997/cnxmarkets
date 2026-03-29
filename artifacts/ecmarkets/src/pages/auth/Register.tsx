@@ -23,7 +23,7 @@ function GoogleButton() {
       type="button"
       onClick={handleGoogleSignIn}
       className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
-      style={{ background: '#1E2329', border: '1px solid #2B3139', color: '#EAECEF' }}
+      style={{ background: '#F7F9FC', border: '1px solid #E5E7EB', color: '#374151' }}
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M17.64 9.20454C17.64 8.56636 17.5827 7.95272 17.4764 7.36363H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.20454Z" fill="#4285F4"/>
@@ -57,11 +57,11 @@ function getPasswordStrength(password: string) {
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
   const map = [
-    { label: 'Weak', color: '#CF304A' },
-    { label: 'Fair', color: '#00C274' },
-    { label: 'Good', color: '#00C274' },
-    { label: 'Strong', color: '#02C076' },
-    { label: 'Very Strong', color: '#02C076' },
+    { label: 'Weak', color: '#DC2626' },
+    { label: 'Fair', color: '#1F77B4' },
+    { label: 'Good', color: '#1F77B4' },
+    { label: 'Strong', color: '#16A34A' },
+    { label: 'Very Strong', color: '#16A34A' },
   ];
   return { score, ...map[score] };
 }
@@ -109,22 +109,22 @@ export function Register() {
   const strength = getPasswordStrength(passwordValue);
 
   const inputBaseStyle = (hasError: boolean): React.CSSProperties => ({
-    background: '#1E2329',
-    border: `1px solid ${hasError ? '#CF304A' : '#181B23'}`,
-    color: '#EAECEF',
-    boxShadow: hasError ? '0 0 0 3px rgba(207,48,74,0.1)' : 'none'
+    background: '#F7F9FC',
+    border: `1px solid ${hasError ? '#DC2626' : '#E5E7EB'}`,
+    color: '#374151',
+    boxShadow: hasError ? '0 0 0 3px rgba(220,38,38,0.1)' : 'none'
   });
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>, hasError: boolean) => {
     if (!hasError) {
-      e.target.style.border = '1px solid #00C274';
-      e.target.style.boxShadow = '0 0 0 3px rgba(0,194,116,0.1)';
+      e.target.style.border = '1px solid #1F77B4';
+      e.target.style.boxShadow = '0 0 0 3px rgba(31,119,180,0.1)';
     }
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>, hasError: boolean) => {
     if (!hasError) {
-      e.target.style.border = '1px solid #181B23';
+      e.target.style.border = '1px solid #E5E7EB';
       e.target.style.boxShadow = 'none';
     }
   };
@@ -137,24 +137,24 @@ export function Register() {
   ];
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#060709' }}>
+    <div className="min-h-screen flex" style={{ background: '#FFFFFF' }}>
       <div
         className="hidden lg:flex lg:w-5/12 flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #060709 0%, #1a1f28 50%, #060709 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #0B3C5D 0%, #174A7C 60%, #0B3C5D 100%)' }}
       >
         <div
           className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: `radial-gradient(circle at 20% 80%, #00C27422 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, #02C07611 0%, transparent 50%)`
+            backgroundImage: `radial-gradient(circle at 20% 80%, #1F77B422 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, #16A34A11 0%, transparent 50%)`
           }}
         />
         <div className="relative z-10">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
               <EcmLogo size={40} />
-              <span className="text-white font-bold text-xl tracking-tight">
-                ECMarket<span style={{ color: '#00C274' }}> Pro</span>
+              <span className="font-bold text-xl tracking-tight text-white">
+                ECMarket<span style={{ color: '#60C0F0' }}> Pro</span>
               </span>
             </div>
           </Link>
@@ -163,10 +163,10 @@ export function Register() {
           <div>
             <h2 className="text-4xl font-bold text-white leading-tight mb-4">
               Start Trading<br />
-              <span style={{ color: '#00C274' }}>Smarter Today</span>
+              <span style={{ color: '#60C0F0' }}>Smarter Today</span>
             </h2>
-            <p style={{ color: '#848E9C' }} className="text-lg leading-relaxed">
-              Join thousands of traders using ECMarket Pro's algorithmic platform to grow their wealth.
+            <p style={{ color: 'rgba(234,242,248,0.75)' }} className="text-lg leading-relaxed">
+              UAE-regulated forex broker — join 10 Lakh+ traders growing with ECMarket Pro.
             </p>
           </div>
           <div className="space-y-4">
@@ -174,65 +174,65 @@ export function Register() {
               <div key={benefit} className="flex items-start gap-3">
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                  style={{ background: 'rgba(2,192,118,0.15)', border: '1px solid rgba(2,192,118,0.3)' }}
+                  style={{ background: 'rgba(96,192,240,0.2)', border: '1px solid rgba(96,192,240,0.35)' }}
                 >
-                  <Check className="w-3.5 h-3.5" style={{ color: '#02C076' }} />
+                  <Check className="w-3.5 h-3.5" style={{ color: '#60C0F0' }} />
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: '#EAECEF' }}>{benefit}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(234,242,248,0.8)' }}>{benefit}</p>
               </div>
             ))}
           </div>
         </div>
         <div className="relative z-10">
-          <p className="text-sm" style={{ color: '#848E9C' }}>
-            © 2024 ECMarket Pro. Regulated algorithmic trading platform.
+          <p className="text-sm" style={{ color: 'rgba(234,242,248,0.5)' }}>
+            © 2025 ECMarket Pro. UAE-regulated forex broker.
           </p>
         </div>
       </div>
 
-      <div className="w-full lg:w-7/12 flex flex-col justify-center items-center p-6 lg:p-12 overflow-y-auto" style={{ background: '#0F1218' }}>
+      <div className="w-full lg:w-7/12 flex flex-col justify-center items-center p-6 lg:p-12 overflow-y-auto" style={{ background: '#F7F9FC' }}>
         <div className="w-full max-w-lg py-8">
           <div className="lg:hidden flex items-center gap-3 mb-10">
             <Link href="/">
               <div className="flex items-center gap-3 cursor-pointer">
                 <EcmLogo size={36} />
                 <span className="text-white font-bold text-lg">
-                  ECMarket<span style={{ color: '#00C274' }}> Pro</span>
+                  ECMarket<span style={{ color: '#1F77B4' }}> Pro</span>
                 </span>
               </div>
             </Link>
           </div>
 
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Create your account</h1>
-            <p style={{ color: '#848E9C' }}>Join the institutional trading network</p>
+            <h1 className="text-3xl font-bold mb-2 tracking-tight" style={{ color: "#111827" }}>Create your account</h1>
+            <p style={{ color: '#6B7280' }}>Join the institutional trading network</p>
           </div>
 
           {successMsg && (
             <div
               className="flex items-center gap-3 p-4 rounded-xl mb-6"
-              style={{ background: 'rgba(2,192,118,0.1)', border: '1px solid rgba(2,192,118,0.3)' }}
+              style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid rgba(22,163,74,0.3)' }}
             >
-              <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: '#02C076' }} />
-              <p className="text-sm font-medium" style={{ color: '#02C076' }}>{successMsg}</p>
+              <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: '#16A34A' }} />
+              <p className="text-sm font-medium" style={{ color: '#16A34A' }}>{successMsg}</p>
             </div>
           )}
 
           {errorMsg && (
             <div
               className="flex items-center gap-3 p-4 rounded-xl mb-6"
-              style={{ background: 'rgba(207,48,74,0.1)', border: '1px solid rgba(207,48,74,0.3)' }}
+              style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)' }}
             >
-              <AlertCircle className="w-5 h-5 shrink-0" style={{ color: '#CF304A' }} />
-              <p className="text-sm font-medium" style={{ color: '#CF304A' }}>{errorMsg}</p>
+              <AlertCircle className="w-5 h-5 shrink-0" style={{ color: '#DC2626' }} />
+              <p className="text-sm font-medium" style={{ color: '#DC2626' }}>{errorMsg}</p>
             </div>
           )}
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>Full Name</label>
+              <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
                 <input
                   {...form.register('fullName')}
                   type="text"
@@ -245,14 +245,14 @@ export function Register() {
                 />
               </div>
               {form.formState.errors.fullName && (
-                <p className="text-xs mt-1" style={{ color: '#CF304A' }}>{form.formState.errors.fullName.message}</p>
+                <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.fullName.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>Email Address</label>
+              <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
                 <input
                   {...form.register('email')}
                   type="email"
@@ -265,14 +265,14 @@ export function Register() {
                 />
               </div>
               {form.formState.errors.email && (
-                <p className="text-xs mt-1" style={{ color: '#CF304A' }}>{form.formState.errors.email.message}</p>
+                <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.email.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>Phone Number</label>
+              <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Phone Number</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
                 <input
                   {...form.register('phone')}
                   type="tel"
@@ -285,14 +285,14 @@ export function Register() {
                 />
               </div>
               {form.formState.errors.phone && (
-                <p className="text-xs mt-1" style={{ color: '#CF304A' }}>{form.formState.errors.phone.message}</p>
+                <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.phone.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>Password</label>
+              <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
                 <input
                   {...form.register('password')}
                   type={showPassword ? 'text' : 'password'}
@@ -311,7 +311,7 @@ export function Register() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: '#848E9C' }}
+                  style={{ color: '#6B7280' }}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -323,7 +323,7 @@ export function Register() {
                       <div
                         key={i}
                         className="h-1 flex-1 rounded-full transition-all duration-300"
-                        style={{ background: i <= strength.score ? strength.color : '#181B23' }}
+                        style={{ background: i <= strength.score ? strength.color : '#E5E7EB' }}
                       />
                     ))}
                   </div>
@@ -333,14 +333,14 @@ export function Register() {
                 </div>
               )}
               {form.formState.errors.password && (
-                <p className="text-xs mt-1" style={{ color: '#CF304A' }}>{form.formState.errors.password.message}</p>
+                <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.password.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold" style={{ color: '#EAECEF' }}>Confirm Password</label>
+              <label className="block text-sm font-semibold" style={{ color: '#374151' }}>Confirm Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#848E9C' }} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6B7280' }} />
                 <input
                   {...form.register('confirmPassword')}
                   type={showConfirm ? 'text' : 'password'}
@@ -355,13 +355,13 @@ export function Register() {
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: '#848E9C' }}
+                  style={{ color: '#6B7280' }}
                 >
                   {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {form.formState.errors.confirmPassword && (
-                <p className="text-xs mt-1" style={{ color: '#CF304A' }}>{form.formState.errors.confirmPassword.message}</p>
+                <p className="text-xs mt-1" style={{ color: '#DC2626' }}>{form.formState.errors.confirmPassword.message}</p>
               )}
             </div>
 
@@ -371,21 +371,21 @@ export function Register() {
               className="w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 mt-2"
               style={{
                 background: registerMutation.isPending
-                  ? 'rgba(0,194,116,0.5)'
-                  : 'linear-gradient(135deg, #00C274 0%, #00a863 100%)',
-                color: '#060709',
-                boxShadow: registerMutation.isPending ? 'none' : '0 4px 20px rgba(0,194,116,0.3)',
+                  ? 'rgba(31,119,180,0.5)'
+                  : 'linear-gradient(135deg, #1F77B4 0%, #2e8fd1 100%)',
+                color: '#FFFFFF',
+                boxShadow: registerMutation.isPending ? 'none' : '0 4px 20px rgba(31,119,180,0.3)',
                 cursor: registerMutation.isPending ? 'not-allowed' : 'pointer'
               }}
               onMouseEnter={(e) => {
                 if (!registerMutation.isPending) {
                   (e.currentTarget).style.transform = 'translateY(-1px)';
-                  (e.currentTarget).style.boxShadow = '0 6px 24px rgba(0,194,116,0.45)';
+                  (e.currentTarget).style.boxShadow = '0 6px 24px rgba(31,119,180,0.45)';
                 }
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget).style.transform = 'translateY(0)';
-                (e.currentTarget).style.boxShadow = registerMutation.isPending ? 'none' : '0 4px 20px rgba(0,194,116,0.3)';
+                (e.currentTarget).style.boxShadow = registerMutation.isPending ? 'none' : '0 4px 20px rgba(31,119,180,0.3)';
               }}
             >
               {registerMutation.isPending ? (
@@ -396,30 +396,30 @@ export function Register() {
               ) : 'Create Account'}
             </button>
 
-            <p className="text-xs text-center" style={{ color: '#848E9C' }}>
+            <p className="text-xs text-center" style={{ color: '#6B7280' }}>
               By creating an account, you agree to our{' '}
-              <Link href="#" className="hover:underline" style={{ color: '#00C274' }}>Terms of Service</Link>
+              <Link href="#" className="hover:underline" style={{ color: '#1F77B4' }}>Terms of Service</Link>
               {' '}and{' '}
-              <Link href="#" className="hover:underline" style={{ color: '#00C274' }}>Privacy Policy</Link>.
+              <Link href="#" className="hover:underline" style={{ color: '#1F77B4' }}>Privacy Policy</Link>.
             </p>
           </form>
 
           {/* Google Sign Up */}
           <div className="relative mt-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full" style={{ borderTop: '1px solid #1E2329' }} />
+              <div className="w-full" style={{ borderTop: '1px solid #F7F9FC' }} />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-3 text-[#4B5563]" style={{ background: '#0F1218' }}>or sign up with</span>
+              <span className="px-3 text-[#4B5563]" style={{ background: '#F7F9FC' }}>or sign up with</span>
             </div>
           </div>
 
           <GoogleButton />
 
-          <div className="mt-4 pt-4 text-center" style={{ borderTop: '1px solid #181B23' }}>
-            <p style={{ color: '#848E9C' }} className="text-sm">
+          <div className="mt-4 pt-4 text-center" style={{ borderTop: '1px solid #E5E7EB' }}>
+            <p style={{ color: '#6B7280' }} className="text-sm">
               Already have an account?{' '}
-              <Link href="/auth/login" className="font-semibold hover:underline transition-colors" style={{ color: '#00C274' }}>
+              <Link href="/auth/login" className="font-semibold hover:underline transition-colors" style={{ color: '#1F77B4' }}>
                 Sign in
               </Link>
             </p>

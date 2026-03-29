@@ -59,7 +59,7 @@ async function resizeImage(file: File, maxSide = 256, quality = 0.82): Promise<s
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button type="button" onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${checked ? 'bg-[#00C274]' : 'bg-white/[0.08]'}`}>
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${checked ? 'bg-[#1F77B4]' : 'bg-white/[0.08]'}`}>
       <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-6' : 'translate-x-1'}`} />
     </button>
   );
@@ -72,7 +72,7 @@ function SectionHeader({ icon: Icon, color, title, subtitle }: { icon: any; colo
         <Icon className="w-5 h-5" style={{ color }} />
       </div>
       <div>
-        <h3 className="text-base font-bold text-[#F8FAFC]">{title}</h3>
+        <h3 className="text-base font-bold text-[#111827]">{title}</h3>
         <p className="text-[#4B5563] text-sm">{subtitle}</p>
       </div>
     </div>
@@ -81,13 +81,13 @@ function SectionHeader({ icon: Icon, color, title, subtitle }: { icon: any; colo
 
 function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value?: string }) {
   return (
-    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#00C274]/25 transition-colors group">
+    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#1F77B4]/25 transition-colors group">
       <div className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
         <Icon className="w-4 h-4 text-[#4B5563]" />
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-[10px] text-[#4B5563] font-bold uppercase tracking-wider mb-0.5">{label}</p>
-        <p className="text-[#F8FAFC] font-semibold text-sm truncate">{value || '—'}</p>
+        <p className="text-[#111827] font-semibold text-sm truncate">{value || '—'}</p>
       </div>
     </div>
   );
@@ -106,8 +106,8 @@ function ProfileAvatar({
     >
       {/* Ring */}
       <div className="absolute inset-0 rounded-full"
-        style={{ background: 'linear-gradient(135deg, #00C274 0%, #00C274 50%, #c8960c 100%)', padding: 3 }}>
-        <div className="w-full h-full rounded-full bg-[#060709]" />
+        style={{ background: 'linear-gradient(135deg, #1F77B4 0%, #1F77B4 50%, #c8960c 100%)', padding: 3 }}>
+        <div className="w-full h-full rounded-full bg-[#FFFFFF]" />
       </div>
       {/* Image or initials */}
       {photo ? (
@@ -119,7 +119,7 @@ function ProfileAvatar({
         />
       ) : (
         <div
-          className="absolute inset-[3px] rounded-full bg-gradient-to-br from-[#00C274] via-[#00C274] to-[#c8960c] flex items-center justify-center font-black text-black shadow-inner"
+          className="absolute inset-[3px] rounded-full bg-gradient-to-br from-[#1F77B4] via-[#1F77B4] to-[#c8960c] flex items-center justify-center font-black text-black shadow-inner"
           style={{ width: size - 6, height: size - 6, fontSize: size / 3.5 }}
         >
           {initials}
@@ -130,7 +130,7 @@ function ProfileAvatar({
         <Camera className="text-white" style={{ width: size / 4, height: size / 4 }} />
       </div>
       {/* Camera badge at bottom-right */}
-      <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#00C274] border-2 border-[#060709] flex items-center justify-center shadow-lg shadow-[#00C274]/25 z-10 group-hover:scale-110 transition-transform">
+      <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#1F77B4] border-2 border-[#FFFFFF] flex items-center justify-center shadow-lg shadow-[#1F77B4]/25 z-10 group-hover:scale-110 transition-transform">
         <Camera className="w-3.5 h-3.5 text-black" />
       </div>
     </div>
@@ -159,10 +159,10 @@ export function Profile() {
 
   const kycStatus = (user as any)?.kycStatus || 'pending';
   const kycMeta: Record<string, { color: string; label: string; icon: any }> = {
-    approved:  { color: '#02C076', label: 'Verified',      icon: BadgeCheck },
-    submitted: { color: '#00C274', label: 'Under Review',  icon: Clock },
-    rejected:  { color: '#CF304A', label: 'Rejected',      icon: AlertCircle },
-    pending:   { color: '#848E9C', label: 'Not Submitted', icon: AlertCircle },
+    approved:  { color: '#16A34A', label: 'Verified',      icon: BadgeCheck },
+    submitted: { color: '#1F77B4', label: 'Under Review',  icon: Clock },
+    rejected:  { color: '#DC2626', label: 'Rejected',      icon: AlertCircle },
+    pending:   { color: '#6B7280', label: 'Not Submitted', icon: AlertCircle },
   };
   const kyc = kycMeta[kycStatus] || kycMeta.pending;
 
@@ -272,9 +272,9 @@ export function Profile() {
       <div className="card-stealth overflow-hidden mb-7">
         {/* Banner */}
         <div className="h-28 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, rgba(0,194,116,0.18) 0%, rgba(15,23,42,0.9) 50%, rgba(2,192,118,0.08) 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, rgba(31,119,180,0.18) 0%, rgba(15,23,42,0.9) 50%, rgba(22,163,74,0.08) 100%)' }}>
           <div className="absolute inset-0"
-            style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(0,194,116,0.12) 0%, transparent 55%), radial-gradient(circle at 80% 50%, rgba(2,192,118,0.08) 0%, transparent 55%)' }} />
+            style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(31,119,180,0.12) 0%, transparent 55%), radial-gradient(circle at 80% 50%, rgba(22,163,74,0.08) 0%, transparent 55%)' }} />
         </div>
 
         <div className="px-7 pb-7">
@@ -299,7 +299,7 @@ export function Profile() {
               />
 
               <div className="pb-1">
-                <h1 className="text-xl font-black text-[#F8FAFC]">{user?.firstName} {user?.lastName}</h1>
+                <h1 className="text-xl font-black text-[#111827]">{user?.firstName} {user?.lastName}</h1>
                 <div className="flex flex-wrap items-center gap-2 mt-1">
                   <span className="text-[#4B5563] text-sm">{user?.email}</span>
                   <span className="text-white/[0.1]">•</span>
@@ -314,8 +314,8 @@ export function Profile() {
                 style={{ background: `${kyc.color}15`, color: kyc.color, border: `1px solid ${kyc.color}30` }}>
                 <kyc.icon className="w-3.5 h-3.5" /> KYC: {kyc.label}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#02C076]/12 text-[#02C076] border border-[#02C076]/25">
-                <span className="live-dot w-1.5 h-1.5 rounded-full bg-[#02C076] inline-block" /> Active
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#16A34A]/12 text-[#16A34A] border border-[#16A34A]/25">
+                <span className="live-dot w-1.5 h-1.5 rounded-full bg-[#16A34A] inline-block" /> Active
               </span>
 
               {/* Save Photo button — only shown when a new preview is pending */}
@@ -323,7 +323,7 @@ export function Profile() {
                 <button
                   onClick={handlePhotoSave}
                   disabled={photoUploading}
-                  className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-[#02C076] text-black text-xs font-bold hover:bg-[#00a866] transition-all disabled:opacity-60 shadow-lg shadow-[#02C076]/20"
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-[#16A34A] text-black text-xs font-bold hover:bg-[#00a866] transition-all disabled:opacity-60 shadow-lg shadow-[#16A34A]/20"
                 >
                   {photoUploading
                     ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -357,8 +357,8 @@ export function Profile() {
           )}
           {photoPreview && (
             <div className="mt-3 flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#00C274] animate-pulse" />
-              <p className="text-[11px] text-[#00C274] font-medium">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#1F77B4] animate-pulse" />
+              <p className="text-[11px] text-[#1F77B4] font-medium">
                 New photo previewed — click "Save Photo" to apply
               </p>
             </div>
@@ -374,7 +374,7 @@ export function Profile() {
 
           {/* Account Details */}
           <div className="card-stealth p-6">
-            <SectionHeader icon={Hash} color="#00C274" title="Account Details" subtitle="Your account information" />
+            <SectionHeader icon={Hash} color="#1F77B4" title="Account Details" subtitle="Your account information" />
             <div className="space-y-2.5">
               <InfoRow icon={Hash}     label="Account ID"   value={accountId} />
               <InfoRow icon={User}     label="Account Type" value="Client — Standard" />
@@ -390,7 +390,7 @@ export function Profile() {
               <div className="flex items-center gap-3 mb-3">
                 <kyc.icon className="w-7 h-7" style={{ color: kyc.color }} />
                 <div>
-                  <p className="font-bold text-[#F8FAFC] text-sm">{kyc.label}</p>
+                  <p className="font-bold text-[#111827] text-sm">{kyc.label}</p>
                   <p className="text-xs text-[#4B5563] mt-0.5">
                     {kycStatus === 'approved'  && 'Your identity has been verified'}
                     {kycStatus === 'submitted' && 'Documents are being reviewed'}
@@ -402,7 +402,7 @@ export function Profile() {
               {kycStatus === 'approved' && (
                 <div className="flex flex-wrap gap-2">
                   {['PAN Card', 'Aadhaar Card'].map((doc) => (
-                    <span key={doc} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#02C076]/15 text-[#02C076] text-xs font-bold border border-[#02C076]/25">
+                    <span key={doc} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#16A34A]/15 text-[#16A34A] text-xs font-bold border border-[#16A34A]/25">
                       <CheckCircle className="w-3 h-3" /> {doc}
                     </span>
                   ))}
@@ -410,18 +410,18 @@ export function Profile() {
               )}
             </div>
             <Link href="/dashboard/kyc">
-              <button className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#00C274]/30 transition-colors group text-sm">
-                <span className="font-semibold text-[#D1D5DB] group-hover:text-white transition-colors">
+              <button className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#1F77B4]/30 transition-colors group text-sm">
+                <span className="font-semibold text-[#374151] group-hover:text-white transition-colors">
                   {kycStatus === 'approved' ? 'View Documents' : 'Complete KYC'}
                 </span>
-                <ChevronRight className="w-4 h-4 text-[#4B5563] group-hover:text-[#00C274] transition-colors" />
+                <ChevronRight className="w-4 h-4 text-[#4B5563] group-hover:text-[#1F77B4] transition-colors" />
               </button>
             </Link>
           </div>
 
           {/* Notifications */}
           <div className="card-stealth p-6">
-            <SectionHeader icon={Bell} color="#848E9C" title="Notifications" subtitle="Manage alert preferences" />
+            <SectionHeader icon={Bell} color="#6B7280" title="Notifications" subtitle="Manage alert preferences" />
             <div className="space-y-3">
               {[
                 { icon: Mail,       label: 'Email Notifications',    sub: 'Deposits, withdrawals, updates', state: notifEmail,    set: setNotifEmail },
@@ -434,7 +434,7 @@ export function Profile() {
                       <Icon className="w-4 h-4 text-[#4B5563]" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#F8FAFC] truncate">{label}</p>
+                      <p className="text-sm font-semibold text-[#111827] truncate">{label}</p>
                       <p className="text-[11px] text-[#4B5563] truncate">{sub}</p>
                     </div>
                   </div>
@@ -453,10 +453,10 @@ export function Profile() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl icon-squircle-gold flex items-center justify-center">
-                  <User className="w-5 h-5 text-[#00C274]" />
+                  <User className="w-5 h-5 text-[#1F77B4]" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#F8FAFC]">Personal Information</h3>
+                  <h3 className="text-base font-bold text-[#111827]">Personal Information</h3>
                   <p className="text-[#4B5563] text-sm">Update your profile details</p>
                 </div>
               </div>
@@ -465,7 +465,7 @@ export function Profile() {
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   editMode
                     ? 'bg-white/[0.04] border-white/[0.08] text-[#6B7280] hover:text-white'
-                    : 'bg-[#00C274]/12 border-[#00C274]/25 text-[#00C274] hover:bg-[#00C274]/20'
+                    : 'bg-[#1F77B4]/12 border-[#1F77B4]/25 text-[#1F77B4] hover:bg-[#1F77B4]/20'
                 }`}
               >
                 <Edit3 className="w-3.5 h-3.5" />
@@ -489,7 +489,7 @@ export function Profile() {
                     <label className="text-xs font-bold text-[#4B5563] uppercase tracking-wider">First Name</label>
                     <input {...profileForm.register('firstName')} className="input-stealth" placeholder="First name" />
                     {profileForm.formState.errors.firstName && (
-                      <p className="text-xs text-[#CF304A]">{profileForm.formState.errors.firstName.message}</p>
+                      <p className="text-xs text-[#DC2626]">{profileForm.formState.errors.firstName.message}</p>
                     )}
                   </div>
                   <div className="space-y-1.5">
@@ -530,16 +530,16 @@ export function Profile() {
 
           {/* Security Settings */}
           <div className="card-stealth p-7">
-            <SectionHeader icon={Shield} color="#CF304A" title="Security Settings" subtitle="Manage your account security" />
+            <SectionHeader icon={Shield} color="#DC2626" title="Security Settings" subtitle="Manage your account security" />
 
             {/* Change Password */}
             <div className="mb-5 p-5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-9 h-9 rounded-xl icon-squircle-red flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-[#CF304A]" />
+                  <Lock className="w-4 h-4 text-[#DC2626]" />
                 </div>
                 <div>
-                  <p className="font-bold text-[#F8FAFC] text-sm">Change Password</p>
+                  <p className="font-bold text-[#111827] text-sm">Change Password</p>
                   <p className="text-[11px] text-[#4B5563]">Update your login password</p>
                 </div>
               </div>
@@ -563,7 +563,7 @@ export function Profile() {
                       </button>
                     </div>
                     {passwordForm.formState.errors.newPassword && (
-                      <p className="text-xs text-[#CF304A]">{passwordForm.formState.errors.newPassword.message}</p>
+                      <p className="text-xs text-[#DC2626]">{passwordForm.formState.errors.newPassword.message}</p>
                     )}
                   </div>
                   <div className="space-y-1.5">
@@ -575,16 +575,16 @@ export function Profile() {
                       </button>
                     </div>
                     {passwordForm.formState.errors.confirmPassword && (
-                      <p className="text-xs text-[#CF304A]">{passwordForm.formState.errors.confirmPassword.message}</p>
+                      <p className="text-xs text-[#DC2626]">{passwordForm.formState.errors.confirmPassword.message}</p>
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-[#00C274]/06 border border-[#00C274]/15">
-                  <Key className="w-4 h-4 text-[#00C274] shrink-0" />
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-[#1F77B4]/06 border border-[#1F77B4]/15">
+                  <Key className="w-4 h-4 text-[#1F77B4] shrink-0" />
                   <p className="text-[11px] text-[#4B5563]">Use at least 8 characters with letters, numbers and symbols.</p>
                 </div>
                 <button type="submit" disabled={passwordMutation.isPending}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#CF304A]/15 text-[#CF304A] hover:bg-[#CF304A]/25 border border-[#CF304A]/25 font-bold text-sm transition-all disabled:opacity-50">
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#DC2626]/15 text-[#DC2626] hover:bg-[#DC2626]/25 border border-[#DC2626]/25 font-bold text-sm transition-all disabled:opacity-50">
                   {passwordMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                   Update Password
                 </button>
@@ -593,13 +593,13 @@ export function Profile() {
 
             {/* 2FA + Last Login */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#00C274]/20 transition-colors">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#1F77B4]/20 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4 text-[#848E9C]" />
-                    <p className="text-sm font-bold text-[#F8FAFC]">Two-Factor Auth</p>
+                    <Smartphone className="w-4 h-4 text-[#6B7280]" />
+                    <p className="text-sm font-bold text-[#111827]">Two-Factor Auth</p>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#CF304A]/12 text-[#CF304A] font-bold border border-[#CF304A]/25">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#DC2626]/12 text-[#DC2626] font-bold border border-[#DC2626]/25">
                     Off
                   </span>
                 </div>
@@ -610,10 +610,10 @@ export function Profile() {
               </div>
               <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
                 <div className="flex items-center gap-2 mb-3">
-                  <Monitor className="w-4 h-4 text-[#848E9C]" />
-                  <p className="text-sm font-bold text-[#F8FAFC]">Last Login</p>
+                  <Monitor className="w-4 h-4 text-[#6B7280]" />
+                  <p className="text-sm font-bold text-[#111827]">Last Login</p>
                 </div>
-                <p className="font-terminal text-[#F8FAFC] text-sm font-bold">Today</p>
+                <p className="font-terminal text-[#111827] text-sm font-bold">Today</p>
                 <p className="text-[11px] text-[#4B5563] mt-1">Web Browser · India</p>
               </div>
             </div>
@@ -624,32 +624,32 @@ export function Profile() {
         <div className="card-stealth p-7">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ background: 'rgba(0,194,116,0.1)', border: '1px solid rgba(0,194,116,0.25)' }}>
-              <Key className="w-5 h-5 text-[#00C274]" />
+              style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.25)' }}>
+              <Key className="w-5 h-5 text-[#1F77B4]" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F8FAFC]">Algo Trading API Key</h3>
+              <h3 className="text-base font-bold text-[#111827]">Algo Trading API Key</h3>
               <p className="text-[11px] text-[#4B5563] mt-0.5">Connect your trading bot or external platform</p>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl mb-5"
-            style={{ background: 'rgba(0,194,116,0.04)', border: '1px solid rgba(0,194,116,0.15)' }}>
+            style={{ background: 'rgba(31,119,180,0.04)', border: '1px solid rgba(31,119,180,0.15)' }}>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                style={{ background: 'rgba(0,194,116,0.12)' }}>
-                <Hash className="w-4 h-4 text-[#00C274]" />
+                style={{ background: 'rgba(31,119,180,0.12)' }}>
+                <Hash className="w-4 h-4 text-[#1F77B4]" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-3 mb-2">
-                  <p className="text-xs font-bold text-[#00C274] uppercase tracking-wider">Your API Key</p>
+                  <p className="text-xs font-bold text-[#1F77B4] uppercase tracking-wider">Your API Key</p>
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-bold border"
-                    style={{ background: 'rgba(0,194,116,0.1)', color: '#00C274', borderColor: 'rgba(0,194,116,0.25)' }}>
+                    style={{ background: 'rgba(31,119,180,0.1)', color: '#1F77B4', borderColor: 'rgba(31,119,180,0.25)' }}>
                     Active
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <p className="font-terminal text-sm text-[#F8FAFC] tracking-widest truncate flex-1 select-all"
+                  <p className="font-terminal text-sm text-[#111827] tracking-widest truncate flex-1 select-all"
                     style={{ letterSpacing: '0.12em' }}>
                     ECM-{(user as any)?.id ? String((user as any).id).padStart(6, '0') : '000000'}-ALGO-XXXXXXXX
                   </p>
@@ -658,7 +658,7 @@ export function Profile() {
                       const key = `ECM-${String((user as any)?.id || '000000').padStart(6, '0')}-ALGO-XXXXXXXX`;
                       navigator.clipboard?.writeText(key);
                     }}
-                    className="shrink-0 p-2 rounded-lg transition-all text-[#4B5563] hover:text-[#00C274]"
+                    className="shrink-0 p-2 rounded-lg transition-all text-[#4B5563] hover:text-[#1F77B4]"
                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
                     title="Copy API Key">
                     <CheckCircle className="w-3.5 h-3.5" />
@@ -671,19 +671,19 @@ export function Profile() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
             <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
               <p className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider mb-1">API Endpoint</p>
-              <p className="font-terminal text-xs text-[#F8FAFC] truncate">api.cnxmarkets.com/v1</p>
+              <p className="font-terminal text-xs text-[#111827] truncate">api.cnxmarkets.com/v1</p>
             </div>
             <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
               <p className="text-[10px] font-bold text-[#4B5563] uppercase tracking-wider mb-1">Rate Limit</p>
-              <p className="font-terminal text-xs text-[#F8FAFC]">100 req/min</p>
+              <p className="font-terminal text-xs text-[#111827]">100 req/min</p>
             </div>
           </div>
 
           <div className="p-4 rounded-xl flex items-start gap-3"
-            style={{ background: 'rgba(0,194,116,0.05)', border: '1px solid rgba(0,194,116,0.15)' }}>
-            <AlertCircle className="w-4 h-4 text-[#00C274] shrink-0 mt-0.5" />
+            style={{ background: 'rgba(31,119,180,0.05)', border: '1px solid rgba(31,119,180,0.15)' }}>
+            <AlertCircle className="w-4 h-4 text-[#1F77B4] shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-bold text-[#00C274] mb-1">Coming Soon</p>
+              <p className="text-xs font-bold text-[#1F77B4] mb-1">Coming Soon</p>
               <p className="text-[11px] text-[#4B5563] leading-relaxed">
                 Algo trading integration is launching soon. Your API key is ready — connect your trading algorithm to auto-execute orders directly on your ECMarket Pro account.
               </p>

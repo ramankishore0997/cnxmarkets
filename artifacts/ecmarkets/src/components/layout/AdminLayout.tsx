@@ -31,17 +31,17 @@ function AdminNavItem({ item, isActive, onClose }: { item: typeof navItems[0]; i
     <Link
       href={item.href}
       onClick={onClose}
-      className={`flex items-center gap-3 py-3 pr-4 text-sm font-semibold transition-all duration-200 group
-        ${isActive
-          ? 'nav-item-active text-[#00C274] pl-[13px]'
-          : 'nav-item-hover text-[#6B7280] hover:text-[#F8FAFC] pl-4'
-        }`}
+      className="flex items-center gap-3 py-2.5 pr-4 text-sm font-semibold transition-all duration-200 rounded-xl mx-1"
+      style={{
+        paddingLeft: isActive ? '13px' : '16px',
+        background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
+        borderLeft: isActive ? '3px solid #FFFFFF' : '3px solid transparent',
+        color: isActive ? '#FFFFFF' : 'rgba(234,242,248,0.75)',
+      }}
     >
-      <Icon className={`w-[18px] h-[18px] shrink-0 transition-all duration-200 ${
-        isActive ? 'text-[#00C274]' : 'text-[#4B5563] group-hover:text-[#94A3B8]'
-      }`} />
+      <Icon className="w-[18px] h-[18px] shrink-0" style={{ color: isActive ? '#FFFFFF' : 'rgba(234,242,248,0.6)' }} />
       <span className="flex-1 truncate">{item.name}</span>
-      {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#00C274]/60 shrink-0" />}
+      {isActive && <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: 'rgba(255,255,255,0.5)' }} />}
     </Link>
   );
 }
@@ -50,33 +50,32 @@ function AdminSidebarContent({ onClose, user, logout, location }: any) {
   return (
     <div className="flex flex-col h-full">
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-white/[0.04]">
+      <div className="px-5 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative w-9 h-9 shrink-0">
-            <div className="absolute inset-0 rounded-xl bg-[#CF304A]/20 blur-sm group-hover:bg-[#CF304A]/30 transition-opacity" />
-            <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#0D1421] to-[#080D18] border border-[#CF304A]/40 flex items-center justify-center">
-              <ShieldAlert className="w-5 h-5 text-[#CF304A]" />
+            <div className="relative w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(220,38,38,0.2)', border: '1px solid rgba(220,38,38,0.35)' }}>
+              <ShieldAlert className="w-5 h-5 text-[#FCA5A5]" />
             </div>
           </div>
           <div className="leading-none">
-            <p className="text-base font-black text-gradient-metallic tracking-tight">ECM Admin</p>
-            <p className="text-[10px] font-bold text-[#CF304A] uppercase tracking-[0.1em] mt-0.5">Superuser Portal</p>
+            <p className="text-base font-black text-white tracking-tight">ECM Admin</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.1em] mt-0.5" style={{ color: '#FCA5A5' }}>Superuser Portal</p>
           </div>
         </Link>
       </div>
 
       {/* Admin identity */}
-      <div className="px-4 py-4 border-b border-white/[0.04]">
+      <div className="px-4 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#CF304A] to-[#a01f33] flex items-center justify-center font-black text-white text-sm shadow-lg shadow-[#CF304A]/20 shrink-0">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-white text-sm shrink-0" style={{ background: 'linear-gradient(135deg, #DC2626, #a01f33)' }}>
             {(user?.firstName?.[0] || 'A').toUpperCase()}{(user?.lastName?.[0] || 'D').toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-[#F8FAFC] truncate leading-tight">
+            <p className="text-[13px] font-bold text-white truncate leading-tight">
               {user?.firstName || 'System'} {user?.lastName || 'Admin'}
             </p>
-            <span className="inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/25">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#CF304A] animate-pulse" />
+            <span className="inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider" style={{ background: 'rgba(220,38,38,0.2)', color: '#FCA5A5', border: '1px solid rgba(220,38,38,0.3)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FCA5A5] animate-pulse" />
               Admin
             </span>
           </div>
@@ -84,8 +83,8 @@ function AdminSidebarContent({ onClose, user, logout, location }: any) {
       </div>
 
       {/* Nav label */}
-      <div className="px-5 pt-5 pb-1">
-        <p className="text-[9px] font-bold text-[#374151] uppercase tracking-[0.14em]">Admin Controls</p>
+      <div className="px-5 pt-4 pb-1">
+        <p className="text-[9px] font-bold uppercase tracking-[0.14em]" style={{ color: 'rgba(234,242,248,0.4)' }}>Admin Controls</p>
       </div>
 
       {/* Navigation */}
@@ -100,10 +99,11 @@ function AdminSidebarContent({ onClose, user, logout, location }: any) {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 pb-4 pt-2 border-t border-white/[0.04]">
+      <div className="px-3 pb-4 pt-2 mt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <button
           onClick={logout}
-          className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A]/08 text-[#CF304A]/80 hover:bg-[#CF304A]/15 hover:text-[#CF304A] border border-[#CF304A]/15 hover:border-[#CF304A]/30 transition-all duration-200 font-semibold text-sm"
+          className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 font-semibold text-sm"
+          style={{ background: 'rgba(220,38,38,0.15)', color: '#FCA5A5', border: '1px solid rgba(220,38,38,0.25)' }}
         >
           <LogOut className="w-4 h-4" />
           Exit Admin
@@ -131,7 +131,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#060709] text-[#F8FAFC] flex">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111827] flex">
 
       {/* ── Desktop Sidebar ─── */}
       <aside className="w-[260px] sidebar-stealth hidden md:flex flex-col fixed inset-y-0 left-0 z-20">
@@ -172,31 +172,32 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 md:ml-[260px] flex flex-col min-h-screen">
 
         {/* Header */}
-        <header className="h-16 header-glass sticky top-0 z-30 flex items-center justify-between px-5 lg:px-8">
+        <header className="h-16 sticky top-0 z-30 flex items-center justify-between px-5 lg:px-8" style={{ background: '#FFFFFF', borderBottom: '1px solid #E5E7EB', boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden p-2 rounded-lg text-[#6B7280] hover:text-white hover:bg-white/[0.05] transition-all"
+            className="md:hidden p-2 rounded-lg transition-all"
+            style={{ color: '#6B7280' }}
           >
             <Menu className="w-5 h-5" />
           </button>
 
           <div className="hidden md:flex items-center gap-3">
-            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-[#CF304A] to-[#a01f33]" />
-            <h2 className="text-[15px] font-bold text-[#F8FAFC] tracking-tight">
+            <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(to bottom, #DC2626, #a01f33)' }} />
+            <h2 className="text-[15px] font-bold tracking-tight" style={{ color: '#111827' }}>
               {getAdminPageTitle(location)}
             </h2>
           </div>
 
           <div className="flex items-center gap-3 ml-auto">
-            <div className="hidden sm:flex h-5 w-px bg-white/[0.07]" />
+            <div className="hidden sm:flex h-5 w-px" style={{ background: '#E5E7EB' }} />
             <div className="flex items-center gap-2.5">
               <div className="hidden sm:block text-right">
-                <p className="text-[13px] font-semibold text-[#D1D5DB] leading-tight">
+                <p className="text-[13px] font-semibold leading-tight" style={{ color: '#111827' }}>
                   {user?.firstName || 'System'} {user?.lastName || 'Admin'}
                 </p>
-                <p className="text-[11px] text-[#4B5563] font-medium">{user?.email}</p>
+                <p className="text-[11px] font-medium" style={{ color: '#6B7280' }}>{user?.email}</p>
               </div>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#CF304A] to-[#a01f33] flex items-center justify-center font-black text-white text-xs shadow-md">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-white text-xs shadow-md" style={{ background: 'linear-gradient(135deg, #DC2626, #a01f33)' }}>
                 AD
               </div>
             </div>

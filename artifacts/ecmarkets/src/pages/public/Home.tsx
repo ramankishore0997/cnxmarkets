@@ -45,14 +45,14 @@ function LiveTicker() {
   const prices = useLivePrices();
   const doubled = [...prices, ...prices];
   return (
-    <div className="bg-[#0C0E15] border-b border-[#1A1D27] overflow-hidden">
+    <div className="bg-[#FFFFFF] border-b border-[#E5E7EB] overflow-hidden">
       <div className="flex items-center" style={{ animation: 'ticker-scroll 30s linear infinite' }}>
         {doubled.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 px-6 py-2 shrink-0 border-r border-[#1A1D27] last:border-r-0">
+          <div key={i} className="flex items-center gap-2 px-6 py-2 shrink-0 border-r border-[#E5E7EB] last:border-r-0">
             <span className="text-xs">{item.flag}</span>
-            <span className="text-[11px] font-semibold text-[#848E9C] tracking-wide">{item.symbol}</span>
-            <span className="text-[11px] font-bold text-white tabular-nums">{item.price.toLocaleString()}</span>
-            <span className={`text-[10px] font-medium tabular-nums ${item.up ? 'text-[#00C274]' : 'text-red-400'}`}>
+            <span className="text-[11px] font-semibold text-[#6B7280] tracking-wide">{item.symbol}</span>
+            <span className="text-[11px] font-bold text-[#111827] tabular-nums">{item.price.toLocaleString()}</span>
+            <span className={`text-[10px] font-medium tabular-nums ${item.up ? 'text-[#1F77B4]' : 'text-red-400'}`}>
               {item.up ? '+' : ''}{item.change}%
             </span>
           </div>
@@ -108,23 +108,23 @@ export function Home() {
       <LiveTicker />
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-[#060709] pt-14 pb-20 md:pt-20 md:pb-28">
+      <section className="relative overflow-hidden bg-[#FFFFFF] pt-14 pb-20 md:pt-20 md:pb-28">
         {/* Animated gradient orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <motion.div
             animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute -top-20 left-1/4 w-[500px] h-[500px] rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.08) 0%, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, rgba(31,119,180,0.08) 0%, transparent 70%)' }}
           />
           <motion.div
             animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
             transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
             className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(0,194,116,0.05) 0%, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, rgba(31,119,180,0.05) 0%, transparent 70%)' }}
           />
           <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(11,60,93,0.06) 1px, transparent 0)',
             backgroundSize: '40px 40px'
           }} />
         </div>
@@ -135,35 +135,35 @@ export function Home() {
             {/* Left */}
             <motion.div initial="hidden" animate="visible" variants={stagger}>
               <motion.div variants={fadeUp} className="mb-6">
-                <span className="inline-flex items-center gap-2 rounded-full border border-[#00C274]/30 bg-[#00C274]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[#00C274]">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#1F77B4]/30 bg-[#1F77B4]/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[#1F77B4]">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C274] opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00C274]" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1F77B4] opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#1F77B4]" />
                   </span>
                   UAE Regulated Forex Broker
                 </span>
               </motion.div>
 
-              <motion.h1 variants={fadeUp} className="text-5xl md:text-6xl lg:text-[68px] font-black text-white leading-[1.05] tracking-tight mb-6">
+              <motion.h1 variants={fadeUp} className="text-5xl md:text-6xl lg:text-[68px] font-black text-[#111827] leading-[1.05] tracking-tight mb-6">
                 Trade Forex,<br />
-                <span style={{ background: 'linear-gradient(90deg, #00C274, #00E68A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span style={{ background: 'linear-gradient(90deg, #1F77B4 0%, #2e8fd1 50%, #16A34A 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Crypto & More.
                 </span>
               </motion.h1>
 
-              <motion.p variants={fadeUp} className="text-lg text-[#848E9C] mb-8 max-w-md leading-relaxed">
-                Access 200+ global markets with leverage up to <span className="text-white font-semibold">1:2000</span>, spreads from <span className="text-white font-semibold">0.0 pips</span>, instant deposits & <span className="text-white font-semibold">1-hour withdrawals</span>.
+              <motion.p variants={fadeUp} className="text-lg text-[#6B7280] mb-8 max-w-md leading-relaxed">
+                Access 200+ global markets with leverage up to <span className="font-semibold" style={{ color: "#1F77B4" }}>1:2000</span>, spreads from <span className="font-semibold" style={{ color: "#1F77B4" }}>0.0 pips</span>, instant deposits & <span className="font-semibold" style={{ color: "#1F77B4" }}>1-hour withdrawals</span>.
               </motion.p>
 
               <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-10">
                 <Link href="/auth/register">
-                  <a className="btn-green flex items-center gap-2 px-7 py-3.5 text-base font-bold rounded-xl shadow-lg shadow-[#00C274]/20">
+                  <a className="btn-green flex items-center gap-2 px-7 py-3.5 text-base font-bold rounded-xl shadow-lg shadow-[#1F77B4]/20">
                     Open Live Account <ArrowRight className="h-4 w-4" />
                   </a>
                 </Link>
                 <Link href="/auth/login">
-                  <a className="flex items-center gap-2 px-7 py-3.5 text-base font-semibold text-white rounded-xl transition-all"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)' }}>
+                  <a className="flex items-center gap-2 px-7 py-3.5 text-base font-semibold rounded-xl transition-all"
+                    style={{ background: '#F7F9FC', border: '1px solid #E5E7EB', color: '#374151' }}>
                     Sign In
                   </a>
                 </Link>
@@ -175,8 +175,8 @@ export function Home() {
                   'Leverage up to 1:2000',
                   'Funds in 1 hour',
                 ].map(t => (
-                  <span key={t} className="flex items-center gap-1.5 text-[13px] text-[#848E9C]">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-[#00C274] shrink-0" /> {t}
+                  <span key={t} className="flex items-center gap-1.5 text-[13px] text-[#6B7280]">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#1F77B4] shrink-0" /> {t}
                   </span>
                 ))}
               </motion.div>
@@ -190,24 +190,24 @@ export function Home() {
               className="relative"
             >
               {/* Glow behind card */}
-              <div className="absolute inset-0 rounded-3xl blur-3xl" style={{ background: 'radial-gradient(ellipse, rgba(0,194,116,0.12) 0%, transparent 70%)' }} />
+              <div className="absolute inset-0 rounded-3xl blur-3xl" style={{ background: 'radial-gradient(ellipse, rgba(31,119,180,0.12) 0%, transparent 70%)' }} />
 
               {/* Main terminal card */}
               <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60"
-                style={{ background: 'rgba(12,14,21,0.85)', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)' }}>
+                style={{ background: '#0B3C5D', border: '1px solid rgba(255,255,255,0.1)' }}>
 
                 {/* Terminal header */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
                   <div className="flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-[#00C274]" />
+                    <Activity className="h-4 w-4 text-[#1F77B4]" />
                     <span className="text-xs font-bold text-white tracking-wider uppercase">Live Markets</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C274] opacity-75" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00C274]" />
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1F77B4] opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-[#1F77B4]" />
                     </span>
-                    <span className="text-[10px] font-bold text-[#00C274]">LIVE</span>
+                    <span className="text-[10px] font-bold text-[#1F77B4]">LIVE</span>
                   </div>
                 </div>
 
@@ -222,12 +222,12 @@ export function Home() {
                     <div key={item.sym} className="flex items-center gap-3 px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
                       <div className="w-20 shrink-0">
                         <p className="text-[12px] font-bold text-white">{item.sym}</p>
-                        <p className={`text-[10px] font-semibold ${item.up ? 'text-[#00C274]' : 'text-red-400'}`}>{item.chg}</p>
+                        <p className={`text-[10px] font-semibold ${item.up ? 'text-[#1F77B4]' : 'text-red-400'}`}>{item.chg}</p>
                       </div>
                       <div className="flex-1 h-8 flex items-end gap-[2px]">
                         {item.bars.map((h, i) => (
                           <div key={i} className="flex-1 rounded-sm transition-all"
-                            style={{ height: `${h}%`, background: item.up ? `rgba(0,194,116,${0.3 + (i/item.bars.length)*0.5})` : `rgba(239,68,68,${0.3 + (i/item.bars.length)*0.5})` }} />
+                            style={{ height: `${h}%`, background: item.up ? `rgba(31,119,180,${0.3 + (i/item.bars.length)*0.5})` : `rgba(239,68,68,${0.3 + (i/item.bars.length)*0.5})` }} />
                         ))}
                       </div>
                       <div className="w-16 text-right shrink-0">
@@ -240,19 +240,19 @@ export function Home() {
                 {/* Buy/Sell strip */}
                 <div className="px-5 py-4 border-t border-white/[0.05]" style={{ background: 'rgba(0,0,0,0.3)' }}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] text-[#848E9C]">EUR/USD</span>
-                    <div className="flex items-center gap-1 text-[10px] text-[#848E9C]">
+                    <span className="text-[11px] text-[#6B7280]">EUR/USD</span>
+                    <div className="flex items-center gap-1 text-[10px] text-[#6B7280]">
                       <span>Spread:</span>
-                      <span className="text-[#00C274] font-bold">0.0 pips</span>
+                      <span className="text-[#1F77B4] font-bold">0.0 pips</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <button className="py-2.5 rounded-xl text-xs font-black tracking-wide text-white transition-all hover:opacity-90"
-                      style={{ background: 'linear-gradient(135deg, #CF304A, #A52040)' }}>
+                      style={{ background: 'linear-gradient(135deg, #DC2626, #A52040)' }}>
                       SELL<br/><span className="text-[11px] font-normal opacity-80">1.0918</span>
                     </button>
                     <button className="py-2.5 rounded-xl text-xs font-black tracking-wide text-white transition-all hover:opacity-90"
-                      style={{ background: 'linear-gradient(135deg, #00A85E, #00C274)' }}>
+                      style={{ background: 'linear-gradient(135deg, #155D8B, #1F77B4)' }}>
                       BUY<br/><span className="text-[11px] font-normal opacity-80">1.0921</span>
                     </button>
                   </div>
@@ -264,10 +264,10 @@ export function Home() {
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute -top-4 -left-4 rounded-2xl px-4 py-3 shadow-xl"
-                style={{ background: 'rgba(12,14,21,0.92)', border: '1px solid rgba(0,194,116,0.3)', backdropFilter: 'blur(16px)' }}
+                style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(11,60,93,0.15)' }}
               >
-                <p className="text-[10px] text-[#848E9C] font-medium">Max Leverage</p>
-                <p className="text-lg font-black text-[#00C274]">1:2000</p>
+                <p className="text-[10px] text-[#6B7280] font-medium">Max Leverage</p>
+                <p className="text-lg font-black text-[#1F77B4]">1:2000</p>
               </motion.div>
 
               {/* Floating badge — bottom right */}
@@ -275,10 +275,10 @@ export function Home() {
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
                 className="absolute -bottom-4 -right-4 rounded-2xl px-4 py-3 shadow-xl"
-                style={{ background: 'rgba(12,14,21,0.92)', border: '1px solid rgba(0,194,116,0.3)', backdropFilter: 'blur(16px)' }}
+                style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(11,60,93,0.15)' }}
               >
-                <p className="text-[10px] text-[#848E9C] font-medium">Withdrawal</p>
-                <p className="text-lg font-black text-[#00C274]">≤ 1 Hour</p>
+                <p className="text-[10px] text-[#6B7280] font-medium">Withdrawal</p>
+                <p className="text-lg font-black text-[#1F77B4]">≤ 1 Hour</p>
               </motion.div>
             </motion.div>
           </div>
@@ -286,7 +286,7 @@ export function Home() {
       </section>
 
       {/* ── TRUST BAR ── */}
-      <section className="border-y border-white/[0.05]" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(8px)' }}>
+      <section className="border-y border-[#E5E7EB]" style={{ background: '#F7F9FC' }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-0">
             {[
@@ -299,8 +299,8 @@ export function Home() {
               <div key={item.label} className="flex items-center gap-2.5">
                 <span className="text-xl">{item.icon}</span>
                 <div>
-                  <p className="text-[12px] font-bold text-white leading-tight">{item.label}</p>
-                  <p className="text-[10px] text-[#848E9C]">{item.sub}</p>
+                  <p className="text-[12px] font-bold text-[#111827] leading-tight">{item.label}</p>
+                  <p className="text-[10px] text-[#6B7280]">{item.sub}</p>
                 </div>
               </div>
             ))}
@@ -309,7 +309,7 @@ export function Home() {
       </section>
 
       {/* ── PLATFORM STATS ── */}
-      <section className="bg-[#0C0E15] border-y border-[#1A1D27] py-12">
+      <section className="bg-[#FFFFFF] border-y border-[#E5E7EB] py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
@@ -319,8 +319,8 @@ export function Home() {
               { display: 'UAE', label: 'Regulated & HQ' },
             ].map(s => (
               <div key={s.label}>
-                <p className="text-3xl md:text-4xl font-black text-[#00C274]">{s.display}</p>
-                <p className="text-sm text-[#848E9C] mt-1 font-medium">{s.label}</p>
+                <p className="text-3xl md:text-4xl font-black text-[#1F77B4]">{s.display}</p>
+                <p className="text-sm text-[#6B7280] mt-1 font-medium">{s.label}</p>
               </div>
             ))}
           </div>
@@ -328,14 +328,14 @@ export function Home() {
       </section>
 
       {/* ── TRADING INSTRUMENTS ── */}
-      <section className="bg-[#060709] py-20">
+      <section className="py-20" style={{ background: "#F7F9FC" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#111827] mb-3">
               Trade the World's Best Markets
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#848E9C] max-w-xl mx-auto">
+            <motion.p variants={fadeUp} className="text-[#6B7280] max-w-xl mx-auto">
               200+ instruments across Forex, Crypto, Commodities, Indices & Stocks — all from one account.
             </motion.p>
           </motion.div>
@@ -343,18 +343,18 @@ export function Home() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
-              { name: 'Forex', icon: '💱', desc: '80+ pairs', color: '#00C274' },
+              { name: 'Forex', icon: '💱', desc: '80+ pairs', color: '#1F77B4' },
               { name: 'Gold', icon: '🥇', desc: 'XAU/USD', color: '#FFD700' },
-              { name: 'Indices', icon: '📊', desc: 'US30, NAS100', color: '#00C274' },
+              { name: 'Indices', icon: '📊', desc: 'US30, NAS100', color: '#1F77B4' },
               { name: 'Crypto', icon: '₿', desc: 'BTC, ETH', color: '#F7931A' },
-              { name: 'Commodities', icon: '🛢️', desc: 'Oil, Gas', color: '#00C274' },
-              { name: 'Stocks', icon: '📈', desc: 'Top 50', color: '#00C274' },
+              { name: 'Commodities', icon: '🛢️', desc: 'Oil, Gas', color: '#1F77B4' },
+              { name: 'Stocks', icon: '📈', desc: 'Top 50', color: '#1F77B4' },
             ].map(item => (
               <motion.div key={item.name} variants={fadeUp}
-                className="group rounded-2xl border border-[#1A1D27] bg-[#0C0E15] p-5 text-center hover:border-[#00C274]/40 transition-all cursor-pointer">
+                className="group rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-5 text-center hover:border-[#1F77B4]/40 transition-all cursor-pointer">
                 <div className="text-3xl mb-3">{item.icon}</div>
-                <p className="font-bold text-white text-sm">{item.name}</p>
-                <p className="text-[11px] text-[#848E9C] mt-1">{item.desc}</p>
+                <p className="font-bold text-[#111827] text-sm">{item.name}</p>
+                <p className="text-[11px] text-[#6B7280] mt-1">{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -362,14 +362,14 @@ export function Home() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="bg-[#0C0E15] py-20">
+      <section className="bg-[#FFFFFF] py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="text-center mb-14">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#111827] mb-3">
               Start in 3 Simple Steps
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#848E9C]">Simple, fast, and fully online — trade live in minutes.</motion.p>
+            <motion.p variants={fadeUp} className="text-[#6B7280]">Simple, fast, and fully online — trade live in minutes.</motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
@@ -389,13 +389,13 @@ export function Home() {
               },
             ].map((s, i) => (
               <motion.div key={s.step} variants={fadeUp}
-                className="relative rounded-2xl border border-[#1A1D27] bg-[#060709] p-8 overflow-hidden group hover:border-[#00C274]/30 transition-all">
-                <div className="absolute top-4 right-5 text-6xl font-black text-[#00C274]/5 select-none">{s.step}</div>
-                <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-[#00C274]/10 p-3 text-[#00C274]">
+                className="relative rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-8 overflow-hidden group hover:border-[#1F77B4]/30 transition-all">
+                <div className="absolute top-4 right-5 text-6xl font-black text-[#1F77B4]/5 select-none">{s.step}</div>
+                <div className="mb-4 inline-flex items-center justify-center rounded-xl bg-[#1F77B4]/10 p-3 text-[#1F77B4]">
                   {s.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">{s.title}</h3>
-                <p className="text-[#848E9C] text-sm leading-relaxed">{s.desc}</p>
+                <h3 className="text-xl font-bold text-[#111827] mb-2">{s.title}</h3>
+                <p className="text-[#6B7280] text-sm leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -403,14 +403,14 @@ export function Home() {
       </section>
 
       {/* ── WHY ECMarket Pro ── */}
-      <section className="bg-[#060709] py-20">
+      <section className="py-20" style={{ background: "#F7F9FC" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-4">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#111827] mb-4">
                 Why Traders Choose ECMarket Pro
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-[#848E9C] mb-8 leading-relaxed">
+              <motion.p variants={fadeUp} className="text-[#6B7280] mb-8 leading-relaxed">
                 Institutional-grade trading conditions, local payment methods, and the fastest withdrawals — all from a UAE regulated broker.
               </motion.p>
               <motion.div variants={stagger} className="space-y-4">
@@ -421,11 +421,11 @@ export function Home() {
                   { icon: <Globe className="h-5 w-5" />, title: '200+ Instruments', desc: 'Forex, Crypto, Indices, Commodities & Stocks from one account.' },
                 ].map(f => (
                   <motion.div key={f.title} variants={fadeUp}
-                    className="flex items-start gap-4 rounded-xl border border-[#1A1D27] bg-[#0C0E15] p-4">
-                    <div className="rounded-lg bg-[#00C274]/10 p-2.5 text-[#00C274] shrink-0">{f.icon}</div>
+                    className="flex items-start gap-4 rounded-xl border border-[#E5E7EB] bg-[#FFFFFF] p-4">
+                    <div className="rounded-lg bg-[#1F77B4]/10 p-2.5 text-[#1F77B4] shrink-0">{f.icon}</div>
                     <div>
-                      <p className="font-bold text-white text-sm mb-0.5" dangerouslySetInnerHTML={{ __html: f.title }} />
-                      <p className="text-[#848E9C] text-xs" dangerouslySetInnerHTML={{ __html: f.desc }} />
+                      <p className="font-bold text-[#111827] text-sm mb-0.5" dangerouslySetInnerHTML={{ __html: f.title }} />
+                      <p className="text-[#6B7280] text-xs" dangerouslySetInnerHTML={{ __html: f.desc }} />
                     </div>
                   </motion.div>
                 ))}
@@ -435,8 +435,8 @@ export function Home() {
             {/* Security trust bars */}
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
               className="space-y-5">
-              <motion.div variants={fadeUp} className="rounded-2xl border border-[#1A1D27] bg-[#0C0E15] p-6">
-                <p className="text-xs font-semibold uppercase tracking-widest text-[#848E9C] mb-5">Platform Security</p>
+              <motion.div variants={fadeUp} className="rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-[#6B7280] mb-5">Platform Security</p>
                 {[
                   { label: 'Fund Security', val: 98 },
                   { label: 'Uptime (12 Months)', val: 99 },
@@ -445,16 +445,16 @@ export function Home() {
                 ].map((item, i) => (
                   <div key={item.label} className="mb-4 last:mb-0">
                     <div className="flex justify-between text-xs mb-1.5">
-                      <span className="text-white font-medium">{item.label}</span>
-                      <span className="text-[#00C274] font-bold">{item.val}%</span>
+                      <span className="font-medium" style={{ color: "#374151" }}>{item.label}</span>
+                      <span className="text-[#1F77B4] font-bold">{item.val}%</span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-[#1A1D27] overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${item.val}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 1.2, delay: i * 0.15, ease: 'easeOut' }}
-                        className="h-full rounded-full bg-gradient-to-r from-[#00C274] to-[#33d494]"
+                        className="h-full rounded-full bg-gradient-to-r from-[#1F77B4] to-[#60a5fa]"
                       />
                     </div>
                   </div>
@@ -468,9 +468,9 @@ export function Home() {
                   { icon: <Shield className="h-5 w-5" />, label: '2FA Auth' },
                   { icon: <CheckCircle2 className="h-5 w-5" />, label: 'KYC Verified' },
                 ].map(b => (
-                  <div key={b.label} className="flex flex-col items-center gap-2 rounded-xl border border-[#1A1D27] bg-[#060709] py-4 px-2">
-                    <span className="text-[#00C274]">{b.icon}</span>
-                    <span className="text-[11px] font-semibold text-[#848E9C] text-center">{b.label}</span>
+                  <div key={b.label} className="flex flex-col items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FFFFFF] py-4 px-2">
+                    <span className="text-[#1F77B4]">{b.icon}</span>
+                    <span className="text-[11px] font-semibold text-[#6B7280] text-center">{b.label}</span>
                   </div>
                 ))}
               </motion.div>
@@ -480,14 +480,14 @@ export function Home() {
       </section>
 
       {/* ── DEPOSIT & WITHDRAWAL ── */}
-      <section className="bg-[#0C0E15] py-20 border-y border-[#1A1D27]">
+      <section className="bg-[#FFFFFF] py-20 border-y border-[#E5E7EB]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#111827] mb-3">
               Local Deposits & Fast Withdrawals
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#848E9C] max-w-xl mx-auto">
+            <motion.p variants={fadeUp} className="text-[#6B7280] max-w-xl mx-auto">
               Fund your account instantly and withdraw within 1 hour using your preferred local method.
             </motion.p>
           </motion.div>
@@ -495,12 +495,12 @@ export function Home() {
           <div className="grid md:grid-cols-2 gap-8 mb-10">
             {/* Deposit */}
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-              className="rounded-2xl border border-[#1A1D27] bg-[#060709] p-7">
+              className="rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-7">
               <div className="flex items-center gap-3 mb-6">
-                <div className="rounded-xl bg-[#00C274]/10 p-2.5 text-[#00C274]"><Wallet className="h-6 w-6" /></div>
+                <div className="rounded-xl bg-[#1F77B4]/10 p-2.5 text-[#1F77B4]"><Wallet className="h-6 w-6" /></div>
                 <div>
-                  <p className="font-bold text-white">Deposit Methods</p>
-                  <p className="text-xs text-[#00C274] font-semibold">⚡ Instant Credit</p>
+                  <p className="font-bold text-[#111827]">Deposit Methods</p>
+                  <p className="text-xs text-[#1F77B4] font-semibold">⚡ Instant Credit</p>
                 </div>
               </div>
               <div className="space-y-3">
@@ -509,12 +509,12 @@ export function Home() {
                   { method: 'Bank Transfer', detail: 'NEFT / RTGS / IMPS', time: 'Instant' },
                   { method: 'Crypto', detail: 'USDT, BTC, ETH & more', time: 'Instant' },
                 ].map(m => (
-                  <div key={m.method} className="flex items-center justify-between rounded-xl bg-[#0C0E15] border border-[#1A1D27] px-4 py-3">
+                  <div key={m.method} className="flex items-center justify-between rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] px-4 py-3">
                     <div>
-                      <p className="text-sm font-bold text-white">{m.method}</p>
-                      <p className="text-[11px] text-[#848E9C]">{m.detail}</p>
+                      <p className="text-sm font-bold text-[#111827]">{m.method}</p>
+                      <p className="text-[11px] text-[#6B7280]">{m.detail}</p>
                     </div>
-                    <span className="text-xs font-bold text-[#00C274] bg-[#00C274]/10 px-2.5 py-1 rounded-full">{m.time}</span>
+                    <span className="text-xs font-bold text-[#1F77B4] bg-[#1F77B4]/10 px-2.5 py-1 rounded-full">{m.time}</span>
                   </div>
                 ))}
               </div>
@@ -522,12 +522,12 @@ export function Home() {
 
             {/* Withdrawal */}
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-              className="rounded-2xl border border-[#1A1D27] bg-[#060709] p-7">
+              className="rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-7">
               <div className="flex items-center gap-3 mb-6">
-                <div className="rounded-xl bg-[#00C274]/10 p-2.5 text-[#00C274]"><Clock className="h-6 w-6" /></div>
+                <div className="rounded-xl bg-[#1F77B4]/10 p-2.5 text-[#1F77B4]"><Clock className="h-6 w-6" /></div>
                 <div>
-                  <p className="font-bold text-white">Withdrawal Methods</p>
-                  <p className="text-xs text-[#00C274] font-semibold">🕐 Within 1 Hour</p>
+                  <p className="font-bold text-[#111827]">Withdrawal Methods</p>
+                  <p className="text-xs text-[#1F77B4] font-semibold">🕐 Within 1 Hour</p>
                 </div>
               </div>
               <div className="space-y-3">
@@ -536,12 +536,12 @@ export function Home() {
                   { method: 'UPI', detail: 'Instant UPI payout to your ID', time: '≤ 1 Hour' },
                   { method: 'Crypto', detail: 'USDT, BTC, ETH withdrawal', time: '≤ 1 Hour' },
                 ].map(m => (
-                  <div key={m.method} className="flex items-center justify-between rounded-xl bg-[#0C0E15] border border-[#1A1D27] px-4 py-3">
+                  <div key={m.method} className="flex items-center justify-between rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] px-4 py-3">
                     <div>
-                      <p className="text-sm font-bold text-white">{m.method}</p>
-                      <p className="text-[11px] text-[#848E9C]">{m.detail}</p>
+                      <p className="text-sm font-bold text-[#111827]">{m.method}</p>
+                      <p className="text-[11px] text-[#6B7280]">{m.detail}</p>
                     </div>
-                    <span className="text-xs font-bold text-[#00C274] bg-[#00C274]/10 px-2.5 py-1 rounded-full">{m.time}</span>
+                    <span className="text-xs font-bold text-[#1F77B4] bg-[#1F77B4]/10 px-2.5 py-1 rounded-full">{m.time}</span>
                   </div>
                 ))}
               </div>
@@ -549,23 +549,23 @@ export function Home() {
           </div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="rounded-2xl border border-[#00C274]/20 bg-[#00C274]/5 p-5 text-center">
-            <p className="text-sm text-[#848E9C]">
-              <span className="text-white font-semibold">Zero deposit fees</span> · <span className="text-white font-semibold">No hidden charges</span> · <span className="text-white font-semibold">Funds always in your control</span>
+            className="rounded-2xl border border-[#1F77B4]/20 bg-[#1F77B4]/5 p-5 text-center">
+            <p className="text-sm text-[#6B7280]">
+              <span className="font-semibold text-[#111827]">Zero deposit fees</span> · <span className="font-semibold text-[#111827]">No hidden charges</span> · <span className="font-semibold text-[#111827]">Funds always in your control</span>
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="bg-[#060709] py-20">
+      <section className="py-20" style={{ background: "#F7F9FC" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#111827] mb-3">
               What Our Traders Say
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#848E9C]">Real results from real clients.</motion.p>
+            <motion.p variants={fadeUp} className="text-[#6B7280]">Real results from real clients.</motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
@@ -576,19 +576,19 @@ export function Home() {
               { name: 'Amit Verma', city: 'Delhi', ret: '+29% in 3 months', text: 'Best decision tha jo maine ECMarket Pro join kiya. Transparent aur professional platform.', stars: 5 },
             ].map(r => (
               <motion.div key={r.name} variants={fadeUp}
-                className="rounded-2xl border border-[#1A1D27] bg-[#060709] p-6">
+                className="rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-6">
                 <div className="flex gap-0.5 mb-4">
                   {Array.from({ length: r.stars }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-[#00C274] text-[#00C274]" />
+                    <Star key={i} className="h-4 w-4 fill-[#1F77B4] text-[#1F77B4]" />
                   ))}
                 </div>
-                <p className="text-sm text-[#848E9C] mb-5 leading-relaxed">"{r.text}"</p>
+                <p className="text-sm text-[#6B7280] mb-5 leading-relaxed">"{r.text}"</p>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-bold text-white text-sm">{r.name}</p>
-                    <p className="text-[11px] text-[#848E9C]">{r.city}</p>
+                    <p className="font-bold text-[#111827] text-sm">{r.name}</p>
+                    <p className="text-[11px] text-[#6B7280]">{r.city}</p>
                   </div>
-                  <span className="rounded-full bg-[#00C274]/10 px-3 py-1 text-xs font-bold text-[#00C274]">{r.ret}</span>
+                  <span className="rounded-full bg-[#1F77B4]/10 px-3 py-1 text-xs font-bold text-[#1F77B4]">{r.ret}</span>
                 </div>
               </motion.div>
             ))}
@@ -597,11 +597,11 @@ export function Home() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="bg-[#060709] py-20">
+      <section className="py-20" style={{ background: "#F7F9FC" }}>
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-white mb-3">
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#111827] mb-3">
               Frequently Asked Questions
             </motion.h2>
           </motion.div>
@@ -611,14 +611,14 @@ export function Home() {
               <motion.div key={i}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ delay: i * 0.07 }}
-                className="rounded-xl border border-[#1A1D27] bg-[#0C0E15] overflow-hidden">
+                className="rounded-xl border border-[#E5E7EB] bg-[#FFFFFF] overflow-hidden">
                 <button
                   className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                  <span className="font-semibold text-white text-sm">{faq.q}</span>
+                  <span className="font-semibold text-[#111827] text-sm">{faq.q}</span>
                   {openFaq === i
-                    ? <ChevronUp className="h-4 w-4 text-[#00C274] shrink-0" />
-                    : <ChevronDown className="h-4 w-4 text-[#848E9C] shrink-0" />}
+                    ? <ChevronUp className="h-4 w-4 text-[#1F77B4] shrink-0" />
+                    : <ChevronDown className="h-4 w-4 text-[#6B7280] shrink-0" />}
                 </button>
                 <AnimatePresence initial={false}>
                   {openFaq === i && (
@@ -628,7 +628,7 @@ export function Home() {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}>
-                      <p className="px-5 pb-4 text-sm text-[#848E9C] leading-relaxed border-t border-[#1A1D27] pt-3">
+                      <p className="px-5 pb-4 text-sm text-[#6B7280] leading-relaxed border-t border-[#E5E7EB] pt-3">
                         {faq.a}
                       </p>
                     </motion.div>
@@ -641,13 +641,13 @@ export function Home() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="bg-[#0C0E15] border-t border-[#1A1D27] py-20">
+      <section className="bg-[#FFFFFF] border-t border-[#E5E7EB] py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-black text-white mb-4">
-              Ready to Let Your <span className="text-[#00C274]">Money Work</span> for You?
+            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-black text-[#111827] mb-4">
+              Ready to Let Your <span className="text-[#1F77B4]">Money Work</span> for You?
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#848E9C] mb-8 text-lg">
+            <motion.p variants={fadeUp} className="text-[#6B7280] mb-8 text-lg">
               Join 10 Lakh+ traders already growing with ECMarket Pro.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center">
@@ -657,12 +657,12 @@ export function Home() {
                 </a>
               </Link>
               <Link href="/markets">
-                <a className="flex items-center gap-2 px-8 py-4 text-base font-semibold text-white bg-[#181B23] hover:bg-[#1E222D] border border-[#2A2D3A] rounded-xl transition-colors">
+                <a className="flex items-center gap-2 px-8 py-4 text-base font-semibold text-[#374151] bg-[#F7F9FC] hover:bg-[#F0F0F0] border border-[#E5E7EB] rounded-xl transition-colors">
                   Explore Markets
                 </a>
               </Link>
             </motion.div>
-            <motion.p variants={fadeUp} className="mt-5 text-xs text-[#848E9C]">
+            <motion.p variants={fadeUp} className="mt-5 text-xs text-[#6B7280]">
               No lock-in period · Segregated client funds · 24/7 automated trading
             </motion.p>
           </motion.div>

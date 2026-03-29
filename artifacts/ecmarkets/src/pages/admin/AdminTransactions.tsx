@@ -16,10 +16,10 @@ type Tab = 'all' | 'deposits' | 'withdrawals';
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { icon: any; color: string }> = {
-    approved:  { icon: CheckCircle, color: '#02C076' },
-    pending:   { icon: Clock,       color: '#00C274' },
-    rejected:  { icon: XCircle,     color: '#CF304A' },
-    completed: { icon: CheckCircle, color: '#02C076' },
+    approved:  { icon: CheckCircle, color: '#16A34A' },
+    pending:   { icon: Clock,       color: '#1F77B4' },
+    rejected:  { icon: XCircle,     color: '#DC2626' },
+    completed: { icon: CheckCircle, color: '#16A34A' },
   };
   const s = map[status] || map.pending;
   return (
@@ -34,26 +34,26 @@ function StatusBadge({ status }: { status: string }) {
 function MethodBadge({ method, type }: { method: string; type: string }) {
   if (type === 'withdrawal') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#00C274]/20 text-[#00C274]">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#1F77B4]/20 text-[#1F77B4]">
         <Building2 className="w-3 h-3" /> USDT
       </span>
     );
   }
   if (method === 'upi') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#02C076]/20 text-[#02C076]">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#16A34A]/20 text-[#16A34A]">
         <Smartphone className="w-3 h-3" /> UPI
       </span>
     );
   }
   if (method === 'crypto_usdt') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#00C274]/20 text-[#00C274]">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-[#1F77B4]/20 text-[#1F77B4]">
         <Bitcoin className="w-3 h-3" /> USDT
       </span>
     );
   }
-  return <span className="text-xs text-[#848E9C] capitalize">{(method || '').replace('_', ' ')}</span>;
+  return <span className="text-xs text-[#6B7280] capitalize">{(method || '').replace('_', ' ')}</span>;
 }
 
 function fmtAmount(tx: any) {
@@ -112,20 +112,20 @@ function UsdtAddressCell({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="USDT TRC20 address..."
-          className="flex-1 px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-[#060709] border border-[#00C274]/40 outline-none focus:ring-1 focus:ring-[#00C274]/60"
+          className="flex-1 px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-[#FFFFFF] border border-[#1F77B4]/40 outline-none focus:ring-1 focus:ring-[#1F77B4]/60"
           autoFocus
         />
         <button
           onClick={() => { if (draft.trim().length >= 10) saveMutation.mutate(draft.trim()); }}
           disabled={saveMutation.isPending || draft.trim().length < 10}
-          className="p-1.5 rounded-lg bg-[#02C076]/20 text-[#02C076] hover:bg-[#02C076]/40 border border-[#02C076]/30 transition-colors disabled:opacity-50"
+          className="p-1.5 rounded-lg bg-[#16A34A]/20 text-[#16A34A] hover:bg-[#16A34A]/40 border border-[#16A34A]/30 transition-colors disabled:opacity-50"
           title="Save"
         >
           {saveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
         </button>
         <button
           onClick={() => { setEditing(false); setDraft(currentAddress || ''); }}
-          className="p-1.5 rounded-lg bg-[#CF304A]/20 text-[#CF304A] hover:bg-[#CF304A]/40 border border-[#CF304A]/30 transition-colors"
+          className="p-1.5 rounded-lg bg-[#DC2626]/20 text-[#DC2626] hover:bg-[#DC2626]/40 border border-[#DC2626]/30 transition-colors"
           title="Cancel"
         >
           <X className="w-3.5 h-3.5" />
@@ -138,11 +138,11 @@ function UsdtAddressCell({
     <div className="flex items-center gap-1.5 group">
       {currentAddress ? (
         <>
-          <code className="font-mono text-xs text-[#9CA3AF] bg-[#060709] border border-white/[0.06] px-2 py-1 rounded-lg break-all max-w-[200px]">
+          <code className="font-mono text-xs text-[#9CA3AF] bg-[#FFFFFF] border border-white/[0.06] px-2 py-1 rounded-lg break-all max-w-[200px]">
             {currentAddress}
           </code>
-          <button onClick={handleCopy} className="p-1 rounded text-[#4B5563] hover:text-[#00C274] transition-colors shrink-0" title="Copy">
-            {copied ? <CheckCircle className="w-3.5 h-3.5 text-[#00C274]" /> : <Copy className="w-3.5 h-3.5" />}
+          <button onClick={handleCopy} className="p-1 rounded text-[#4B5563] hover:text-[#1F77B4] transition-colors shrink-0" title="Copy">
+            {copied ? <CheckCircle className="w-3.5 h-3.5 text-[#1F77B4]" /> : <Copy className="w-3.5 h-3.5" />}
           </button>
         </>
       ) : (
@@ -209,7 +209,7 @@ export function AdminTransactions() {
     return (
       <AdminLayout>
         <div className="flex justify-center items-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-[#00C274]" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" />
         </div>
       </AdminLayout>
     );
@@ -218,27 +218,27 @@ export function AdminTransactions() {
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Transaction Approvals</h1>
-        <p className="text-[#848E9C] font-medium">Manually verify and approve client deposit &amp; withdrawal requests</p>
+        <h1 className="text-3xl font-bold text-[#111827] mb-2">Transaction Approvals</h1>
+        <p className="text-[#6B7280] font-medium">Manually verify and approve client deposit &amp; withdrawal requests</p>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Pending',     value: pending.length,                                      color: '#00C274' },
-          { label: 'Deposits',    value: deposits.length,                                     color: '#02C076' },
-          { label: 'Withdrawals', value: withdrawals.length,                                  color: '#848E9C' },
-          { label: 'Approved',    value: allTx.filter((t) => t.status === 'approved').length, color: '#02C076' },
+          { label: 'Pending',     value: pending.length,                                      color: '#1F77B4' },
+          { label: 'Deposits',    value: deposits.length,                                     color: '#16A34A' },
+          { label: 'Withdrawals', value: withdrawals.length,                                  color: '#6B7280' },
+          { label: 'Approved',    value: allTx.filter((t) => t.status === 'approved').length, color: '#16A34A' },
         ].map(({ label, value, color }) => (
           <div key={label} className="card-stealth p-4">
-            <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-1">{label}</p>
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-1">{label}</p>
             <p className="text-2xl font-black" style={{ color }}>{value}</p>
           </div>
         ))}
       </div>
 
       {/* Tab Nav */}
-      <div className="flex gap-1 mb-6 p-1 bg-[#1E2329] rounded-xl w-fit border border-[#181B23]">
+      <div className="flex gap-1 mb-6 p-1 bg-[#F7F9FC] rounded-xl w-fit border border-[#E5E7EB]">
         {([
           { key: 'all',         label: 'All Transactions', count: allTx.length },
           { key: 'deposits',    label: 'Deposits',          count: deposits.length },
@@ -248,11 +248,11 @@ export function AdminTransactions() {
             key={key}
             onClick={() => setTab(key)}
             className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2 ${
-              tab === key ? 'bg-[#00C274] text-black' : 'text-[#848E9C] hover:text-white'
+              tab === key ? 'bg-[#1F77B4] text-black' : 'text-[#6B7280] hover:text-white'
             }`}
           >
             {label}
-            <span className={`px-1.5 py-0.5 rounded text-xs ${tab === key ? 'bg-black/20 text-black' : 'bg-[#181B23] text-[#848E9C]'}`}>
+            <span className={`px-1.5 py-0.5 rounded text-xs ${tab === key ? 'bg-black/20 text-black' : 'bg-[#E5E7EB] text-[#6B7280]'}`}>
               {count}
             </span>
           </button>
@@ -262,42 +262,42 @@ export function AdminTransactions() {
       {/* Pending queue */}
       {displayedPending.length > 0 && (
         <div className="card-stealth overflow-hidden mb-8">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#181B23]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#00C274]/20 border border-[#00C274]/30 flex items-center justify-center">
-                <Clock className="w-4 h-4 text-[#00C274]" />
+              <div className="w-8 h-8 rounded-lg bg-[#1F77B4]/20 border border-[#1F77B4]/30 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-[#1F77B4]" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-white">Pending Verification Queue</h2>
-                <p className="text-xs text-[#848E9C]">Check your bank / wallet, then approve or reject</p>
+                <h2 className="text-base font-bold text-[#111827]">Pending Verification Queue</h2>
+                <p className="text-xs text-[#6B7280]">Check your bank / wallet, then approve or reject</p>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-full bg-[#00C274] text-black text-xs font-black">
+            <span className="px-3 py-1 rounded-full bg-[#1F77B4] text-black text-xs font-black">
               {displayedPending.length} pending
             </span>
           </div>
 
-          <div className="divide-y divide-[#181B23]">
+          <div className="divide-y divide-[#E5E7EB]">
             {displayedPending.map((tx: any) => (
-              <div key={tx.id} className="px-6 py-5 hover:bg-[#181B23]/30 transition-colors">
+              <div key={tx.id} className="px-6 py-5 hover:bg-[#E5E7EB]/30 transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4 min-w-0">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 border ${
                       tx.type === 'deposit'
-                        ? 'bg-[#02C076]/20 border-[#02C076]/30'
-                        : 'bg-[#00C274]/20 border-[#00C274]/30'
+                        ? 'bg-[#16A34A]/20 border-[#16A34A]/30'
+                        : 'bg-[#1F77B4]/20 border-[#1F77B4]/30'
                     }`}>
                       {tx.type === 'deposit'
-                        ? <ArrowDownLeft className="w-5 h-5 text-[#02C076]" />
-                        : <ArrowUpRight  className="w-5 h-5 text-[#00C274]" />}
+                        ? <ArrowDownLeft className="w-5 h-5 text-[#16A34A]" />
+                        : <ArrowUpRight  className="w-5 h-5 text-[#1F77B4]" />}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-bold text-white text-sm">{tx.userName}</p>
-                      <p className="text-xs text-[#848E9C] mb-2">{tx.userEmail}</p>
+                      <p className="font-bold text-[#111827] text-sm">{tx.userName}</p>
+                      <p className="text-xs text-[#6B7280] mb-2">{tx.userEmail}</p>
                       <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-lg font-black text-white">{fmtAmount(tx)}</span>
+                        <span className="text-lg font-black text-[#111827]">{fmtAmount(tx)}</span>
                         <span className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase ${
-                          tx.type === 'deposit' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#00C274]/20 text-[#00C274]'
+                          tx.type === 'deposit' ? 'bg-[#16A34A]/20 text-[#16A34A]' : 'bg-[#1F77B4]/20 text-[#1F77B4]'
                         }`}>
                           {tx.type}
                         </span>
@@ -306,24 +306,24 @@ export function AdminTransactions() {
 
                       {/* Deposit: UPI ID */}
                       {tx.type === 'deposit' && tx.transactionReference && (
-                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#060709] border border-[#181B23]">
-                          <Smartphone className="w-3.5 h-3.5 text-[#848E9C]" />
-                          <span className="text-xs text-[#848E9C] font-medium">UPI ID:</span>
-                          <span className="text-xs font-bold text-[#EAECEF] font-mono">{tx.transactionReference}</span>
+                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB]">
+                          <Smartphone className="w-3.5 h-3.5 text-[#6B7280]" />
+                          <span className="text-xs text-[#6B7280] font-medium">UPI ID:</span>
+                          <span className="text-xs font-bold text-[#374151] font-mono">{tx.transactionReference}</span>
                         </div>
                       )}
 
                       {/* Withdrawal: USDT Address (editable) */}
                       {tx.type === 'withdrawal' && (
                         <div className="mt-3 space-y-2">
-                          <div className="px-3 py-2.5 rounded-lg bg-[#060709] border border-[#181B23]">
-                            <p className="text-[10px] text-[#848E9C] font-medium mb-1.5">Client USDT TRC20 Address</p>
+                          <div className="px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB]">
+                            <p className="text-[10px] text-[#6B7280] font-medium mb-1.5">Client USDT TRC20 Address</p>
                             <UsdtAddressCell txId={tx.id} currentAddress={tx.usdtAddress} onSaved={refreshTx} />
                           </div>
                         </div>
                       )}
 
-                      <p className="text-xs text-[#848E9C] mt-2">{new Date(tx.createdAt).toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-[#6B7280] mt-2">{new Date(tx.createdAt).toLocaleString('en-IN')}</p>
                     </div>
                   </div>
 
@@ -332,7 +332,7 @@ export function AdminTransactions() {
                     <button
                       onClick={() => handleAction(tx.id, 'approved')}
                       disabled={processingId === tx.id}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#02C076]/20 text-[#02C076] hover:bg-[#02C076]/30 border border-[#02C076]/30 font-bold text-sm transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#16A34A]/20 text-[#16A34A] hover:bg-[#16A34A]/30 border border-[#16A34A]/30 font-bold text-sm transition-colors disabled:opacity-50"
                     >
                       {processingId === tx.id
                         ? <Loader2 className="w-4 h-4 animate-spin" />
@@ -342,7 +342,7 @@ export function AdminTransactions() {
                     <button
                       onClick={() => handleAction(tx.id, 'rejected')}
                       disabled={processingId === tx.id}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#CF304A]/20 text-[#CF304A] hover:bg-[#CF304A]/30 border border-[#CF304A]/30 font-bold text-sm transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#DC2626]/20 text-[#DC2626] hover:bg-[#DC2626]/30 border border-[#DC2626]/30 font-bold text-sm transition-colors disabled:opacity-50"
                     >
                       <X className="w-4 h-4" /> Reject
                     </button>
@@ -356,36 +356,36 @@ export function AdminTransactions() {
 
       {/* Full history table */}
       <div className="card-stealth overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#181B23]">
-          <h2 className="text-base font-bold text-white">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
+          <h2 className="text-base font-bold text-[#111827]">
             {tab === 'all' ? 'All Transaction History' : tab === 'deposits' ? 'Deposit History' : 'Withdrawal History'}
           </h2>
-          <span className="text-xs text-[#848E9C]">{displayed.length} total</span>
+          <span className="text-xs text-[#6B7280]">{displayed.length} total</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[#181B23]/60">
+            <thead className="bg-[#E5E7EB]/60">
               <tr>
                 {['User', 'Type', 'Amount', 'Method', 'USDT / Details', 'Date', 'Status', 'Actions'].map(h => (
-                  <th key={h} className="px-5 py-3.5 text-xs font-semibold text-[#848E9C] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-5 py-3.5 text-xs font-semibold text-[#6B7280] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#181B23]">
+            <tbody className="divide-y divide-[#E5E7EB]">
               {displayed.map((tx: any) => (
-                <tr key={tx.id} className="hover:bg-[#181B23]/40 transition-colors text-[#EAECEF]">
+                <tr key={tx.id} className="hover:bg-[#E5E7EB]/40 transition-colors text-[#374151]">
                   <td className="px-5 py-4">
-                    <p className="font-bold text-white text-sm whitespace-nowrap">{tx.userName}</p>
-                    <p className="text-xs text-[#848E9C]">{tx.userEmail}</p>
+                    <p className="font-bold text-[#111827] text-sm whitespace-nowrap">{tx.userName}</p>
+                    <p className="text-xs text-[#6B7280]">{tx.userEmail}</p>
                   </td>
                   <td className="px-5 py-4">
                     <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
-                      tx.type === 'deposit' ? 'bg-[#02C076]/20 text-[#02C076]' : 'bg-[#00C274]/20 text-[#00C274]'
+                      tx.type === 'deposit' ? 'bg-[#16A34A]/20 text-[#16A34A]' : 'bg-[#1F77B4]/20 text-[#1F77B4]'
                     }`}>
                       {tx.type}
                     </span>
                   </td>
-                  <td className="px-5 py-4 font-black text-white whitespace-nowrap">{fmtAmount(tx)}</td>
+                  <td className="px-5 py-4 font-black text-[#111827] whitespace-nowrap">{fmtAmount(tx)}</td>
                   <td className="px-5 py-4">
                     <MethodBadge method={tx.paymentMethod} type={tx.type} />
                   </td>
@@ -393,12 +393,12 @@ export function AdminTransactions() {
                     {tx.type === 'withdrawal' ? (
                       <UsdtAddressCell txId={tx.id} currentAddress={tx.usdtAddress} onSaved={refreshTx} />
                     ) : (
-                      <span className="font-mono text-xs text-[#848E9C]">
+                      <span className="font-mono text-xs text-[#6B7280]">
                         {tx.transactionReference || '—'}
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-4 text-xs text-[#848E9C] whitespace-nowrap">
+                  <td className="px-5 py-4 text-xs text-[#6B7280] whitespace-nowrap">
                     {new Date(tx.createdAt).toLocaleDateString('en-IN')}
                   </td>
                   <td className="px-5 py-4"><StatusBadge status={tx.status} /></td>
@@ -408,7 +408,7 @@ export function AdminTransactions() {
                         <button
                           onClick={() => handleAction(tx.id, 'approved')}
                           disabled={processingId === tx.id}
-                          className="p-1.5 rounded-lg bg-[#02C076]/20 text-[#02C076] hover:bg-[#02C076]/40 border border-[#02C076]/30 transition-colors disabled:opacity-50"
+                          className="p-1.5 rounded-lg bg-[#16A34A]/20 text-[#16A34A] hover:bg-[#16A34A]/40 border border-[#16A34A]/30 transition-colors disabled:opacity-50"
                         >
                           {processingId === tx.id
                             ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -417,7 +417,7 @@ export function AdminTransactions() {
                         <button
                           onClick={() => handleAction(tx.id, 'rejected')}
                           disabled={processingId === tx.id}
-                          className="p-1.5 rounded-lg bg-[#CF304A]/20 text-[#CF304A] hover:bg-[#CF304A]/40 border border-[#CF304A]/30 transition-colors disabled:opacity-50"
+                          className="p-1.5 rounded-lg bg-[#DC2626]/20 text-[#DC2626] hover:bg-[#DC2626]/40 border border-[#DC2626]/30 transition-colors disabled:opacity-50"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -428,7 +428,7 @@ export function AdminTransactions() {
               ))}
               {displayed.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-[#848E9C] font-medium">
+                  <td colSpan={8} className="px-6 py-12 text-center text-[#6B7280] font-medium">
                     No {tab === 'all' ? 'transactions' : tab} found
                   </td>
                 </tr>

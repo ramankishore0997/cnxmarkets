@@ -15,9 +15,9 @@ import {
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { icon: any; color: string }> = {
-    approved: { icon: CheckCircle, color: '#02C076' },
-    pending:  { icon: Clock,        color: '#00C274' },
-    rejected: { icon: XCircle,      color: '#CF304A' },
+    approved: { icon: CheckCircle, color: '#16A34A' },
+    pending:  { icon: Clock,        color: '#1F77B4' },
+    rejected: { icon: XCircle,      color: '#DC2626' },
   };
   const s = map[status] || map.pending;
   return (
@@ -47,7 +47,7 @@ function NoticeModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(10px)' }}>
       <div className="w-full max-w-md rounded-2xl overflow-hidden"
-        style={{ background: '#0C0E15', border: '1px solid rgba(255,165,0,0.2)', boxShadow: '0 0 60px rgba(255,140,0,0.08)' }}>
+        style={{ background: '#FFFFFF', border: '1px solid rgba(255,165,0,0.2)', boxShadow: '0 0 60px rgba(255,140,0,0.08)' }}>
 
         {/* Top accent */}
         <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
@@ -59,7 +59,7 @@ function NoticeModal({
               <AlertTriangle className="w-5 h-5 text-[#f59e0b]" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Bank Withdrawal Unavailable</h3>
+              <h3 className="text-base font-bold text-[#111827]">Bank Withdrawal Unavailable</h3>
               <p className="text-xs text-[#6B7280] mt-0.5">Temporarily suspended</p>
             </div>
           </div>
@@ -73,8 +73,8 @@ function NoticeModal({
           {/* Main message */}
           <div className="p-4 rounded-xl space-y-2"
             style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
-            <p className="text-[#F8FAFC] font-semibold text-sm leading-relaxed">
-              Currently, withdrawals are only available via <span className="text-[#00C274]">USDT TRC20 network</span>.
+            <p className="text-[#111827] font-semibold text-sm leading-relaxed">
+              Currently, withdrawals are only available via <span className="text-[#1F77B4]">USDT TRC20 network</span>.
             </p>
             <p className="text-[#9CA3AF] text-sm leading-relaxed">
               Bank transfers are temporarily unavailable. You can withdraw your funds by providing your USDT TRC20 wallet address.
@@ -83,11 +83,11 @@ function NoticeModal({
 
           {/* USDT badge */}
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
-            style={{ background: 'rgba(0,194,116,0.06)', border: '1px solid rgba(0,194,116,0.15)' }}>
-            <Wallet className="w-4 h-4 text-[#00C274] shrink-0" />
+            style={{ background: 'rgba(31,119,180,0.06)', border: '1px solid rgba(31,119,180,0.15)' }}>
+            <Wallet className="w-4 h-4 text-[#1F77B4] shrink-0" />
             <div>
-              <p className="text-xs font-bold text-[#00C274] uppercase tracking-wide">Available Method</p>
-              <p className="text-sm font-semibold text-white">USDT TRC20 Network</p>
+              <p className="text-xs font-bold text-[#1F77B4] uppercase tracking-wide">Available Method</p>
+              <p className="text-sm font-semibold text-[#111827]">USDT TRC20 Network</p>
             </div>
           </div>
         </div>
@@ -96,14 +96,14 @@ function NoticeModal({
         <div className="px-6 pb-6 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#6B7280] hover:text-white transition-colors"
+            className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#6B7280] hover:text-[#111827] transition-colors"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
             Close
           </button>
           <button
             onClick={onProceedUsdt}
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-black transition-all"
-            style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 4px 20px rgba(0,194,116,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, #1F77B4, #155D8B)', boxShadow: '0 4px 20px rgba(31,119,180,0.3)' }}>
             <Wallet className="w-4 h-4" />
             Withdraw via USDT
           </button>
@@ -145,17 +145,17 @@ function UsdtModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(10px)' }}>
       <div className="w-full max-w-lg rounded-2xl overflow-hidden"
-        style={{ background: '#0C0E15', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 0 60px rgba(0,194,116,0.12)' }}>
+        style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 0 60px rgba(31,119,180,0.12)' }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(0,194,116,0.15)', border: '1px solid rgba(0,194,116,0.25)' }}>
-              <Wallet className="w-5 h-5 text-[#00C274]" />
+              style={{ background: 'rgba(31,119,180,0.15)', border: '1px solid rgba(31,119,180,0.25)' }}>
+              <Wallet className="w-5 h-5 text-[#1F77B4]" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Withdrawal via USDT TRC20</h3>
+              <h3 className="text-base font-bold text-[#111827]">Withdrawal via USDT TRC20</h3>
               <p className="text-xs text-[#6B7280]">Enter your USDT wallet address</p>
             </div>
           </div>
@@ -168,9 +168,9 @@ function UsdtModal({
         <div className="px-6 py-5 space-y-5">
           {/* Amount row */}
           <div className="flex items-center justify-between px-4 py-3 rounded-xl"
-            style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
+            style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-sm text-[#6B7280] font-medium">Withdrawal Amount</span>
-            <span className="text-lg font-black text-[#00C274]">₹{amount.toLocaleString('en-IN')}</span>
+            <span className="text-lg font-black text-[#1F77B4]">₹{amount.toLocaleString('en-IN')}</span>
           </div>
 
           {/* Platform USDT Address */}
@@ -180,14 +180,14 @@ function UsdtModal({
                 Platform USDT TRC20 Address
               </label>
               <div className="flex items-center gap-2 p-3.5 rounded-xl"
-                style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <ShieldCheck className="w-4 h-4 text-[#00C274] shrink-0" />
+                style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <ShieldCheck className="w-4 h-4 text-[#1F77B4] shrink-0" />
                 <code className="font-mono text-xs text-[#9CA3AF] flex-1 break-all leading-relaxed">
                   {platformAddress}
                 </code>
                 <button onClick={handleCopy}
                   className="p-1.5 rounded-lg shrink-0 transition-all"
-                  style={{ color: copied ? '#00C274' : '#4B5563' }}>
+                  style={{ color: copied ? '#1F77B4' : '#4B5563' }}>
                   {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
@@ -198,17 +198,17 @@ function UsdtModal({
           {/* User USDT Address */}
           <div>
             <label className="block text-sm font-semibold text-[#9CA3AF] mb-2">
-              Your USDT TRC20 Address <span className="text-[#CF304A]">*</span>
+              Your USDT TRC20 Address <span className="text-[#DC2626]">*</span>
             </label>
             <textarea
               value={usdtAddr}
               onChange={(e) => setUsdtAddr(e.target.value)}
               placeholder="Enter your USDT TRC20 wallet address (starts with T...)"
               rows={2}
-              className="w-full px-4 py-3 rounded-xl text-sm font-mono resize-none outline-none focus:ring-1 focus:ring-[#00C274]/50 text-white placeholder-[#374151]"
-              style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.08)' }}
+              className="w-full px-4 py-3 rounded-xl text-sm font-mono resize-none outline-none focus:ring-1 focus:ring-[#1F77B4]/50 text-[#111827] placeholder-[#9CA3AF] bg-white border border-[#E5E7EB]"
+              style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.08)' }}
             />
-            <p className="text-[11px] text-[#CF304A]/80 mt-1.5">
+            <p className="text-[11px] text-[#DC2626]/80 mt-1.5">
               ⚠ Double-check your address — incorrect addresses result in permanent loss of funds.
             </p>
           </div>
@@ -225,7 +225,7 @@ function UsdtModal({
             onClick={() => { const a = usdtAddr.trim(); if (a.length >= 10) onConfirm(a); }}
             disabled={loading || usdtAddr.trim().length < 10}
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: 'linear-gradient(135deg, #00C274, #00A85E)', boxShadow: '0 4px 20px rgba(0,194,116,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, #1F77B4, #155D8B)', boxShadow: '0 4px 20px rgba(31,119,180,0.3)' }}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
             {loading ? 'Submitting...' : 'Confirm Withdrawal'}
           </button>
@@ -338,8 +338,8 @@ export function Withdraw() {
       />
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Withdraw Funds</h1>
-        <p className="text-[#848E9C] font-medium">Submit a bank transfer withdrawal request</p>
+        <h1 className="text-3xl font-bold text-[#111827] mb-2">Withdraw Funds</h1>
+        <p className="text-[#6B7280] font-medium">Submit a bank transfer withdrawal request</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
@@ -347,48 +347,48 @@ export function Withdraw() {
         <div className="lg:col-span-2 card-stealth p-8">
           {submitted ? (
             <div className="flex flex-col items-center justify-center py-14 text-center">
-              <div className="w-24 h-24 rounded-full bg-[#02C076]/20 border-2 border-[#02C076]/40 flex items-center justify-center mb-6">
-                <CheckCircle className="w-12 h-12 text-[#02C076]" />
+              <div className="w-24 h-24 rounded-full bg-[#16A34A]/20 border-2 border-[#16A34A]/40 flex items-center justify-center mb-6">
+                <CheckCircle className="w-12 h-12 text-[#16A34A]" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">Withdrawal Request Submitted!</h3>
-              <p className="text-[#848E9C] max-w-md leading-relaxed">
-                Your request is under manual verification. Once approved, the USDT will be sent to your wallet address within <span className="text-white font-semibold">24–48 hours</span>.
+              <h3 className="text-2xl font-bold text-[#111827] mb-3">Withdrawal Request Submitted!</h3>
+              <p className="text-[#6B7280] max-w-md leading-relaxed">
+                Your request is under manual verification. Once approved, the USDT will be sent to your wallet address within <span className="text-[#111827] font-semibold">24–48 hours</span>.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
-                className="mt-8 px-6 py-3 rounded-xl bg-[#1E2329] border border-[#181B23] text-[#848E9C] hover:text-white hover:border-[#00C274]/40 transition-colors text-sm font-semibold">
+                className="mt-8 px-6 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5E7EB] text-[#6B7280] hover:text-white hover:border-[#1F77B4]/40 transition-colors text-sm font-semibold">
                 Submit Another Request
               </button>
             </div>
           ) : (
             <>
-              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-[#00C274]" /> Bank Transfer Details
+              <h3 className="text-xl font-bold text-[#111827] mb-6 flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-[#1F77B4]" /> Bank Transfer Details
               </h3>
 
               <form onSubmit={form.handleSubmit(onBankSubmit)} className="space-y-5">
                 {/* Account Holder + Bank Name */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Account Holder Name</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">Account Holder Name</label>
                     <input
                       {...form.register('accountHolderName')}
                       placeholder="Full legal name"
                       className="input-stealth"
                     />
                     {form.formState.errors.accountHolderName && (
-                      <p className="text-xs text-[#CF304A]">{form.formState.errors.accountHolderName.message}</p>
+                      <p className="text-xs text-[#DC2626]">{form.formState.errors.accountHolderName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Bank Name</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">Bank Name</label>
                     <input
                       {...form.register('bankName')}
                       placeholder="e.g. HDFC Bank, SBI"
                       className="input-stealth"
                     />
                     {form.formState.errors.bankName && (
-                      <p className="text-xs text-[#CF304A]">{form.formState.errors.bankName.message}</p>
+                      <p className="text-xs text-[#DC2626]">{form.formState.errors.bankName.message}</p>
                     )}
                   </div>
                 </div>
@@ -396,7 +396,7 @@ export function Withdraw() {
                 {/* Account Number + IFSC */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Account Number</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">Account Number</label>
                     <input
                       {...form.register('accountNumber')}
                       type="number"
@@ -404,11 +404,11 @@ export function Withdraw() {
                       className="input-stealth"
                     />
                     {form.formState.errors.accountNumber && (
-                      <p className="text-xs text-[#CF304A]">{form.formState.errors.accountNumber.message}</p>
+                      <p className="text-xs text-[#DC2626]">{form.formState.errors.accountNumber.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">IFSC Code</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">IFSC Code</label>
                     <input
                       {...form.register('ifscCode')}
                       placeholder="e.g. HDFC0001234"
@@ -419,21 +419,21 @@ export function Withdraw() {
                       }}
                     />
                     {form.formState.errors.ifscCode && (
-                      <p className="text-xs text-[#CF304A]">{form.formState.errors.ifscCode.message}</p>
+                      <p className="text-xs text-[#DC2626]">{form.formState.errors.ifscCode.message}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Amount */}
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-[#848E9C] flex items-center justify-between">
+                  <label className="text-sm font-semibold text-[#6B7280] flex items-center justify-between">
                     <span>Withdrawal Amount (INR)</span>
-                    <span className="text-[#02C076] font-bold">
+                    <span className="text-[#16A34A] font-bold">
                       Live Balance: ₹{liveBalance.toLocaleString('en-IN')}
                     </span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#848E9C] font-semibold text-sm">₹</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7280] font-semibold text-sm">₹</span>
                     <input
                       {...form.register('amount')}
                       type="number"
@@ -445,9 +445,9 @@ export function Withdraw() {
                     />
                   </div>
                   {form.formState.errors.amount && (
-                    <p className="text-xs text-[#CF304A]">{form.formState.errors.amount.message}</p>
+                    <p className="text-xs text-[#DC2626]">{form.formState.errors.amount.message}</p>
                   )}
-                  <p className="text-xs text-[#848E9C]">Min: ₹1,000 &nbsp;•&nbsp; Max: ₹{liveBalance.toLocaleString('en-IN')} (your balance)</p>
+                  <p className="text-xs text-[#6B7280]">Min: ₹1,000 &nbsp;•&nbsp; Max: ₹{liveBalance.toLocaleString('en-IN')} (your balance)</p>
                 </div>
 
                 <button
@@ -458,7 +458,7 @@ export function Withdraw() {
                 </button>
 
                 {liveBalance < 1000 && (
-                  <p className="text-center text-xs text-[#CF304A] font-medium">
+                  <p className="text-center text-xs text-[#DC2626] font-medium">
                     Insufficient balance — minimum withdrawal is ₹1,000
                   </p>
                 )}
@@ -469,23 +469,23 @@ export function Withdraw() {
 
         {/* Info Panel */}
         <div className="space-y-5">
-          <div className="card-stealth p-6 border-l-4 border-l-[#02C076]">
+          <div className="card-stealth p-6 border-l-4 border-l-[#16A34A]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#02C076]/20 flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-[#02C076]" />
+              <div className="w-10 h-10 rounded-xl bg-[#16A34A]/20 flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-[#16A34A]" />
               </div>
-              <h3 className="font-bold text-white">Live Balance</h3>
+              <h3 className="font-bold text-[#111827]">Live Balance</h3>
             </div>
-            <p className="text-3xl font-black text-[#02C076]">₹{liveBalance.toLocaleString('en-IN')}</p>
-            <p className="text-xs text-[#848E9C] mt-1">Available to withdraw</p>
+            <p className="text-3xl font-black text-[#16A34A]">₹{liveBalance.toLocaleString('en-IN')}</p>
+            <p className="text-xs text-[#6B7280] mt-1">Available to withdraw</p>
           </div>
 
-          <div className="card-stealth p-6 border-l-4 border-l-[#00C274]">
+          <div className="card-stealth p-6 border-l-4 border-l-[#1F77B4]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#00C274]/20 flex items-center justify-center">
-                <Wallet className="w-5 h-5 text-[#00C274]" />
+              <div className="w-10 h-10 rounded-xl bg-[#1F77B4]/20 flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-[#1F77B4]" />
               </div>
-              <h3 className="font-bold text-white">Processing Info</h3>
+              <h3 className="font-bold text-[#111827]">Processing Info</h3>
             </div>
             <div className="space-y-2.5 text-sm">
               {[
@@ -495,8 +495,8 @@ export function Withdraw() {
                 { label: 'Method',          value: 'Bank Transfer' },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between">
-                  <span className="text-[#848E9C]">{label}</span>
-                  <span className="text-white font-semibold">{value}</span>
+                  <span className="text-[#6B7280]">{label}</span>
+                  <span className="text-[#111827] font-semibold">{value}</span>
                 </div>
               ))}
             </div>
@@ -504,10 +504,10 @@ export function Withdraw() {
 
           <div className="card-stealth p-6">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-[#00C274] shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-[#1F77B4] shrink-0 mt-0.5" />
               <div>
-                <p className="text-white font-bold text-sm mb-2">Important</p>
-                <ul className="text-[#848E9C] text-xs space-y-1.5 leading-relaxed">
+                <p className="text-[#111827] font-bold text-sm mb-2">Important</p>
+                <ul className="text-[#6B7280] text-xs space-y-1.5 leading-relaxed">
                   <li>• Withdrawals are processed to verified accounts only</li>
                   <li>• Ensure bank details are accurate — errors cause delays</li>
                   <li>• Requests require manual admin approval</li>
@@ -522,47 +522,47 @@ export function Withdraw() {
       {/* Withdrawal History */}
       <div className="card-stealth p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Hash className="w-4 h-4 text-[#00C274]" /> Withdrawal History
+          <h3 className="text-lg font-bold text-[#111827] flex items-center gap-2">
+            <Hash className="w-4 h-4 text-[#1F77B4]" /> Withdrawal History
           </h3>
-          <span className="text-[#848E9C] text-sm">{withdrawals.length} request{withdrawals.length !== 1 ? 's' : ''}</span>
+          <span className="text-[#6B7280] text-sm">{withdrawals.length} request{withdrawals.length !== 1 ? 's' : ''}</span>
         </div>
 
         {txLoading ? (
-          <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#00C274]" /></div>
+          <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-[#1F77B4]" /></div>
         ) : withdrawals.length === 0 ? (
           <div className="text-center py-12">
-            <ArrowUpRight className="w-12 h-12 text-[#181B23] mx-auto mb-4" />
-            <p className="text-[#848E9C] font-medium">No withdrawal requests yet</p>
+            <ArrowUpRight className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+            <p className="text-[#6B7280] font-medium">No withdrawal requests yet</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#181B23]">
+                <tr className="border-b border-[#E5E7EB]">
                   {['Date', 'Amount', 'USDT Address', 'Status'].map((h) => (
-                    <th key={h} className="pb-4 text-left text-[#848E9C] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
+                    <th key={h} className="pb-4 text-left text-[#6B7280] font-semibold text-xs uppercase tracking-wider pr-6">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#181B23]">
+              <tbody className="divide-y divide-[#E5E7EB]">
                 {withdrawals.map((tx: any) => (
-                  <tr key={tx.id} className="hover:bg-[#060709]/40 transition-colors">
-                    <td className="py-4 pr-6 text-[#848E9C] text-sm whitespace-nowrap">
+                  <tr key={tx.id} className="hover:bg-[#FFFFFF]/40 transition-colors">
+                    <td className="py-4 pr-6 text-[#6B7280] text-sm whitespace-nowrap">
                       {new Date(tx.createdAt).toLocaleDateString('en-IN')}
                     </td>
-                    <td className="py-4 pr-6 font-bold text-white whitespace-nowrap">
+                    <td className="py-4 pr-6 font-bold text-[#111827] whitespace-nowrap">
                       ₹{Number(tx.amount).toLocaleString('en-IN')}
                     </td>
                     <td className="py-4 pr-6 max-w-[240px]">
                       {tx.usdtAddress ? (
                         <div className="flex items-start gap-2">
-                          <code className="font-mono text-xs text-[#9CA3AF] bg-[#0C0E15] px-2 py-1.5 rounded-lg border border-white/[0.06] break-all leading-relaxed">
+                          <code className="font-mono text-xs text-[#9CA3AF] bg-[#FFFFFF] px-2 py-1.5 rounded-lg border border-white/[0.06] break-all leading-relaxed">
                             {tx.usdtAddress}
                           </code>
                           <button
                             onClick={() => navigator.clipboard.writeText(tx.usdtAddress)}
-                            className="text-[#4B5563] hover:text-[#00C274] transition-colors shrink-0 mt-1"
+                            className="text-[#4B5563] hover:text-[#1F77B4] transition-colors shrink-0 mt-1"
                             title="Copy full address">
                             <Copy className="w-3.5 h-3.5" />
                           </button>

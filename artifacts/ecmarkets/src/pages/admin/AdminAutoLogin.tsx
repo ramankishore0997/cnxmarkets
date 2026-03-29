@@ -68,35 +68,35 @@ export function AdminAutoLogin() {
             <>
               <div className="relative w-16 h-16 mx-auto mb-6">
                 <div className="absolute inset-0 border-4 border-white/[0.06] rounded-full" />
-                <div className="absolute inset-0 border-t-4 border-[#00C274] rounded-full animate-spin" />
+                <div className="absolute inset-0 border-t-4 border-[#1F77B4] rounded-full animate-spin" />
               </div>
               <h2 className="text-xl font-bold text-white mb-2">Authenticating…</h2>
-              <p className="text-[#848E9C] text-sm">Verifying your magic link, please wait.</p>
+              <p className="text-[#6B7280] text-sm">Verifying your magic link, please wait.</p>
             </>
           )}
 
           {status === 'success' && (
             <>
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#02C076]/20 border-2 border-[#02C076]/40 flex items-center justify-center">
-                <svg className="w-8 h-8 text-[#02C076]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#16A34A]/20 border-2 border-[#16A34A]/40 flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#16A34A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <h2 className="text-xl font-bold text-white mb-2">Access Granted</h2>
-              <p className="text-[#02C076] text-sm font-semibold">Redirecting to Admin Panel…</p>
+              <p className="text-[#16A34A] text-sm font-semibold">Redirecting to Admin Panel…</p>
             </>
           )}
 
           {status === 'error' && (
             <>
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#CF304A]/15 border-2 border-[#CF304A]/30 flex items-center justify-center">
-                <XCircle className="w-8 h-8 text-[#CF304A]" />
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#DC2626]/15 border-2 border-[#DC2626]/30 flex items-center justify-center">
+                <XCircle className="w-8 h-8 text-[#DC2626]" />
               </div>
               <h2 className="text-xl font-bold text-white mb-2">Access Denied</h2>
-              <p className="text-[#CF304A] text-sm font-semibold mb-6">{errorMsg}</p>
+              <p className="text-[#DC2626] text-sm font-semibold mb-6">{errorMsg}</p>
               <a
                 href="/auth/login"
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-[#848E9C] hover:text-white text-sm font-semibold transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-[#6B7280] hover:text-white text-sm font-semibold transition-colors"
               >
                 Go to Login
               </a>

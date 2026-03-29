@@ -9,34 +9,34 @@ export function Markets() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 bg-[#060709] border-b border-[#181B23]">
+      <div className="pt-24 pb-16 bg-[#FFFFFF] border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Trade <span className="text-gradient-gold">Global Markets</span></h1>
-          <p className="text-xl text-[#848E9C] max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-6">Trade <span className="text-gradient-gold">Global Markets</span></h1>
+          <p className="text-xl text-[#6B7280] max-w-2xl mx-auto">
             Our algorithms operate 24/5 across highly liquid forex pairs, precious metals, and global indices.
           </p>
         </div>
       </div>
 
       {/* QUICK STATS */}
-      <div className="border-b border-[#181B23] bg-[#1E2329]">
+      <div className="border-b border-[#E5E7EB] bg-[#F7F9FC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <p className="text-3xl font-bold text-[#00C274]">24/5</p>
-              <p className="text-sm font-semibold text-[#848E9C] uppercase tracking-wider">Trading Hours</p>
+              <p className="text-3xl font-bold text-[#1F77B4]">24/5</p>
+              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Trading Hours</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-[#00C274]">50+</p>
-              <p className="text-sm font-semibold text-[#848E9C] uppercase tracking-wider">Instruments</p>
+              <p className="text-3xl font-bold text-[#1F77B4]">50+</p>
+              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Instruments</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-[#00C274]">&lt;5ms</p>
-              <p className="text-sm font-semibold text-[#848E9C] uppercase tracking-wider">Execution Latency</p>
+              <p className="text-3xl font-bold text-[#1F77B4]">&lt;5ms</p>
+              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Execution Latency</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-[#00C274]">Tier 1</p>
-              <p className="text-sm font-semibold text-[#848E9C] uppercase tracking-wider">Liquidity</p>
+              <p className="text-3xl font-bold text-[#1F77B4]">Tier 1</p>
+              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Liquidity</p>
             </div>
           </div>
         </div>
@@ -47,27 +47,27 @@ export function Markets() {
         {/* TRADING SESSIONS */}
         <div className="mb-24">
           <div className="flex items-center gap-3 mb-8">
-            <Clock className="w-8 h-8 text-[#00C274]" />
-            <h2 className="text-3xl font-bold text-white">Global Trading Sessions</h2>
+            <Clock className="w-8 h-8 text-[#1F77B4]" />
+            <h2 className="text-3xl font-bold text-[#111827]">Global Trading Sessions</h2>
           </div>
-          <p className="text-[#848E9C] mb-8 max-w-3xl">
+          <p className="text-[#6B7280] mb-8 max-w-3xl">
             The forex market is open 24 hours a day, 5 days a week. Our algorithms are designed to exploit volatility across different geographic sessions, particularly during overlaps when liquidity is highest.
           </p>
           
           <div className="card-stealth p-8 overflow-x-auto">
             <div className="min-w-[800px]">
-              <div className="flex text-xs text-[#848E9C] font-bold mb-2">
+              <div className="flex text-xs text-[#6B7280] font-bold mb-2">
                 {[...Array(24)].map((_, i) => <div key={i} className="flex-1 text-center">{i}:00</div>)}
               </div>
               <div className="space-y-4">
-                <div className="relative h-10 bg-[#060709] rounded-lg flex items-center border border-[#181B23]">
-                  <div className="absolute left-[0%] w-[37.5%] h-full bg-[#1E2329] border border-[#181B23] rounded-lg flex items-center justify-center text-sm font-bold text-white">Sydney / Tokyo</div>
+                <div className="relative h-10 bg-[#FFFFFF] rounded-lg flex items-center border border-[#E5E7EB]">
+                  <div className="absolute left-[0%] w-[37.5%] h-full bg-[#F7F9FC] border border-[#E5E7EB] rounded-lg flex items-center justify-center text-sm font-bold text-[#111827]">Sydney / Tokyo</div>
                 </div>
-                <div className="relative h-10 bg-[#060709] rounded-lg flex items-center border border-[#181B23]">
-                  <div className="absolute left-[33.3%] w-[37.5%] h-full bg-[#02C076]/20 border border-[#02C076]/40 rounded-lg flex items-center justify-center text-sm font-bold text-[#02C076]">London (European)</div>
+                <div className="relative h-10 bg-[#FFFFFF] rounded-lg flex items-center border border-[#E5E7EB]">
+                  <div className="absolute left-[33.3%] w-[37.5%] h-full bg-[#16A34A]/20 border border-[#16A34A]/40 rounded-lg flex items-center justify-center text-sm font-bold text-[#16A34A]">London (European)</div>
                 </div>
-                <div className="relative h-10 bg-[#060709] rounded-lg flex items-center border border-[#181B23]">
-                  <div className="absolute left-[54%] w-[37.5%] h-full bg-[#00C274]/20 border border-[#00C274]/40 rounded-lg flex items-center justify-center text-sm font-bold text-[#00C274]">New York (American)</div>
+                <div className="relative h-10 bg-[#FFFFFF] rounded-lg flex items-center border border-[#E5E7EB]">
+                  <div className="absolute left-[54%] w-[37.5%] h-full bg-[#1F77B4]/20 border border-[#1F77B4]/40 rounded-lg flex items-center justify-center text-sm font-bold text-[#1F77B4]">New York (American)</div>
                 </div>
               </div>
             </div>
@@ -78,22 +78,22 @@ export function Markets() {
         <div className="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <Globe className="w-8 h-8 text-[#00C274]" />
-              <h2 className="text-3xl font-bold text-white">Forex Markets</h2>
+              <Globe className="w-8 h-8 text-[#1F77B4]" />
+              <h2 className="text-3xl font-bold text-[#111827]">Forex Markets</h2>
             </div>
-            <p className="text-[#848E9C] mb-6">
+            <p className="text-[#6B7280] mb-6">
               Forex is the most liquid financial market in the world. Our trend-following and mean-reversion algorithms primarily target major and minor pairs due to tight spreads and deep liquidity, allowing for scale without slippage.
             </p>
-            <div className="overflow-hidden rounded-xl border border-[#181B23]">
+            <div className="overflow-hidden rounded-xl border border-[#E5E7EB]">
               <table className="w-full text-sm text-left">
-                <thead className="bg-[#181B23] text-[#EAECEF] font-semibold">
+                <thead className="bg-[#E5E7EB] text-[#374151] font-semibold">
                   <tr>
                     <th className="px-4 py-3">Pair</th>
                     <th className="px-4 py-3">Type</th>
                     <th className="px-4 py-3">Typical Spread</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#181B23] bg-[#1E2329]">
+                <tbody className="divide-y divide-[#E5E7EB] bg-[#F7F9FC]">
                   {[
                     { pair: "EUR/USD", type: "Major", spread: "0.1 - 0.3 pips" },
                     { pair: "GBP/USD", type: "Major", spread: "0.4 - 0.8 pips" },
@@ -101,10 +101,10 @@ export function Markets() {
                     { pair: "AUD/USD", type: "Major", spread: "0.3 - 0.6 pips" },
                     { pair: "EUR/GBP", type: "Minor", spread: "0.6 - 1.2 pips" },
                   ].map(r => (
-                    <tr key={r.pair} className="hover:bg-[#181B23]/50">
-                      <td className="px-4 py-3 font-semibold text-white">{r.pair}</td>
-                      <td className="px-4 py-3 text-[#848E9C]">{r.type}</td>
-                      <td className="px-4 py-3 text-[#02C076]">{r.spread}</td>
+                    <tr key={r.pair} className="hover:bg-[#E5E7EB]/50">
+                      <td className="px-4 py-3 font-semibold text-[#111827]">{r.pair}</td>
+                      <td className="px-4 py-3 text-[#6B7280]">{r.type}</td>
+                      <td className="px-4 py-3 text-[#16A34A]">{r.spread}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -119,46 +119,46 @@ export function Markets() {
         {/* GOLD & INDICES */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Gold (XAUUSD)</h2>
-            <p className="text-[#848E9C] mb-6">
+            <h2 className="text-2xl font-bold text-[#111827] mb-4">Gold (XAUUSD)</h2>
+            <p className="text-[#6B7280] mb-6">
               Gold offers excellent volatility characteristics for breakout models. It acts as a safe haven during market stress, providing non-correlated returns to standard equity portfolios.
             </p>
             <div className="card-stealth p-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-[#181B23] pb-2">
-                <span className="text-[#848E9C] font-medium">Correlation</span>
-                <span className="font-bold text-white">Inverse to USD</span>
+              <div className="flex justify-between items-center border-b border-[#E5E7EB] pb-2">
+                <span className="text-[#6B7280] font-medium">Correlation</span>
+                <span className="font-bold text-[#111827]">Inverse to USD</span>
               </div>
-              <div className="flex justify-between items-center border-b border-[#181B23] pb-2">
-                <span className="text-[#848E9C] font-medium">Best Trading Time</span>
-                <span className="font-bold text-white">NY Session Open</span>
+              <div className="flex justify-between items-center border-b border-[#E5E7EB] pb-2">
+                <span className="text-[#6B7280] font-medium">Best Trading Time</span>
+                <span className="font-bold text-[#111827]">NY Session Open</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[#848E9C] font-medium">Volatility</span>
-                <span className="font-bold text-[#CF304A]">High</span>
+                <span className="text-[#6B7280] font-medium">Volatility</span>
+                <span className="font-bold text-[#DC2626]">High</span>
               </div>
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Global Indices</h2>
-            <p className="text-[#848E9C] mb-6">
+            <h2 className="text-2xl font-bold text-[#111827] mb-4">Global Indices</h2>
+            <p className="text-[#6B7280] mb-6">
               Our index algorithms trade momentum on major world markets, capturing broad economic trends without the stock-specific risk of individual equities.
             </p>
             <div className="grid grid-cols-2 gap-4">
               <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-white">US30 (Dow)</h4>
-                <p className="text-xs text-[#848E9C]">US Industrials</p>
+                <h4 className="font-bold text-[#111827]">US30 (Dow)</h4>
+                <p className="text-xs text-[#6B7280]">US Industrials</p>
               </div>
               <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-white">SPX500</h4>
-                <p className="text-xs text-[#848E9C]">US Broad Market</p>
+                <h4 className="font-bold text-[#111827]">SPX500</h4>
+                <p className="text-xs text-[#6B7280]">US Broad Market</p>
               </div>
               <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-white">GER40 (DAX)</h4>
-                <p className="text-xs text-[#848E9C]">European Economy</p>
+                <h4 className="font-bold text-[#111827]">GER40 (DAX)</h4>
+                <p className="text-xs text-[#6B7280]">European Economy</p>
               </div>
               <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-white">UK100 (FTSE)</h4>
-                <p className="text-xs text-[#848E9C]">British Market</p>
+                <h4 className="font-bold text-[#111827]">UK100 (FTSE)</h4>
+                <p className="text-xs text-[#6B7280]">British Market</p>
               </div>
             </div>
           </div>
@@ -166,21 +166,21 @@ export function Markets() {
 
         {/* DETAILED FOREX PAIRS */}
         <div className="mt-24">
-          <h2 className="text-2xl font-bold text-white mb-4">Complete Tradable Instruments</h2>
-          <p className="text-[#848E9C] mb-8">All instruments available on ECMarket Pro, organised by category and liquidity tier.</p>
+          <h2 className="text-2xl font-bold text-[#111827] mb-4">Complete Tradable Instruments</h2>
+          <p className="text-[#6B7280] mb-8">All instruments available on ECMarket Pro, organised by category and liquidity tier.</p>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div>
-              <h3 className="text-[#00C274] font-bold uppercase tracking-wider text-sm mb-4">Major Forex Pairs</h3>
+              <h3 className="text-[#1F77B4] font-bold uppercase tracking-wider text-sm mb-4">Major Forex Pairs</h3>
               <div className="card-stealth overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-[#181B23]">
+                  <thead className="bg-[#E5E7EB]">
                     <tr>
-                      <th className="px-4 py-2 text-left text-[#EAECEF] text-xs">Pair</th>
-                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Spread</th>
-                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Daily Vol</th>
+                      <th className="px-4 py-2 text-left text-[#374151] text-xs">Pair</th>
+                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Spread</th>
+                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Daily Vol</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#181B23]">
+                  <tbody className="divide-y divide-[#E5E7EB]">
                     {[
                       { pair:"EUR/USD", spread:"0.1", vol:"₹1.3T" },
                       { pair:"GBP/USD", spread:"0.4", vol:"₹800B" },
@@ -190,10 +190,10 @@ export function Markets() {
                       { pair:"USD/CHF", spread:"0.3", vol:"₹250B" },
                       { pair:"NZD/USD", spread:"0.5", vol:"₹180B" },
                     ].map(r => (
-                      <tr key={r.pair} className="hover:bg-[#181B23]/40">
-                        <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>
-                        <td className="px-4 py-2.5 text-right text-[#02C076] text-xs">{r.spread} pip</td>
-                        <td className="px-4 py-2.5 text-right text-[#848E9C] text-xs">{r.vol}</td>
+                      <tr key={r.pair} className="hover:bg-[#E5E7EB]/40">
+                        <td className="px-4 py-2.5 font-semibold text-[#111827] text-xs">{r.pair}</td>
+                        <td className="px-4 py-2.5 text-right text-[#16A34A] text-xs">{r.spread} pip</td>
+                        <td className="px-4 py-2.5 text-right text-[#6B7280] text-xs">{r.vol}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -201,17 +201,17 @@ export function Markets() {
               </div>
             </div>
             <div>
-              <h3 className="text-[#00C274] font-bold uppercase tracking-wider text-sm mb-4">Minor & Cross Pairs</h3>
+              <h3 className="text-[#1F77B4] font-bold uppercase tracking-wider text-sm mb-4">Minor & Cross Pairs</h3>
               <div className="card-stealth overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-[#181B23]">
+                  <thead className="bg-[#E5E7EB]">
                     <tr>
-                      <th className="px-4 py-2 text-left text-[#EAECEF] text-xs">Pair</th>
-                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Spread</th>
-                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Sessions</th>
+                      <th className="px-4 py-2 text-left text-[#374151] text-xs">Pair</th>
+                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Spread</th>
+                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Sessions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#181B23]">
+                  <tbody className="divide-y divide-[#E5E7EB]">
                     {[
                       { pair:"EUR/GBP", spread:"0.6", sessions:"EU" },
                       { pair:"EUR/JPY", spread:"0.7", sessions:"EU+NY" },
@@ -221,10 +221,10 @@ export function Markets() {
                       { pair:"GBP/CHF", spread:"1.2", sessions:"EU" },
                       { pair:"EUR/AUD", spread:"1.0", sessions:"All" },
                     ].map(r => (
-                      <tr key={r.pair} className="hover:bg-[#181B23]/40">
-                        <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>
-                        <td className="px-4 py-2.5 text-right text-[#02C076] text-xs">{r.spread} pip</td>
-                        <td className="px-4 py-2.5 text-right text-[#848E9C] text-xs">{r.sessions}</td>
+                      <tr key={r.pair} className="hover:bg-[#E5E7EB]/40">
+                        <td className="px-4 py-2.5 font-semibold text-[#111827] text-xs">{r.pair}</td>
+                        <td className="px-4 py-2.5 text-right text-[#16A34A] text-xs">{r.spread} pip</td>
+                        <td className="px-4 py-2.5 text-right text-[#6B7280] text-xs">{r.sessions}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -232,17 +232,17 @@ export function Markets() {
               </div>
             </div>
             <div>
-              <h3 className="text-[#00C274] font-bold uppercase tracking-wider text-sm mb-4">Metals & Indices</h3>
+              <h3 className="text-[#1F77B4] font-bold uppercase tracking-wider text-sm mb-4">Metals & Indices</h3>
               <div className="card-stealth overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-[#181B23]">
+                  <thead className="bg-[#E5E7EB]">
                     <tr>
-                      <th className="px-4 py-2 text-left text-[#EAECEF] text-xs">Instrument</th>
-                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Type</th>
-                      <th className="px-4 py-2 text-right text-[#EAECEF] text-xs">Vol</th>
+                      <th className="px-4 py-2 text-left text-[#374151] text-xs">Instrument</th>
+                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Type</th>
+                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Vol</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#181B23]">
+                  <tbody className="divide-y divide-[#E5E7EB]">
                     {[
                       { pair:"XAU/USD", type:"Metal", vol:"High" },
                       { pair:"XAG/USD", type:"Metal", vol:"Med" },
@@ -252,11 +252,11 @@ export function Markets() {
                       { pair:"GER40", type:"Index", vol:"Med" },
                       { pair:"UK100", type:"Index", vol:"Med" },
                     ].map(r => (
-                      <tr key={r.pair} className="hover:bg-[#181B23]/40">
-                        <td className="px-4 py-2.5 font-semibold text-white text-xs">{r.pair}</td>
-                        <td className="px-4 py-2.5 text-right text-[#848E9C] text-xs">{r.type}</td>
+                      <tr key={r.pair} className="hover:bg-[#E5E7EB]/40">
+                        <td className="px-4 py-2.5 font-semibold text-[#111827] text-xs">{r.pair}</td>
+                        <td className="px-4 py-2.5 text-right text-[#6B7280] text-xs">{r.type}</td>
                         <td className="px-4 py-2.5 text-right text-xs">
-                          <span className={r.vol==='High' ? 'text-[#CF304A] font-bold' : 'text-[#00C274] font-bold'}>{r.vol}</span>
+                          <span className={r.vol==='High' ? 'text-[#DC2626] font-bold' : 'text-[#1F77B4] font-bold'}>{r.vol}</span>
                         </td>
                       </tr>
                     ))}
@@ -272,8 +272,8 @@ export function Markets() {
           <div className="card-stealth-gold p-8">
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-white mb-4">🌐 Global Market Access via Algorithmic Infrastructure</h2>
-                <p className="text-[#848E9C] mb-4 leading-relaxed">
+                <h2 className="text-2xl font-bold text-[#111827] mb-4">🌐 Global Market Access via Algorithmic Infrastructure</h2>
+                <p className="text-[#6B7280] mb-4 leading-relaxed">
                   ECMarket Pro provides access to global financial markets through institutional-grade algorithmic trading infrastructure. Our platform connects to Tier-1 liquidity providers and global exchanges, delivering professional execution across forex, commodities, and indices.
                 </p>
                 <ul className="space-y-2 text-sm">
@@ -284,8 +284,8 @@ export function Markets() {
                     "Full trade transparency with detailed reporting tools",
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
-                      <span className="text-[#02C076]">✓</span>
-                      <span className="text-[#EAECEF]">{item}</span>
+                      <span className="text-[#16A34A]">✓</span>
+                      <span className="text-[#374151]">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -297,9 +297,9 @@ export function Markets() {
                   { label:"Min. Capital", val:"₹20,000" },
                   { label:"Reporting", val:"Full Trade History" },
                 ].map((s, i) => (
-                  <div key={i} className="bg-[#060709] rounded-lg p-3 flex justify-between border border-[#181B23]">
-                    <span className="text-[#848E9C] text-sm">{s.label}</span>
-                    <span className="text-[#00C274] font-bold text-sm">{s.val}</span>
+                  <div key={i} className="bg-[#FFFFFF] rounded-lg p-3 flex justify-between border border-[#E5E7EB]">
+                    <span className="text-[#6B7280] text-sm">{s.label}</span>
+                    <span className="text-[#1F77B4] font-bold text-sm">{s.val}</span>
                   </div>
                 ))}
               </div>
@@ -309,7 +309,7 @@ export function Markets() {
 
         {/* SESSION VOLATILITY GUIDE */}
         <div className="mt-24">
-          <h2 className="text-2xl font-bold text-white mb-8">Volatility & Session Guide for Algo Traders</h2>
+          <h2 className="text-2xl font-bold text-[#111827] mb-8">Volatility & Session Guide for Algo Traders</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { session:"Tokyo / Sydney", time:"12:00 AM – 8:00 AM IST", pairs:"JPY pairs, AUD, NZD", vol:"Low to Medium", tip:"Best for carry trade strategies. Calmer conditions with slow, directional moves." },
@@ -317,15 +317,15 @@ export function Markets() {
               { session:"New York (American)", time:"6:30 PM – 12:30 AM IST", pairs:"USD, Gold, Indices", vol:"Very High", tip:"US economic data releases create major opportunities for breakout and momentum strategies." },
             ].map((sess, i) => (
               <div key={i} className="card-stealth p-6">
-                <h3 className="font-bold text-[#00C274] mb-1">{sess.session}</h3>
-                <p className="text-[#848E9C] text-xs mb-3">{sess.time}</p>
-                <p className="text-white text-sm font-semibold mb-1">Active Pairs</p>
-                <p className="text-[#848E9C] text-sm mb-3">{sess.pairs}</p>
+                <h3 className="font-bold text-[#1F77B4] mb-1">{sess.session}</h3>
+                <p className="text-[#6B7280] text-xs mb-3">{sess.time}</p>
+                <p className="text-[#111827] text-sm font-semibold mb-1">Active Pairs</p>
+                <p className="text-[#6B7280] text-sm mb-3">{sess.pairs}</p>
                 <div className="flex items-center gap-2 mb-3">
-                  <Activity className="w-4 h-4 text-[#00C274]" />
-                  <span className="text-[#EAECEF] text-sm font-bold">{sess.vol}</span>
+                  <Activity className="w-4 h-4 text-[#1F77B4]" />
+                  <span className="text-[#374151] text-sm font-bold">{sess.vol}</span>
                 </div>
-                <p className="text-[#848E9C] text-xs border-t border-[#181B23] pt-3">{sess.tip}</p>
+                <p className="text-[#6B7280] text-xs border-t border-[#E5E7EB] pt-3">{sess.tip}</p>
               </div>
             ))}
           </div>
@@ -334,9 +334,9 @@ export function Markets() {
       </div>
 
       {/* CTA */}
-      <div className="py-16 bg-[#1E2329] border-t border-[#181B23] text-center">
-        <h2 className="text-2xl font-bold text-white mb-4">Access All 50+ Instruments</h2>
-        <p className="text-[#848E9C] mb-6">Activate any strategy and let our algorithms do the trading.</p>
+      <div className="py-16 bg-[#F7F9FC] border-t border-[#E5E7EB] text-center">
+        <h2 className="text-2xl font-bold text-[#111827] mb-4">Access All 50+ Instruments</h2>
+        <p className="text-[#6B7280] mb-6">Activate any strategy and let our algorithms do the trading.</p>
         <Link href="/auth/register" className="btn-green inline-block font-bold">Open Your Account</Link>
       </div>
 

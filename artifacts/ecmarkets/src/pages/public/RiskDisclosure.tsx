@@ -3,21 +3,21 @@ import { PublicLayout } from '@/components/layout/PublicLayout';
 export function RiskDisclosure() {
   return (
     <PublicLayout>
-      <div className="bg-[#060709] min-h-screen py-20">
+      <div className="bg-[#FFFFFF] min-h-screen py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
-            <p className="text-sm text-[#00C274] font-semibold uppercase tracking-widest mb-3">Legal</p>
+            <p className="text-sm text-[#1F77B4] font-semibold uppercase tracking-widest mb-3">Legal</p>
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Risk Disclosure Statement</h1>
-            <p className="text-[#848E9C]">Last updated: March 2026</p>
+            <p className="text-[#6B7280]">Last updated: March 2026</p>
           </div>
 
-          <div className="mb-10 p-6 rounded-2xl border border-[#CF304A]/30 bg-[#CF304A]/5">
-            <p className="text-[#CF304A] font-semibold text-sm leading-relaxed">
+          <div className="mb-10 p-6 rounded-2xl border border-[#DC2626]/30 bg-[#DC2626]/5">
+            <p className="text-[#DC2626] font-semibold text-sm leading-relaxed">
               <strong>Important Warning:</strong> Trading in financial markets involves substantial risk of loss and is not suitable for all investors. You should carefully consider your investment objectives, level of experience, and risk appetite before investing. The possibility exists that you could sustain a loss of some or all of your invested capital. Only trade with funds you can afford to lose.
             </p>
           </div>
 
-          <div className="space-y-10 text-[#848E9C] leading-relaxed">
+          <div className="space-y-10 text-[#6B7280] leading-relaxed">
 
             <Section title="1. General Risk Warning">
               Algorithmic trading and financial market investments carry a high level of risk. The value of your investments can go up as well as down, and you may receive back less than you originally invested. Past performance of any trading strategy, algorithm, or fund is not indicative of future results. ECMarket Pro does not guarantee any particular level of return.
@@ -71,7 +71,7 @@ export function RiskDisclosure() {
 
             <Section title="12. Contact and Complaints">
               If you have any concerns or questions regarding risk or your account, please contact our support team at{' '}
-              <a href="mailto:support@cnxmarkets.com" className="text-[#00C274] hover:underline">
+              <a href="mailto:support@cnxmarkets.com" className="text-[#1F77B4] hover:underline">
                 support@cnxmarkets.com
               </a>
               . We are committed to transparent communication and client protection.
@@ -86,9 +86,9 @@ export function RiskDisclosure() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-[#1A1D27] pt-8">
+    <div className="border-t border-[#E5E7EB] pt-8">
       <h2 className="text-xl font-bold text-white mb-4">{title}</h2>
-      <div className="text-[#848E9C] leading-relaxed">{children}</div>
+      <div className="text-[#6B7280] leading-relaxed">{children}</div>
     </div>
   );
 }

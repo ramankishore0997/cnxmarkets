@@ -109,7 +109,7 @@ export function AdminSettings() {
         <div className="flex justify-center items-center h-64">
           <div className="relative w-12 h-12">
             <div className="absolute inset-0 border-4 border-white/[0.06] rounded-full" />
-            <div className="absolute inset-0 border-t-4 border-[#00C274] rounded-full animate-spin" />
+            <div className="absolute inset-0 border-t-4 border-[#1F77B4] rounded-full animate-spin" />
           </div>
         </div>
       </AdminLayout>
@@ -119,8 +119,8 @@ export function AdminSettings() {
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Admin Settings</h1>
-        <p className="text-[#848E9C] font-medium">Platform configuration and security settings</p>
+        <h1 className="text-3xl font-bold text-[#111827] mb-2">Admin Settings</h1>
+        <p className="text-[#6B7280] font-medium">Platform configuration and security settings</p>
       </div>
 
       <div className="max-w-2xl space-y-6">
@@ -128,29 +128,29 @@ export function AdminSettings() {
         {/* ── Magic Link Card ──────────────────────── */}
         <div className="card-stealth overflow-hidden">
           {/* Gold header bar */}
-          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #00C274, #00C274, #c8960c)' }} />
+          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #1F77B4, #1F77B4, #c8960c)' }} />
 
           <div className="p-7">
             {/* Title row */}
             <div className="flex items-center gap-3 mb-6">
               <div className="w-11 h-11 rounded-xl icon-squircle-gold flex items-center justify-center shrink-0">
-                <Link2 className="w-5 h-5 text-[#00C274]" />
+                <Link2 className="w-5 h-5 text-[#1F77B4]" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white">Magic Login Link</h2>
-                <p className="text-[#848E9C] text-sm">One-click admin access — no password required</p>
+                <h2 className="text-lg font-bold text-[#111827]">Magic Login Link</h2>
+                <p className="text-[#6B7280] text-sm">One-click admin access — no password required</p>
               </div>
-              <span className="ml-auto px-2.5 py-1 rounded-lg bg-[#02C076]/15 text-[#02C076] text-xs font-bold border border-[#02C076]/25 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#02C076] animate-pulse inline-block" />
+              <span className="ml-auto px-2.5 py-1 rounded-lg bg-[#16A34A]/15 text-[#16A34A] text-xs font-bold border border-[#16A34A]/25 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse inline-block" />
                 Active
               </span>
             </div>
 
             {/* Info box */}
-            <div className="flex gap-3 p-4 rounded-xl bg-[#00C274]/06 border border-[#00C274]/18 mb-6">
-              <Info className="w-4 h-4 text-[#00C274] shrink-0 mt-0.5" />
-              <div className="text-sm text-[#848E9C] leading-relaxed space-y-1">
-                <p>This link logs you into the Admin Panel instantly without a password. Keep it <strong className="text-[#EAECEF]">strictly private</strong>.</p>
+            <div className="flex gap-3 p-4 rounded-xl bg-[#1F77B4]/06 border border-[#1F77B4]/18 mb-6">
+              <Info className="w-4 h-4 text-[#1F77B4] shrink-0 mt-0.5" />
+              <div className="text-sm text-[#6B7280] leading-relaxed space-y-1">
+                <p>This link logs you into the Admin Panel instantly without a password. Keep it <strong className="text-[#374151]">strictly private</strong>.</p>
                 <p>Visiting the link creates a new authenticated session and redirects to the dashboard.</p>
               </div>
             </div>
@@ -160,14 +160,14 @@ export function AdminSettings() {
               <label className="block text-xs font-bold text-[#4B5563] uppercase tracking-[0.1em] mb-2">
                 Your Magic Link
               </label>
-              <div className="flex items-center gap-2 p-3.5 rounded-xl bg-[#060709] border border-white/[0.07] group">
+              <div className="flex items-center gap-2 p-3.5 rounded-xl bg-[#FFFFFF] border border-white/[0.07] group">
                 <Lock className="w-4 h-4 text-[#374151] shrink-0" />
-                <code className="font-terminal text-xs text-[#848E9C] flex-1 truncate select-all leading-relaxed">
+                <code className="font-terminal text-xs text-[#6B7280] flex-1 truncate select-all leading-relaxed">
                   {revealed ? magicUrl : maskedUrl}
                 </code>
                 <button
                   onClick={() => setRevealed(v => !v)}
-                  className="p-1.5 rounded-lg text-[#4B5563] hover:text-[#00C274] hover:bg-[#00C274]/10 transition-all shrink-0"
+                  className="p-1.5 rounded-lg text-[#4B5563] hover:text-[#1F77B4] hover:bg-[#1F77B4]/10 transition-all shrink-0"
                   title={revealed ? 'Hide' : 'Reveal'}
                 >
                   {revealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -182,7 +182,7 @@ export function AdminSettings() {
                 disabled={!magicUrl}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   copied
-                    ? 'bg-[#02C076] text-black shadow-lg shadow-[#02C076]/20'
+                    ? 'bg-[#16A34A] text-black shadow-lg shadow-[#16A34A]/20'
                     : 'btn-gold'
                 }`}
               >
@@ -196,7 +196,7 @@ export function AdminSettings() {
                   href={magicUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#848E9C] hover:text-white hover:border-white/[0.15] font-semibold text-sm transition-all"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#6B7280] hover:text-white hover:border-white/[0.15] font-semibold text-sm transition-all"
                 >
                   <ExternalLink className="w-4 h-4" /> Test Link
                 </a>
@@ -207,49 +207,49 @@ export function AdminSettings() {
 
         {/* ── Rotate Token Card ────────────────────── */}
         <div className="card-stealth overflow-hidden">
-          <div className="h-1 w-full bg-[#CF304A]/60" />
+          <div className="h-1 w-full bg-[#DC2626]/60" />
 
           <div className="p-7">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-11 h-11 rounded-xl icon-squircle-red flex items-center justify-center shrink-0">
-                <RotateCcw className="w-5 h-5 text-[#CF304A]" />
+                <RotateCcw className="w-5 h-5 text-[#DC2626]" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white">Rotate Token</h2>
-                <p className="text-[#848E9C] text-sm">Invalidate current link and generate a new one</p>
+                <h2 className="text-lg font-bold text-[#111827]">Rotate Token</h2>
+                <p className="text-[#6B7280] text-sm">Invalidate current link and generate a new one</p>
               </div>
             </div>
 
-            <div className="flex gap-3 p-4 rounded-xl bg-[#CF304A]/06 border border-[#CF304A]/18 mb-6">
-              <AlertTriangle className="w-4 h-4 text-[#CF304A] shrink-0 mt-0.5" />
-              <p className="text-sm text-[#848E9C] leading-relaxed">
-                Rotating the token will <strong className="text-[#F8FAFC]">permanently invalidate</strong> the current magic link. You must copy the new link after rotating. Do this if you suspect the link has been compromised.
+            <div className="flex gap-3 p-4 rounded-xl bg-[#DC2626]/06 border border-[#DC2626]/18 mb-6">
+              <AlertTriangle className="w-4 h-4 text-[#DC2626] shrink-0 mt-0.5" />
+              <p className="text-sm text-[#6B7280] leading-relaxed">
+                Rotating the token will <strong className="text-[#111827]">permanently invalidate</strong> the current magic link. You must copy the new link after rotating. Do this if you suspect the link has been compromised.
               </p>
             </div>
 
             {!confirmRotate ? (
               <button
                 onClick={() => setConfirmRotate(true)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#CF304A]/15 text-[#CF304A] border border-[#CF304A]/25 font-bold text-sm hover:bg-[#CF304A]/25 transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#DC2626]/15 text-[#DC2626] border border-[#DC2626]/25 font-bold text-sm hover:bg-[#DC2626]/25 transition-all"
               >
                 <RefreshCw className="w-4 h-4" /> Rotate Token
               </button>
             ) : (
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-[#CF304A]/08 border border-[#CF304A]/30">
-                <p className="text-sm font-semibold text-[#F8FAFC] flex-1">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-[#DC2626]/08 border border-[#DC2626]/30">
+                <p className="text-sm font-semibold text-[#111827] flex-1">
                   Are you sure? The current link will stop working immediately.
                 </p>
                 <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => setConfirmRotate(false)}
-                    className="px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-[#848E9C] hover:text-white text-sm font-semibold transition-colors"
+                    className="px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-[#6B7280] hover:text-white text-sm font-semibold transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleRotate}
                     disabled={rotating}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CF304A] text-white font-bold text-sm hover:bg-[#e03455] transition-all disabled:opacity-60"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#DC2626] text-white font-bold text-sm hover:bg-[#e03455] transition-all disabled:opacity-60"
                   >
                     {rotating ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                     Yes, Rotate
@@ -262,15 +262,15 @@ export function AdminSettings() {
 
         {/* ── USDT TRC20 Address ───────────────────── */}
         <div className="card-stealth overflow-hidden">
-          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #00C274, #26a17b)' }} />
+          <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #1F77B4, #26a17b)' }} />
           <div className="p-7">
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(0,194,116,0.12)', border: '1px solid rgba(0,194,116,0.2)' }}>
-                <Wallet className="w-5 h-5 text-[#00C274]" />
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(31,119,180,0.12)', border: '1px solid rgba(31,119,180,0.2)' }}>
+                <Wallet className="w-5 h-5 text-[#1F77B4]" />
               </div>
               <div className="flex-1">
-                <h2 className="text-lg font-bold text-white">USDT TRC20 Withdrawal Address</h2>
-                <p className="text-[#848E9C] text-sm">Platform address shown to users during withdrawal</p>
+                <h2 className="text-lg font-bold text-[#111827]">USDT TRC20 Withdrawal Address</h2>
+                <p className="text-[#6B7280] text-sm">Platform address shown to users during withdrawal</p>
               </div>
             </div>
 
@@ -278,7 +278,7 @@ export function AdminSettings() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-[#4B5563] uppercase tracking-[0.1em] mb-2">Current Address</label>
-                  <div className="flex items-center gap-2 p-3.5 rounded-xl" style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="flex items-center gap-2 p-3.5 rounded-xl" style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <code className="font-mono text-xs text-[#9CA3AF] flex-1 break-all leading-relaxed">
                       {savedUsdtAddress || <span className="text-[#4B5563] italic">No address set yet</span>}
                     </code>
@@ -301,8 +301,8 @@ export function AdminSettings() {
                     onChange={(e) => setUsdtInput(e.target.value)}
                     placeholder="Enter USDT TRC20 wallet address (starts with T...)"
                     rows={2}
-                    className="w-full px-4 py-3 rounded-xl text-sm font-mono resize-none outline-none focus:ring-1 focus:ring-[#00C274]/50 text-white placeholder-[#374151]"
-                    style={{ background: '#060709', border: '1px solid rgba(255,255,255,0.08)' }}
+                    className="w-full px-4 py-3 rounded-xl text-sm font-mono resize-none outline-none focus:ring-1 focus:ring-[#1F77B4]/50 text-white placeholder-[#374151]"
+                    style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.08)' }}
                   />
                 </div>
                 <div className="flex gap-3">
@@ -333,7 +333,7 @@ export function AdminSettings() {
             <div className="w-10 h-10 rounded-xl bg-[#3b82f6]/15 border border-[#3b82f6]/25 flex items-center justify-center">
               <Shield className="w-5 h-5 text-[#3b82f6]" />
             </div>
-            <h3 className="font-bold text-white text-base">Security Notes</h3>
+            <h3 className="font-bold text-[#111827] text-base">Security Notes</h3>
           </div>
           <ul className="space-y-2.5">
             {[
@@ -343,8 +343,8 @@ export function AdminSettings() {
               'If you ever share your screen or suspect exposure, rotate the token immediately.',
               'Each token is unique per database — even the developer cannot guess it.',
             ].map((note, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-sm text-[#848E9C]">
-                <CheckCircle className="w-4 h-4 text-[#02C076] shrink-0 mt-0.5" />
+              <li key={i} className="flex items-start gap-2.5 text-sm text-[#6B7280]">
+                <CheckCircle className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
                 {note}
               </li>
             ))}

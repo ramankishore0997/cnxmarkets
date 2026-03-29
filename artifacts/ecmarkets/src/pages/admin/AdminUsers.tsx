@@ -15,7 +15,7 @@ const API_BASE = '';
 function DocThumb({ url, label }: { url: string | null | undefined; label: string }) {
   const [preview, setPreview] = useState(false);
   if (!url) return (
-    <div className="rounded-lg border border-dashed border-[#2A2D3A] bg-[#0d1117] flex flex-col items-center justify-center gap-1 p-2" style={{ minHeight: 64 }}>
+    <div className="rounded-lg border border-dashed border-[#E5E7EB] bg-[#F7F9FC] flex flex-col items-center justify-center gap-1 p-2" style={{ minHeight: 64 }}>
       <FileImage className="w-4 h-4 text-[#3D4450]" />
       <p className="text-[10px] text-[#3D4450]">{label}</p>
       <p className="text-[9px] text-[#3D4450]">Not uploaded</p>
@@ -27,8 +27,8 @@ function DocThumb({ url, label }: { url: string | null | undefined; label: strin
       {preview && (
         <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4" onClick={() => setPreview(false)}>
           <div className="relative max-w-xl w-full" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setPreview(false)} className="absolute -top-9 right-0 text-white hover:text-[#CF304A]"><X className="w-6 h-6" /></button>
-            <p className="text-xs text-[#848E9C] mb-2 text-center">{label}</p>
+            <button onClick={() => setPreview(false)} className="absolute -top-9 right-0 text-white hover:text-[#DC2626]"><X className="w-6 h-6" /></button>
+            <p className="text-xs text-[#6B7280] mb-2 text-center">{label}</p>
             <img src={fullUrl} alt={label} className="w-full rounded-xl shadow-2xl" />
           </div>
         </div>
@@ -36,14 +36,14 @@ function DocThumb({ url, label }: { url: string | null | undefined; label: strin
       <button
         type="button"
         onClick={() => setPreview(true)}
-        className="rounded-lg border border-[#1A1D27] bg-[#0d1117] hover:border-[#00C274]/40 transition-colors overflow-hidden group relative"
+        className="rounded-lg border border-[#E5E7EB] bg-[#F7F9FC] hover:border-[#1F77B4]/40 transition-colors overflow-hidden group relative"
         style={{ minHeight: 64 }}
       >
         <img src={fullUrl} alt={label} className="w-full h-full object-cover" style={{ maxHeight: 80 }} />
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <Eye className="w-4 h-4 text-white" />
         </div>
-        <p className="text-[9px] text-[#848E9C] text-center py-1 bg-[#0d1117]">{label}</p>
+        <p className="text-[9px] text-[#6B7280] text-center py-1 bg-[#F7F9FC]">{label}</p>
       </button>
     </>
   );
@@ -171,10 +171,10 @@ export function AdminUsers() {
   );
 
   const kycColor = (status: string) => {
-    if (status === 'approved') return { color: '#02C076', label: 'Verified' };
-    if (status === 'submitted') return { color: '#00C274', label: 'Pending' };
-    if (status === 'rejected') return { color: '#CF304A', label: 'Rejected' };
-    return { color: '#848E9C', label: 'Not Submitted' };
+    if (status === 'approved') return { color: '#16A34A', label: 'Verified' };
+    if (status === 'submitted') return { color: '#1F77B4', label: 'Pending' };
+    if (status === 'rejected') return { color: '#DC2626', label: 'Rejected' };
+    return { color: '#6B7280', label: 'Not Submitted' };
   };
 
   const getMonthlyCompound = (dailyPct: number) =>
@@ -182,7 +182,7 @@ export function AdminUsers() {
 
   if (isLoading) return (
     <AdminLayout>
-      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#00C274]" /></div>
+      <div className="flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#1F77B4]" /></div>
     </AdminLayout>
   );
 
@@ -190,11 +190,11 @@ export function AdminUsers() {
     <AdminLayout>
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">User Management</h1>
-          <p className="text-[#848E9C] font-medium">{allUsers.length} registered client{allUsers.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-3xl font-bold text-[#111827] mb-2">User Management</h1>
+          <p className="text-[#6B7280] font-medium">{allUsers.length} registered client{allUsers.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="relative">
-          <Search className="absolute left-4 top-3.5 w-4 h-4 text-[#848E9C]" />
+          <Search className="absolute left-4 top-3.5 w-4 h-4 text-[#6B7280]" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -206,14 +206,14 @@ export function AdminUsers() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Users',      value: allUsers.length,                                              color: '#00C274' },
-          { label: 'Active',           value: allUsers.filter((u: any) => u.isActive).length,               color: '#02C076' },
+          { label: 'Total Users',      value: allUsers.length,                                              color: '#1F77B4' },
+          { label: 'Active',           value: allUsers.filter((u: any) => u.isActive).length,               color: '#16A34A' },
           { label: 'KYC Verified',     value: allUsers.filter((u: any) => u.kycStatus === 'approved').length, color: '#2a6df4' },
-          { label: 'Growth Active',    value: allUsers.filter((u: any) => u.dailyGrowthTarget).length,       color: '#00C274' },
+          { label: 'Growth Active',    value: allUsers.filter((u: any) => u.dailyGrowthTarget).length,       color: '#1F77B4' },
         ].map((s, i) => (
           <div key={i} className="card-stealth p-5">
             <p className="text-2xl font-bold mb-1" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-[#848E9C] text-sm font-medium">{s.label}</p>
+            <p className="text-[#6B7280] text-sm font-medium">{s.label}</p>
           </div>
         ))}
       </div>
@@ -221,11 +221,11 @@ export function AdminUsers() {
       <div className="card-stealth overflow-hidden">
         {filtered.length === 0 ? (
           <div className="p-16 text-center">
-            <Users className="w-16 h-16 text-[#181B23] mx-auto mb-6" />
-            <p className="text-[#848E9C] font-medium">{search ? 'No users match your search.' : 'No users yet.'}</p>
+            <Users className="w-16 h-16 text-[#E5E7EB] mx-auto mb-6" />
+            <p className="text-[#6B7280] font-medium">{search ? 'No users match your search.' : 'No users yet.'}</p>
           </div>
         ) : (
-          <div className="divide-y divide-[#181B23]">
+          <div className="divide-y divide-[#E5E7EB]">
             {filtered.map((user: any) => {
               const kyc   = kycColor(user.kycStatus);
               const isExpanded = expandedId === user.id;
@@ -237,24 +237,24 @@ export function AdminUsers() {
               return (
                 <div key={user.id}>
                   <div
-                    className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-[#181B23]/40 transition-colors cursor-pointer"
+                    className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-[#E5E7EB]/40 transition-colors cursor-pointer"
                     onClick={() => toggleExpand(user)}
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-9 h-9 rounded-full bg-[#00C274] flex items-center justify-center font-bold text-black text-sm shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-[#1F77B4] flex items-center justify-center font-bold text-black text-sm shrink-0">
                         {user.firstName?.[0] || '?'}{user.lastName?.[0] || ''}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-white truncate">{user.firstName} {user.lastName}</p>
-                        <p className="text-xs text-[#848E9C] truncate">{user.email}</p>
+                        <p className="font-bold text-[#111827] truncate">{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-[#6B7280] truncate">{user.email}</p>
                       </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                       <div className="text-right min-w-[140px]">
-                        <p className="font-bold text-white text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
+                        <p className="font-bold text-[#111827] text-sm">₹{Number(user.totalBalance || 0).toLocaleString('en-IN')}</p>
                         {user.dailyGrowthTarget ? (
-                          <span className="flex items-center gap-1 text-xs text-[#00C274] justify-end">
+                          <span className="flex items-center gap-1 text-xs text-[#1F77B4] justify-end">
                             <TrendingUp className="w-3 h-3" />+{user.dailyGrowthTarget}%/day
                           </span>
                         ) : (
@@ -271,14 +271,14 @@ export function AdminUsers() {
                           onClick={() => toggleActive(user.id, user.isActive)}
                           disabled={processingId === user.id}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${user.isActive
-                            ? 'bg-[#CF304A]/10 text-[#CF304A] border-[#CF304A]/20 hover:bg-[#CF304A]/20'
-                            : 'bg-[#02C076]/10 text-[#02C076] border-[#02C076]/20 hover:bg-[#02C076]/20'
+                            ? 'bg-[#DC2626]/10 text-[#DC2626] border-[#DC2626]/20 hover:bg-[#DC2626]/20'
+                            : 'bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20 hover:bg-[#16A34A]/20'
                           }`}
                         >
                           {processingId === user.id ? <Loader2 className="w-3 h-3 animate-spin" /> : (user.isActive ? <ShieldOff className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />)}
                           {user.isActive ? 'Deactivate' : 'Activate'}
                         </button>
-                        <button className="p-1.5 rounded-lg hover:bg-[#181B23] text-[#848E9C] hover:text-white transition-colors">
+                        <button className="p-1.5 rounded-lg hover:bg-[#E5E7EB] text-[#6B7280] hover:text-white transition-colors">
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
                       </div>
@@ -286,15 +286,15 @@ export function AdminUsers() {
                   </div>
 
                   {isExpanded && (
-                    <div className="bg-[#060709] border-t border-[#181B23] px-6 py-5 space-y-6">
+                    <div className="bg-[#FFFFFF] border-t border-[#E5E7EB] px-6 py-5 space-y-6">
 
                       {/* ── Account Settings ── */}
                       <div>
-                        <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4">Account Settings</p>
+                        <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4">Account Settings</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
-                              <DollarSign className="w-4 h-4 text-[#00C274]" /> Account Balance (₹)
+                            <label className="text-sm font-semibold text-[#374151] flex items-center gap-2">
+                              <DollarSign className="w-4 h-4 text-[#1F77B4]" /> Account Balance (₹)
                             </label>
                             <input
                               type="number"
@@ -307,7 +307,7 @@ export function AdminUsers() {
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-sm font-semibold text-[#EAECEF] flex items-center gap-2">
+                            <label className="text-sm font-semibold text-[#374151] flex items-center gap-2">
                               <Target className="w-4 h-4 text-[#2a6df4]" /> Daily Growth Target (%)
                             </label>
                             <input
@@ -318,7 +318,7 @@ export function AdminUsers() {
                               className="input-stealth"
                               min="0" max="100" step="0.1"
                             />
-                            <p className="text-xs text-[#848E9C]">Actual daily return will vary ±1% around this target (e.g. 4% → 3–5%/day)</p>
+                            <p className="text-xs text-[#6B7280]">Actual daily return will vary ±1% around this target (e.g. 4% → 3–5%/day)</p>
                           </div>
                         </div>
 
@@ -326,7 +326,7 @@ export function AdminUsers() {
                           <button
                             onClick={() => saveAccountSettings(user)}
                             disabled={processingId === user.id}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00C274] text-black font-bold text-sm hover:bg-[#02C076] transition-all"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1F77B4] text-black font-bold text-sm hover:bg-[#16A34A] transition-all"
                           >
                             {processingId === user.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Save Changes
@@ -339,22 +339,22 @@ export function AdminUsers() {
                           const dailyAmt   = user.totalBalance * (dailyPct / 100);
                           const monthlyAmt = user.totalBalance * (monthlyPct / 100);
                           return (
-                            <div className="mt-4 p-4 rounded-xl border bg-[#00C274]/5 border-[#00C274]/20">
-                              <p className="text-xs font-bold uppercase tracking-wider mb-3 text-[#00C274]">
+                            <div className="mt-4 p-4 rounded-xl border bg-[#1F77B4]/5 border-[#1F77B4]/20">
+                              <p className="text-xs font-bold uppercase tracking-wider mb-3 text-[#1F77B4]">
                                 Projected Earnings ({dailyPct}%/day target)
                               </p>
                               <div className="grid grid-cols-3 gap-4 text-center">
                                 <div>
-                                  <p className="text-lg font-black text-white">+₹{Math.round(dailyAmt).toLocaleString('en-IN')}</p>
-                                  <p className="text-[10px] text-[#848E9C] font-medium">Daily</p>
+                                  <p className="text-lg font-black text-[#111827]">+₹{Math.round(dailyAmt).toLocaleString('en-IN')}</p>
+                                  <p className="text-[10px] text-[#6B7280] font-medium">Daily</p>
                                 </div>
                                 <div>
-                                  <p className="text-lg font-black text-[#00C274]">+₹{Math.round(monthlyAmt / 4).toLocaleString('en-IN')}</p>
-                                  <p className="text-[10px] text-[#848E9C] font-medium">Weekly (est.)</p>
+                                  <p className="text-lg font-black text-[#1F77B4]">+₹{Math.round(monthlyAmt / 4).toLocaleString('en-IN')}</p>
+                                  <p className="text-[10px] text-[#6B7280] font-medium">Weekly (est.)</p>
                                 </div>
                                 <div>
-                                  <p className="text-lg font-black text-[#02C076]">+₹{Math.round(monthlyAmt).toLocaleString('en-IN')}</p>
-                                  <p className="text-[10px] text-[#848E9C] font-medium">Monthly ({monthlyPct}%)</p>
+                                  <p className="text-lg font-black text-[#16A34A]">+₹{Math.round(monthlyAmt).toLocaleString('en-IN')}</p>
+                                  <p className="text-[10px] text-[#6B7280] font-medium">Monthly ({monthlyPct}%)</p>
                                 </div>
                               </div>
                             </div>
@@ -363,8 +363,8 @@ export function AdminUsers() {
                       </div>
 
                       {/* ── KYC Verification ── */}
-                      <div className="border-t border-[#181B23] pt-5">
-                        <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4 flex items-center gap-2">
+                      <div className="border-t border-[#E5E7EB] pt-5">
+                        <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4 flex items-center gap-2">
                           <ShieldCheck className="w-3.5 h-3.5" /> KYC Verification
                           <span className="ml-auto px-2 py-0.5 rounded-md text-[10px] font-bold" style={{ background: `${kycColor(user.kycStatus).color}20`, color: kycColor(user.kycStatus).color }}>
                             {kycColor(user.kycStatus).label}
@@ -374,17 +374,17 @@ export function AdminUsers() {
                         {userKycDoc && (
                           <div className="space-y-3 mb-3">
                             <div className="grid grid-cols-2 gap-3">
-                              <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
-                                <CreditCard className="w-3.5 h-3.5 text-[#00C274] shrink-0" />
+                              <div className="bg-[#F7F9FC] border border-[#E5E7EB] rounded-xl px-4 py-3 flex items-center gap-2">
+                                <CreditCard className="w-3.5 h-3.5 text-[#1F77B4] shrink-0" />
                                 <div>
-                                  <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">PAN</p>
-                                  <p className="text-white font-mono text-sm font-bold">{userKycDoc.panNumber || '—'}</p>
+                                  <p className="text-[10px] text-[#6B7280] font-semibold uppercase tracking-wider">PAN</p>
+                                  <p className="text-[#111827] font-mono text-sm font-bold">{userKycDoc.panNumber || '—'}</p>
                                 </div>
                               </div>
-                              <div className="bg-[#0d1117] border border-[#181B23] rounded-xl px-4 py-3 flex items-center gap-2">
+                              <div className="bg-[#F7F9FC] border border-[#E5E7EB] rounded-xl px-4 py-3 flex items-center gap-2">
                                 <Hash className="w-3.5 h-3.5 text-[#2a6df4] shrink-0" />
                                 <div>
-                                  <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider">Aadhaar</p>
+                                  <p className="text-[10px] text-[#6B7280] font-semibold uppercase tracking-wider">Aadhaar</p>
                                   <p className="text-white font-mono text-sm font-bold">
                                     {userKycDoc.aadharNumber ? `XXXX XXXX ${String(userKycDoc.aadharNumber).slice(-4)}` : '—'}
                                   </p>
@@ -392,7 +392,7 @@ export function AdminUsers() {
                               </div>
                             </div>
                             <div>
-                              <p className="text-[10px] text-[#848E9C] font-semibold uppercase tracking-wider mb-2">Document Photos (click to view)</p>
+                              <p className="text-[10px] text-[#6B7280] font-semibold uppercase tracking-wider mb-2">Document Photos (click to view)</p>
                               <div className="grid grid-cols-4 gap-2">
                                 <DocThumb url={userKycDoc.aadharCardFrontUrl} label="Aadhaar Front" />
                                 <DocThumb url={userKycDoc.aadharCardBackUrl}  label="Aadhaar Back"  />
@@ -405,7 +405,7 @@ export function AdminUsers() {
 
                         {!userKycDoc ? (
                           <div className="space-y-3">
-                            <p className="text-xs text-[#848E9C]">
+                            <p className="text-xs text-[#6B7280]">
                               {user.kycStatus === 'approved'
                                 ? 'KYC was manually approved — no details submitted.'
                                 : 'Client has not submitted KYC details yet.'}
@@ -413,14 +413,14 @@ export function AdminUsers() {
                             {user.kycStatus !== 'approved' ? (
                               <button
                                 onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'approved' } as any })}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#16A34A]/20 text-[#16A34A] border border-[#16A34A]/40 hover:bg-[#16A34A]/30 font-bold text-sm transition-all"
                               >
                                 <Check className="w-3.5 h-3.5" /> Manually Verify KYC
                               </button>
                             ) : (
                               <button
                                 onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'pending' } as any })}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#181B23] text-[#848E9C] hover:text-white font-bold text-sm transition-all"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E5E7EB] text-[#6B7280] hover:text-white font-bold text-sm transition-all"
                               >
                                 <X className="w-3.5 h-3.5" /> Reset to Pending
                               </button>
@@ -428,27 +428,27 @@ export function AdminUsers() {
                           </div>
                         ) : userKycDoc.status === 'approved' ? (
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-[#02C076]">
+                            <div className="flex items-center gap-2 text-[#16A34A]">
                               <ShieldCheck className="w-4 h-4" />
                               <span className="text-sm font-bold">KYC Verified</span>
                             </div>
                             <button
                               onClick={() => updateMutation.mutate({ id: user.id, data: { kycStatus: 'pending' } as any })}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#181B23] text-[#848E9C] hover:text-white text-xs font-bold transition-all"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E5E7EB] text-[#6B7280] hover:text-white text-xs font-bold transition-all"
                             >
                               <X className="w-3 h-3" /> Revoke
                             </button>
                           </div>
                         ) : userKycDoc.status === 'rejected' ? (
                           <div className="space-y-3">
-                            <p className="text-xs text-[#CF304A] font-medium">
+                            <p className="text-xs text-[#DC2626] font-medium">
                               Rejected: {userKycDoc.rejectionReason || 'No reason provided'}
                             </p>
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleKycApprove(userKycDoc)}
                                 disabled={kycProcessing === userKycDoc.id}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#16A34A]/20 text-[#16A34A] border border-[#16A34A]/40 hover:bg-[#16A34A]/30 font-bold text-sm transition-all"
                               >
                                 {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                                 Approve
@@ -457,13 +457,13 @@ export function AdminUsers() {
                           </div>
                         ) : (
                           <div className="space-y-3">
-                            <p className="text-xs text-[#848E9C]">KYC documents submitted. Review and approve or reject.</p>
+                            <p className="text-xs text-[#6B7280]">KYC documents submitted. Review and approve or reject.</p>
                             <div className="flex flex-col gap-2">
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => handleKycApprove(userKycDoc)}
                                   disabled={kycProcessing === userKycDoc.id}
-                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#02C076]/20 text-[#02C076] border border-[#02C076]/40 hover:bg-[#02C076]/30 font-bold text-sm transition-all"
+                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#16A34A]/20 text-[#16A34A] border border-[#16A34A]/40 hover:bg-[#16A34A]/30 font-bold text-sm transition-all"
                                 >
                                   {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                                   Approve KYC
@@ -479,7 +479,7 @@ export function AdminUsers() {
                                 <button
                                   onClick={() => handleKycReject(userKycDoc)}
                                   disabled={kycProcessing === userKycDoc.id}
-                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CF304A]/20 text-[#CF304A] border border-[#CF304A]/40 hover:bg-[#CF304A]/30 font-bold text-sm transition-all"
+                                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#DC2626]/20 text-[#DC2626] border border-[#DC2626]/40 hover:bg-[#DC2626]/30 font-bold text-sm transition-all"
                                 >
                                   {kycProcessing === userKycDoc.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
                                   Reject
@@ -491,8 +491,8 @@ export function AdminUsers() {
                       </div>
 
                       {/* ── Change Password ── */}
-                      <div className="border-t border-[#181B23] pt-5">
-                        <p className="text-xs font-semibold text-[#848E9C] uppercase tracking-wider mb-4 flex items-center gap-2">
+                      <div className="border-t border-[#E5E7EB] pt-5">
+                        <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4 flex items-center gap-2">
                           <KeyRound className="w-3.5 h-3.5" /> Change Password
                         </p>
                         <div className="flex gap-2 max-w-sm">
@@ -507,7 +507,7 @@ export function AdminUsers() {
                             <button
                               type="button"
                               onClick={() => setPwState(p => ({ ...p, [user.id]: { ...p[user.id], show: !p[user.id]?.show } }))}
-                              className="absolute right-3 top-3 text-[#848E9C] hover:text-white"
+                              className="absolute right-3 top-3 text-[#6B7280] hover:text-white"
                             >
                               {pwS.show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
@@ -515,7 +515,7 @@ export function AdminUsers() {
                           <button
                             onClick={() => handleChangePassword(user.id)}
                             disabled={pwS.loading}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#181B23] text-white hover:bg-[#1A1D27] font-bold text-sm transition-all border border-[#2d3340]"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E5E7EB] text-white hover:bg-[#E5E7EB] font-bold text-sm transition-all border border-[#2d3340]"
                           >
                             {pwS.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
                             Set

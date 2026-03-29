@@ -24,11 +24,11 @@ export function Contact() {
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 section-dark border-b border-[#181B23]">
+      <div className="pt-24 pb-16 section-dark border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Get in <span className="text-gradient-gold">Touch</span></h1>
-            <p className="text-xl text-[#848E9C]">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-6">Get in <span className="text-gradient-gold">Touch</span></h1>
+            <p className="text-xl text-[#6B7280]">
               Whether you have a question about features, pricing, or need technical support, our team is ready to answer all your questions.
             </p>
           </div>
@@ -37,12 +37,12 @@ export function Contact() {
             {/* Contact Info */}
             <div className="space-y-6">
               <div className="card-stealth p-6 flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-[#060709] border border-[#181B23] flex items-center justify-center shrink-0 group-hover:border-[#00C274] transition-colors">
-                  <MapPin className="w-6 h-6 text-[#00C274]" />
+                <div className="w-12 h-12 rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shrink-0 group-hover:border-[#1F77B4] transition-colors">
+                  <MapPin className="w-6 h-6 text-[#1F77B4]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-2">Corporate Headquarters</h3>
-                  <p className="text-[#848E9C] leading-relaxed">
+                  <h3 className="text-xl font-bold text-[#111827] mb-2">Corporate Headquarters</h3>
+                  <p className="text-[#6B7280] leading-relaxed">
                     2035 Sunset Lake Road, Suite B-2<br />
                     Newark, Delaware 19702<br />
                     United States
@@ -51,46 +51,46 @@ export function Contact() {
               </div>
 
               <div className="card-stealth p-6 flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-[#060709] border border-[#181B23] flex items-center justify-center shrink-0 group-hover:border-[#00C274] transition-colors">
-                  <Mail className="w-6 h-6 text-[#00C274]" />
+                <div className="w-12 h-12 rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shrink-0 group-hover:border-[#1F77B4] transition-colors">
+                  <Mail className="w-6 h-6 text-[#1F77B4]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-2">Email Support</h3>
-                  <p className="text-[#848E9C] text-sm mb-1">Support & inquiries:</p>
-                  <a href="mailto:support@cnxmarkets.com" className="text-white hover:text-[#00C274] transition-colors font-medium block mb-3">support@cnxmarkets.com</a>
+                  <h3 className="text-xl font-bold text-[#111827] mb-2">Email Support</h3>
+                  <p className="text-[#6B7280] text-sm mb-1">Support & inquiries:</p>
+                  <a href="mailto:support@cnxmarkets.com" className="text-[#1F77B4] hover:text-[#174A7C] transition-colors font-medium block mb-3">support@cnxmarkets.com</a>
                 </div>
               </div>
 
               <div className="card-stealth p-6 flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-[#060709] border border-[#181B23] flex items-center justify-center shrink-0 group-hover:border-[#00C274] transition-colors">
-                  <Phone className="w-6 h-6 text-[#00C274]" />
+                <div className="w-12 h-12 rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shrink-0 group-hover:border-[#1F77B4] transition-colors">
+                  <Phone className="w-6 h-6 text-[#1F77B4]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-2">Direct Line</h3>
-                  <a href="tel:+912212345678" className="text-2xl font-bold text-white hover:text-[#00C274] transition-colors block mb-2">+91 22 1234 5678</a>
+                  <h3 className="text-xl font-bold text-[#111827] mb-2">Direct Line</h3>
+                  <a href="tel:+912212345678" className="text-2xl font-bold text-[#111827] hover:text-[#1F77B4] transition-colors block mb-2">+91 22 1234 5678</a>
                 </div>
               </div>
               
               <div className="card-stealth p-6 flex items-start gap-6 group">
-                <div className="w-12 h-12 rounded-xl bg-[#060709] border border-[#181B23] flex items-center justify-center shrink-0 group-hover:border-[#00C274] transition-colors">
-                  <Clock className="w-6 h-6 text-[#00C274]" />
+                <div className="w-12 h-12 rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] flex items-center justify-center shrink-0 group-hover:border-[#1F77B4] transition-colors">
+                  <Clock className="w-6 h-6 text-[#1F77B4]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-2">Working Hours</h3>
-                  <p className="text-[#848E9C]">Mon-Fri: 9:00 AM - 6:00 PM IST</p>
-                  <p className="text-[#848E9C]">Sat-Sun: Closed</p>
+                  <h3 className="text-xl font-bold text-[#111827] mb-2">Working Hours</h3>
+                  <p className="text-[#6B7280]">Mon-Fri: 9:00 AM - 6:00 PM IST</p>
+                  <p className="text-[#6B7280]">Sat-Sun: Closed</p>
                 </div>
               </div>
             </div>
 
             {/* Contact Form */}
-            <div className="card-stealth p-8 md:p-10 relative overflow-hidden shadow-xl border-t-4 border-t-[#00C274]">
-              <h3 className="text-2xl font-bold text-white mb-8">Send a Message</h3>
+            <div className="card-stealth p-8 md:p-10 relative overflow-hidden shadow-xl border-t-4 border-t-[#1F77B4]">
+              <h3 className="text-2xl font-bold text-[#111827] mb-8">Send a Message</h3>
               
               <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">First Name</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">First Name</label>
                     <input 
                       required 
                       type="text" 
@@ -99,7 +99,7 @@ export function Contact() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Last Name</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">Last Name</label>
                     <input 
                       required 
                       type="text" 
@@ -111,7 +111,7 @@ export function Contact() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Email Address</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">Email Address</label>
                     <input 
                       required 
                       type="email" 
@@ -120,7 +120,7 @@ export function Contact() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#848E9C]">Phone Number</label>
+                    <label className="text-sm font-semibold text-[#6B7280]">Phone Number</label>
                     <input 
                       type="tel" 
                       className="input-stealth"
@@ -130,7 +130,7 @@ export function Contact() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-[#848E9C]">Subject</label>
+                  <label className="text-sm font-semibold text-[#6B7280]">Subject</label>
                   <select className="input-stealth appearance-none">
                     <option value="general">General Inquiry</option>
                     <option value="support">Technical Support</option>
@@ -140,7 +140,7 @@ export function Contact() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-[#848E9C]">Message</label>
+                  <label className="text-sm font-semibold text-[#6B7280]">Message</label>
                   <textarea 
                     required 
                     rows={5}

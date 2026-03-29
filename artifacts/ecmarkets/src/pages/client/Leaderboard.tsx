@@ -52,7 +52,7 @@ function PodiumCard({ t, rank }: { t: typeof TOP_TRADERS[0]; rank: number }) {
   const mc = MEDAL_COLOR[rank - 1];
   return (
     <div className="relative flex flex-col items-center gap-3 rounded-2xl p-5"
-      style={{ background: `linear-gradient(160deg,${mc}0E 0%,#0C0E1500 100%),#0C0E15`, border: `1px solid ${mc}35` }}>
+      style={{ background: `linear-gradient(160deg,${mc}0E 0%,#FFFFFF00 100%),#FFFFFF`, border: `1px solid ${mc}35` }}>
       {rank === 1 && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap"
           style={{ background: `linear-gradient(90deg,${mc},${mc}88)`, color: '#000' }}>
@@ -64,19 +64,19 @@ function PodiumCard({ t, rank }: { t: typeof TOP_TRADERS[0]; rank: number }) {
         {t.name.charAt(0)}
       </div>
       <div className="text-center">
-        <p className="font-bold text-[#F8FAFC] text-[13px]">{t.name}</p>
+        <p className="font-bold text-[#111827] text-[13px]">{t.name}</p>
         <p className="text-[10px] text-[#4B5563] mt-0.5">{t.location}</p>
       </div>
       <p className="font-terminal text-[20px] font-black" style={{ color: mc }}>{fmt(t.profit)}</p>
       <div className="flex gap-3">
         <div className="text-center">
           <p className="text-[10px] text-[#374151]">Win Rate</p>
-          <p className="text-[12px] font-bold text-[#00C274]">{t.winRate}%</p>
+          <p className="text-[12px] font-bold text-[#1F77B4]">{t.winRate}%</p>
         </div>
         <div className="w-px bg-white/[0.05]" />
         <div className="text-center">
           <p className="text-[10px] text-[#374151]">Trades</p>
-          <p className="text-[12px] font-bold text-[#F8FAFC]">{t.trades.toLocaleString()}</p>
+          <p className="text-[12px] font-bold text-[#111827]">{t.trades.toLocaleString()}</p>
         </div>
       </div>
     </div>
@@ -133,21 +133,21 @@ export function Leaderboard() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Trophy className="w-5 h-5 text-[#FFD700]" />
-              <h1 className="text-xl font-black text-[#F8FAFC]">Leaderboard</h1>
+              <h1 className="text-xl font-black text-[#111827]">Leaderboard</h1>
             </div>
             <p className="text-[12px] text-[#4B5563]">
-              <span className="text-[#00C274] font-bold">{TOTAL_TRADERS.toLocaleString()}</span> active traders on ECMarket Pro
+              <span className="text-[#1F77B4] font-bold">{TOTAL_TRADERS.toLocaleString()}</span> active traders on ECMarket Pro
             </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(0,194,116,0.08)', border: '1px solid rgba(0,194,116,0.2)' }}>
+              style={{ background: 'rgba(31,119,180,0.08)', border: '1px solid rgba(31,119,180,0.2)' }}>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C274] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00C274]" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1F77B4] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1F77B4]" />
               </span>
-              <span className="text-[11px] font-bold text-[#00C274]">LIVE</span>
+              <span className="text-[11px] font-bold text-[#1F77B4]">LIVE</span>
             </div>
             <span className="text-[11px] text-[#374151]">
               {lastUpdated === 0 ? 'just now' : `${lastUpdated}s ago`}
@@ -156,21 +156,21 @@ export function Leaderboard() {
         </div>
 
         {/* ── Your Position Card ── */}
-        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)', background: '#0C0E15' }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)', background: '#FFFFFF' }}>
           <div className="px-5 py-4 border-b flex items-center justify-between gap-4" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
-                style={{ background: 'linear-gradient(135deg,#00C274,#00A85E)', color: '#000' }}>
+                style={{ background: 'linear-gradient(135deg,#1F77B4,#155D8B)', color: '#000' }}>
                 {user?.firstName?.charAt(0) || 'U'}
               </div>
               <div>
-                <p className="text-[13px] font-bold text-[#F8FAFC]">{user?.firstName} {user?.lastName}</p>
+                <p className="text-[13px] font-bold text-[#111827]">{user?.firstName} {user?.lastName}</p>
                 <p className="text-[11px] text-[#4B5563]">Your current standing</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-[11px] text-[#4B5563] uppercase tracking-wider">Your Rank</p>
-              <p className="font-terminal text-2xl font-black text-[#F8FAFC]">#{USER_RANK.toLocaleString()}</p>
+              <p className="font-terminal text-2xl font-black text-[#111827]">#{USER_RANK.toLocaleString()}</p>
               <p className="text-[10px] text-[#4B5563]">of {TOTAL_TRADERS.toLocaleString()}</p>
             </div>
           </div>
@@ -178,11 +178,11 @@ export function Leaderboard() {
           <div className="px-5 py-4 grid grid-cols-3 gap-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
             <div>
               <p className="text-[10px] text-[#374151] uppercase tracking-wider mb-1">Your Profit</p>
-              <p className="font-terminal text-[15px] font-bold text-[#F8FAFC]">{fmt(userProfit)}</p>
+              <p className="font-terminal text-[15px] font-bold text-[#111827]">{fmt(userProfit)}</p>
             </div>
             <div>
               <p className="text-[10px] text-[#374151] uppercase tracking-wider mb-1">Percentile</p>
-              <p className="font-terminal text-[15px] font-bold text-[#F8FAFC]">Top {topPercent}%</p>
+              <p className="font-terminal text-[15px] font-bold text-[#111827]">Top {topPercent}%</p>
             </div>
             <div>
               <p className="text-[10px] text-[#374151] uppercase tracking-wider mb-1">To Top 100</p>
@@ -194,11 +194,11 @@ export function Leaderboard() {
           <div className="px-5 py-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] text-[#374151]">Your progress to Top 10%</span>
-              <span className="text-[10px] font-bold text-[#00C274]">{progressPct.toFixed(1)}%</span>
+              <span className="text-[10px] font-bold text-[#1F77B4]">{progressPct.toFixed(1)}%</span>
             </div>
             <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
               <div className="h-full rounded-full transition-all duration-700"
-                style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg,#00C274,#00A85E)' }} />
+                style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg,#1F77B4,#155D8B)' }} />
             </div>
             <div className="flex items-center justify-between mt-2">
               <span className="text-[10px] text-[#374151]">Rank #{TOTAL_TRADERS.toLocaleString()}</span>
@@ -209,17 +209,17 @@ export function Leaderboard() {
           {/* CTA */}
           <div className="px-5 pb-4">
             <div className="rounded-xl px-4 py-3 flex items-center justify-between gap-3"
-              style={{ background: 'rgba(0,194,116,0.06)', border: '1px solid rgba(0,194,116,0.15)' }}>
+              style={{ background: 'rgba(31,119,180,0.06)', border: '1px solid rgba(31,119,180,0.15)' }}>
               <div className="flex items-center gap-2">
-                <Flame className="w-4 h-4 text-[#00C274] shrink-0" />
+                <Flame className="w-4 h-4 text-[#1F77B4] shrink-0" />
                 <p className="text-[12px] text-[#9CA3AF]">
                   Deposit & grow your trading — top traders have earned up to
-                  <span className="text-[#00C274] font-bold"> ₹48.4Cr</span>
+                  <span className="text-[#1F77B4] font-bold"> ₹48.4Cr</span>
                 </p>
               </div>
               <Link href="/dashboard/deposit"
                 className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
-                style={{ background: 'linear-gradient(135deg,#00C274,#00A85E)', color: '#000' }}>
+                style={{ background: 'linear-gradient(135deg,#1F77B4,#155D8B)', color: '#000' }}>
                 <ArrowUp className="w-3 h-3" /> Deposit
               </Link>
             </div>
@@ -235,7 +235,7 @@ export function Leaderboard() {
         </div>
 
         {/* ── Rank 4–20 Table ── */}
-        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.05)', background: '#0C0E15' }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.05)', background: '#FFFFFF' }}>
           <div className="px-4 py-2.5 border-b grid grid-cols-12" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
             <span className="col-span-1 text-[10px] font-bold text-[#374151] uppercase tracking-wider">#</span>
             <span className="col-span-4 text-[10px] font-bold text-[#374151] uppercase tracking-wider">Trader</span>
@@ -246,7 +246,7 @@ export function Leaderboard() {
 
           {rest.map((t, i) => (
             <div key={t.id}
-              className={`grid grid-cols-12 px-4 py-3 items-center border-b transition-all duration-500 ${t.flash ? 'bg-[#00C274]/[0.05]' : 'hover:bg-white/[0.015]'}`}
+              className={`grid grid-cols-12 px-4 py-3 items-center border-b transition-all duration-500 ${t.flash ? 'bg-[#1F77B4]/[0.05]' : 'hover:bg-white/[0.015]'}`}
               style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
               <div className="col-span-1">
                 <span className="text-[12px] font-black text-[#374151]">{i + 4}</span>
@@ -257,15 +257,15 @@ export function Leaderboard() {
                   {t.name.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[12px] font-semibold text-[#D1D5DB] truncate leading-tight">{t.name}</p>
+                  <p className="text-[12px] font-semibold text-[#374151] truncate leading-tight">{t.name}</p>
                   <p className="text-[10px] text-[#374151] truncate">{t.location}</p>
                 </div>
               </div>
               <div className="col-span-2 text-right hidden sm:block">
-                <span className="text-[12px] font-bold text-[#00C274]">{t.winRate}%</span>
+                <span className="text-[12px] font-bold text-[#1F77B4]">{t.winRate}%</span>
               </div>
               <div className="col-span-3 text-right">
-                <p className={`font-terminal text-[13px] font-bold transition-colors duration-700 ${t.flash ? 'text-[#00C274]' : 'text-[#F8FAFC]'}`}>
+                <p className={`font-terminal text-[13px] font-bold transition-colors duration-700 ${t.flash ? 'text-[#1F77B4]' : 'text-[#111827]'}`}>
                   {fmt(t.profit)}
                 </p>
                 <p className="text-[10px] text-[#374151]">+{retPct(t.profit, t.trades)}%</p>
@@ -292,28 +292,28 @@ export function Leaderboard() {
           </div>
           {/* User row at 6841 */}
           <div className="grid grid-cols-12 px-4 py-3 items-center"
-            style={{ background: 'rgba(0,194,116,0.04)', borderTop: '1px solid rgba(0,194,116,0.12)', borderBottom: '1px solid rgba(0,194,116,0.12)' }}>
+            style={{ background: 'rgba(31,119,180,0.04)', borderTop: '1px solid rgba(31,119,180,0.12)', borderBottom: '1px solid rgba(31,119,180,0.12)' }}>
             <div className="col-span-1">
-              <span className="text-[12px] font-black text-[#00C274]">#{USER_RANK.toLocaleString()}</span>
+              <span className="text-[12px] font-black text-[#1F77B4]">#{USER_RANK.toLocaleString()}</span>
             </div>
             <div className="col-span-4 flex items-center gap-2 min-w-0">
               <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black text-black shrink-0"
-                style={{ background: 'linear-gradient(135deg,#00C274,#00A85E)' }}>
+                style={{ background: 'linear-gradient(135deg,#1F77B4,#155D8B)' }}>
                 {user?.firstName?.charAt(0) || 'U'}
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] font-bold text-[#00C274] truncate">
+                <p className="text-[12px] font-bold text-[#1F77B4] truncate">
                   {user?.firstName} {user?.lastName?.[0]}.
-                  <span className="ml-1 text-[9px] font-bold bg-[#00C274]/20 text-[#00C274] px-1.5 py-0.5 rounded-full align-middle">You</span>
+                  <span className="ml-1 text-[9px] font-bold bg-[#1F77B4]/20 text-[#1F77B4] px-1.5 py-0.5 rounded-full align-middle">You</span>
                 </p>
                 <p className="text-[10px] text-[#374151] truncate">New Trader</p>
               </div>
             </div>
             <div className="col-span-2 text-right hidden sm:block">
-              <span className="text-[12px] font-bold text-[#00C274]">—</span>
+              <span className="text-[12px] font-bold text-[#1F77B4]">—</span>
             </div>
             <div className="col-span-3 text-right">
-              <p className="font-terminal text-[13px] font-bold text-[#00C274]">{fmt(userProfit)}</p>
+              <p className="font-terminal text-[13px] font-bold text-[#1F77B4]">{fmt(userProfit)}</p>
               <p className="text-[10px] text-[#374151]">Getting started</p>
             </div>
             <div className="col-span-2 text-right">
@@ -333,9 +333,9 @@ export function Leaderboard() {
             { label: 'Total Volume',   value: '₹482Cr',   icon: Target },
           ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="rounded-xl px-4 py-3 flex flex-col items-center gap-1"
-              style={{ background: '#0C0E15', border: '1px solid rgba(255,255,255,0.05)' }}>
+              style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.05)' }}>
               <Icon className="w-4 h-4 text-[#374151]" />
-              <p className="font-terminal text-base font-black text-[#F8FAFC]">{value}</p>
+              <p className="font-terminal text-base font-black text-[#111827]">{value}</p>
               <p className="text-[10px] text-[#374151]">{label}</p>
             </div>
           ))}
