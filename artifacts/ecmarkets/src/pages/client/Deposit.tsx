@@ -304,19 +304,27 @@ export function Deposit() {
 
                   <div>
                     <label className="block text-sm font-semibold text-[#374151] mb-2">Amount (USDT) *</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-3.5 text-[#6B7280] font-bold text-xs">USDT</span>
+                    <div className="flex h-12 rounded-xl overflow-hidden border border-[#E5E7EB] bg-[#FFFFFF] focus-within:border-[#1F77B4]/60 transition-colors">
+                      <span className="flex items-center px-4 text-[#F0B90B] font-black text-sm bg-[#F0B90B]/10 border-r border-[#E5E7EB] select-none shrink-0">
+                        USDT
+                      </span>
                       <input
                         type="number"
                         value={usdtAmount}
                         onChange={e => { setUsdtAmount(e.target.value); setUsdtError(''); }}
-                        className="input-stealth pl-14 w-full"
+                        className="flex-1 bg-transparent text-[#111827] placeholder-[#9CA3AF] text-sm font-medium px-4 outline-none w-0 min-w-0"
                         placeholder="e.g. 500"
                         min={100}
                         step="0.01"
                       />
+                      <span className="flex items-center px-3 text-xs font-bold text-[#6B7280] bg-transparent select-none shrink-0">
+                        TRC20
+                      </span>
                     </div>
-                    <p className="text-xs text-[#6B7280] mt-1">Minimum: 100 USDT</p>
+                    <p className="text-xs text-[#6B7280] mt-1.5 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#F0B90B] inline-block" />
+                      Minimum: 100 USDT
+                    </p>
                   </div>
 
                   {usdtError && <p className="text-sm text-[#DC2626] font-medium">{usdtError}</p>}
