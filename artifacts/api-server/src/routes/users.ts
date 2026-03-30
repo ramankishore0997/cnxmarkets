@@ -32,11 +32,8 @@ function userPayload(user: typeof usersTable.$inferSelect) {
 /* ── multer for profile photo ─────────────────────── */
 const photoUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    if (allowed.includes(file.mimetype)) return cb(null, true);
-    cb(new Error("Only JPG, PNG, or WEBP images are allowed"));
+  fileFilter: (_req, _file, cb) => {
+    cb(null, true);
   },
 }).single("photo");
 

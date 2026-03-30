@@ -60,7 +60,6 @@ function FileUploadBox({ label, fieldKey, file, onSet, onPreview, required, atte
   const missing = !file && required && attempted;
 
   const handleFile = (f: File) => {
-    if (f.size > 10 * 1024 * 1024) { alert('File must be under 10 MB'); return; }
     onSet(fieldKey, f);
   };
 
@@ -81,42 +80,45 @@ function FileUploadBox({ label, fieldKey, file, onSet, onPreview, required, atte
           border: `2px dashed ${file ? '#16A34A' : missing ? '#DC2626' : '#D1D5DB'}`,
           background: file ? 'rgba(22,163,74,0.04)' : missing ? 'rgba(220,38,38,0.04)' : '#FAFAFA',
           minHeight: 88,
+          height: 88,
           cursor: file ? 'default' : 'pointer',
           transition: 'all 0.2s ease',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
+          boxSizing: 'border-box',
+          width: '100%',
         }}
       >
         {file ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', width: '100%' }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(22,163,74,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <FileImage size={16} style={{ color: '#16A34A' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 10px', width: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(22,163,74,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <FileImage size={14} style={{ color: '#16A34A' }} />
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#111827', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</p>
-              <p style={{ fontSize: 10, color: '#6B7280', margin: 0 }}>{(file.size / 1024).toFixed(0)} KB</p>
+            <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: '#111827', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{file.name}</p>
+              <p style={{ fontSize: 9, color: '#6B7280', margin: 0 }}>{file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${(file.size / 1024).toFixed(0)} KB`}</p>
             </div>
-            <div style={{ display: 'flex', gap: 4 }}>
+            <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
               <button type="button" onClick={e => { e.stopPropagation(); onPreview(URL.createObjectURL(file)); }}
-                style={{ width: 28, height: 28, borderRadius: 8, background: '#F3F4F6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <Eye size={13} style={{ color: '#6B7280' }} />
+                style={{ width: 26, height: 26, borderRadius: 7, background: '#F3F4F6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <Eye size={12} style={{ color: '#6B7280' }} />
               </button>
               <button type="button" onClick={e => { e.stopPropagation(); onSet(fieldKey, null); }}
-                style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(220,38,38,0.1)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <X size={13} style={{ color: '#DC2626' }} />
+                style={{ width: 26, height: 26, borderRadius: 7, background: 'rgba(220,38,38,0.1)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <X size={12} style={{ color: '#DC2626' }} />
               </button>
             </div>
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '14px 10px' }}>
-            <Upload size={18} style={{ color: missing ? '#DC2626' : '#9CA3AF', marginBottom: 4 }} />
+          <div style={{ textAlign: 'center', padding: '12px 8px' }}>
+            <Upload size={17} style={{ color: missing ? '#DC2626' : '#9CA3AF', marginBottom: 3 }} />
             <p style={{ fontSize: 11, color: missing ? '#DC2626' : '#6B7280', margin: 0, fontWeight: 600 }}>Click or drag</p>
-            <p style={{ fontSize: 9, color: '#9CA3AF', margin: 0 }}>JPG · PNG · Max 10MB</p>
+            <p style={{ fontSize: 9, color: '#9CA3AF', margin: 0 }}>JPG · PNG · WEBP · PDF</p>
           </div>
         )}
-        <input ref={inputRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp"
+        <input ref={inputRef} type="file" accept="image/*,.pdf"
           style={{ display: 'none' }}
           onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
       </div>
