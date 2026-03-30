@@ -1,13 +1,13 @@
 {
-  "name": "CNXMarkets",
-  "short_name": "CNXMarkets",
-  "description": "Algorithmic Trading Platform — Forex, Crypto & Binary",
+  "name": "ECMarket Pro",
+  "short_name": "ECMarket",
+  "description": "UAE-Regulated Forex Broker — Forex, Crypto & CFDs Trading Platform",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#060709",
-  "background_color": "#060709",
+  "theme_color": "#0B1929",
+  "background_color": "#0B1929",
   "categories": ["finance", "business"],
   "icons": [
     {
@@ -19,14 +19,14 @@
   ],
   "shortcuts": [
     {
-      "name": "Binary Trading",
-      "url": "/dashboard/binary",
-      "description": "Live Binary Trading Terminal"
-    },
-    {
       "name": "Dashboard",
       "url": "/dashboard",
-      "description": "Portfolio Overview"
+      "description": "Trading Dashboard"
+    },
+    {
+      "name": "Markets",
+      "url": "/markets",
+      "description": "Live Markets"
     }
   ]
 }

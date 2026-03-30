@@ -1,62 +1,23 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#00E68A"/>
-      <stop offset="100%" stop-color="#00C274"/>
-    </linearGradient>
-    <linearGradient id="barGradDim" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#00C274" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#009A5C" stop-opacity="0.7"/>
-    </linearGradient>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
+  <!-- Navy rounded square background -->
+  <rect width="180" height="180" rx="40" fill="#0B1929"/>
 
-  <!-- Background -->
-  <rect width="180" height="180" rx="40" fill="#050810"/>
-  <!-- Border -->
-  <rect x="2.5" y="2.5" width="175" height="175" rx="37.5"
-    stroke="#00C274" stroke-width="4" stroke-opacity="0.4"/>
+  <!-- Rising bar 1 (left, shortest) -->
+  <rect x="28" y="116" width="28" height="36" rx="7" fill="#FFFFFF"/>
 
-  <!-- Candle 1: left, shorter -->
-  <!-- top wick -->
-  <line x1="46" y1="62" x2="46" y2="74" stroke="#00C274" stroke-width="5.5"
-    stroke-linecap="round" stroke-opacity="0.7"/>
-  <!-- body -->
-  <rect x="33" y="74" width="26" height="44" rx="6" fill="url(#barGradDim)"/>
-  <!-- bottom wick -->
-  <line x1="46" y1="118" x2="46" y2="132" stroke="#00C274" stroke-width="5.5"
-    stroke-linecap="round" stroke-opacity="0.7"/>
+  <!-- Rising bar 2 (center, medium) -->
+  <rect x="76" y="88" width="28" height="64" rx="7" fill="#FFFFFF"/>
 
-  <!-- Candle 2: centre, medium -->
-  <!-- top wick -->
-  <line x1="90" y1="42" x2="90" y2="55" stroke="#00C274" stroke-width="5.5"
-    stroke-linecap="round"/>
-  <!-- body -->
-  <rect x="77" y="55" width="26" height="58" rx="6" fill="url(#barGrad)"/>
-  <!-- bottom wick -->
-  <line x1="90" y1="113" x2="90" y2="128" stroke="#00C274" stroke-width="5.5"
-    stroke-linecap="round"/>
+  <!-- Rising bar 3 (right, tallest) -->
+  <rect x="124" y="56" width="28" height="96" rx="7" fill="#FFFFFF"/>
 
-  <!-- Candle 3: right, tallest -->
-  <!-- top wick -->
-  <line x1="134" y1="20" x2="134" y2="32" stroke="#00C274" stroke-width="5.5"
-    stroke-linecap="round"/>
-  <!-- body -->
-  <rect x="121" y="32" width="26" height="70" rx="6" fill="url(#barGrad)" filter="url(#glow)"/>
-  <!-- bottom wick -->
-  <line x1="134" y1="102" x2="134" y2="118" stroke="#00C274" stroke-width="5.5"
-    stroke-linecap="round"/>
+  <!-- Blue trend line connecting bar tops -->
+  <polyline
+    points="42,116 90,88 138,56"
+    stroke="#1F77B4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"
+    fill="none"/>
 
-  <!-- Rising trend line -->
-  <polyline points="46,89 90,76 134,61"
-    stroke="#00E68A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"
-    stroke-opacity="0.55"/>
-
-  <!-- Trend dots -->
-  <circle cx="46" cy="89" r="6" fill="#00C274" fill-opacity="0.6"/>
-  <circle cx="90" cy="76" r="6" fill="#00C274" fill-opacity="0.8"/>
-  <circle cx="134" cy="61" r="7" fill="#00E68A" filter="url(#glow)"/>
+  <!-- Live dot at rightmost bar top -->
+  <circle cx="138" cy="56" r="11" fill="#1F77B4"/>
+  <circle cx="138" cy="56" r="5" fill="#FFFFFF"/>
 </svg>
