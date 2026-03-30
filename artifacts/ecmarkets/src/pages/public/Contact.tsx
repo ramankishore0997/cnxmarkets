@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { PublicLayout } from '@/components/layout/PublicLayout';
-import { Mail, MapPin, Phone, Send, Clock, ChevronDown, ArrowRight } from 'lucide-react';
+import { Mail, MapPin, Send, Clock, ChevronDown, ArrowRight } from 'lucide-react';
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55 } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.09 } } };
 
 export function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'Account Opening', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', subject: 'Account Opening', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -91,7 +91,6 @@ export function Contact() {
                 {[
                   { icon: <Clock size={18}/>, color: '#1F77B4', title: 'Response Time', val: '< 10 minutes (24/7)' },
                   { icon: <Mail size={18}/>, color: '#16A34A', title: 'Email', val: 'support@ecmarketpro.in' },
-                  { icon: <Phone size={18}/>, color: '#7C3AED', title: 'Phone', val: '+91 98765 43210' },
                   { icon: <MapPin size={18}/>, color: '#F7931A', title: 'Headquarters', val: 'Dubai, UAE' },
                 ].map((c, i) => (
                   <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
@@ -140,11 +139,6 @@ export function Contact() {
                       <input required type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@example.com"
                         style={{ width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 14, color: '#121319', outline: 'none', background: '#F9FAFB', boxSizing: 'border-box' }}/>
                     </div>
-                  </div>
-                  <div style={{ marginBottom: 14 }}>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: '#374151', display: 'block', marginBottom: 6 }}>Phone</label>
-                    <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 XXXXX XXXXX"
-                      style={{ width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 14, color: '#121319', outline: 'none', background: '#F9FAFB', boxSizing: 'border-box' }}/>
                   </div>
                   <div style={{ marginBottom: 14 }}>
                     <label style={{ fontSize: 12, fontWeight: 700, color: '#374151', display: 'block', marginBottom: 6 }}>Subject *</label>

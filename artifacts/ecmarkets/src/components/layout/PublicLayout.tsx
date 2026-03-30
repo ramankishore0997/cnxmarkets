@@ -1,7 +1,7 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, Shield, Lock, Phone } from 'lucide-react';
+import { Menu, X, Globe, Shield, Lock } from 'lucide-react';
 import { TradingWidget } from '../shared/TradingWidget';
 import { BrandLogo, NavbarLogo } from '../shared/EcmLogo';
 
@@ -165,7 +165,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                 <a href="mailto:support@ecmarketsindia.com" className="mt-2 block transition-colors" style={{ color: '#60C0F0' }}>support@ecmarketsindia.com</a>
               </div>
               <div className="flex gap-3">
-                {[Globe, Shield, Lock, Phone].map((Icon, i) => (
+                {[Globe, Shield, Lock].map((Icon, i) => (
                   <a key={i} href="#" className="w-10 h-10 rounded-full flex items-center justify-center transition-all" style={{ background: 'rgba(255,255,255,0.08)', color: '#EAF2F8' }}>
                     <Icon className="w-5 h-5" />
                   </a>
