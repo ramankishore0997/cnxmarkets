@@ -470,7 +470,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {/* Page Content */}
         <div style={{
           flex: 1, padding: `${GAP}px ${GAP}px ${GAP * 2}px`,
-          paddingBottom: 96,
         }}>
           <AnimatePresence mode="wait">
             <motion.div
@@ -486,8 +485,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
       </main>
 
-      {/* Mobile Bottom Navigation */}
-      <MobileBottomNav location={location} onMoreClick={() => setMobileMenuOpen(true)} />
 
       {/* Responsive style for main area on mobile */}
       <style>{`
