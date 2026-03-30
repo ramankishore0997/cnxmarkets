@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Globe, Shield, Lock, Phone } from 'lucide-react';
 import { TradingWidget } from '../shared/TradingWidget';
-import { BrandLogo } from '../shared/EcmLogo';
+import { BrandLogo, NavbarLogo } from '../shared/EcmLogo';
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

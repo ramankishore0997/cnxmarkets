@@ -19,7 +19,7 @@ import {
   Bell,
   Search,
 } from 'lucide-react';
-import { EcmLogo, BrandLogo } from '@/components/shared/EcmLogo';
+import { EcmLogo, BrandLogo, NavbarLogo } from '@/components/shared/EcmLogo';
 import { useAuthState } from '@/hooks/use-auth-state';
 
 const navItems = [
