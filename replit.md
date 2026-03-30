@@ -1,148 +1,333 @@
-# CNXMarkets Workspace
+# ECMarket Pro — Full Platform Documentation
 
-## Overview
+## Project Overview
 
-Full-stack fintech trading platform — CNXMarkets — a premium global forex/algo trading platform with deep black dark UI. Built as a pnpm monorepo with TypeScript.
+**ECMarket Pro** (`ecmarketpro.in`) — UAE-regulated forex broker platform (Exness/XM style).
+Full-stack fintech trading platform with:
+- Premium public landing site (5 pages)
+- Client dashboard (KYC, deposits/withdrawals, binary/crypto trading)
+- Admin panel (user management, KYC approval, transactions, trade injection)
 
-## Stack
+**GitHub remote**: `https://github.com/ramankishore0997/cnxmarkets.git`
+Push command: `git push github master:main`
 
-- **Monorepo tool**: pnpm workspaces
-- **Node.js version**: 24
-- **Package manager**: pnpm
-- **TypeScript version**: 5.9
-- **Frontend**: React + Vite (artifacts/ecmarkets) with Framer Motion, Recharts, react-hook-form
-- **API framework**: Express 5 (artifacts/api-server)
-- **Database**: PostgreSQL + Drizzle ORM
-- **Auth**: JWT (jsonwebtoken) + bcryptjs password hashing
-- **Validation**: Zod (zod/v4), drizzle-zod
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+---
 
-## Structure
+## Tech Stack
 
-```text
-artifacts-monorepo/
-├── artifacts/
-│   ├── ecmarkets/          # React + Vite frontend (served at /)
-│   └── api-server/         # Express 5 API server (served at /api)
-├── lib/
-│   ├── api-spec/           # OpenAPI spec + Orval codegen config
-│   ├── api-client-react/   # Generated React Query hooks
-│   ├── api-zod/            # Generated Zod schemas from OpenAPI
-│   └── db/                 # Drizzle ORM schema + DB connection
-├── scripts/                # Utility scripts
-└── ...
+| Layer | Technology |
+|-------|-----------|
+| Monorepo | pnpm workspaces |
+| Node.js | v24 |
+| Frontend | React + Vite (`artifacts/ecmarkets`) |
+| API | Express 5 (`artifacts/api-server`) |
+| Database | PostgreSQL + Drizzle ORM (also Supabase via SUPABASE_DATABASE_URL) |
+| Auth | JWT (`ecm_token` in localStorage) + bcryptjs |
+| Validation | Zod (zod/v4), drizzle-zod |
+| API codegen | Orval (from OpenAPI spec) |
+| Animation | Framer Motion |
+| Icons | Lucide React |
+| Forms | react-hook-form + zodResolver |
+| Charts | Recharts |
+| Routing | Wouter |
+| Build | esbuild (CJS) + Vite (frontend) |
+
+---
+
+## Design System — "ECMarket Pro Light"
+
+### Color Palette
+```
+Page background:     #F5F5F5  (light grey)
+Card background:     #FFFFFF
+Card border:         #E5E7EB
+Dark navy sidebar:   #0B1929  (primary dark)
+Dark navy gradient:  linear-gradient(170deg, #0d2035, #0B1929, #091520)
+Hero sections:       linear-gradient(135deg, #0B1929 0%, #0d2035 100%)
+Blue primary:        #1F77B4  (buttons, links, active states)
+Dark text:           #121319 / #111827
+Body text:           #374151
+Muted text:          #6B7280
+Profit green:        #16A34A
+Loss red:            #DC2626
 ```
 
-## Application Structure
+### Gradient Text (Hero headings)
+```css
+background: linear-gradient(90deg, #1F77B4, #16A34A)
+-webkit-background-clip: text; -webkit-text-fill-color: transparent;
+```
 
-### Design System
-- **Primary color**: `#00C274` (Olymp Trade green) — used for all buttons, active states, charts, highlights
-- **Dark background**: `#0B0E11` / `#1A1F2E`
-- **CSS classes**: `.btn-green` (gradient green), `.text-gradient-green`, `.nav-item-active` (green left border)
-- All gold (`#FFB800` / `#F0B90B`) removed from client and public pages
+### Ticker bar background: `#060e1a`
 
-### Public Website Pages (no auth)
-- `/` — Home with hero, stats, features, live chart, testimonials (all green theme)
-- `/strategies` — Algo strategy cards with live performance metrics (from DB — 25 strategies)
-- `/performance` — Performance analytics
-- `/markets` — Forex, Gold, Indices with TradingView widgets
-- `/about` — Company overview
-- `/contact` — Contact form (POST /api/contact)
+### Typography
+- Font: `Inter` (all weights 300–900)
+- Monospace: `JetBrains Mono` (for PAN/Aadhaar fields, trade data)
 
-### Auth Pages
-- `/auth/login` — JWT login
-- `/auth/register` — Registration
-- `/auth/forgot-password` — Password reset placeholder
+### CSS Utility Classes (in `artifacts/ecmarkets/src/index.css`)
+```
+.btn-gold / .btn-green   — Blue gradient button with hover lift
+.btn-ghost               — Outline button
+.card-stealth            — White card with hover border-blue + lift
+.input-stealth           — Form input with focus ring
+.sidebar-stealth         — Dark navy sidebar gradient
+.nav-item-active         — White left border + bg highlight (sidebar)
+.nav-item-hover          — Hover slide right effect
+.glass-tile              — Light grey info tile
+.live-dot                — Green pulsing dot animation
+```
 
-### Client Dashboard (requires JWT auth)
-- `/dashboard` — Balance, equity curve, recent trades/transactions
-- `/dashboard/binary` — Binary Trading (Up/Down options)
-- `/dashboard/strategies` — Auto Trading strategy browser (activate from 25 DB strategies)
-- `/dashboard/analytics` — Performance analytics: equity curve, win/loss donut, monthly P&L, instrument breakdown (all real DB data)
-- `/dashboard/trades` — Trade history
-- `/dashboard/deposit` — Deposit request form
-- `/dashboard/withdraw` — Withdrawal request form
-- `/dashboard/kyc` — KYC document submission
-- `/dashboard/profile` — Profile & change password
-- `/dashboard/notifications` — Notification center
+### Global Button Effects (applied via CSS — ALL buttons site-wide)
+- Hover: `filter: brightness(1.10) saturate(1.05)` — glow lift
+- Active/Press: `transform: scale(0.95) translateY(1px)` — push down feel
+- Disabled: `opacity: 0.55`, no effects
+- Add class `no-hover` to opt-out on any anchor
 
-### Admin Panel (requires admin role, access via /admin URL only)
-- `/admin` — Stats dashboard
-- `/admin/users` — User management; expandable rows with balance edit, assigned strategy dropdown, daily growth target %, activate/deactivate
-- `/admin/kyc` — KYC review showing PAN number, Aadhar number, 4 document images (inline preview); approve/reject/delete
-- `/admin/transactions` — Transaction approval; approving deposits/withdrawals auto-updates account balance
-- `/admin/trades` — Manual trade injection for any user; injects trade + auto-updates account balance
-- `/admin/strategies` — Strategy CRUD
-- `/admin/notifications` — Send notifications to individual users or broadcast
+---
 
-### Client KYC page
-- `/dashboard/kyc` — PAN card (number + front/back image upload), Aadhar card (number + front/back image upload), all base64 stored, validation per Indian formats (PAN: ABCDE1234F, Aadhar: 12 digits)
+## Monorepo Structure
 
-## Database Schema
+```
+workspace/
+├── artifacts/
+│   ├── ecmarkets/              # React + Vite frontend (port via $PORT)
+│   │   ├── src/
+│   │   │   ├── pages/
+│   │   │   │   ├── public/     # Home, Markets, About, FAQ, Contact
+│   │   │   │   ├── auth/       # Login, Register
+│   │   │   │   ├── client/     # Dashboard pages (auth required)
+│   │   │   │   └── admin/      # Admin pages (admin role)
+│   │   │   ├── components/
+│   │   │   │   ├── layout/
+│   │   │   │   │   ├── PublicLayout.tsx   # Pill navbar + ticker + footer
+│   │   │   │   │   ├── DashboardLayout.tsx # Floating dark sidebar
+│   │   │   │   │   └── AdminLayout.tsx
+│   │   │   │   └── shared/
+│   │   │   │       ├── EcmLogo.tsx        # Logo components
+│   │   │   │       ├── TradingWidget.tsx  # Live price ticker + chart widget
+│   │   │   │       └── LivePriceTicker.tsx
+│   │   │   └── index.css                  # Global design tokens + utilities
+│   └── api-server/             # Express 5 API (port 8080 dev)
+│       └── src/server.ts
+├── lib/
+│   ├── api-spec/               # OpenAPI spec
+│   ├── api-client-react/       # Generated React Query hooks
+│   ├── api-zod/                # Generated Zod schemas
+│   └── db/                     # Drizzle schema + DB connection
+└── pnpm-workspace.yaml
+```
 
-Tables: `users`, `accounts`, `kyc_documents`, `strategies`, `transactions`, `trades`, `notifications`, `allocations`
+---
 
-Enums: `role` (client|admin), `kyc_status`, `risk_profile`, `transaction_type`, `transaction_status`, `direction`, `trade_status`, `notification_type`
+## Logo & Branding
 
-### Notable schema fields
-- `kyc_documents`: panNumber, aadharNumber, panCardFrontUrl, panCardBackUrl, aadharCardFrontUrl, aadharCardBackUrl (all text, base64 images stored in DB)
-- `accounts`: assignedStrategy (text), dailyGrowthTarget (numeric)
+**Components in** `artifacts/ecmarkets/src/components/shared/EcmLogo.tsx`:
+- `NavbarLogo` — inline horizontal (for navbars). Use `theme="light"` on light bg, `theme="dark"` on dark bg
+- `BrandLogo` — stacked with tagline (for footer, login pages)
+- `EcmLogo` — icon only (just the bar chart square)
+- **Tagline**: "Forex · Crypto · CFDs"
+- **Favicon**: `artifacts/ecmarkets/public/favicon.svg` (dark navy square + rising bars)
+- **Manifest**: "ECMarket Pro" brand name
 
-## API Routes
+---
 
-All routes under `/api`:
-- `/auth` — register, login, me, logout
-- `/kyc` — get/submit KYC
-- `/strategies` — list/get strategies (public)
-- `/accounts` — dashboard, performance, allocations (auth required)
-- `/transactions` — list, deposit, withdraw (auth required)
-- `/trades` — list trades (auth required)
-- `/notifications` — list, mark read (auth required)
-- `/contact` — submit contact form (public)
-- `/users` — update profile, change password (auth required)
-- `/admin/*` — admin operations (admin role required)
-  - PATCH `/admin/users/:id` — update role, status, balance, assignedStrategy, dailyGrowthTarget
-  - DELETE `/admin/kyc/:id` — delete KYC record + reset user status to pending
-  - POST `/admin/trades` — inject trade + auto-update account balance
+## Public Website (PublicLayout)
 
-## Logo
+**Layout**: `PublicLayout.tsx`
+- Top: Custom marquee live price ticker (dark `#060e1a` bg, 12 pairs scrolling)
+- Sticky pill navbar: `#f6f6f6` bg, border-radius 9999, logo left + nav center + CTA buttons right
+- Footer: Dark navy `#0B1929`, 5-column grid, email: `support@ecmarketsindia.com`
 
-Custom SVG candlestick chart logo (`EcmLogo` component at `src/components/shared/EcmLogo.tsx`).
-- Shows 3 candlestick bars (red, gold, green) with uptrend line overlay
-- Used in: PublicLayout header, PublicLayout footer, DashboardLayout sidebar, DashboardLayout mobile topbar
-- Favicon: `artifacts/ecmarkets/public/favicon.svg` (same candlestick design)
-- All logos use `drop-shadow-[0_0_8px_rgba(255,184,0,0.3)]` gold glow effect
+**Pages:**
 
-## Mobile Optimisations (completed)
+### `/` — Home (`Home.tsx`)
+Sections: Hero (dark navy) → Dashboard Mockup (SVG chart + positions table) → Feature Cards (6) → Account Pricing (Standard/Pro/Elite) → Trading Platforms (WebTrader/MT4/MT5/App) → Deposit/Withdrawal Steps → Contact Form
 
-- **BinaryTrading**: horizontal scrollable instrument chips, stacked chart+panel, tabbed Live/History
-- **Deposit**: full-width tabs on mobile, card layout for transaction history
-- **Notifications**: icon-only action buttons on mobile, compact stats pills, scrollable filter tabs
-- **Analytics**: `p-4 md:p-6` on chart cards; Strategy Details shows 2-col grid on mobile instead of table
-- **TradeHistory**: `text-xl md:text-3xl` header, horizontally scrollable filter bar, existing mobile card view
-- **PWA**: manifest.json, sw.js, PWAInstallPrompt component (iOS+Android), mobile bottom nav
+### `/markets` — Markets (`Markets.tsx`)
+Dark navy hero + gradient text, live price ticker with real-time updates, tabbed instrument table (Forex/Crypto/Commodities/Indices), "Trade" button per row, feature cards, dark CTA
 
-## Demo Credentials
+### `/about` — About (`About.tsx`)
+Dark hero + stats grid (10 Lakh+, 7+ years, 200+, 50 countries), Core Values cards, milestone timeline, Regulatory & Security section
+**REMOVED**: Leadership Team section
 
-- **Admin**: admin@ecmarketsindia.com / Admin@1234
-- **Client**: demo@ecmarketsindia.com / password123
+### `/faq` — FAQ (`Faq.tsx`)
+Searchable accordion with category filters, 18 Q&A entries
 
-## Auth
+### `/contact` — Contact (`Contact.tsx`)
+**ONLY EMAIL** support — no WhatsApp, no phone, no live chat
+Email: `support@ecmarketpro.in`
+Contact form fields: Name, Email, Subject, Message (phone field removed)
 
-JWT stored as `ecm_token` in localStorage. Token sent as `Authorization: Bearer <token>`. JWT_SECRET env var (defaults to fallback for dev).
+---
 
-## Design System — "Terminal Stealth"
+## Live Price Ticker (`TradingWidget.tsx`)
 
-- Background: #0B0E11 (obsidian)
-- Surface: #1E2329 (dark card)
-- Border: #2B3139
-- Gold accent: #F0B90B
-- Green / profit: #02C076
-- Red / loss: #CF304A
-- Text: #EAECEF (primary), #848E9C (muted)
-- Fonts: Inter
-- Components: `.card-stealth`, `.card-stealth-gold`, `.btn-gold`, `.btn-ghost`, `.input-stealth`, `.sidebar-stealth`
-- Framer Motion animated page transitions in DashboardLayout / AdminLayout
-- Recharts (AreaChart, BarChart, PieChart) for data visualization
-- Lucide React icons throughout
+Custom CSS marquee — NOT TradingView widget.
+- 12 pairs: EUR/USD, GBP/USD, USD/JPY, AUD/USD, EUR/GBP, USD/CAD, USD/CHF, XAU/USD, BTC/USD, ETH/USD, SOL/USD, XRP/USD
+- Updates every 1.4s (simulated)
+- Flash effect: green = price up, red = price down
+- "LIVE" badge with pulsing green dot on left
+- Fade edges gradient
+- Hover pauses scroll
+
+---
+
+## Dashboard Layout (`DashboardLayout.tsx`)
+
+- Sidebar: floating, 12px gap from edges, `border-radius: 20px`, dark navy gradient
+- No bottom navigation bar (removed)
+- Sidebar collapses on mobile
+
+---
+
+## Client Dashboard Pages
+
+| Route | File | Description |
+|-------|------|-------------|
+| `/dashboard` | `Dashboard.tsx` | Balance, equity, recent trades |
+| `/dashboard/binary` | `BinaryTrading.tsx` | Up/Down binary options |
+| `/dashboard/crypto` | (crypto trading) | Crypto trading terminal |
+| `/dashboard/analytics` | `Analytics.tsx` | Equity curve, win/loss donut, P&L |
+| `/dashboard/trades` | `TradeHistory.tsx` | Trade history table |
+| `/dashboard/deposit` | `Deposit.tsx` | Deposit (UPI/Bank/Crypto) |
+| `/dashboard/withdraw` | `Withdraw.tsx` | Withdrawal form |
+| `/dashboard/kyc` | `Kyc.tsx` | **Modernized** KYC with dark hero, step bar |
+| `/dashboard/profile` | `Profile.tsx` | Profile + password change |
+| `/dashboard/notifications` | `Notifications.tsx` | Notification center |
+
+### KYC Page — `Kyc.tsx` (modernized)
+- Dark navy header card with shield icon + status badge + trust row
+- 3-step progress bar: Personal Details → Upload Documents → Verification
+- Two form sections (Personal Details, Document Photos) as separate white cards
+- Document upload progress bar (0→4 files)
+- Divider labels for Aadhaar / PAN sections
+- Status states: Verified (green), Under Review (blue), Rejected (red banner), Pending form
+- Checklist shown when form incomplete
+
+---
+
+## Admin Panel
+
+| Route | Description |
+|-------|-------------|
+| `/admin` | Stats dashboard |
+| `/admin/users` | User list, balance edit, strategy assign |
+| `/admin/kyc` | KYC review, approve/reject, document image preview |
+| `/admin/transactions` | Deposit/withdrawal approval (auto-updates balance) |
+| `/admin/trades` | Manual trade injection |
+| `/admin/strategies` | Strategy CRUD |
+| `/admin/notifications` | Broadcast notifications |
+
+**Admin credentials**: `admin@ecmarketsindia.com` / `Admin@1234`
+
+---
+
+## Auth System
+
+- JWT stored as `ecm_token` in localStorage
+- Auth header: `Authorization: Bearer <token>`
+- JWT_SECRET env var (has dev fallback)
+- `getToken()` helper: `localStorage.getItem('ecm_token') || ''`
+- `getAuthOptions()` from `@/lib/api-utils`
+
+**Demo client credentials**: `demo@ecmarketsindia.com` / `password123`
+
+---
+
+## Database
+
+### Tables
+`users`, `accounts`, `kyc_documents`, `strategies`, `transactions`, `trades`, `notifications`, `allocations`
+
+### Key Schema Notes
+- `kyc_documents`: panNumber, aadharNumber, panCardFrontUrl, panCardBackUrl, aadharCardFrontUrl, aadharCardBackUrl (base64 images in DB)
+- `accounts`: assignedStrategy (text), dailyGrowthTarget (numeric), balance
+- `users`: role enum (client|admin), kycStatus
+
+### Connections
+- Local PostgreSQL: `DATABASE_URL` env var
+- Supabase: `SUPABASE_DATABASE_URL` + `SUPABASE_SERVICE_KEY` env vars
+
+---
+
+## API Routes (all under `/api`)
+
+```
+POST /api/auth/register     — Register new user
+POST /api/auth/login        — Login, returns JWT
+GET  /api/auth/me           — Get current user
+POST /api/auth/logout       — Logout
+
+GET  /api/kyc               — Get user's KYC status
+POST /api/kyc               — Submit KYC (multipart/form-data with images)
+
+GET  /api/accounts/dashboard     — Balance, equity, stats
+GET  /api/accounts/performance   — Equity curve data
+GET  /api/transactions           — Transaction history
+POST /api/transactions/deposit   — Deposit request
+POST /api/transactions/withdraw  — Withdrawal request
+
+GET  /api/trades                 — Trade history
+GET  /api/notifications          — Notification list
+PATCH /api/notifications/:id     — Mark as read
+
+GET  /api/strategies             — List all strategies
+
+PATCH /api/users/profile         — Update profile
+PATCH /api/users/password        — Change password
+
+// Admin (admin role required)
+GET/PATCH /api/admin/users/:id
+DELETE /api/admin/kyc/:id
+POST /api/admin/trades           — Inject trade
+GET/PATCH /api/admin/transactions/:id
+```
+
+---
+
+## Environment Secrets
+
+| Secret | Used for |
+|--------|---------|
+| `SUPABASE_DATABASE_URL` | Supabase PostgreSQL connection |
+| `SUPABASE_SERVICE_KEY` | Supabase admin operations |
+| `TELEGRAM_BOT_TOKEN` | Telegram notifications |
+| `TELEGRAM_CHAT_ID` | Telegram chat target |
+
+---
+
+## Important Rules & Constraints
+
+1. **NO python3** — only Node.js/TypeScript
+2. **NO new npm packages** without explicit request — use existing deps
+3. **Routing**: Wouter (not React Router) — `useLocation`, `Link`, `useRoute`
+4. **API base**: `/api` (not `http://localhost:8080`)
+5. **Ports**: Frontend reads `$PORT` env var (Vite config); API server port 8080 dev
+6. **Build command**: `pnpm --filter @workspace/api-server run build` then restart workflow
+7. **Never change primary key ID column types** (serial ↔ varchar breaks DB)
+8. **Push to GitHub**: `git push github master:main` from `/home/runner/workspace`
+
+---
+
+## Things REMOVED from Site (do NOT add back)
+
+- ❌ WhatsApp support (removed from Contact page, Home page)
+- ❌ Phone/telephone support numbers (removed everywhere)
+- ❌ Live Chat option (removed from Contact page)
+- ❌ Leadership Team section (removed from About page)
+- ❌ Telegram channel link (removed from Contact page)
+- ❌ Bottom navigation bar in dashboard (removed)
+- ❌ TradingView ticker tape widget (replaced with custom marquee)
+
+---
+
+## Contact Info on Site
+
+- **Email only**: `support@ecmarketpro.in`
+- **Headquarters**: Dubai International Financial Centre, Dubai, UAE
+
+---
+
+## Build Status
+
+Last confirmed build: ✅ 2871 modules transformed, zero errors
