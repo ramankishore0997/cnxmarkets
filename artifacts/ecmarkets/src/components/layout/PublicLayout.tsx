@@ -24,10 +24,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col text-[#374151] overflow-x-hidden" style={{ background: '#F5F5F5' }}>
 
-      {/* ── TOP TICKER (dark bar) ── */}
-      <div style={{ background: '#121319', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <TradingWidget />
-      </div>
+      {/* ── TOP TICKER ── */}
+      <TradingWidget />
 
       {/* ── PILL NAVBAR ── */}
       <div className="sticky top-0 z-50 px-3 sm:px-6 lg:px-8 pt-2.5 pb-1" style={{ background: '#F5F5F5' }}>
