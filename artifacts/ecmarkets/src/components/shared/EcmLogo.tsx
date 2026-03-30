@@ -71,7 +71,7 @@ export function NavbarLogo({ theme = 'light' }: { theme?: 'dark' | 'light' }) {
           color: theme === 'dark' ? 'rgba(255,255,255,0.45)' : 'rgba(11,25,41,0.45)',
           textTransform: 'uppercase',
         }}>
-          UAE Regulated Broker
+          Forex · Crypto · CFDs
         </span>
       </div>
     </div>
@@ -118,11 +118,11 @@ export function BrandLogo({
         <span style={{
           fontSize: subSize,
           fontWeight: 500,
-          letterSpacing: '0.15em',
+          letterSpacing: '0.12em',
           color: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(11,25,41,0.4)',
           textTransform: 'uppercase',
         }}>
-          UAE Regulated Broker
+          Forex · Crypto · CFDs
         </span>
       </div>
     </div>
