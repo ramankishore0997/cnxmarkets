@@ -141,62 +141,67 @@ function Counter({ end, suffix = '', prefix = '', decimals = 0 }: { end: number;
 
 // ─── FAN CARDS (Lemonn arc style) ────────────────────────────────────────────
 const FAN_FEATURES = [
-  { icon: '💱', title: 'Forex Trading', desc: '80+ currency pairs with 0.0 pip spreads', color: '#1F77B4' },
-  { icon: '₿', title: 'Crypto CFDs', desc: 'BTC, ETH & top 30 coins, 24/7', color: '#F7931A' },
-  { icon: '🥇', title: 'Gold & Silver', desc: 'XAU/USD with lowest spreads', color: '#FFD700' },
+  { icon: '💱', title: 'Forex Trading', desc: '80+ currency pairs, 0.0 pip spreads', color: '#1F77B4' },
+  { icon: '₿', title: 'Crypto CFDs', desc: 'BTC, ETH & top 30 coins 24/7', color: '#F7931A' },
+  { icon: '🥇', title: 'Gold & Silver', desc: 'XAU/USD with lowest spreads', color: '#D97706' },
   { icon: '📊', title: 'Index CFDs', desc: 'US30, NAS100, UK100 & more', color: '#16A34A' },
-  { icon: '⚡', title: 'Binary Options', desc: 'High/Low trades up to 95% payout', color: '#7C3AED' },
-  { icon: '👥', title: 'Copy Trading', desc: 'Copy top traders automatically', color: '#1F77B4' },
+  { icon: '⚡', title: 'Binary Options', desc: 'High/Low trades, 95% payout', color: '#7C3AED' },
+  { icon: '👥', title: 'Copy Trading', desc: 'Copy top traders automatically', color: '#0891B2' },
   { icon: '🤖', title: 'Algo Trading', desc: 'Run your EAs with MT4 support', color: '#DC2626' },
 ];
 
-const FAN_ANGLES = [-36, -24, -12, 0, 12, 24, 36];
-const FAN_Y      = [80,   45,  18,  0, 18, 45, 80];
-const FAN_SCALE  = [0.78, 0.86, 0.93, 1, 0.93, 0.86, 0.78];
+// x offset, rotation, y-lift, scale for each of 7 cards
+const FAN_CFG = [
+  { x: -270, rot: -32, y: 60, s: 0.80 },
+  { x: -180, rot: -20, y: 28, s: 0.88 },
+  { x:  -90, rot: -10, y:  8, s: 0.94 },
+  { x:    0, rot:   0, y:  0, s: 1.00 },
+  { x:   90, rot:  10, y:  8, s: 0.94 },
+  { x:  180, rot:  20, y: 28, s: 0.88 },
+  { x:  270, rot:  32, y: 60, s: 0.80 },
+];
 
 function FanCards() {
   const [active, setActive] = useState(3);
   return (
-    <div className="relative flex justify-center items-end" style={{ height: 420, overflow: 'visible' }}>
-      {FAN_FEATURES.map((f, i) => (
-        <motion.div
-          key={i}
-          onClick={() => setActive(i)}
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.08, duration: 0.5 }}
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: '50%',
-            marginLeft: -72,
-            width: 144,
-            height: 200,
-            borderRadius: 20,
-            background: active === i ? f.color : '#fff',
-            border: active === i ? 'none' : '1px solid #e8e8e8',
-            boxShadow: active === i
-              ? `0 20px 50px ${f.color}55`
-              : '0 4px 20px rgba(0,0,0,0.08)',
-            transform: `rotate(${FAN_ANGLES[i]}deg) translateY(${FAN_Y[i]}px) scale(${active === i ? FAN_SCALE[i] * 1.08 : FAN_SCALE[i]})`,
-            transformOrigin: 'bottom center',
-            cursor: 'pointer',
-            transition: 'all 0.35s cubic-bezier(0.34,1.56,0.64,1)',
-            zIndex: active === i ? 20 : 10 - Math.abs(i - 3),
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
-            userSelect: 'none',
-          }}
-        >
-          <div style={{ fontSize: 36, marginBottom: 10 }}>{f.icon}</div>
-          <p style={{ fontSize: 12, fontWeight: 900, color: active === i ? '#fff' : '#121319', textAlign: 'center', margin: '0 0 6px', lineHeight: 1.3 }}>{f.title}</p>
-          <p style={{ fontSize: 10, color: active === i ? 'rgba(255,255,255,0.8)' : '#6B7280', textAlign: 'center', margin: 0, lineHeight: 1.4 }}>{f.desc}</p>
-        </motion.div>
-      ))}
+    <div style={{ position: 'relative', height: 300, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', overflow: 'visible' }}>
+      {FAN_FEATURES.map((f, i) => {
+        const cfg = FAN_CFG[i];
+        const isActive = active === i;
+        return (
+          <div
+            key={i}
+            onClick={() => setActive(i)}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              width: 130,
+              height: 185,
+              marginLeft: -65,
+              borderRadius: 20,
+              background: isActive ? f.color : '#fff',
+              border: isActive ? 'none' : '1.5px solid #e0e0e0',
+              boxShadow: isActive ? `0 16px 48px ${f.color}60` : '0 4px 18px rgba(0,0,0,0.09)',
+              transform: `translateX(${cfg.x}px) translateY(${cfg.y}px) rotate(${cfg.rot}deg) scale(${isActive ? cfg.s * 1.1 : cfg.s})`,
+              transformOrigin: 'bottom center',
+              cursor: 'pointer',
+              transition: 'all 0.38s cubic-bezier(0.34,1.4,0.64,1)',
+              zIndex: isActive ? 30 : 10 - Math.abs(i - 3),
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '14px 10px',
+              userSelect: 'none',
+            }}
+          >
+            <div style={{ fontSize: 32, marginBottom: 10 }}>{f.icon}</div>
+            <p style={{ fontSize: 11, fontWeight: 900, color: isActive ? '#fff' : '#121319', textAlign: 'center', margin: '0 0 5px', lineHeight: 1.3 }}>{f.title}</p>
+            <p style={{ fontSize: 9.5, color: isActive ? 'rgba(255,255,255,0.8)' : '#9CA3AF', textAlign: 'center', margin: 0, lineHeight: 1.4 }}>{f.desc}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -727,49 +732,58 @@ export function Home() {
           </motion.div>
         </div>
 
-        {/* Scrollable testimonials */}
-        <div style={{ overflowX: 'auto', paddingBottom: 16, scrollbarWidth: 'none' }}>
-          <div style={{ display: 'flex', gap: 16, paddingLeft: 'max(16px, calc(50vw - 450px))', paddingRight: 32, width: 'max-content' }}>
+        {/* Auto-scrolling testimonials */}
+        <style>{`
+          @keyframes scroll-reviews {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .reviews-track {
+            display: flex;
+            gap: 16px;
+            width: max-content;
+            animation: scroll-reviews 30s linear infinite;
+          }
+          .reviews-track:hover { animation-play-state: paused; }
+        `}</style>
+        <div style={{ overflow: 'hidden', paddingBottom: 8 }}>
+          <div className="reviews-track">
             {[
-              { name: 'Rahul Sharma', city: 'Mumbai', initials: 'RS', color: '#1F77B4', ret: '+38%', months: 4, text: 'Platform ne meri zindagi badal di. Ek baar fund karo, algo baaki sab karta hai. Withdrawal bhi 1 ghante mein aa jaata hai.', stars: 5 },
-              { name: 'Priya Nair', city: 'Bangalore', initials: 'PN', color: '#16A34A', ret: '+52%', months: 6, text: 'Withdrawal process bahut smooth hai. 1 hour mein paise aa gaye. ECMarket Pro is genuinely the best forex platform for Indians.', stars: 5 },
-              { name: 'Amit Verma', city: 'Delhi', initials: 'AV', color: '#7C3AED', ret: '+29%', months: 3, text: 'Best decision tha jo maine ECMarket Pro join kiya. Transparent aur professional platform. Spreads are genuinely 0.0 pips.', stars: 5 },
-              { name: 'Suresh Kumar', city: 'Hyderabad', initials: 'SK', color: '#DC2626', ret: '+41%', months: 5, text: 'Copy trading feature ne mera kaam aasaan kar diya. Ab sirf dekho aur copy karo successful traders ko. Amazing platform!', stars: 5 },
-              { name: 'Anjali Singh', city: 'Chennai', initials: 'AS', color: '#F7931A', ret: '+33%', months: 4, text: 'KYC process bahut fast hai, 10 minutes mein complete ho gayi. Aur support team 24/7 available hai. Highly recommended!', stars: 5 },
+              { name: 'Rahul Sharma', city: 'Mumbai', initials: 'RS', color: '#1F77B4', ret: '+38%', months: 4, text: 'This platform completely changed my trading journey. Fund once and the platform handles everything automatically. Withdrawals arrive within 1 hour every single time.' },
+              { name: 'Priya Nair', city: 'Bangalore', initials: 'PN', color: '#16A34A', ret: '+52%', months: 6, text: 'The withdrawal process is incredibly smooth and fast. My funds arrived in under an hour with zero issues. ECMarket Pro is genuinely the best forex platform for Indian traders.' },
+              { name: 'Amit Verma', city: 'Delhi', initials: 'AV', color: '#7C3AED', ret: '+29%', months: 3, text: 'Best decision I ever made was joining ECMarket Pro. A truly transparent and professional platform. Spreads are genuinely 0.0 pips — I verified it myself live.' },
+              { name: 'Suresh Kumar', city: 'Hyderabad', initials: 'SK', color: '#DC2626', ret: '+41%', months: 5, text: 'The copy trading feature made investing so simple. Just follow successful traders and mirror their trades automatically. Absolutely fantastic platform with great results!' },
+              { name: 'Anjali Singh', city: 'Chennai', initials: 'AS', color: '#F7931A', ret: '+33%', months: 4, text: 'KYC was completed in under 10 minutes — super fast! The support team is available 24/7 and always responds quickly. Highly recommended for every serious trader.' },
+              { name: 'Vikram Reddy', city: 'Pune', initials: 'VR', color: '#0891B2', ret: '+45%', months: 5, text: 'Incredible platform with real institutional spreads. The leverage options up to 1:2000 give you real trading power. Customer service is responsive and professional.' },
+              { name: 'Deepa Menon', city: 'Kochi', initials: 'DM', color: '#16A34A', ret: '+27%', months: 3, text: 'I was skeptical at first, but ECMarket Pro delivered on every promise. UPI deposits are instant, trading execution is lightning fast, and profits are real.' },
+            // duplicate for infinite loop
+              { name: 'Rahul Sharma', city: 'Mumbai', initials: 'RS', color: '#1F77B4', ret: '+38%', months: 4, text: 'This platform completely changed my trading journey. Fund once and the platform handles everything automatically. Withdrawals arrive within 1 hour every single time.' },
+              { name: 'Priya Nair', city: 'Bangalore', initials: 'PN', color: '#16A34A', ret: '+52%', months: 6, text: 'The withdrawal process is incredibly smooth and fast. My funds arrived in under an hour with zero issues. ECMarket Pro is genuinely the best forex platform for Indian traders.' },
+              { name: 'Amit Verma', city: 'Delhi', initials: 'AV', color: '#7C3AED', ret: '+29%', months: 3, text: 'Best decision I ever made was joining ECMarket Pro. A truly transparent and professional platform. Spreads are genuinely 0.0 pips — I verified it myself live.' },
+              { name: 'Suresh Kumar', city: 'Hyderabad', initials: 'SK', color: '#DC2626', ret: '+41%', months: 5, text: 'The copy trading feature made investing so simple. Just follow successful traders and mirror their trades automatically. Absolutely fantastic platform with great results!' },
+              { name: 'Anjali Singh', city: 'Chennai', initials: 'AS', color: '#F7931A', ret: '+33%', months: 4, text: 'KYC was completed in under 10 minutes — super fast! The support team is available 24/7 and always responds quickly. Highly recommended for every serious trader.' },
+              { name: 'Vikram Reddy', city: 'Pune', initials: 'VR', color: '#0891B2', ret: '+45%', months: 5, text: 'Incredible platform with real institutional spreads. The leverage options up to 1:2000 give you real trading power. Customer service is responsive and professional.' },
+              { name: 'Deepa Menon', city: 'Kochi', initials: 'DM', color: '#16A34A', ret: '+27%', months: 3, text: 'I was skeptical at first, but ECMarket Pro delivered on every promise. UPI deposits are instant, trading execution is lightning fast, and profits are real.' },
             ].map((r, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                style={{ width: 280, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 20, padding: 22, flexShrink: 0, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}
-              >
-                {/* Avatar */}
-                <div style={{ width: 52, height: 52, borderRadius: '50%', background: r.color, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
-                  <span style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>{r.initials}</span>
+              <div key={i} style={{ width: 272, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 20, padding: 22, flexShrink: 0, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+                <div style={{ width: 48, height: 48, borderRadius: '50%', background: r.color, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                  <span style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{r.initials}</span>
                 </div>
-
-                {/* Quote marks */}
-                <div style={{ fontSize: 32, color: '#e8e8e8', lineHeight: 1, marginBottom: 6, fontFamily: 'serif' }}>"</div>
-
-                <p style={{ fontSize: 13, color: '#374151', lineHeight: 1.7, marginBottom: 16 }}>{r.text}</p>
-
-                {/* Stars */}
-                <div style={{ display: 'flex', gap: 2, marginBottom: 12 }}>
-                  {[1,2,3,4,5].map(s => <Star key={s} size={12} style={{ fill: '#1F77B4', color: '#1F77B4' }} />)}
+                <div style={{ fontSize: 28, color: '#e0e7ef', lineHeight: 1, marginBottom: 4, fontFamily: 'Georgia, serif' }}>"</div>
+                <p style={{ fontSize: 12.5, color: '#374151', lineHeight: 1.7, marginBottom: 14 }}>{r.text}</p>
+                <div style={{ display: 'flex', gap: 2, marginBottom: 10 }}>
+                  {[1,2,3,4,5].map(s => <Star key={s} size={11} style={{ fill: '#1F77B4', color: '#1F77B4' }} />)}
                 </div>
-
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <p style={{ fontSize: 13, fontWeight: 800, color: '#121319', margin: 0 }}>{r.name}</p>
+                    <p style={{ fontSize: 12, fontWeight: 800, color: '#121319', margin: 0 }}>{r.name}</p>
                     <p style={{ fontSize: 11, color: '#9CA3AF', margin: 0 }}>{r.city}</p>
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: '#16A34A', background: 'rgba(22,163,74,0.1)', padding: '3px 10px', borderRadius: 8 }}>
-                    {r.ret} in {r.months}mo
+                  <span style={{ fontSize: 11, fontWeight: 800, color: '#16A34A', background: 'rgba(22,163,74,0.1)', padding: '3px 9px', borderRadius: 8 }}>
+                    {r.ret} / {r.months}mo
                   </span>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
