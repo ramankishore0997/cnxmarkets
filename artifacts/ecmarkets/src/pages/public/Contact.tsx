@@ -91,7 +91,7 @@ export function Contact() {
                 {[
                   { icon: <Clock size={18}/>, color: '#1F77B4', title: 'Response Time', val: '< 10 minutes (24/7)' },
                   { icon: <Mail size={18}/>, color: '#16A34A', title: 'Email', val: 'support@ecmarketpro.in' },
-                  { icon: <Phone size={18}/>, color: '#7C3AED', title: 'WhatsApp / Phone', val: '+91 98765 43210' },
+                  { icon: <Phone size={18}/>, color: '#7C3AED', title: 'Phone', val: '+91 98765 43210' },
                   { icon: <MapPin size={18}/>, color: '#F7931A', title: 'Headquarters', val: 'Dubai, UAE' },
                 ].map((c, i) => (
                   <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
@@ -142,7 +142,7 @@ export function Contact() {
                     </div>
                   </div>
                   <div style={{ marginBottom: 14 }}>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: '#374151', display: 'block', marginBottom: 6 }}>Phone / WhatsApp</label>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: '#374151', display: 'block', marginBottom: 6 }}>Phone</label>
                     <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 XXXXX XXXXX"
                       style={{ width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 14, color: '#121319', outline: 'none', background: '#F9FAFB', boxSizing: 'border-box' }}/>
                   </div>

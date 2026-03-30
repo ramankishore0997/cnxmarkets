@@ -1169,8 +1169,8 @@ export function Home() {
               Send Message →
             </button>
           </motion.div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14, marginTop:20 }}>
-            {[{ icon:'💬', label:'Live Chat', val:'Available 24/7' },{ icon:'📧', label:'Email', val:'support@ecmarketpro.in' },{ icon:'📞', label:'WhatsApp', val:'+91 98765 43210' }].map(c => (
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:14, marginTop:20 }}>
+            {[{ icon:'💬', label:'Live Chat', val:'Available 24/7' },{ icon:'📧', label:'Email', val:'support@ecmarketpro.in' }].map(c => (
               <div key={c.label} style={{ textAlign:'center', padding:'16px 12px', background:'#F9FAFB', borderRadius:14, border:'1px solid #E5E7EB' }}>
                 <div style={{ fontSize:22, marginBottom:6 }}>{c.icon}</div>
                 <p style={{ fontSize:10, color:'#9CA3AF', margin:'0 0 2px', fontWeight:600, textTransform:'uppercase', letterSpacing:0.5 }}>{c.label}</p>
