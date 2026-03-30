@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -15,7 +15,9 @@ import {
   History,
   TrendingUp,
   ChevronRight,
-  MoreHorizontal
+  MoreHorizontal,
+  Bell,
+  Search,
 } from 'lucide-react';
 import { EcmLogo, BrandLogo } from '@/components/shared/EcmLogo';
 import { useAuthState } from '@/hooks/use-auth-state';
@@ -38,26 +40,61 @@ const bottomNavItems = [
   { name: 'Profile', href: '/dashboard/profile', icon: User },
 ];
 
-function SidebarLogo() {
+// ── Animated mini chart bars ──────────────────────────────────────────────────
+const BAR_HEIGHTS = [18, 28, 22, 35, 25, 40, 30, 38, 20, 45, 28, 36];
+function MiniChart() {
+  const [bars, setBars] = useState(BAR_HEIGHTS);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setBars(prev => {
+        const next = [...prev.slice(1), Math.floor(Math.random() * 30) + 15];
+        return next;
+      });
+    }, 900);
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <Link href="/" className="flex items-center group">
-      <BrandLogo theme="dark" size="md" />
-    </Link>
+    <div style={{
+      display: 'flex', alignItems: 'flex-end', gap: 3, height: 46,
+      padding: '8px 12px 0',
+    }}>
+      {bars.map((h, i) => (
+        <div
+          key={i}
+          style={{
+            flex: 1,
+            height: h,
+            borderRadius: 3,
+            background: i >= bars.length - 3
+              ? 'rgba(96,192,240,0.9)'
+              : 'rgba(255,255,255,0.15)',
+            transition: 'height 0.7s ease',
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
 function UserAvatar({ firstName, lastName, photo, size = 'md' }: { firstName?: string; lastName?: string; photo?: string | null; size?: 'sm' | 'md' | 'lg' }) {
   const initials = `${firstName?.[0] || 'U'}${lastName?.[0] || ''}`.toUpperCase();
-  const dim = size === 'lg' ? 'w-12 h-12 text-base' : size === 'sm' ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm';
+  const dim = size === 'lg' ? 48 : size === 'sm' ? 32 : 40;
+  const font = size === 'lg' ? 16 : size === 'sm' ? 11 : 13;
   if (photo) {
     return (
-      <div className={`${dim} rounded-full shrink-0 overflow-hidden ring-2`} style={{ ringColor: 'rgba(96,192,240,0.4)' }}>
-        <img src={photo} alt="Avatar" className="w-full h-full object-cover" />
+      <div style={{ width: dim, height: dim, borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(96,192,240,0.4)', flexShrink: 0 }}>
+        <img src={photo} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
     );
   }
   return (
-    <div className={`${dim} rounded-full flex items-center justify-center font-black text-white shrink-0`} style={{ background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)' }}>
+    <div style={{
+      width: dim, height: dim, borderRadius: '50%', display: 'flex', alignItems: 'center',
+      justifyContent: 'center', fontWeight: 900, color: '#fff', flexShrink: 0, fontSize: font,
+      background: 'linear-gradient(135deg, #1F77B4 0%, #155D8B 100%)',
+      border: '2px solid rgba(96,192,240,0.3)',
+    }}>
       {initials}
     </div>
   );
@@ -66,12 +103,18 @@ function UserAvatar({ firstName, lastName, photo, size = 'md' }: { firstName?: s
 function KycBadge({ status }: { status?: string }) {
   const approved = status === 'approved';
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider" style={{
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 10px',
+      borderRadius: 999, fontSize: 9, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em',
       background: approved ? 'rgba(22,163,74,0.2)' : 'rgba(255,193,7,0.2)',
       color: approved ? '#16A34A' : '#F59E0B',
       border: `1px solid ${approved ? 'rgba(22,163,74,0.4)' : 'rgba(245,158,11,0.4)'}`,
     }}>
-      <span className={`w-1.5 h-1.5 rounded-full ${approved ? '' : 'animate-pulse'}`} style={{ background: approved ? '#16A34A' : '#F59E0B' }} />
+      <span style={{
+        width: 5, height: 5, borderRadius: '50%',
+        background: approved ? '#16A34A' : '#F59E0B',
+        animation: approved ? 'none' : 'pulse 1.5s infinite',
+      }} />
       {approved ? 'KYC Verified' : 'KYC Pending'}
     </span>
   );
@@ -84,84 +127,144 @@ function NavItem({ item, isActive, onClose }: { item: typeof navItems[0]; isActi
     <Link
       href={item.href}
       onClick={onClose}
-      className="flex items-center gap-3 py-2.5 pr-4 text-sm font-semibold transition-all duration-200 relative group rounded-xl mx-1"
       style={{
-        paddingLeft: isActive ? '13px' : '16px',
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '9px 12px',
+        borderRadius: 12, margin: '1px 6px',
         background: isActive
-          ? 'rgba(255,255,255,0.15)'
+          ? 'rgba(255,255,255,0.14)'
           : 'transparent',
-        borderLeft: isActive ? '3px solid #FFFFFF' : '3px solid transparent',
-        color: isActive ? '#FFFFFF' : isHighlight ? '#60C0F0' : 'rgba(234,242,248,0.75)',
+        borderLeft: isActive ? '3px solid #fff' : '3px solid transparent',
+        color: isActive ? '#FFFFFF' : isHighlight ? '#60C0F0' : 'rgba(234,242,248,0.72)',
+        fontSize: 13, fontWeight: 600,
+        textDecoration: 'none',
+        transition: 'all 0.18s ease',
+        cursor: 'pointer',
+        position: 'relative',
       }}
     >
-      <Icon className="w-[18px] h-[18px] shrink-0 transition-all duration-200" style={{
-        color: isActive ? '#FFFFFF' : isHighlight ? '#60C0F0' : 'rgba(234,242,248,0.6)',
+      <Icon size={16} style={{
+        color: isActive ? '#FFFFFF' : isHighlight ? '#60C0F0' : 'rgba(234,242,248,0.55)',
+        flexShrink: 0,
       }} />
-      <span className="flex-1 truncate">{item.name}</span>
+      <span style={{ flex: 1 }}>{item.name}</span>
       {isHighlight && !isActive && (
-        <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wide" style={{ background: '#1F77B4', color: '#FFFFFF' }}>LIVE</span>
+        <span style={{
+          fontSize: 8, fontWeight: 900, padding: '2px 6px', borderRadius: 999,
+          background: '#1F77B4', color: '#fff', letterSpacing: '0.08em',
+        }}>LIVE</span>
       )}
-      {isActive && (
-        <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: 'rgba(255,255,255,0.5)' }} />
-      )}
+      {isActive && <ChevronRight size={12} style={{ color: 'rgba(255,255,255,0.45)', flexShrink: 0 }} />}
     </Link>
   );
 }
 
 function SidebarContent({ onClose, user, logout, location }: any) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="px-5 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <SidebarLogo />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', overflow: 'hidden' }}>
+
+      {/* Decorative background glows */}
+      <div style={{
+        position: 'absolute', top: -60, left: -60, width: 200, height: 200,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(31,119,180,0.22) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: 80, right: -40, width: 160, height: 160,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute', top: '45%', left: -20, width: 120, height: 120,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(96,192,240,0.08) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* Logo */}
+      <div style={{ padding: '18px 18px 14px', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'relative', zIndex: 1 }}>
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <BrandLogo theme="dark" size="md" />
+        </Link>
       </div>
 
-      <div className="px-4 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="flex items-center gap-3 mb-3">
+      {/* User section */}
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'relative', zIndex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
           <UserAvatar firstName={user?.firstName} lastName={user?.lastName} photo={(user as any)?.profilePhoto} size="lg" />
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-white truncate leading-tight">
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {user?.firstName || 'Trader'} {user?.lastName || ''}
             </p>
-            <p className="text-[11px] truncate mt-0.5 font-medium" style={{ color: 'rgba(234,242,248,0.55)' }}>
+            <p style={{ fontSize: 10.5, color: 'rgba(234,242,248,0.5)', margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {user?.email || ''}
             </p>
           </div>
         </div>
         <KycBadge status={user?.kycStatus} />
+
+        {/* Animated mini chart */}
+        <div style={{
+          marginTop: 12, borderRadius: 12,
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          overflow: 'hidden',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px 0' }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(234,242,248,0.45)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Live Activity</span>
+            <span style={{ fontSize: 9, fontWeight: 800, color: '#60C0F0' }}>● LIVE</span>
+          </div>
+          <MiniChart />
+          <div style={{ padding: '4px 12px 8px', display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 9, color: 'rgba(234,242,248,0.35)' }}>Market Active</span>
+            <span style={{ fontSize: 9, fontWeight: 700, color: '#16A34A' }}>↑ +2.4%</span>
+          </div>
+        </div>
       </div>
 
-      <div className="px-5 pt-4 pb-1">
-        <p className="text-[9px] font-bold uppercase tracking-[0.14em]" style={{ color: 'rgba(234,242,248,0.4)' }}>Main Menu</p>
+      {/* Nav label */}
+      <div style={{ padding: '12px 18px 4px', position: 'relative', zIndex: 1 }}>
+        <p style={{ fontSize: 9, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(234,242,248,0.35)', margin: 0 }}>Main Menu</p>
       </div>
 
-      <nav className="flex-1 px-2 pb-2 overflow-y-auto space-y-0.5">
+      {/* Nav items */}
+      <nav style={{ flex: 1, overflowY: 'auto', paddingBottom: 8, position: 'relative', zIndex: 1 }}>
         {navItems.map((item) => {
           const isActive = location === item.href ||
             (item.href !== '/dashboard' && location.startsWith(item.href));
-          return (
-            <NavItem key={item.href} item={item} isActive={isActive} onClose={onClose} />
-          );
+          return <NavItem key={item.href} item={item} isActive={isActive} onClose={onClose} />;
         })}
       </nav>
 
-      <div className="px-3 pb-4 pt-2 space-y-2 mt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+      {/* Bottom buttons */}
+      <div style={{ padding: '8px 10px 12px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: 6, position: 'relative', zIndex: 1 }}>
         {user?.role === 'admin' && (
           <Link
             href="/admin"
             onClick={onClose}
-            className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-200"
-            style={{ background: 'rgba(255,255,255,0.12)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.2)' }}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              padding: '9px 16px', borderRadius: 10, fontWeight: 700, fontSize: 12,
+              background: 'rgba(255,255,255,0.12)', color: '#fff',
+              border: '1px solid rgba(255,255,255,0.2)', textDecoration: 'none',
+            }}
           >
-            <ShieldAlert className="w-4 h-4" />
+            <ShieldAlert size={14} />
             Admin Panel
           </Link>
         )}
         <button
           onClick={logout}
-          className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 font-semibold text-sm"
-          style={{ background: 'rgba(220,38,38,0.15)', color: '#FCA5A5', border: '1px solid rgba(220,38,38,0.25)' }}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            width: '100%', padding: '9px 16px', borderRadius: 10, fontWeight: 700, fontSize: 12,
+            background: 'rgba(220,38,38,0.15)', color: '#FCA5A5',
+            border: '1px solid rgba(220,38,38,0.25)', cursor: 'pointer',
+          }}
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut size={14} />
           Sign Out
         </button>
       </div>
@@ -178,9 +281,11 @@ function getPageTitle(location: string): string {
 function MobileBottomNav({ location, onMoreClick }: { location: string; onMoreClick: () => void }) {
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-stretch"
+      className="md:hidden"
       style={{
-        background: '#0B3C5D',
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40,
+        display: 'flex', alignItems: 'stretch',
+        background: '#0B1929',
         borderTop: '1px solid rgba(255,255,255,0.1)',
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
@@ -194,31 +299,31 @@ function MobileBottomNav({ location, onMoreClick }: { location: string; onMoreCl
           <Link
             key={item.href}
             href={item.href}
-            className="flex-1 flex flex-col items-center justify-center py-2.5 gap-1 relative transition-all active:scale-95"
+            style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+              justifyContent: 'center', padding: '10px 0', gap: 3, position: 'relative',
+              textDecoration: 'none', transition: 'all 0.15s',
+            }}
           >
-            {isHL && !isActive && (
-              <div className="absolute inset-x-3 inset-y-1.5 rounded-xl" style={{ background: 'rgba(96,192,240,0.1)', border: '1px solid rgba(96,192,240,0.2)' }} />
+            {isActive && (
+              <span style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 28, height: 2, borderRadius: 2, background: '#fff' }} />
             )}
-            <Icon
-              className="w-5 h-5 relative z-10 transition-colors"
-              style={{ color: isActive ? '#FFFFFF' : isHL ? '#60C0F0' : 'rgba(234,242,248,0.45)' }}
-            />
-            <span className="text-[10px] font-semibold relative z-10 transition-colors" style={{ color: isActive ? '#FFFFFF' : isHL ? '#60C0F0' : 'rgba(234,242,248,0.45)' }}>
+            <Icon size={18} style={{ color: isActive ? '#FFFFFF' : isHL ? '#60C0F0' : 'rgba(234,242,248,0.4)' }} />
+            <span style={{ fontSize: 10, fontWeight: 600, color: isActive ? '#FFFFFF' : isHL ? '#60C0F0' : 'rgba(234,242,248,0.4)' }}>
               {item.name}
             </span>
-            {isActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-white" />
-            )}
           </Link>
         );
       })}
-
       <button
         onClick={onMoreClick}
-        className="flex-1 flex flex-col items-center justify-center py-2.5 gap-1 active:scale-95 transition-all"
+        style={{
+          flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', padding: '10px 0', gap: 3, background: 'none', border: 'none', cursor: 'pointer',
+        }}
       >
-        <MoreHorizontal className="w-5 h-5" style={{ color: 'rgba(234,242,248,0.45)' }} />
-        <span className="text-[10px] font-semibold" style={{ color: 'rgba(234,242,248,0.45)' }}>More</span>
+        <MoreHorizontal size={18} style={{ color: 'rgba(234,242,248,0.4)' }} />
+        <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(234,242,248,0.4)' }}>More</span>
       </button>
     </nav>
   );
@@ -230,11 +335,36 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeMenu = () => setMobileMenuOpen(false);
 
-  return (
-    <div className="min-h-screen text-[#374151] flex overflow-x-hidden" style={{ background: '#F7F9FC' }}>
+  const SIDEBAR_W = 260;
+  const GAP = 12;
 
-      {/* Desktop Sidebar */}
-      <aside className="w-[260px] hidden md:flex flex-col fixed inset-y-0 left-0 z-20 sidebar-stealth">
+  return (
+    <div style={{ minHeight: '100vh', background: '#F0F2F5', display: 'flex', overflow: 'hidden' }}>
+
+      {/* Subtle dot pattern background */}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
+        backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)',
+        backgroundSize: '24px 24px',
+      }} />
+
+      {/* ── Desktop Floating Sidebar ── */}
+      <aside
+        className="hidden md:flex"
+        style={{
+          width: SIDEBAR_W,
+          position: 'fixed',
+          top: GAP,
+          bottom: GAP,
+          left: GAP,
+          zIndex: 30,
+          borderRadius: 20,
+          background: 'linear-gradient(170deg, #0d2035 0%, #0B1929 50%, #091520 100%)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.15)',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
         <SidebarContent onClose={closeMenu} user={user} logout={logout} location={location} />
       </aside>
 
@@ -243,25 +373,29 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {mobileMenuOpen && (
           <>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={closeMenu}
-              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }}
             />
             <motion.aside
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
+              initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-              className="w-[280px] sidebar-stealth flex flex-col fixed inset-y-0 left-0 z-50 shadow-2xl md:hidden"
+              style={{
+                width: 280, position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 50,
+                background: 'linear-gradient(170deg, #0d2035 0%, #0B1929 50%, #091520 100%)',
+                boxShadow: '4px 0 40px rgba(0,0,0,0.35)',
+                display: 'flex', flexDirection: 'column',
+              }}
             >
               <button
                 onClick={closeMenu}
-                className="absolute top-4 right-4 z-50 p-1.5 rounded-full transition-colors"
-                style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}
+                style={{
+                  position: 'absolute', top: 14, right: 14, zIndex: 60,
+                  padding: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.1)',
+                  color: 'rgba(255,255,255,0.7)', border: 'none', cursor: 'pointer',
+                }}
               >
-                <X className="w-4 h-4" />
+                <X size={16} />
               </button>
               <SidebarContent onClose={closeMenu} user={user} logout={logout} location={location} />
             </motion.aside>
@@ -269,38 +403,62 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* Main Area */}
-      <main className="flex-1 md:ml-[260px] flex flex-col min-h-screen">
+      {/* ── Main Area ── */}
+      <main style={{
+        flex: 1,
+        marginLeft: SIDEBAR_W + GAP * 2,
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        zIndex: 1,
+      }} className="md-main-area">
 
-        {/* Header */}
-        <header className="h-14 md:h-16 sticky top-0 z-30 flex items-center justify-between px-4 md:px-5 lg:px-8" style={{ background: '#FFFFFF', borderBottom: '1px solid #E5E7EB', boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+        {/* Floating Header */}
+        <header style={{
+          position: 'sticky', top: GAP, zIndex: 20,
+          margin: `${GAP}px ${GAP}px 0`,
+          borderRadius: 16,
+          background: 'rgba(255,255,255,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.9)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.06)',
+          height: 56,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 20px',
+        }}>
+          {/* Mobile hamburger */}
           <button
+            className="md:hidden"
             onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden p-2 rounded-lg transition-all"
-            style={{ color: '#6B7280' }}
+            style={{ padding: 6, color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer' }}
           >
-            <Menu className="w-5 h-5" />
+            <Menu size={20} />
           </button>
 
-          <div className="md:hidden flex items-center">
+          {/* Mobile logo */}
+          <div className="md:hidden">
             <BrandLogo theme="light" size="sm" />
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
-            <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(to bottom, #1F77B4, #155D8B)' }} />
-            <h2 className="text-[15px] font-bold tracking-tight" style={{ color: '#111827' }}>
+          {/* Desktop page title */}
+          <div className="hidden md:flex" style={{ alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 3, height: 20, borderRadius: 2, background: 'linear-gradient(to bottom, #1F77B4, #155D8B)' }} />
+            <h2 style={{ fontSize: 15, fontWeight: 800, color: '#111827', margin: 0, letterSpacing: '-0.01em' }}>
               {getPageTitle(location)}
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-3 ml-auto">
-            <div className="hidden sm:flex h-5 w-px" style={{ background: '#E5E7EB' }} />
-            <Link href="/dashboard/profile" className="flex items-center gap-2.5 group">
-              <div className="hidden sm:block text-right">
-                <p className="text-[13px] font-semibold leading-tight" style={{ color: '#111827' }}>
+          {/* Right side */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 'auto' }}>
+            <div className="hidden md:flex" style={{ height: 18, width: 1, background: '#E5E7EB' }} />
+            <Link href="/dashboard/profile" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+              <div className="hidden sm:block" style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: 12.5, fontWeight: 700, color: '#111827', margin: 0, lineHeight: 1.3 }}>
                   {user?.firstName} {user?.lastName}
                 </p>
-                <p className="text-[11px] font-medium leading-tight mt-0.5 truncate max-w-[140px]" style={{ color: '#6B7280' }}>
+                <p style={{ fontSize: 10.5, color: '#6B7280', margin: 0, lineHeight: 1.3, maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {user?.email}
                 </p>
               </div>
@@ -310,7 +468,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 p-4 md:p-5 lg:p-8 min-h-0 pb-24 md:pb-8" style={{ background: '#F7F9FC' }}>
+        <div style={{
+          flex: 1, padding: `${GAP}px ${GAP}px ${GAP * 2}px`,
+          paddingBottom: 96,
+        }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={location}
@@ -327,6 +488,15 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav location={location} onMoreClick={() => setMobileMenuOpen(true)} />
+
+      {/* Responsive style for main area on mobile */}
+      <style>{`
+        @media (max-width: 767px) {
+          .md-main-area {
+            margin-left: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
