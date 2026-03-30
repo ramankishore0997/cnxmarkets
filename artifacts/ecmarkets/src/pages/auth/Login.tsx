@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Mail, Lock, Loader2, Eye, EyeOff, CheckCircle2, AlertCircle, KeyRound, ArrowLeft, ExternalLink, ShieldCheck, Zap, Award } from 'lucide-react';
 import { useLogin } from '@workspace/api-client-react';
 import { useAuthState } from '@/hooks/use-auth-state';
-import { EcmLogo } from '@/components/shared/EcmLogo';
+import { EcmLogo, NavbarLogo } from '@/components/shared/EcmLogo';
 
 const SUPABASE_URL = 'https://walzicfjkwiifeldzppx.supabase.co';
 
@@ -133,12 +133,7 @@ export function Login() {
 
         <div className="relative z-10">
           <Link href="/">
-            <div className="flex items-center gap-3 cursor-pointer">
-              <EcmLogo size={40} />
-              <span className="text-white font-bold text-xl tracking-tight">
-                ECMarket<span style={{ color: '#60C0F0' }}> Pro</span>
-              </span>
-            </div>
+            <NavbarLogo theme="dark" />
           </Link>
         </div>
 
@@ -189,12 +184,7 @@ export function Login() {
           {/* Mobile brand */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
             <Link href="/">
-              <div className="flex items-center gap-3 cursor-pointer">
-                <EcmLogo size={36} />
-                <span className="font-bold text-lg" style={{ color: "#111827" }}>
-                  ECMarket<span style={{ color: '#1F77B4' }}> Pro</span>
-                </span>
-              </div>
+              <NavbarLogo theme="light" />
             </Link>
           </div>
 

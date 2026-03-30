@@ -43,7 +43,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         >
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <BrandLogo theme="light" size="md" />
+            <NavbarLogo theme="light" />
           </Link>
 
           {/* Desktop Nav */}

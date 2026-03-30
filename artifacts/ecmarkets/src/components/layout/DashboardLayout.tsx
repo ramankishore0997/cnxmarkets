@@ -192,9 +192,9 @@ function SidebarContent({ onClose, user, logout, location }: any) {
       }} />
 
       {/* Logo */}
-      <div style={{ padding: '18px 18px 14px', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'relative', zIndex: 1 }}>
+      <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'relative', zIndex: 1 }}>
         <Link href="/" style={{ textDecoration: 'none' }}>
-          <BrandLogo theme="dark" size="md" />
+          <NavbarLogo theme="dark" />
         </Link>
       </div>
 
@@ -443,7 +443,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
           {/* Mobile logo */}
           <div className="md:hidden">
-            <BrandLogo theme="light" size="sm" />
+            <NavbarLogo theme="light" />
           </div>
 
           {/* Desktop page title */}
