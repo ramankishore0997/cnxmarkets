@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import {
   Shield, Zap, TrendingUp, ChevronDown, ChevronUp,
   ArrowRight, Users, Globe, Lock, BarChart2, Wallet, Clock,
-  Star, CheckCircle2, Building2
+  Star, CheckCircle2, Building2, Rocket, Target, Copy,
+  Bitcoin, DollarSign, Activity, ChevronRight
 } from 'lucide-react';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 
-const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55 } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
 
-// --- FAQ ---
 const FAQS = [
   { q: 'How long does it take to process a withdrawal?', a: 'Withdrawals are processed within 1 hour to your registered bank account, UPI ID, or crypto wallet — one of the fastest in the industry.' },
   { q: 'What leverage does ECMarket Pro offer?', a: 'We offer leverage up to 1:2000 on major forex pairs, allowing you to maximise your trading power with minimal capital.' },
@@ -20,104 +20,97 @@ const FAQS = [
   { q: 'What deposit methods are accepted?', a: 'We support UPI, Bank Transfer (NEFT/RTGS/IMPS), and Crypto deposits. All deposits are instant and there are no deposit fees.' },
 ];
 
-// Phone mockup component
-function PhoneMockup() {
-  const [prices, setPrices] = useState([
-    { pair: 'EUR/USD', price: 1.0921, change: '+0.12%', up: true },
-    { pair: 'GBP/USD', price: 1.2748, change: '-0.08%', up: false },
-    { pair: 'XAU/USD', price: 2341.5, change: '+0.82%', up: true },
-    { pair: 'BTC/USD', price: 67200, change: '+1.24%', up: true },
-  ]);
+// ─── Live Prices Hook ───────────────────────────────────────────────────────
+const BASE_PRICES: Record<string, { price: number; label: string; cat: string }> = {
+  'EUR/USD': { price: 1.0921, label: 'Euro / US Dollar', cat: 'forex' },
+  'GBP/USD': { price: 1.2748, label: 'British Pound / USD', cat: 'forex' },
+  'USD/JPY': { price: 149.82, label: 'US Dollar / Yen', cat: 'forex' },
+  'AUD/USD': { price: 0.6542, label: 'Australian Dollar', cat: 'forex' },
+  'USD/INR': { price: 83.46, label: 'US Dollar / Rupee', cat: 'forex' },
+  'XAU/USD': { price: 2341.5, label: 'Gold / US Dollar', cat: 'commodity' },
+  'BTC/USD': { price: 67200, label: 'Bitcoin / USD', cat: 'crypto' },
+  'ETH/USD': { price: 3480, label: 'Ethereum / USD', cat: 'crypto' },
+  'US30':    { price: 38420, label: 'Dow Jones 30', cat: 'index' },
+  'NAS100':  { price: 17850, label: 'NASDAQ 100', cat: 'index' },
+};
 
+function useLivePrices() {
+  const [prices, setPrices] = useState(() =>
+    Object.entries(BASE_PRICES).map(([sym, d]) => ({
+      sym, ...d, change: (Math.random() - 0.5) * 0.8, up: Math.random() > 0.5
+    }))
+  );
   useEffect(() => {
     const iv = setInterval(() => {
       setPrices(prev => prev.map(p => {
-        const delta = (Math.random() - 0.48) * p.price * 0.0004;
-        const newPrice = +(p.price + delta).toFixed(p.price > 1000 ? 1 : 4);
-        const chg = +(((newPrice - p.price) / p.price) * 100).toFixed(2);
-        return { ...p, price: newPrice, change: `${chg >= 0 ? '+' : ''}${chg}%`, up: chg >= 0 };
+        const delta = (Math.random() - 0.49) * 0.3;
+        const change = +(p.change + (Math.random() - 0.5) * 0.1).toFixed(2);
+        return { ...p, change: Math.max(-5, Math.min(5, change)), up: change >= 0 };
+      }));
+    }, 2200);
+    return () => clearInterval(iv);
+  }, []);
+  return prices;
+}
+
+// ─── Phone Mockup ────────────────────────────────────────────────────────────
+function PhoneMockup() {
+  const [prices, setPrices] = useState([
+    { pair: 'EUR/USD', price: 1.0921, up: true },
+    { pair: 'GBP/USD', price: 1.2748, up: false },
+    { pair: 'XAU/USD', price: 2341.5, up: true },
+    { pair: 'BTC/USD', price: 67200, up: true },
+  ]);
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setPrices(prev => prev.map(p => {
+        const d = (Math.random() - 0.48) * p.price * 0.0003;
+        return { ...p, price: +(p.price + d).toFixed(p.price > 1000 ? 1 : 4), up: d >= 0 };
       }));
     }, 2000);
     return () => clearInterval(iv);
   }, []);
 
   return (
-    <div
-      className="relative mx-auto"
-      style={{
-        width: 260,
-        height: 520,
-        background: '#1a1a2e',
-        borderRadius: 38,
-        border: '8px solid #2d2d4a',
-        boxShadow: '0 40px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.03)',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Notch */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-6 rounded-b-xl z-10" style={{ background: '#2d2d4a' }} />
-
-      {/* Screen content */}
-      <div className="h-full flex flex-col" style={{ background: 'linear-gradient(160deg, #0d1b35 0%, #0a1628 100%)' }}>
-        {/* App header */}
-        <div className="pt-8 px-4 pb-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">ECMarket Pro</span>
-            <div className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-[9px] text-green-400 font-bold">LIVE</span>
+    <div style={{ width: 240, height: 490, background: '#16213e', borderRadius: 36, border: '7px solid #2a2a4a', boxShadow: '0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05)', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 72, height: 22, background: '#2a2a4a', borderRadius: '0 0 14px 14px', zIndex: 10 }} />
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(160deg, #0d1b35 0%, #091422 100%)' }}>
+        <div style={{ padding: '32px 16px 12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <span style={{ fontSize: 9, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase' }}>ECMarket Pro</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80', animation: 'pulse 2s infinite' }} />
+              <span style={{ fontSize: 8, color: '#4ade80', fontWeight: 800 }}>LIVE</span>
             </div>
           </div>
-
-          {/* Balance */}
-          <div className="mt-2">
-            <p className="text-[10px] text-white/40 font-medium">Portfolio Balance</p>
-            <p className="text-2xl font-black text-white tracking-tight">$12,480.50</p>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span className="text-[11px] font-bold text-green-400">▲ +$284.20</span>
-              <span className="text-[10px] text-white/40">today</span>
-            </div>
-          </div>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', margin: '0 0 2px', fontWeight: 600 }}>Portfolio Balance</p>
+          <p style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: 0, letterSpacing: -0.5 }}>$12,480.50</p>
+          <p style={{ fontSize: 10, color: '#4ade80', fontWeight: 700, margin: '2px 0 0' }}>▲ +$284.20 today</p>
         </div>
-
-        {/* Divider */}
         <div style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
-
-        {/* Prices */}
-        <div className="flex-1 px-3 pt-3 space-y-1 overflow-hidden">
-          <p className="text-[9px] text-white/30 uppercase tracking-widest font-bold px-1 mb-2">Live Markets</p>
+        <div style={{ flex: 1, padding: '10px 12px', overflow: 'hidden' }}>
+          <p style={{ fontSize: 8, color: 'rgba(255,255,255,0.25)', letterSpacing: 2, textTransform: 'uppercase', fontWeight: 800, marginBottom: 8 }}>Live Markets</p>
           {prices.map((p, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between px-2 py-2 rounded-xl"
-              style={{ background: 'rgba(255,255,255,0.04)' }}
-            >
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: '7px 10px', marginBottom: 5 }}>
               <div>
-                <p className="text-[11px] font-bold text-white">{p.pair}</p>
-                <p className={`text-[9px] font-semibold ${p.up ? 'text-green-400' : 'text-red-400'}`}>{p.change}</p>
+                <p style={{ fontSize: 10, fontWeight: 800, color: '#fff', margin: 0 }}>{p.pair}</p>
+                <p style={{ fontSize: 8, color: p.up ? '#4ade80' : '#f87171', fontWeight: 700, margin: 0 }}>{p.up ? '▲' : '▼'}</p>
               </div>
-              <p className="text-[11px] font-black text-white tabular-nums">
+              <p style={{ fontSize: 10, fontWeight: 900, color: '#fff', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
                 {p.price.toLocaleString(undefined, { minimumFractionDigits: p.price > 1000 ? 1 : 4, maximumFractionDigits: p.price > 1000 ? 1 : 4 })}
               </p>
             </div>
           ))}
         </div>
-
-        {/* Bottom actions */}
-        <div className="px-3 pb-5 pt-3">
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', marginBottom: 12 }} />
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { label: 'Deposit', icon: '↓', color: '#1F77B4' },
-              { label: 'Trade', icon: '📈', color: '#16A34A' },
-              { label: 'Withdraw', icon: '↑', color: '#374151' },
-            ].map(a => (
-              <div key={a.label} className="flex flex-col items-center gap-1">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
-                  style={{ background: 'rgba(255,255,255,0.08)', color: '#fff' }}>
-                  {a.icon}
+        <div style={{ padding: '8px 12px 20px' }}>
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', marginBottom: 10 }} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+            {[{ label: 'Deposit', bg: '#1F77B4' }, { label: 'Trade', bg: '#16A34A' }, { label: 'Withdraw', bg: '#374151' }].map(a => (
+              <div key={a.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <div style={{ width: 32, height: 32, borderRadius: '50%', background: a.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 12, color: '#fff' }}>{a.label === 'Deposit' ? '↓' : a.label === 'Trade' ? '📈' : '↑'}</span>
                 </div>
-                <span className="text-[9px] text-white/50 font-medium">{a.label}</span>
+                <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>{a.label}</span>
               </div>
             ))}
           </div>
@@ -127,35 +120,288 @@ function PhoneMockup() {
   );
 }
 
-// Counter
+// ─── Counter ─────────────────────────────────────────────────────────────────
 function Counter({ end, suffix = '', prefix = '', decimals = 0 }: { end: number; suffix?: string; prefix?: string; decimals?: number }) {
   const [val, setVal] = useState(0);
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setStarted(true); obs.disconnect(); }
-    }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStarted(true); obs.disconnect(); } }, { threshold: 0.1 });
+    obs.observe(el); return () => obs.disconnect();
   }, []);
   useEffect(() => {
     if (!started) return;
-    const dur = 1800;
     let start: number | null = null;
-    const step = (ts: number) => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / dur, 1);
-      setVal(+(p * end).toFixed(decimals));
-      if (p < 1) requestAnimationFrame(step);
-    };
+    const step = (ts: number) => { if (!start) start = ts; const p = Math.min((ts - start) / 1800, 1); setVal(+(p * end).toFixed(decimals)); if (p < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   }, [started, end, decimals]);
   return <span ref={ref}>{prefix}{decimals ? val.toFixed(decimals) : val.toLocaleString()}{suffix}</span>;
 }
 
+// ─── FAN CARDS (Lemonn arc style) ────────────────────────────────────────────
+const FAN_FEATURES = [
+  { icon: '💱', title: 'Forex Trading', desc: '80+ currency pairs with 0.0 pip spreads', color: '#1F77B4' },
+  { icon: '₿', title: 'Crypto CFDs', desc: 'BTC, ETH & top 30 coins, 24/7', color: '#F7931A' },
+  { icon: '🥇', title: 'Gold & Silver', desc: 'XAU/USD with lowest spreads', color: '#FFD700' },
+  { icon: '📊', title: 'Index CFDs', desc: 'US30, NAS100, UK100 & more', color: '#16A34A' },
+  { icon: '⚡', title: 'Binary Options', desc: 'High/Low trades up to 95% payout', color: '#7C3AED' },
+  { icon: '👥', title: 'Copy Trading', desc: 'Copy top traders automatically', color: '#1F77B4' },
+  { icon: '🤖', title: 'Algo Trading', desc: 'Run your EAs with MT4 support', color: '#DC2626' },
+];
+
+const FAN_ANGLES = [-36, -24, -12, 0, 12, 24, 36];
+const FAN_Y      = [80,   45,  18,  0, 18, 45, 80];
+const FAN_SCALE  = [0.78, 0.86, 0.93, 1, 0.93, 0.86, 0.78];
+
+function FanCards() {
+  const [active, setActive] = useState(3);
+  return (
+    <div className="relative flex justify-center items-end" style={{ height: 420, overflow: 'visible' }}>
+      {FAN_FEATURES.map((f, i) => (
+        <motion.div
+          key={i}
+          onClick={() => setActive(i)}
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.08, duration: 0.5 }}
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: '50%',
+            marginLeft: -72,
+            width: 144,
+            height: 200,
+            borderRadius: 20,
+            background: active === i ? f.color : '#fff',
+            border: active === i ? 'none' : '1px solid #e8e8e8',
+            boxShadow: active === i
+              ? `0 20px 50px ${f.color}55`
+              : '0 4px 20px rgba(0,0,0,0.08)',
+            transform: `rotate(${FAN_ANGLES[i]}deg) translateY(${FAN_Y[i]}px) scale(${active === i ? FAN_SCALE[i] * 1.08 : FAN_SCALE[i]})`,
+            transformOrigin: 'bottom center',
+            cursor: 'pointer',
+            transition: 'all 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+            zIndex: active === i ? 20 : 10 - Math.abs(i - 3),
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            userSelect: 'none',
+          }}
+        >
+          <div style={{ fontSize: 36, marginBottom: 10 }}>{f.icon}</div>
+          <p style={{ fontSize: 12, fontWeight: 900, color: active === i ? '#fff' : '#121319', textAlign: 'center', margin: '0 0 6px', lineHeight: 1.3 }}>{f.title}</p>
+          <p style={{ fontSize: 10, color: active === i ? 'rgba(255,255,255,0.8)' : '#6B7280', textAlign: 'center', margin: 0, lineHeight: 1.4 }}>{f.desc}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// ─── INSTRUMENT PERSPECTIVE STACK ─────────────────────────────────────────────
+const INSTRUMENT_CARDS = [
+  { sym: 'EUR/USD', ret: '+0.12%', desc: 'Moved +0.12% in last 24h', up: true, cat: 'Forex' },
+  { sym: 'XAU/USD', ret: '+0.82%', desc: 'Gold hits weekly high', up: true, cat: 'Gold' },
+  { sym: 'BTC/USD', ret: '+1.24%', desc: 'Bitcoin breaks resistance', up: true, cat: 'Crypto' },
+  { sym: 'GBP/USD', ret: '-0.08%', desc: 'Pound under pressure', up: false, cat: 'Forex' },
+  { sym: 'NAS100',  ret: '+0.54%', desc: 'Tech stocks rally', up: true, cat: 'Index' },
+];
+
+function PerspectiveStack() {
+  const [activeIdx, setActiveIdx] = useState(2);
+  const offsets = [-2, -1, 0, 1, 2];
+  return (
+    <div className="relative flex justify-center items-center" style={{ height: 320 }}>
+      {INSTRUMENT_CARDS.map((card, i) => {
+        const offset = i - activeIdx;
+        const absOffset = Math.abs(offset);
+        return (
+          <motion.div
+            key={i}
+            onClick={() => setActiveIdx(i)}
+            style={{
+              position: 'absolute',
+              width: 220,
+              background: i === activeIdx ? '#1F77B4' : '#fff',
+              border: i === activeIdx ? 'none' : '1px solid #e8e8e8',
+              borderRadius: 20,
+              padding: 24,
+              boxShadow: i === activeIdx ? '0 20px 50px rgba(31,119,180,0.4)' : '0 4px 20px rgba(0,0,0,0.08)',
+              transform: `translateX(${offset * 110}px) scale(${1 - absOffset * 0.08}) translateZ(0)`,
+              zIndex: INSTRUMENT_CARDS.length - absOffset,
+              cursor: 'pointer',
+              opacity: absOffset > 2 ? 0 : 1 - absOffset * 0.15,
+              transition: 'all 0.4s cubic-bezier(0.34,1.3,0.64,1)',
+            }}
+          >
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <span style={{ fontSize: 10, fontWeight: 700, color: i === activeIdx ? 'rgba(255,255,255,0.6)' : '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{card.cat}</span>
+                <p style={{ fontSize: 18, fontWeight: 900, color: i === activeIdx ? '#fff' : '#121319', margin: '2px 0 0' }}>{card.sym}</p>
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 800, color: card.up ? '#4ade80' : '#f87171', background: card.up ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)', padding: '3px 8px', borderRadius: 8 }}>{card.ret}</span>
+            </div>
+            <p style={{ fontSize: 11, color: i === activeIdx ? 'rgba(255,255,255,0.7)' : '#9CA3AF', margin: '0 0 16px' }}>{card.desc}</p>
+            <div style={{ height: 40, display: 'flex', alignItems: 'flex-end', gap: 3 }}>
+              {[35,52,44,62,55,70,62,78,68,85].map((h, j) => (
+                <div key={j} style={{ flex: 1, borderRadius: 3, height: `${h}%`, background: card.up ? (i === activeIdx ? 'rgba(255,255,255,0.4)' : 'rgba(74,222,128,0.5)') : 'rgba(248,113,113,0.4)' }} />
+              ))}
+            </div>
+            <button style={{ width: '100%', marginTop: 14, padding: '8px 0', borderRadius: 10, border: 'none', background: i === activeIdx ? 'rgba(255,255,255,0.2)' : 'rgba(31,119,180,0.08)', color: i === activeIdx ? '#fff' : '#1F77B4', fontWeight: 800, fontSize: 12, cursor: 'pointer' }}>
+              Trade Now →
+            </button>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── LIVE MARKET TABS ─────────────────────────────────────────────────────────
+const TABS = ['Forex', 'Crypto', 'Indices', 'Commodities'];
+const MARKET_DATA: Record<string, Array<{ sym: string; price: string; change: string; up: boolean }>> = {
+  Forex:       [{ sym:'EUR/USD',price:'1.0921',change:'+0.12%',up:true},{ sym:'GBP/USD',price:'1.2748',change:'-0.08%',up:false},{ sym:'USD/JPY',price:'149.82',change:'+0.22%',up:true},{ sym:'AUD/USD',price:'0.6542',change:'-0.14%',up:false},{ sym:'USD/INR',price:'83.46',change:'+0.04%',up:true},{ sym:'EUR/GBP',price:'0.8563',change:'+0.09%',up:true}],
+  Crypto:      [{ sym:'BTC/USD',price:'67,200',change:'+1.24%',up:true},{ sym:'ETH/USD',price:'3,480',change:'+0.87%',up:true},{ sym:'BNB/USD',price:'412',change:'-0.32%',up:false},{ sym:'XRP/USD',price:'0.6120',change:'+2.1%',up:true},{ sym:'SOL/USD',price:'178',change:'+1.8%',up:true},{ sym:'ADA/USD',price:'0.455',change:'-0.9%',up:false}],
+  Indices:     [{ sym:'US30',price:'38,420',change:'+0.45%',up:true},{ sym:'NAS100',price:'17,850',change:'+0.62%',up:true},{ sym:'SPX500',price:'5,210',change:'+0.38%',up:true},{ sym:'UK100',price:'8,120',change:'-0.12%',up:false},{ sym:'GER40',price:'18,340',change:'+0.28%',up:true},{ sym:'JPN225',price:'38,800',change:'-0.44%',up:false}],
+  Commodities: [{ sym:'XAU/USD',price:'2,341',change:'+0.82%',up:true},{ sym:'XAG/USD',price:'27.45',change:'+1.1%',up:true},{ sym:'WTI OIL',price:'81.20',change:'-0.38%',up:false},{ sym:'BRENT',price:'85.40',change:'-0.21%',up:false},{ sym:'NAT GAS',price:'2.185',change:'+0.9%',up:true},{ sym:'COPPER',price:'4.42',change:'+0.5%',up:true}],
+};
+
+function LiveMarketTabs() {
+  const [tab, setTab] = useState('Forex');
+  const items = MARKET_DATA[tab];
+  return (
+    <div>
+      {/* Tab buttons */}
+      <div className="flex gap-2 mb-6 flex-wrap">
+        {TABS.map(t => (
+          <button key={t} onClick={() => setTab(t)}
+            style={{ padding: '8px 20px', borderRadius: 999, border: 'none', fontWeight: 800, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s', background: tab === t ? '#121319' : '#f0f0f0', color: tab === t ? '#fff' : '#374151' }}>
+            {t}
+          </button>
+        ))}
+      </div>
+
+      {/* Gainers / Movers split */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 800, color: '#16A34A', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <TrendingUp size={15} /> Top Gainers
+          </p>
+          {items.filter(i => i.up).slice(0, 3).map(item => (
+            <div key={item.sym} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: '#fff', borderRadius: 12, marginBottom: 6, border: '1px solid #e8e8e8' }}>
+              <div>
+                <p style={{ fontWeight: 800, color: '#121319', margin: 0, fontSize: 13 }}>{item.sym}</p>
+                <p style={{ fontSize: 11, color: '#9CA3AF', margin: 0 }}>{item.sym.includes('/') ? item.sym.split('/')[1] + ' pair' : 'Index'}</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontWeight: 900, color: '#121319', margin: 0, fontSize: 14, fontVariantNumeric: 'tabular-nums' }}>{item.price}</p>
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#16A34A', background: 'rgba(22,163,74,0.1)', padding: '1px 6px', borderRadius: 6 }}>{item.change}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 800, color: '#DC2626', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <TrendingUp size={15} style={{ transform: 'scaleY(-1)' }} /> Top Movers
+          </p>
+          {items.filter(i => !i.up).slice(0, 3).map(item => (
+            <div key={item.sym} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: '#fff', borderRadius: 12, marginBottom: 6, border: '1px solid #e8e8e8' }}>
+              <div>
+                <p style={{ fontWeight: 800, color: '#121319', margin: 0, fontSize: 13 }}>{item.sym}</p>
+                <p style={{ fontSize: 11, color: '#9CA3AF', margin: 0 }}>{item.sym.includes('/') ? item.sym.split('/')[1] + ' pair' : 'Index'}</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontWeight: 900, color: '#121319', margin: 0, fontSize: 14, fontVariantNumeric: 'tabular-nums' }}>{item.price}</p>
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#DC2626', background: 'rgba(220,38,38,0.1)', padding: '1px 6px', borderRadius: 6 }}>{item.change}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="text-center mt-6">
+        <Link href="/markets">
+          <a style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 28px', borderRadius: 999, border: '2px solid #121319', background: 'transparent', color: '#121319', fontWeight: 800, fontSize: 13, cursor: 'pointer', textDecoration: 'none' }}>
+            View All Instruments <ArrowRight size={14} />
+          </a>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── PROFIT CALCULATOR ────────────────────────────────────────────────────────
+function ProfitCalculator() {
+  const [investment, setInvestment] = useState(10000);
+  const [leverage, setLeverage] = useState(100);
+  const [move, setMove] = useState(1);
+  const profit = +(investment * (leverage / 100) * (move / 100)).toFixed(2);
+  const roi = +((profit / investment) * 100).toFixed(1);
+
+  return (
+    <div style={{ background: '#111827', borderRadius: 24, padding: 28 }}>
+      <p style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 20 }}>Profit Calculator</p>
+
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Investment Amount</span>
+          <span style={{ fontSize: 13, color: '#fff', fontWeight: 800 }}>₹{investment.toLocaleString()}</span>
+        </div>
+        <input type="range" min={1000} max={500000} step={1000} value={investment} onChange={e => setInvestment(+e.target.value)}
+          style={{ width: '100%', accentColor: '#1F77B4', cursor: 'pointer' }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>₹1K</span>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>₹5L</span>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Leverage</span>
+          <span style={{ fontSize: 13, color: '#1F77B4', fontWeight: 800 }}>1:{leverage}</span>
+        </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {[10, 50, 100, 500, 1000, 2000].map(l => (
+            <button key={l} onClick={() => setLeverage(l)}
+              style={{ padding: '5px 12px', borderRadius: 8, border: 'none', background: leverage === l ? '#1F77B4' : 'rgba(255,255,255,0.08)', color: leverage === l ? '#fff' : 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>
+              1:{l}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Market Move</span>
+          <span style={{ fontSize: 13, color: '#fff', fontWeight: 800 }}>{move}%</span>
+        </div>
+        <input type="range" min={0.1} max={10} step={0.1} value={move} onChange={e => setMove(+e.target.value)}
+          style={{ width: '100%', accentColor: '#16A34A', cursor: 'pointer' }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>0.1%</span>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>10%</span>
+        </div>
+      </div>
+
+      <div style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 16, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: '0 0 4px' }}>Estimated Profit</p>
+          <p style={{ fontSize: 26, fontWeight: 900, color: '#4ade80', margin: 0 }}>₹{profit.toLocaleString()}</p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: '0 0 4px' }}>ROI</p>
+          <p style={{ fontSize: 22, fontWeight: 900, color: '#4ade80', margin: 0 }}>{roi}%</p>
+        </div>
+      </div>
+      <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 10, textAlign: 'center' }}>* Illustrative only. Past performance ≠ future results.</p>
+    </div>
+  );
+}
+
+// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [email, setEmail] = useState('');
@@ -164,225 +410,115 @@ export function Home() {
     <PublicLayout>
 
       {/* ══════════════════════════════════════════
-          HERO — Lemonn style centered phone mockup
+          §1 HERO — Centered Phone Mockup
       ══════════════════════════════════════════ */}
-      <section className="relative overflow-hidden pt-8 pb-0" style={{ background: '#F5F5F5' }}>
+      <section style={{ background: '#F5F5F5', position: 'relative', overflow: 'hidden' }}>
 
-        {/* Decorative SVG curves (like Lemonn's green squiggles) */}
-        <svg className="absolute left-0 top-1/3 w-48 md:w-64 opacity-20 pointer-events-none" viewBox="0 0 200 300" fill="none">
-          <path d="M180 20 Q20 80 160 160 Q20 200 140 280" stroke="#1F77B4" strokeWidth="3" strokeLinecap="round" fill="none"/>
+        {/* Decorative curves */}
+        <svg style={{ position: 'absolute', left: 0, top: '30%', width: 220, opacity: 0.15, pointerEvents: 'none' }} viewBox="0 0 200 300" fill="none">
+          <path d="M180 20 Q20 80 160 160 Q20 200 140 280" stroke="#1F77B4" strokeWidth="3.5" strokeLinecap="round"/>
         </svg>
-        <svg className="absolute right-0 top-1/4 w-48 md:w-64 opacity-20 pointer-events-none" viewBox="0 0 200 300" fill="none">
-          <path d="M20 20 Q180 80 40 160 Q180 200 60 280" stroke="#1F77B4" strokeWidth="3" strokeLinecap="round" fill="none"/>
+        <svg style={{ position: 'absolute', right: 0, top: '20%', width: 220, opacity: 0.15, pointerEvents: 'none' }} viewBox="0 0 200 300" fill="none">
+          <path d="M20 20 Q180 80 40 160 Q180 200 60 280" stroke="#1F77B4" strokeWidth="3.5" strokeLinecap="round"/>
         </svg>
 
         {/* Headline */}
-        <motion.div
-          initial="hidden" animate="visible" variants={stagger}
-          className="text-center px-4 pt-4 pb-6 relative z-10"
-        >
-          <motion.div variants={fadeUp} className="mb-4">
-            <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest"
-              style={{ background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.2)', color: '#1F77B4' }}>
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1F77B4] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#1F77B4]" />
-              </span>
+        <motion.div initial="hidden" animate="visible" variants={stagger} style={{ textAlign: 'center', padding: '36px 16px 24px', position: 'relative', zIndex: 1 }}>
+          <motion.div variants={fadeUp} style={{ marginBottom: 16 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 999, padding: '6px 16px', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', background: 'rgba(31,119,180,0.1)', border: '1px solid rgba(31,119,180,0.2)', color: '#1F77B4' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#1F77B4', display: 'inline-block', boxShadow: '0 0 0 3px rgba(31,119,180,0.25)' }} />
               UAE Regulated Forex Broker
             </span>
           </motion.div>
-
-          <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl font-black text-[#121319] leading-[1.05] tracking-tight mb-4">
+          <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(36px, 6vw, 68px)', fontWeight: 900, color: '#121319', lineHeight: 1.05, letterSpacing: -1, marginBottom: 16 }}>
             Trade Forex,<br />
             <span style={{ background: 'linear-gradient(90deg, #1F77B4 0%, #16A34A 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Crypto & More.
             </span>
           </motion.h1>
-
-          <motion.p variants={fadeUp} className="text-base md:text-lg text-[#6B7280] max-w-lg mx-auto mb-6 leading-relaxed">
+          <motion.p variants={fadeUp} style={{ fontSize: 17, color: '#6B7280', maxWidth: 480, margin: '0 auto 24px', lineHeight: 1.7 }}>
             Access <strong style={{ color: '#1F77B4' }}>200+ global markets</strong> with leverage up to <strong style={{ color: '#1F77B4' }}>1:2000</strong>,
-            spreads from <strong style={{ color: '#1F77B4' }}>0.0 pips</strong>, instant deposits & <strong style={{ color: '#1F77B4' }}>1-hour withdrawals</strong>.
+            spreads from <strong style={{ color: '#1F77B4' }}>0.0 pips</strong> & <strong style={{ color: '#1F77B4' }}>1-hour withdrawals</strong>.
           </motion.p>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-3 mb-8">
+          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 24 }}>
             <Link href="/auth/register">
-              <a className="flex items-center gap-2 px-8 py-3.5 text-base font-bold rounded-full text-white transition-all"
-                style={{ background: '#1F77B4', boxShadow: '0 8px 24px rgba(31,119,180,0.35)' }}>
-                Open Free Account <ArrowRight className="h-4 w-4" />
+              <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 32px', borderRadius: 999, background: '#1F77B4', color: '#fff', fontWeight: 800, fontSize: 15, textDecoration: 'none', boxShadow: '0 8px 28px rgba(31,119,180,0.35)' }}>
+                Open Free Account <ArrowRight size={16} />
               </a>
             </Link>
             <Link href="/markets">
-              <a className="flex items-center gap-2 px-7 py-3.5 text-base font-semibold rounded-full transition-all"
-                style={{ background: '#fff', border: '1px solid #e8e8e8', color: '#374151', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+              <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 28px', borderRadius: 999, background: '#fff', border: '1px solid #e8e8e8', color: '#374151', fontWeight: 700, fontSize: 15, textDecoration: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                 View Markets
               </a>
             </Link>
           </motion.div>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-5 text-[13px] text-[#6B7280]">
-            {['Spreads from 0.0 pips', 'Leverage up to 1:2000', 'Withdraw in 1 hour'].map(t => (
-              <span key={t} className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-[#1F77B4] shrink-0" /> {t}
+          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {['Spreads from 0.0 pips','Leverage up to 1:2000','Withdraw in 1 hour'].map(t => (
+              <span key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#6B7280' }}>
+                <CheckCircle2 size={14} color="#1F77B4" /> {t}
               </span>
             ))}
           </motion.div>
         </motion.div>
 
-        {/* Phone mockup + floating badges */}
-        <div className="relative flex justify-center items-end px-4 pb-0" style={{ minHeight: 560 }}>
-
-          {/* Left floating badge — UAE Regulated */}
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute left-4 md:left-[10%] lg:left-[18%] top-8 rounded-2xl px-4 py-3 z-20"
-            style={{ background: '#fff', border: '1px solid #e8e8e8', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(31,119,180,0.1)' }}>
-                <Building2 className="w-5 h-5 text-[#1F77B4]" />
+        {/* Phone + badges */}
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', minHeight: 520, padding: '0 16px' }}>
+          {/* Left badges */}
+          <motion.div animate={{ y: [0,-10,0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ position: 'absolute', left: '4%', top: 40, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 18, padding: '12px 16px', boxShadow: '0 8px 28px rgba(0,0,0,0.1)', zIndex: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 12, background: 'rgba(31,119,180,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Building2 size={18} color="#1F77B4" />
               </div>
               <div>
-                <p className="text-[11px] font-black text-[#121319]">UAE REGULATED</p>
-                <p className="text-[10px] text-[#6B7280]">Licensed Broker</p>
+                <p style={{ fontSize: 11, fontWeight: 900, color: '#121319', margin: 0 }}>UAE REGULATED</p>
+                <p style={{ fontSize: 10, color: '#6B7280', margin: 0 }}>Licensed Broker</p>
               </div>
             </div>
           </motion.div>
 
-          {/* Right floating badge — ISO / SSL */}
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute right-4 md:right-[10%] lg:right-[18%] top-12 rounded-2xl px-4 py-3 z-20"
-            style={{ background: '#fff', border: '1px solid #e8e8e8', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(22,163,74,0.1)' }}>
-                <Shield className="w-5 h-5 text-[#16A34A]" />
+          <motion.div animate={{ y: [0,-8,0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+            style={{ position: 'absolute', left: '3%', bottom: 80, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 18, padding: '12px 16px', boxShadow: '0 8px 28px rgba(0,0,0,0.1)', zIndex: 20 }}>
+            <p style={{ fontSize: 10, color: '#6B7280', margin: '0 0 2px', fontWeight: 600 }}>Max Leverage</p>
+            <p style={{ fontSize: 20, fontWeight: 900, color: '#1F77B4', margin: 0 }}>1:2000</p>
+          </motion.div>
+
+          {/* Right badges */}
+          <motion.div animate={{ y: [0,12,0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+            style={{ position: 'absolute', right: '4%', top: 50, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 18, padding: '12px 16px', boxShadow: '0 8px 28px rgba(0,0,0,0.1)', zIndex: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 12, background: 'rgba(22,163,74,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Shield size={18} color="#16A34A" />
               </div>
               <div>
-                <p className="text-[11px] font-black text-[#121319]">256-BIT SSL</p>
-                <p className="text-[10px] text-[#6B7280]">Encrypted</p>
+                <p style={{ fontSize: 11, fontWeight: 900, color: '#121319', margin: 0 }}>256-BIT SSL</p>
+                <p style={{ fontSize: 10, color: '#6B7280', margin: 0 }}>Encrypted</p>
               </div>
             </div>
           </motion.div>
 
-          {/* Bottom-left floating badge — 1:2000 */}
-          <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="absolute left-4 md:left-[8%] lg:left-[14%] bottom-24 rounded-2xl px-4 py-3 z-20"
-            style={{ background: '#fff', border: '1px solid #e8e8e8', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}
-          >
-            <p className="text-[10px] text-[#6B7280] font-medium">Max Leverage</p>
-            <p className="text-lg font-black text-[#1F77B4]">1:2000</p>
+          <motion.div animate={{ y: [0,10,0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+            style={{ position: 'absolute', right: '3%', bottom: 80, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 18, padding: '12px 16px', boxShadow: '0 8px 28px rgba(0,0,0,0.1)', zIndex: 20 }}>
+            <p style={{ fontSize: 10, color: '#6B7280', margin: '0 0 2px', fontWeight: 600 }}>Withdrawal</p>
+            <p style={{ fontSize: 20, fontWeight: 900, color: '#16A34A', margin: 0 }}>≤ 1 Hour</p>
           </motion.div>
 
-          {/* Bottom-right floating badge — Withdrawal */}
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-            className="absolute right-4 md:right-[8%] lg:right-[14%] bottom-20 rounded-2xl px-4 py-3 z-20"
-            style={{ background: '#fff', border: '1px solid #e8e8e8', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}
-          >
-            <p className="text-[10px] text-[#6B7280] font-medium">Withdrawal</p>
-            <p className="text-lg font-black text-[#16A34A]">≤ 1 Hour</p>
-          </motion.div>
-
-          {/* Phone */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative z-10"
-          >
+          <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} style={{ position: 'relative', zIndex: 10 }}>
             <PhoneMockup />
           </motion.div>
-
-          {/* Soft glow under phone */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-64 h-20 blur-3xl rounded-full pointer-events-none"
-            style={{ background: 'rgba(31,119,180,0.15)' }} />
+          <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: 280, height: 40, background: 'rgba(31,119,180,0.12)', filter: 'blur(28px)', borderRadius: '50%', pointerEvents: 'none' }} />
         </div>
 
-        {/* ── TRUST STRIP ── */}
-        <div className="mt-0" style={{ background: '#fff', borderTop: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8' }}>
-          <div className="max-w-5xl mx-auto px-4 py-4">
-            <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-6">
-              {[
-                { icon: '⭐', label: '4.8/5 Rating', sub: '10,000+ reviews' },
-                { icon: '👥', label: '10 Lakh+ Traders', sub: 'Worldwide' },
-                { icon: '🏛️', label: 'UAE Regulated', sub: 'Licensed broker' },
-                { icon: '🔒', label: 'Segregated Funds', sub: 'Tier-1 banks' },
-                { icon: '⚡', label: 'Since 2018', sub: '7+ years experience' },
-              ].map(item => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <span className="text-lg">{item.icon}</span>
-                  <div>
-                    <p className="text-[11px] font-bold text-[#121319] leading-tight">{item.label}</p>
-                    <p className="text-[10px] text-[#6B7280]">{item.sub}</p>
-                  </div>
+        {/* Trust strip */}
+        <div style={{ background: '#fff', borderTop: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8' }}>
+          <div style={{ maxWidth: 900, margin: '0 auto', padding: '14px 16px', display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'center' }}>
+            {[{ icon:'⭐', label:'4.8/5 Rating', sub:'10,000+ reviews' },{ icon:'👥', label:'10 Lakh+ Traders', sub:'Worldwide' },{ icon:'🏛️', label:'UAE Regulated', sub:'Licensed broker' },{ icon:'🔒', label:'Segregated Funds', sub:'Tier-1 banks' },{ icon:'⚡', label:'Since 2018', sub:'7+ years' }].map(item => (
+              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 18 }}>{item.icon}</span>
+                <div>
+                  <p style={{ fontSize: 11, fontWeight: 800, color: '#121319', margin: 0 }}>{item.label}</p>
+                  <p style={{ fontSize: 10, color: '#9CA3AF', margin: 0 }}>{item.sub}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          WHY TRADERS — Lemonn-style "Why Investors"
-      ══════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: '#fff' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="text-center mb-14">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#121319] mb-3">
-              Why Traders Choose ECMarket Pro
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#6B7280] max-w-xl mx-auto">
-              Institutional-grade trading conditions, local payment methods, and the fastest withdrawals — all from a UAE regulated broker.
-            </motion.p>
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              { icon: <Zap className="h-6 w-6" />, title: '0.0 Pip Spreads', desc: 'Ultra-tight spreads on all major forex pairs, crypto and commodities.', color: '#1F77B4' },
-              { icon: <TrendingUp className="h-6 w-6" />, title: '1:2000 Leverage', desc: 'Industry-leading leverage to maximise your trading capital.', color: '#16A34A' },
-              { icon: <Clock className="h-6 w-6" />, title: '1-Hour Withdrawals', desc: 'Get your money back in under 1 hour — anytime, any day.', color: '#1F77B4' },
-              { icon: <Globe className="h-6 w-6" />, title: '200+ Instruments', desc: 'Forex, Crypto, Indices, Commodities & Stocks in one account.', color: '#16A34A' },
-            ].map(f => (
-              <motion.div key={f.title} variants={fadeUp}
-                className="rounded-2xl p-7 border border-[#e8e8e8] bg-white hover:shadow-md transition-all group"
-                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ background: `${f.color}15`, color: f.color }}>
-                  {f.icon}
-                </div>
-                <h3 className="font-black text-[#121319] mb-2">{f.title}</h3>
-                <p className="text-sm text-[#6B7280] leading-relaxed">{f.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          PLATFORM STATS
-      ══════════════════════════════════════════ */}
-      <section className="py-14" style={{ background: '#0B1929' }}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { end: 200, suffix: '+', label: 'Instruments', prefix: '' },
-              { end: 2000, suffix: '', label: 'Max Leverage', prefix: '1:' },
-              { end: 0, suffix: '.0', label: 'Min Spread (pips)', prefix: '' },
-              { end: 1, suffix: ' Hr', label: 'Max Withdrawal', prefix: '<' },
-            ].map(s => (
-              <div key={s.label}>
-                <p className="text-3xl md:text-4xl font-black text-white mb-1">
-                  <Counter end={s.end} suffix={s.suffix} prefix={s.prefix} />
-                </p>
-                <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>{s.label}</p>
               </div>
             ))}
           </div>
@@ -390,180 +526,276 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          TRADING INSTRUMENTS
+          §2 FAN CARDS — "Make Your Next Trade"
       ══════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: '#F5F5F5' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#121319] mb-3">
-              Trade the World's Best Markets
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#6B7280] max-w-xl mx-auto">
-              200+ instruments across Forex, Crypto, Commodities, Indices & Stocks — all from one account.
-            </motion.p>
-          </motion.div>
+      <section style={{ background: '#F5F5F5', padding: '80px 16px 60px' }}>
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 56 }}>
+          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,42px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>
+            Make Your Next Trade
+          </motion.h2>
+          <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 480, margin: '0 auto' }}>
+            Access Pro Tools for Every Strategy
+          </motion.p>
+        </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {[
-              { name: 'Forex', icon: '💱', desc: '80+ pairs' },
-              { name: 'Gold', icon: '🥇', desc: 'XAU/USD' },
-              { name: 'Indices', icon: '📊', desc: 'US30, NAS100' },
-              { name: 'Crypto', icon: '₿', desc: 'BTC, ETH' },
-              { name: 'Commodities', icon: '🛢️', desc: 'Oil, Gas' },
-              { name: 'Stocks', icon: '📈', desc: 'Top 50' },
-            ].map(item => (
-              <motion.div key={item.name} variants={fadeUp}
-                className="rounded-2xl border border-[#e8e8e8] bg-white p-5 text-center hover:border-[#1F77B4]/40 hover:shadow-md transition-all cursor-pointer"
-                style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <p className="font-black text-[#121319] text-sm">{item.name}</p>
-                <p className="text-[11px] text-[#6B7280] mt-1">{item.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+        <FanCards />
+
+        <div style={{ textAlign: 'center', marginTop: 48 }}>
+          <Link href="/auth/register">
+            <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 30px', borderRadius: 999, background: '#121319', color: '#fff', fontWeight: 800, fontSize: 14, textDecoration: 'none' }}>
+              See All Features <ArrowRight size={15} />
+            </a>
+          </Link>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════
-          HOW IT WORKS
+          §3 PREMIUM ACCOUNT BANNER
       ══════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: '#fff' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="text-center mb-14">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#121319] mb-3">
-              Start in 3 Simple Steps
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#6B7280]">Simple, fast, and fully online — trade live in minutes.</motion.p>
-          </motion.div>
+      <section style={{ padding: '24px 16px 60px', background: '#F5F5F5' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+            style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 60%, #E0F2FE 100%)', borderRadius: 28, padding: '40px 36px', display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'center', position: 'relative', overflow: 'hidden', border: '1px solid rgba(31,119,180,0.15)' }}>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="grid md:grid-cols-3 gap-6">
-            {[
-              { step: '01', icon: <Users className="h-7 w-7" />, title: 'Create Account', desc: 'Register in 2 minutes. Complete KYC with Aadhaar + PAN and get verified instantly.' },
-              { step: '02', icon: <Wallet className="h-7 w-7" />, title: 'Fund Your Account', desc: 'Instant deposit via UPI, Bank Transfer, or Crypto. No deposit fees, credited immediately.' },
-              { step: '03', icon: <BarChart2 className="h-7 w-7" />, title: 'Start Trading', desc: 'Access 200+ instruments with leverage up to 1:2000 and spreads from 0.0 pips.' },
-            ].map((s) => (
-              <motion.div key={s.step} variants={fadeUp}
-                className="relative rounded-2xl border border-[#e8e8e8] bg-white p-8 overflow-hidden hover:border-[#1F77B4]/30 hover:shadow-md transition-all"
-                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                <div className="absolute top-4 right-5 text-7xl font-black select-none" style={{ color: 'rgba(31,119,180,0.06)' }}>{s.step}</div>
-                <div className="mb-4 inline-flex items-center justify-center rounded-xl p-3 text-[#1F77B4]" style={{ background: 'rgba(31,119,180,0.08)' }}>
-                  {s.icon}
-                </div>
-                <h3 className="text-xl font-black text-[#121319] mb-2">{s.title}</h3>
-                <p className="text-[#6B7280] text-sm leading-relaxed">{s.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+            {/* Decorative glow */}
+            <div style={{ position: 'absolute', right: -40, top: -40, width: 250, height: 250, borderRadius: '50%', background: 'rgba(31,119,180,0.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
 
-      {/* ══════════════════════════════════════════
-          DEPOSIT & WITHDRAWAL
-      ══════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: '#F5F5F5' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#121319] mb-3">
-              Local Deposits & Fast Withdrawals
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-[#6B7280] max-w-xl mx-auto">
-              Fund your account instantly and withdraw within 1 hour using your preferred local method.
-            </motion.p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {[
-              {
-                icon: <Wallet className="h-6 w-6" />, title: 'Deposit Methods', badge: '⚡ Instant',
-                methods: [
-                  { method: 'UPI', detail: 'PhonePe, GPay, Paytm & all UPI apps', time: 'Instant' },
-                  { method: 'Bank Transfer', detail: 'NEFT / RTGS / IMPS', time: 'Instant' },
-                  { method: 'Crypto', detail: 'USDT, BTC, ETH & more', time: 'Instant' },
-                ]
-              },
-              {
-                icon: <Clock className="h-6 w-6" />, title: 'Withdrawal Methods', badge: '🕐 ≤ 1 Hour',
-                methods: [
-                  { method: 'Bank Transfer', detail: 'Direct to your registered bank account', time: '≤ 1 Hr' },
-                  { method: 'UPI', detail: 'Instant UPI payout to your ID', time: '≤ 1 Hr' },
-                  { method: 'Crypto', detail: 'USDT, BTC, ETH withdrawal', time: '≤ 1 Hr' },
-                ]
-              }
-            ].map(card => (
-              <motion.div key={card.title} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="rounded-2xl border border-[#e8e8e8] bg-white p-7"
-                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="rounded-xl p-2.5 text-[#1F77B4]" style={{ background: 'rgba(31,119,180,0.08)' }}>{card.icon}</div>
-                  <div>
-                    <p className="font-black text-[#121319]">{card.title}</p>
-                    <p className="text-xs text-[#1F77B4] font-semibold">{card.badge}</p>
+            {/* Left text */}
+            <div style={{ flex: '1 1 280px', position: 'relative', zIndex: 1 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(31,119,180,0.12)', borderRadius: 8, padding: '4px 10px', marginBottom: 14 }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: '#1F77B4', letterSpacing: 1, textTransform: 'uppercase' }}>ECMarket Pro Elite</span>
+              </div>
+              <h2 style={{ fontSize: 'clamp(22px,3.5vw,32px)', fontWeight: 900, color: '#121319', marginBottom: 10, lineHeight: 1.2 }}>
+                Premium Trading with<br />Zero Extra Fees
+              </h2>
+              <p style={{ fontSize: 14, color: '#6B7280', marginBottom: 20, lineHeight: 1.7 }}>
+                Unlock elite trading conditions. Enjoy spreads from 0.0 pips, leverage up to 1:2000, priority withdrawals &amp; dedicated account manager.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
+                {[{ icon: '✓', text: 'Zero Commission on all trades' }, { icon: '✓', text: 'Priority 1-hour withdrawal' }, { icon: '✓', text: 'Dedicated account manager' }, { icon: '✓', text: 'Exclusive market signals' }].map(f => (
+                  <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151', fontWeight: 600 }}>
+                    <span style={{ color: '#1F77B4', fontWeight: 900 }}>{f.icon}</span> {f.text}
                   </div>
+                ))}
+              </div>
+              <Link href="/auth/register">
+                <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 999, background: '#121319', color: '#fff', fontWeight: 800, fontSize: 14, textDecoration: 'none' }}>
+                  Open Elite Account →
+                </a>
+              </Link>
+            </div>
+
+            {/* Right phone */}
+            <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1 }}>
+              <div style={{ background: '#fff', borderRadius: 16, padding: '12px 16px', border: '1px solid rgba(31,119,180,0.15)', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 4px 14px rgba(31,119,180,0.12)' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(31,119,180,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Zap size={16} color="#1F77B4" />
                 </div>
-                <div className="space-y-3">
-                  {card.methods.map(m => (
-                    <div key={m.method} className="flex items-center justify-between rounded-xl border border-[#e8e8e8] px-4 py-3">
-                      <div>
-                        <p className="text-sm font-bold text-[#121319]">{m.method}</p>
-                        <p className="text-[11px] text-[#6B7280]">{m.detail}</p>
-                      </div>
-                      <span className="text-xs font-bold text-[#1F77B4] rounded-full px-2.5 py-1" style={{ background: 'rgba(31,119,180,0.08)' }}>{m.time}</span>
+                <div>
+                  <p style={{ fontSize: 10, color: '#9CA3AF', margin: 0 }}>Spreads from</p>
+                  <p style={{ fontSize: 15, fontWeight: 900, color: '#1F77B4', margin: 0 }}>0.0 pips</p>
+                </div>
+              </div>
+              <div style={{ background: '#fff', borderRadius: 16, padding: '12px 16px', border: '1px solid rgba(31,119,180,0.15)', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 4px 14px rgba(31,119,180,0.12)' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(22,163,74,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <TrendingUp size={16} color="#16A34A" />
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, color: '#9CA3AF', margin: 0 }}>Max Leverage</p>
+                  <p style={{ fontSize: 15, fontWeight: 900, color: '#16A34A', margin: 0 }}>1:2000</p>
+                </div>
+              </div>
+              <div style={{ background: '#fff', borderRadius: 16, padding: '12px 16px', border: '1px solid rgba(31,119,180,0.15)', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 4px 14px rgba(31,119,180,0.12)' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(31,119,180,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Users size={16} color="#1F77B4" />
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, color: '#9CA3AF', margin: 0 }}>Active traders</p>
+                  <p style={{ fontSize: 15, fontWeight: 900, color: '#1F77B4', margin: 0 }}>10 Lakh+</p>
+                </div>
+              </div>
+              <div style={{ background: '#fff', borderRadius: 16, padding: '12px 16px', border: '1px solid rgba(31,119,180,0.15)', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 4px 14px rgba(31,119,180,0.12)' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(124,58,237,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Globe size={16} color="#7C3AED" />
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, color: '#9CA3AF', margin: 0 }}>Instruments</p>
+                  <p style={{ fontSize: 15, fontWeight: 900, color: '#7C3AED', margin: 0 }}>200+</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §4 BEST INSTRUMENTS — Perspective Stack
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#fff', padding: '70px 16px' }}>
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 20 }}>
+          <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>
+            Best Performing Instruments
+          </motion.h2>
+          <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 480, margin: '0 auto 8px' }}>
+            Trade 200+ instruments with real-time prices and one-click execution
+          </motion.p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap', marginBottom: 8 }}>
+            {[{ icon:'📈', label:'Free Signals' },{ icon:'⚡', label:'Instant Execution' },{ icon:'🏆', label:'Top Accuracy' }].map(b => (
+              <span key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#374151', fontWeight: 700 }}>
+                {b.icon} {b.label}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+        <PerspectiveStack />
+        <div style={{ textAlign: 'center', marginTop: 40 }}>
+          <Link href="/markets">
+            <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 26px', borderRadius: 999, border: '2px solid #121319', background: 'transparent', color: '#121319', fontWeight: 800, fontSize: 13, textDecoration: 'none' }}>
+              Check All Instruments →
+            </a>
+          </Link>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §5 LIVE MARKET TABS
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#F5F5F5', padding: '70px 16px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 36 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>
+              What's Hot Today
+            </motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280' }}>Live prices across all major asset classes</motion.p>
+          </motion.div>
+          <LiveMarketTabs />
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §6 DARK — Profit Calculator
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#0B1929', padding: '70px 16px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 40, alignItems: 'center' }}>
+            {/* Left */}
+            <div style={{ flex: '1 1 280px' }}>
+              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+                <p style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>Discover Your Potential</p>
+                <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#fff', lineHeight: 1.15, marginBottom: 16 }}>
+                  Calculate Your<br />Profit Potential
+                </h2>
+                <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, marginBottom: 28 }}>
+                  Use our leverage calculator to estimate your potential returns with ECMarket Pro's 1:2000 leverage and 0.0 pip spreads — with 100% accuracy and clarity.
+                </p>
+
+                {/* Stats */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  {[{ val: '200+', label: 'Instruments' }, { val: '1:2000', label: 'Max Leverage' }, { val: '0.0', label: 'Min Spread' }, { val: '<1 Hr', label: 'Withdrawal' }].map(s => (
+                    <div key={s.label} style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 14, padding: '14px 16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <p style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 2px' }}>{s.val}</p>
+                      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0, fontWeight: 600 }}>{s.label}</p>
                     </div>
                   ))}
                 </div>
+
+                <Link href="/auth/register" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 28, padding: '12px 26px', borderRadius: 999, background: '#1F77B4', color: '#fff', fontWeight: 800, fontSize: 14, textDecoration: 'none', boxShadow: '0 8px 24px rgba(31,119,180,0.35)' }}>
+                  Start Trading Now →
+                </Link>
+              </motion.div>
+            </div>
+            {/* Right — Calculator */}
+            <div style={{ flex: '1 1 300px' }}>
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+                <ProfitCalculator />
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §7 TESTIMONIALS — Horizontal scroll
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#fff', padding: '70px 0' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 16px' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 40 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>
+              Trusted by a New Generation<br/>of Traders
+            </motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280' }}>Real results from real clients across India.</motion.p>
+          </motion.div>
+        </div>
+
+        {/* Scrollable testimonials */}
+        <div style={{ overflowX: 'auto', paddingBottom: 16, scrollbarWidth: 'none' }}>
+          <div style={{ display: 'flex', gap: 16, paddingLeft: 'max(16px, calc(50vw - 450px))', paddingRight: 32, width: 'max-content' }}>
+            {[
+              { name: 'Rahul Sharma', city: 'Mumbai', initials: 'RS', color: '#1F77B4', ret: '+38%', months: 4, text: 'Platform ne meri zindagi badal di. Ek baar fund karo, algo baaki sab karta hai. Withdrawal bhi 1 ghante mein aa jaata hai.', stars: 5 },
+              { name: 'Priya Nair', city: 'Bangalore', initials: 'PN', color: '#16A34A', ret: '+52%', months: 6, text: 'Withdrawal process bahut smooth hai. 1 hour mein paise aa gaye. ECMarket Pro is genuinely the best forex platform for Indians.', stars: 5 },
+              { name: 'Amit Verma', city: 'Delhi', initials: 'AV', color: '#7C3AED', ret: '+29%', months: 3, text: 'Best decision tha jo maine ECMarket Pro join kiya. Transparent aur professional platform. Spreads are genuinely 0.0 pips.', stars: 5 },
+              { name: 'Suresh Kumar', city: 'Hyderabad', initials: 'SK', color: '#DC2626', ret: '+41%', months: 5, text: 'Copy trading feature ne mera kaam aasaan kar diya. Ab sirf dekho aur copy karo successful traders ko. Amazing platform!', stars: 5 },
+              { name: 'Anjali Singh', city: 'Chennai', initials: 'AS', color: '#F7931A', ret: '+33%', months: 4, text: 'KYC process bahut fast hai, 10 minutes mein complete ho gayi. Aur support team 24/7 available hai. Highly recommended!', stars: 5 },
+            ].map((r, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                style={{ width: 280, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 20, padding: 22, flexShrink: 0, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}
+              >
+                {/* Avatar */}
+                <div style={{ width: 52, height: 52, borderRadius: '50%', background: r.color, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                  <span style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>{r.initials}</span>
+                </div>
+
+                {/* Quote marks */}
+                <div style={{ fontSize: 32, color: '#e8e8e8', lineHeight: 1, marginBottom: 6, fontFamily: 'serif' }}>"</div>
+
+                <p style={{ fontSize: 13, color: '#374151', lineHeight: 1.7, marginBottom: 16 }}>{r.text}</p>
+
+                {/* Stars */}
+                <div style={{ display: 'flex', gap: 2, marginBottom: 12 }}>
+                  {[1,2,3,4,5].map(s => <Star key={s} size={12} style={{ fill: '#1F77B4', color: '#1F77B4' }} />)}
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 800, color: '#121319', margin: 0 }}>{r.name}</p>
+                    <p style={{ fontSize: 11, color: '#9CA3AF', margin: 0 }}>{r.city}</p>
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: '#16A34A', background: 'rgba(22,163,74,0.1)', padding: '3px 10px', borderRadius: 8 }}>
+                    {r.ret} in {r.months}mo
+                  </span>
+                </div>
               </motion.div>
             ))}
           </div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="rounded-2xl border p-5 text-center"
-            style={{ borderColor: 'rgba(31,119,180,0.2)', background: 'rgba(31,119,180,0.04)' }}>
-            <p className="text-sm text-[#6B7280]">
-              <span className="font-bold text-[#121319]">Zero deposit fees</span> · <span className="font-bold text-[#121319]">No hidden charges</span> · <span className="font-bold text-[#121319]">Funds always in your control</span>
-            </p>
-          </motion.div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════
-          TESTIMONIALS
+          §8 HOW IT WORKS
       ══════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: '#fff' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#121319] mb-3">What Our Traders Say</motion.h2>
-            <motion.p variants={fadeUp} className="text-[#6B7280]">Real results from real clients.</motion.p>
+      <section style={{ background: '#F5F5F5', padding: '70px 16px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 48 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Start in 3 Simple Steps</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280' }}>Simple, fast, and fully online — trade live in minutes.</motion.p>
           </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="grid md:grid-cols-3 gap-5">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
             {[
-              { name: 'Rahul Sharma', city: 'Mumbai', ret: '+38% in 4 months', text: 'Platform ne meri zindagi badal di. Ek baar fund karo, algo baaki sab karta hai.', stars: 5 },
-              { name: 'Priya Nair', city: 'Bangalore', ret: '+52% in 6 months', text: 'Withdrawal process bahut smooth hai. 24 hours me paise aa gaye bina kisi issue ke.', stars: 5 },
-              { name: 'Amit Verma', city: 'Delhi', ret: '+29% in 3 months', text: 'Best decision tha jo maine ECMarket Pro join kiya. Transparent aur professional platform.', stars: 5 },
-            ].map(r => (
-              <motion.div key={r.name} variants={fadeUp}
-                className="rounded-2xl border border-[#e8e8e8] bg-white p-6 hover:shadow-md transition-all"
-                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: r.stars }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-[#1F77B4] text-[#1F77B4]" />
-                  ))}
-                </div>
-                <p className="text-sm text-[#6B7280] mb-5 leading-relaxed">"{r.text}"</p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-black text-[#121319] text-sm">{r.name}</p>
-                    <p className="text-[11px] text-[#6B7280]">{r.city}</p>
-                  </div>
-                  <span className="rounded-full px-3 py-1 text-xs font-bold text-[#1F77B4]" style={{ background: 'rgba(31,119,180,0.08)' }}>{r.ret}</span>
-                </div>
+              { step: '01', icon: <Users size={28} />, title: 'Create Account', desc: 'Register in 2 minutes. Complete KYC with Aadhaar + PAN — instant verification.' },
+              { step: '02', icon: <Wallet size={28} />, title: 'Fund Your Account', desc: 'Instant deposit via UPI, Bank Transfer, or Crypto. No deposit fees.' },
+              { step: '03', icon: <BarChart2 size={28} />, title: 'Start Trading', desc: 'Access 200+ instruments with 1:2000 leverage and 0.0 pip spreads.' },
+            ].map(s => (
+              <motion.div key={s.step} variants={fadeUp}
+                style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: 22, padding: 28, position: 'relative', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+                <div style={{ position: 'absolute', top: 12, right: 16, fontSize: 64, fontWeight: 900, color: 'rgba(31,119,180,0.05)' }}>{s.step}</div>
+                <div style={{ width: 52, height: 52, borderRadius: 16, background: 'rgba(31,119,180,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1F77B4', marginBottom: 16 }}>{s.icon}</div>
+                <h3 style={{ fontSize: 18, fontWeight: 900, color: '#121319', marginBottom: 8 }}>{s.title}</h3>
+                <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -571,43 +803,28 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          FAQ
+          §9 FAQ
       ══════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: '#F5F5F5' }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="text-center mb-12">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-black text-[#121319] mb-3">
+      <section style={{ background: '#fff', padding: '70px 16px' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 40 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#121319' }}>
               Frequently Asked Questions
             </motion.h2>
           </motion.div>
-
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {FAQS.map((faq, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="rounded-2xl border border-[#e8e8e8] bg-white overflow-hidden"
-                style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-                <button
-                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
+              <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+                style={{ borderRadius: 18, border: '1px solid #e8e8e8', background: '#fff', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                <button style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '16px 20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                  <span className="font-bold text-[#121319] text-sm">{faq.q}</span>
-                  {openFaq === i
-                    ? <ChevronUp className="h-4 w-4 text-[#1F77B4] shrink-0" />
-                    : <ChevronDown className="h-4 w-4 text-[#6B7280] shrink-0" />}
+                  <span style={{ fontWeight: 700, color: '#121319', fontSize: 14 }}>{faq.q}</span>
+                  {openFaq === i ? <ChevronUp size={16} color="#1F77B4" style={{ flexShrink: 0 }} /> : <ChevronDown size={16} color="#9CA3AF" style={{ flexShrink: 0 }} />}
                 </button>
                 <AnimatePresence initial={false}>
                   {openFaq === i && (
-                    <motion.div
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}>
-                      <p className="px-5 pb-4 text-sm text-[#6B7280] leading-relaxed border-t border-[#e8e8e8] pt-3">
-                        {faq.a}
-                      </p>
+                    <motion.div key="c" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}>
+                      <p style={{ padding: '0 20px 16px', margin: 0, fontSize: 13, color: '#6B7280', lineHeight: 1.7, borderTop: '1px solid #e8e8e8', paddingTop: 12 }}>{faq.a}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -620,32 +837,22 @@ export function Home() {
       {/* ══════════════════════════════════════════
           STICKY BOTTOM CTA — Lemonn style
       ══════════════════════════════════════════ */}
-      <div className="sticky bottom-0 z-40 w-full" style={{ background: '#fff', borderTop: '1px solid #e8e8e8', boxShadow: '0 -4px 24px rgba(0,0,0,0.08)' }}>
-        <div className="max-w-5xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
-          {/* Left — Rating */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="flex gap-0.5">
-              {[1,2,3,4].map(i => <Star key={i} className="h-4 w-4 fill-[#1F77B4] text-[#1F77B4]" />)}
-              <Star className="h-4 w-4 fill-[#1F77B4]/40 text-[#1F77B4]/40" />
+      <div style={{ position: 'sticky', bottom: 0, zIndex: 40, background: '#fff', borderTop: '1px solid #e8e8e8', boxShadow: '0 -4px 24px rgba(0,0,0,0.08)' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '12px 16px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 2 }}>
+              {[1,2,3,4].map(i => <Star key={i} size={14} style={{ fill: '#1F77B4', color: '#1F77B4' }} />)}
+              <Star size={14} style={{ fill: 'rgba(31,119,180,0.3)', color: 'rgba(31,119,180,0.3)' }} />
             </div>
-            <span className="text-sm font-bold text-[#121319]">Loved by 10 Lakh+ traders</span>
-            <span className="text-sm text-[#6B7280] hidden sm:inline">· 4.8★ rating. Join now!</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: '#121319' }}>Loved by 10 Lakh+ traders</span>
+            <span style={{ fontSize: 13, color: '#9CA3AF' }}>with a 4.8★ rating. Join now!</span>
           </div>
-
-          {/* Right — Input + CTA */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="flex-1 sm:w-52 px-4 py-2.5 text-sm rounded-full outline-none"
-              style={{ border: '1px solid #e8e8e8', background: '#f6f6f6', color: '#121319' }}
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)}
+              style={{ padding: '9px 16px', borderRadius: 999, border: '1px solid #e8e8e8', background: '#F5F5F5', fontSize: 13, color: '#121319', outline: 'none', width: 200 }} />
             <Link href={`/auth/register${email ? `?email=${encodeURIComponent(email)}` : ''}`}>
-              <a className="flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold rounded-full text-white whitespace-nowrap transition-all"
-                style={{ background: '#1F77B4', boxShadow: '0 4px 14px rgba(31,119,180,0.35)' }}>
-                Open Free Account <ArrowRight className="h-4 w-4" />
+              <a style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 20px', borderRadius: 999, background: '#1F77B4', color: '#fff', fontWeight: 800, fontSize: 13, textDecoration: 'none', boxShadow: '0 4px 14px rgba(31,119,180,0.35)', whiteSpace: 'nowrap' }}>
+                Open Free Account <ArrowRight size={14} />
               </a>
             </Link>
           </div>
