@@ -604,8 +604,8 @@ export function BinaryTrading() {
           {/* ── LEFT: Sidebar ── */}
           <div className="hidden md:flex flex-col w-[160px] flex-shrink-0 rounded-2xl overflow-hidden"
             style={{ background: '#080C18', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <div className="px-3 py-2 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-              <p className="text-[9px] font-black text-[#374151] uppercase tracking-[0.18em]">Crypto Pairs</p>
+            <div className="px-3 py-2 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+              <p className="text-[9px] font-black text-[#9CA3AF] uppercase tracking-[0.18em]">Crypto Pairs</p>
             </div>
             <div className="flex-1 overflow-y-auto p-1.5" style={{ scrollbarWidth: 'none' }}>
               {INSTRUMENTS.map(inst => {
@@ -640,13 +640,13 @@ export function BinaryTrading() {
 
             {/* Chart Card */}
             <div className="flex flex-col rounded-2xl overflow-hidden flex-1 min-h-0"
-              style={{ background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.06)', minHeight: 220 }}>
+              style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', minHeight: 220 }}>
 
               {/* Chart header */}
               <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0 flex-wrap"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                style={{ borderBottom: '1px solid #E5E7EB' }}>
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-black text-sm tracking-tight">{instrument}</span>
+                  <span className="text-[#111827] font-black text-sm tracking-tight">{instrument}</span>
                   <span className={`text-lg font-black font-mono tabular-nums ${priceDirCurrent === 'up' ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                     {fmt(livePrice, instrument)}
                   </span>
@@ -679,11 +679,11 @@ export function BinaryTrading() {
 
               {/* AI Signal + Market Mood + Timeframes — desktop only */}
               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 flex-shrink-0 flex-wrap"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(255,255,255,0.01)' }}>
+                style={{ borderBottom: '1px solid #F3F4F6', background: '#FAFAFA' }}>
                 {/* AI Signal */}
                 <div className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black"
-                  style={{ background: curSignal === 'call' ? 'rgba(22,163,74,0.12)' : curSignal === 'put' ? 'rgba(220,38,38,0.12)' : 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${curSignal === 'call' ? 'rgba(22,163,74,0.3)' : curSignal === 'put' ? 'rgba(220,38,38,0.3)' : 'rgba(255,255,255,0.1)'}` }}>
+                  style={{ background: curSignal === 'call' ? 'rgba(22,163,74,0.1)' : curSignal === 'put' ? 'rgba(220,38,38,0.1)' : '#F3F4F6',
+                    border: `1px solid ${curSignal === 'call' ? 'rgba(22,163,74,0.3)' : curSignal === 'put' ? 'rgba(220,38,38,0.3)' : '#E5E7EB'}` }}>
                   <span className="text-[#6B7280]">AI:</span>
                   <span className={curSignal === 'call' ? 'text-[#16A34A]' : curSignal === 'put' ? 'text-[#DC2626]' : 'text-[#9CA3AF]'}>
                     {curSignal === 'call' ? '↑ BULLISH' : curSignal === 'put' ? '↓ BEARISH' : '↔ NEUTRAL'}
@@ -703,7 +703,7 @@ export function BinaryTrading() {
                   {TIMEFRAMES.map(tf2 => (
                     <button key={tf2.id} onClick={() => setTfId(tf2.id)}
                       className="px-2 py-0.5 rounded-md text-[10px] font-black transition-all"
-                      style={{ background: tfId === tf2.id ? '#1F77B4' : 'rgba(255,255,255,0.04)', color: tfId === tf2.id ? '#000' : '#6B7280' }}>
+                      style={{ background: tfId === tf2.id ? '#1F77B4' : '#F3F4F6', color: tfId === tf2.id ? '#FFFFFF' : '#6B7280', border: `1px solid ${tfId === tf2.id ? '#1F77B4' : '#E5E7EB'}` }}>
                       {tf2.label}
                     </button>
                   ))}
@@ -744,8 +744,8 @@ export function BinaryTrading() {
 
             {/* Trade History */}
             <div className="hidden md:flex flex-col rounded-2xl overflow-hidden flex-shrink-0"
-              style={{ height: 170, background: '#FFFFFF', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              style={{ height: 170, background: '#FFFFFF', border: '1px solid #E5E7EB' }}>
+              <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid #F3F4F6' }}>
                 <History className="w-3.5 h-3.5 text-[#1F77B4]" />
                 <span className="text-[11px] font-black text-[#374151] uppercase tracking-wide">My Trade History</span>
                 {myHistory.length > 0 && (
@@ -756,21 +756,23 @@ export function BinaryTrading() {
               <div className="overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
                 {myHistory.length === 0 && (
                   <div className="flex flex-col items-center justify-center h-full gap-1">
-                    <Activity className="w-5 h-5 text-[#1F2937]" />
-                    <p className="text-[#374151] text-xs">No trades yet</p>
+                    <Activity className="w-5 h-5 text-[#D1D5DB]" />
+                    <p className="text-[#9CA3AF] text-xs">No trades yet</p>
                   </div>
                 )}
                 {myHistory.map((h, i) => {
                   const won = h.status === 'won', push = h.status === 'push';
                   return (
-                    <div key={h.id ?? i} className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.02]"
-                      style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', borderLeft: `2px solid ${won ? '#16A34A' : push ? '#1F77B4' : '#DC2626'}` }}>
+                    <div key={h.id ?? i} className="flex items-center gap-2 px-3 py-1.5"
+                      style={{ borderBottom: '1px solid #F3F4F6', borderLeft: `2px solid ${won ? '#16A34A' : push ? '#1F77B4' : '#DC2626'}` }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#F7F9FC')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-black text-white">{h.instrument}</span>
+                          <span className="text-[10px] font-black text-[#111827]">{h.instrument}</span>
                           <span className={`text-[9px] font-black ${h.direction === 'call' ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>{h.direction === 'call' ? '↑ CALL' : '↓ PUT'}</span>
                         </div>
-                        <p className="text-[9px] text-[#4B5563]">{fmt(h.entryPrice, h.instrument)} → {fmt(h.exitPrice, h.instrument)}</p>
+                        <p className="text-[9px] text-[#6B7280]">{fmt(h.entryPrice, h.instrument)} → {fmt(h.exitPrice, h.instrument)}</p>
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className={`text-xs font-black ${won ? 'text-[#16A34A]' : push ? 'text-[#1F77B4]' : 'text-[#DC2626]'}`}>
