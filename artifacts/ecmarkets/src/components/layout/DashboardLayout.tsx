@@ -44,36 +44,44 @@ const bottomNavItems = [
 const BAR_HEIGHTS = [18, 28, 22, 35, 25, 40, 30, 38, 20, 45, 28, 36];
 function MiniChart() {
   const [bars, setBars] = useState(BAR_HEIGHTS);
+  const [pct, setPct] = useState(2.4);
+  const [isUp, setIsUp] = useState(true);
+
   useEffect(() => {
     const id = setInterval(() => {
-      setBars(prev => {
-        const next = [...prev.slice(1), Math.floor(Math.random() * 30) + 15];
+      setBars(prev => [...prev.slice(1), Math.floor(Math.random() * 30) + 15]);
+      setPct(prev => {
+        const delta = (Math.random() * 0.4 - 0.18);
+        const next = Math.max(-5, Math.min(8, +(prev + delta).toFixed(2)));
+        setIsUp(next >= prev);
         return next;
       });
-    }, 900);
+    }, 1200);
     return () => clearInterval(id);
   }, []);
 
   return (
-    <div style={{
-      display: 'flex', alignItems: 'flex-end', gap: 3, height: 46,
-      padding: '8px 12px 0',
-    }}>
-      {bars.map((h, i) => (
-        <div
-          key={i}
-          style={{
-            flex: 1,
-            height: h,
-            borderRadius: 3,
-            background: i >= bars.length - 3
-              ? 'rgba(96,192,240,0.9)'
-              : 'rgba(255,255,255,0.15)',
+    <>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 46, padding: '8px 12px 0' }}>
+        {bars.map((h, i) => (
+          <div key={i} style={{
+            flex: 1, height: h, borderRadius: 3,
+            background: i >= bars.length - 3 ? 'rgba(96,192,240,0.9)' : 'rgba(255,255,255,0.15)',
             transition: 'height 0.7s ease',
-          }}
-        />
-      ))}
-    </div>
+          }} />
+        ))}
+      </div>
+      <div style={{ padding: '4px 12px 8px', display: 'flex', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 9, color: 'rgba(234,242,248,0.35)' }}>Market Active</span>
+        <span style={{
+          fontSize: 9, fontWeight: 700,
+          color: isUp ? '#16A34A' : '#DC2626',
+          transition: 'color 0.4s ease',
+        }}>
+          {isUp ? '↑' : '↓'} {pct >= 0 ? '+' : ''}{pct.toFixed(2)}%
+        </span>
+      </div>
+    </>
   );
 }
 
@@ -217,10 +225,6 @@ function SidebarContent({ onClose, user, logout, location }: any) {
             <span style={{ fontSize: 9, fontWeight: 800, color: '#60C0F0' }}>● LIVE</span>
           </div>
           <MiniChart />
-          <div style={{ padding: '4px 12px 8px', display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 9, color: 'rgba(234,242,248,0.35)' }}>Market Active</span>
-            <span style={{ fontSize: 9, fontWeight: 700, color: '#16A34A' }}>↑ +2.4%</span>
-          </div>
         </div>
       </div>
 
