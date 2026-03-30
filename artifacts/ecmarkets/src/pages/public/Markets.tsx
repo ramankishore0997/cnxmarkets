@@ -1,344 +1,229 @@
-import { PublicLayout } from '@/components/layout/PublicLayout';
-import { TradingChartWidget } from '@/components/shared/TradingWidget';
-import { Globe, TrendingUp, Activity, Clock } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'wouter';
+import { PublicLayout } from '@/components/layout/PublicLayout';
+import {
+  TrendingUp, TrendingDown, Globe, Activity, BarChart2,
+  Bitcoin, DollarSign, ArrowRight, Zap, Shield, Clock,
+  ChevronDown, ChevronUp
+} from 'lucide-react';
+
+const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+
+const INSTRUMENTS: Record<string, { symbol: string; name: string; price: number; spread: string; leverage: string }[]> = {
+  Forex: [
+    { symbol: 'EUR/USD', name: 'Euro / US Dollar', price: 1.09215, spread: '0.0', leverage: '1:2000' },
+    { symbol: 'GBP/USD', name: 'British Pound / USD', price: 1.27482, spread: '0.1', leverage: '1:2000' },
+    { symbol: 'USD/JPY', name: 'US Dollar / Yen', price: 149.820, spread: '0.2', leverage: '1:2000' },
+    { symbol: 'AUD/USD', name: 'Australian Dollar', price: 0.65420, spread: '0.1', leverage: '1:1000' },
+    { symbol: 'USD/INR', name: 'US Dollar / Rupee', price: 83.4650, spread: '0.5', leverage: '1:500' },
+    { symbol: 'USD/CHF', name: 'US Dollar / Swiss Franc', price: 0.90125, spread: '0.2', leverage: '1:2000' },
+    { symbol: 'NZD/USD', name: 'New Zealand Dollar', price: 0.60840, spread: '0.2', leverage: '1:1000' },
+    { symbol: 'USD/CAD', name: 'US Dollar / Canadian Dollar', price: 1.35920, spread: '0.2', leverage: '1:2000' },
+  ],
+  Crypto: [
+    { symbol: 'BTC/USD', name: 'Bitcoin / US Dollar', price: 67200.00, spread: '15', leverage: '1:100' },
+    { symbol: 'ETH/USD', name: 'Ethereum / US Dollar', price: 3480.00, spread: '2.5', leverage: '1:100' },
+    { symbol: 'XRP/USD', name: 'Ripple / US Dollar', price: 0.5240, spread: '0.003', leverage: '1:50' },
+    { symbol: 'SOL/USD', name: 'Solana / US Dollar', price: 148.50, spread: '0.5', leverage: '1:50' },
+    { symbol: 'BNB/USD', name: 'Binance Coin / USD', price: 412.00, spread: '1.2', leverage: '1:50' },
+    { symbol: 'DOGE/USD', name: 'Dogecoin / US Dollar', price: 0.1640, spread: '0.001', leverage: '1:50' },
+  ],
+  Commodities: [
+    { symbol: 'XAU/USD', name: 'Gold / US Dollar', price: 2341.50, spread: '0.3', leverage: '1:500' },
+    { symbol: 'XAG/USD', name: 'Silver / US Dollar', price: 29.145, spread: '0.05', leverage: '1:500' },
+    { symbol: 'WTI', name: 'Crude Oil WTI', price: 78.420, spread: '0.05', leverage: '1:200' },
+    { symbol: 'BRENT', name: 'Brent Crude Oil', price: 82.650, spread: '0.06', leverage: '1:200' },
+    { symbol: 'NG', name: 'Natural Gas', price: 1.8640, spread: '0.002', leverage: '1:100' },
+  ],
+  Indices: [
+    { symbol: 'US30', name: 'Dow Jones 30', price: 38420.0, spread: '1.5', leverage: '1:500' },
+    { symbol: 'NAS100', name: 'NASDAQ 100', price: 17850.0, spread: '1.2', leverage: '1:500' },
+    { symbol: 'SPX500', name: 'S&P 500 Index', price: 5045.0, spread: '0.5', leverage: '1:500' },
+    { symbol: 'GER40', name: 'Germany DAX 40', price: 17820.0, spread: '1.8', leverage: '1:500' },
+    { symbol: 'UK100', name: 'FTSE 100 Index', price: 7842.0, spread: '1.5', leverage: '1:500' },
+    { symbol: 'JPN225', name: 'Nikkei 225', price: 38740.0, spread: '5.0', leverage: '1:500' },
+  ],
+};
+
+function PriceTicker({ price, digits }: { price: number; digits: number }) {
+  const [livePrice, setLivePrice] = useState(price);
+  const [dir, setDir] = useState<'up'|'down'|null>(null);
+  useEffect(() => {
+    const t = setInterval(() => {
+      const delta = (Math.random() - 0.5) * price * 0.0004;
+      setLivePrice(p => {
+        const n = Math.max(0.0001, p + delta);
+        setDir(delta >= 0 ? 'up' : 'down');
+        return n;
+      });
+    }, 2000 + Math.random() * 1500);
+    return () => clearInterval(t);
+  }, [price]);
+  const chg = ((livePrice - price) / price * 100);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <span style={{ fontSize: 15, fontWeight: 800, color: dir === 'up' ? '#16A34A' : dir === 'down' ? '#DC2626' : '#121319', fontVariantNumeric: 'tabular-nums', transition: 'color 0.3s' }}>
+        {livePrice.toFixed(digits)}
+      </span>
+      <span style={{ fontSize: 11, fontWeight: 700, color: chg >= 0 ? '#16A34A' : '#DC2626', background: chg >= 0 ? 'rgba(22,163,74,0.08)' : 'rgba(220,38,38,0.08)', padding: '2px 7px', borderRadius: 6 }}>
+        {chg >= 0 ? '+' : ''}{chg.toFixed(2)}%
+      </span>
+    </div>
+  );
+}
 
 export function Markets() {
-  const [activeTab, setActiveTab] = useState('EURUSD');
+  const [activeTab, setActiveTab] = useState('Forex');
+  const tabs = Object.keys(INSTRUMENTS);
+  const instruments = INSTRUMENTS[activeTab] || [];
+
+  const digits: Record<string, number> = {
+    'EUR/USD': 5, 'GBP/USD': 5, 'USD/JPY': 3, 'AUD/USD': 5, 'USD/INR': 4,
+    'USD/CHF': 5, 'NZD/USD': 5, 'USD/CAD': 5,
+    'BTC/USD': 2, 'ETH/USD': 2, 'XRP/USD': 4, 'SOL/USD': 2, 'BNB/USD': 2, 'DOGE/USD': 4,
+    'XAU/USD': 2, 'XAG/USD': 3, 'WTI': 3, 'BRENT': 3, 'NG': 4,
+    'US30': 1, 'NAS100': 1, 'SPX500': 1, 'GER40': 1, 'UK100': 1, 'JPN225': 1,
+  };
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 bg-[#FFFFFF] border-b border-[#E5E7EB]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-6">Trade <span className="text-gradient-gold">Global Markets</span></h1>
-          <p className="text-xl text-[#6B7280] max-w-2xl mx-auto">
-            Our algorithms operate 24/5 across highly liquid forex pairs, precious metals, and global indices.
-          </p>
-        </div>
-      </div>
 
-      {/* QUICK STATS */}
-      <div className="border-b border-[#E5E7EB] bg-[#F7F9FC]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
-              <p className="text-3xl font-bold text-[#1F77B4]">24/5</p>
-              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Trading Hours</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-[#1F77B4]">50+</p>
-              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Instruments</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-[#1F77B4]">&lt;5ms</p>
-              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Execution Latency</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-[#1F77B4]">Tier 1</p>
-              <p className="text-sm font-semibold text-[#6B7280] uppercase tracking-wider">Liquidity</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        
-        {/* TRADING SESSIONS */}
-        <div className="mb-24">
-          <div className="flex items-center gap-3 mb-8">
-            <Clock className="w-8 h-8 text-[#1F77B4]" />
-            <h2 className="text-3xl font-bold text-[#111827]">Global Trading Sessions</h2>
-          </div>
-          <p className="text-[#6B7280] mb-8 max-w-3xl">
-            The forex market is open 24 hours a day, 5 days a week. Our algorithms are designed to exploit volatility across different geographic sessions, particularly during overlaps when liquidity is highest.
-          </p>
-          
-          <div className="card-stealth p-8 overflow-x-auto">
-            <div className="min-w-[800px]">
-              <div className="flex text-xs text-[#6B7280] font-bold mb-2">
-                {[...Array(24)].map((_, i) => <div key={i} className="flex-1 text-center">{i}:00</div>)}
-              </div>
-              <div className="space-y-4">
-                <div className="relative h-10 bg-[#FFFFFF] rounded-lg flex items-center border border-[#E5E7EB]">
-                  <div className="absolute left-[0%] w-[37.5%] h-full bg-[#F7F9FC] border border-[#E5E7EB] rounded-lg flex items-center justify-center text-sm font-bold text-[#111827]">Sydney / Tokyo</div>
-                </div>
-                <div className="relative h-10 bg-[#FFFFFF] rounded-lg flex items-center border border-[#E5E7EB]">
-                  <div className="absolute left-[33.3%] w-[37.5%] h-full bg-[#16A34A]/20 border border-[#16A34A]/40 rounded-lg flex items-center justify-center text-sm font-bold text-[#16A34A]">London (European)</div>
-                </div>
-                <div className="relative h-10 bg-[#FFFFFF] rounded-lg flex items-center border border-[#E5E7EB]">
-                  <div className="absolute left-[54%] w-[37.5%] h-full bg-[#1F77B4]/20 border border-[#1F77B4]/40 rounded-lg flex items-center justify-center text-sm font-bold text-[#1F77B4]">New York (American)</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* FOREX */}
-        <div className="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Globe className="w-8 h-8 text-[#1F77B4]" />
-              <h2 className="text-3xl font-bold text-[#111827]">Forex Markets</h2>
-            </div>
-            <p className="text-[#6B7280] mb-6">
-              Forex is the most liquid financial market in the world. Our trend-following and mean-reversion algorithms primarily target major and minor pairs due to tight spreads and deep liquidity, allowing for scale without slippage.
-            </p>
-            <div className="overflow-hidden rounded-xl border border-[#E5E7EB]">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-[#E5E7EB] text-[#374151] font-semibold">
-                  <tr>
-                    <th className="px-4 py-3">Pair</th>
-                    <th className="px-4 py-3">Type</th>
-                    <th className="px-4 py-3">Typical Spread</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E5E7EB] bg-[#F7F9FC]">
-                  {[
-                    { pair: "EUR/USD", type: "Major", spread: "0.1 - 0.3 pips" },
-                    { pair: "GBP/USD", type: "Major", spread: "0.4 - 0.8 pips" },
-                    { pair: "USD/JPY", type: "Major", spread: "0.2 - 0.5 pips" },
-                    { pair: "AUD/USD", type: "Major", spread: "0.3 - 0.6 pips" },
-                    { pair: "EUR/GBP", type: "Minor", spread: "0.6 - 1.2 pips" },
-                  ].map(r => (
-                    <tr key={r.pair} className="hover:bg-[#E5E7EB]/50">
-                      <td className="px-4 py-3 font-semibold text-[#111827]">{r.pair}</td>
-                      <td className="px-4 py-3 text-[#6B7280]">{r.type}</td>
-                      <td className="px-4 py-3 text-[#16A34A]">{r.spread}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="card-stealth p-2">
-            <TradingChartWidget symbol="FOREXCOM:EURUSD" />
-          </div>
-        </div>
-
-        {/* GOLD & INDICES */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div>
-            <h2 className="text-2xl font-bold text-[#111827] mb-4">Gold (XAUUSD)</h2>
-            <p className="text-[#6B7280] mb-6">
-              Gold offers excellent volatility characteristics for breakout models. It acts as a safe haven during market stress, providing non-correlated returns to standard equity portfolios.
-            </p>
-            <div className="card-stealth p-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-[#E5E7EB] pb-2">
-                <span className="text-[#6B7280] font-medium">Correlation</span>
-                <span className="font-bold text-[#111827]">Inverse to USD</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-[#E5E7EB] pb-2">
-                <span className="text-[#6B7280] font-medium">Best Trading Time</span>
-                <span className="font-bold text-[#111827]">NY Session Open</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#6B7280] font-medium">Volatility</span>
-                <span className="font-bold text-[#DC2626]">High</span>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-[#111827] mb-4">Global Indices</h2>
-            <p className="text-[#6B7280] mb-6">
-              Our index algorithms trade momentum on major world markets, capturing broad economic trends without the stock-specific risk of individual equities.
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-[#111827]">US30 (Dow)</h4>
-                <p className="text-xs text-[#6B7280]">US Industrials</p>
-              </div>
-              <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-[#111827]">SPX500</h4>
-                <p className="text-xs text-[#6B7280]">US Broad Market</p>
-              </div>
-              <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-[#111827]">GER40 (DAX)</h4>
-                <p className="text-xs text-[#6B7280]">European Economy</p>
-              </div>
-              <div className="card-stealth p-4 text-center">
-                <h4 className="font-bold text-[#111827]">UK100 (FTSE)</h4>
-                <p className="text-xs text-[#6B7280]">British Market</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* DETAILED FOREX PAIRS */}
-        <div className="mt-24">
-          <h2 className="text-2xl font-bold text-[#111827] mb-4">Complete Tradable Instruments</h2>
-          <p className="text-[#6B7280] mb-8">All instruments available on ECMarket Pro, organised by category and liquidity tier.</p>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div>
-              <h3 className="text-[#1F77B4] font-bold uppercase tracking-wider text-sm mb-4">Major Forex Pairs</h3>
-              <div className="card-stealth overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-[#E5E7EB]">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-[#374151] text-xs">Pair</th>
-                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Spread</th>
-                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Daily Vol</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E7EB]">
-                    {[
-                      { pair:"EUR/USD", spread:"0.1", vol:"₹1.3T" },
-                      { pair:"GBP/USD", spread:"0.4", vol:"₹800B" },
-                      { pair:"USD/JPY", spread:"0.2", vol:"₹900B" },
-                      { pair:"AUD/USD", spread:"0.3", vol:"₹400B" },
-                      { pair:"USD/CAD", spread:"0.4", vol:"₹350B" },
-                      { pair:"USD/CHF", spread:"0.3", vol:"₹250B" },
-                      { pair:"NZD/USD", spread:"0.5", vol:"₹180B" },
-                    ].map(r => (
-                      <tr key={r.pair} className="hover:bg-[#E5E7EB]/40">
-                        <td className="px-4 py-2.5 font-semibold text-[#111827] text-xs">{r.pair}</td>
-                        <td className="px-4 py-2.5 text-right text-[#16A34A] text-xs">{r.spread} pip</td>
-                        <td className="px-4 py-2.5 text-right text-[#6B7280] text-xs">{r.vol}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-[#1F77B4] font-bold uppercase tracking-wider text-sm mb-4">Minor & Cross Pairs</h3>
-              <div className="card-stealth overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-[#E5E7EB]">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-[#374151] text-xs">Pair</th>
-                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Spread</th>
-                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Sessions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E7EB]">
-                    {[
-                      { pair:"EUR/GBP", spread:"0.6", sessions:"EU" },
-                      { pair:"EUR/JPY", spread:"0.7", sessions:"EU+NY" },
-                      { pair:"GBP/JPY", spread:"0.9", sessions:"EU+NY" },
-                      { pair:"AUD/JPY", spread:"0.8", sessions:"Tokyo" },
-                      { pair:"EUR/CHF", spread:"0.7", sessions:"EU" },
-                      { pair:"GBP/CHF", spread:"1.2", sessions:"EU" },
-                      { pair:"EUR/AUD", spread:"1.0", sessions:"All" },
-                    ].map(r => (
-                      <tr key={r.pair} className="hover:bg-[#E5E7EB]/40">
-                        <td className="px-4 py-2.5 font-semibold text-[#111827] text-xs">{r.pair}</td>
-                        <td className="px-4 py-2.5 text-right text-[#16A34A] text-xs">{r.spread} pip</td>
-                        <td className="px-4 py-2.5 text-right text-[#6B7280] text-xs">{r.sessions}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-[#1F77B4] font-bold uppercase tracking-wider text-sm mb-4">Metals & Indices</h3>
-              <div className="card-stealth overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-[#E5E7EB]">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-[#374151] text-xs">Instrument</th>
-                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Type</th>
-                      <th className="px-4 py-2 text-right text-[#374151] text-xs">Vol</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E7EB]">
-                    {[
-                      { pair:"XAU/USD", type:"Metal", vol:"High" },
-                      { pair:"XAG/USD", type:"Metal", vol:"Med" },
-                      { pair:"US30", type:"Index", vol:"High" },
-                      { pair:"SPX500", type:"Index", vol:"High" },
-                      { pair:"NAS100", type:"Index", vol:"High" },
-                      { pair:"GER40", type:"Index", vol:"Med" },
-                      { pair:"UK100", type:"Index", vol:"Med" },
-                    ].map(r => (
-                      <tr key={r.pair} className="hover:bg-[#E5E7EB]/40">
-                        <td className="px-4 py-2.5 font-semibold text-[#111827] text-xs">{r.pair}</td>
-                        <td className="px-4 py-2.5 text-right text-[#6B7280] text-xs">{r.type}</td>
-                        <td className="px-4 py-2.5 text-right text-xs">
-                          <span className={r.vol==='High' ? 'text-[#DC2626] font-bold' : 'text-[#1F77B4] font-bold'}>{r.vol}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* GLOBAL MARKET ACCESS */}
-        <div className="mt-24">
-          <div className="card-stealth-gold p-8">
-            <div className="flex flex-col lg:flex-row gap-8">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold text-[#111827] mb-4">🌐 Global Market Access via Algorithmic Infrastructure</h2>
-                <p className="text-[#6B7280] mb-4 leading-relaxed">
-                  ECMarket Pro provides access to global financial markets through institutional-grade algorithmic trading infrastructure. Our platform connects to Tier-1 liquidity providers and global exchanges, delivering professional execution across forex, commodities, and indices.
-                </p>
-                <ul className="space-y-2 text-sm">
-                  {[
-                    "Direct connectivity to Tier-1 global liquidity providers",
-                    "Multi-currency account support with real-time conversion",
-                    "Strict AML and KYC verification for all clients",
-                    "Full trade transparency with detailed reporting tools",
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <span className="text-[#16A34A]">✓</span>
-                      <span className="text-[#374151]">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="lg:w-80 space-y-3">
-                {[
-                  { label:"Platform Type", val:"Global Fintech" },
-                  { label:"Currency", val:"Multi-Currency" },
-                  { label:"Min. Capital", val:"₹20,000" },
-                  { label:"Reporting", val:"Full Trade History" },
-                ].map((s, i) => (
-                  <div key={i} className="bg-[#FFFFFF] rounded-lg p-3 flex justify-between border border-[#E5E7EB]">
-                    <span className="text-[#6B7280] text-sm">{s.label}</span>
-                    <span className="text-[#1F77B4] font-bold text-sm">{s.val}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* SESSION VOLATILITY GUIDE */}
-        <div className="mt-24">
-          <h2 className="text-2xl font-bold text-[#111827] mb-8">Volatility & Session Guide for Algo Traders</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { session:"Tokyo / Sydney", time:"12:00 AM – 8:00 AM IST", pairs:"JPY pairs, AUD, NZD", vol:"Low to Medium", tip:"Best for carry trade strategies. Calmer conditions with slow, directional moves." },
-              { session:"London (European)", time:"1:30 PM – 9:30 PM IST", pairs:"EUR, GBP, CHF pairs", vol:"High", tip:"Peak liquidity session. Our momentum algorithms generate highest signal density during London open." },
-              { session:"New York (American)", time:"6:30 PM – 12:30 AM IST", pairs:"USD, Gold, Indices", vol:"Very High", tip:"US economic data releases create major opportunities for breakout and momentum strategies." },
-            ].map((sess, i) => (
-              <div key={i} className="card-stealth p-6">
-                <h3 className="font-bold text-[#1F77B4] mb-1">{sess.session}</h3>
-                <p className="text-[#6B7280] text-xs mb-3">{sess.time}</p>
-                <p className="text-[#111827] text-sm font-semibold mb-1">Active Pairs</p>
-                <p className="text-[#6B7280] text-sm mb-3">{sess.pairs}</p>
-                <div className="flex items-center gap-2 mb-3">
-                  <Activity className="w-4 h-4 text-[#1F77B4]" />
-                  <span className="text-[#374151] text-sm font-bold">{sess.vol}</span>
-                </div>
-                <p className="text-[#6B7280] text-xs border-t border-[#E5E7EB] pt-3">{sess.tip}</p>
+      {/* HERO */}
+      <section style={{ background: 'linear-gradient(135deg, #0B1929 0%, #0d2035 100%)', padding: '80px 16px 60px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -80, left: '25%', width: 400, height: 400, borderRadius: '50%', background: 'rgba(31,119,180,0.08)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -80, right: '15%', width: 300, height: 300, borderRadius: '50%', background: 'rgba(22,163,74,0.06)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(31,119,180,0.15)', border: '1px solid rgba(31,119,180,0.25)', borderRadius: 999, padding: '6px 16px', fontSize: 11, fontWeight: 700, color: '#1F77B4', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 20 }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#16A34A', boxShadow: '0 0 0 3px rgba(22,163,74,0.25)' }} />
+              Live Markets · 200+ Instruments
+            </span>
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ fontSize: 'clamp(36px,5.5vw,60px)', fontWeight: 900, color: '#fff', lineHeight: 1.1, marginBottom: 16 }}>
+            Trade Global Markets<br/>
+            <span style={{ background: 'linear-gradient(90deg,#1F77B4,#16A34A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              with Ultra-Low Spreads
+            </span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ fontSize: 17, color: 'rgba(255,255,255,0.6)', maxWidth: 500, margin: '0 auto 36px', lineHeight: 1.7 }}>
+            Forex, Crypto, Commodities & Indices — all in one platform. Spreads from <strong style={{ color: '#1F77B4' }}>0.0 pips</strong> with up to <strong style={{ color: '#16A34A' }}>1:2000</strong> leverage.
+          </motion.p>
+          {/* Quick stats */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: 20, justifyContent: 'center' }}>
+            {[{ val: '200+', label: 'Instruments' }, { val: '0.0', label: 'Min Spread (pips)' }, { val: '1:2000', label: 'Max Leverage' }, { val: '24/5', label: 'Trading Hours' }].map(s => (
+              <div key={s.label} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '14px 24px', textAlign: 'center' }}>
+                <p style={{ fontSize: 22, fontWeight: 900, color: '#1F77B4', margin: '0 0 2px' }}>{s.val}</p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.8 }}>{s.label}</p>
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
+      </section>
 
-      </div>
+      {/* LIVE MARKETS TABLE */}
+      <section style={{ background: '#F5F5F5', padding: '60px 16px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          {/* Tabs */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
+            {tabs.map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab)}
+                style={{ padding: '10px 22px', borderRadius: 999, border: `1.5px solid ${activeTab === tab ? '#1F77B4' : '#E5E7EB'}`, background: activeTab === tab ? '#1F77B4' : '#fff', color: activeTab === tab ? '#fff' : '#374151', fontWeight: 700, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s' }}>
+                {tab}
+              </button>
+            ))}
+          </div>
 
-      {/* CTA */}
-      <div className="py-16 bg-[#F7F9FC] border-t border-[#E5E7EB] text-center">
-        <h2 className="text-2xl font-bold text-[#111827] mb-4">Access All 50+ Instruments</h2>
-        <p className="text-[#6B7280] mb-6">Activate any strategy and let our algorithms do the trading.</p>
-        <Link href="/auth/register" className="btn-green inline-block font-bold">Open Your Account</Link>
-      </div>
+          {/* Table */}
+          <motion.div key={activeTab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+            <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 2px 16px rgba(0,0,0,0.05)' }}>
+              {/* Header */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 2fr 1fr 1fr 100px', gap: 0, padding: '12px 20px', background: '#F9FAFB', borderBottom: '1px solid #E5E7EB' }}>
+                {['Symbol', 'Name', 'Live Price', 'Spread', 'Leverage', ''].map(h => (
+                  <span key={h} style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.8 }}>{h}</span>
+                ))}
+              </div>
+              <AnimatePresence mode="wait">
+                {instruments.map((inst, i) => (
+                  <motion.div key={inst.symbol} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
+                    style={{ display: 'grid', gridTemplateColumns: '1.5fr 2fr 2fr 1fr 1fr 100px', alignItems: 'center', padding: '14px 20px', borderBottom: i < instruments.length - 1 ? '1px solid #F3F4F6' : 'none', transition: 'background 0.2s' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#F9FAFB'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                    <span style={{ fontWeight: 800, color: '#121319', fontSize: 13 }}>{inst.symbol}</span>
+                    <span style={{ fontSize: 12, color: '#6B7280' }}>{inst.name}</span>
+                    <PriceTicker price={inst.price} digits={digits[inst.symbol] || 2} />
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#1F77B4' }}>{inst.spread} pips</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>{inst.leverage}</span>
+                    <Link href="/auth/register">
+                      <a style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '7px 14px', borderRadius: 8, background: '#0B1929', color: '#fff', fontWeight: 700, fontSize: 12, textDecoration: 'none' }}>
+                        Trade <ArrowRight size={12}/>
+                      </a>
+                    </Link>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* WHY TRADE WITH US */}
+      <section style={{ background: '#fff', padding: '80px 16px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,42px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Why Trade With ECMarket Pro?</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 440, margin: '0 auto' }}>Institutional-grade conditions for every trader.</motion.p>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
+            {[
+              { icon: <Zap size={24}/>, color: '#1F77B4', bg: 'rgba(31,119,180,0.08)', title: 'Lightning Execution', desc: 'Sub-10ms order execution with no requotes. Your trade gets filled at the exact price.' },
+              { icon: <Globe size={24}/>, color: '#16A34A', bg: 'rgba(22,163,74,0.08)', title: 'Deep Liquidity', desc: 'Connected to 20+ top-tier liquidity providers for best prices and zero slippage.' },
+              { icon: <Shield size={24}/>, color: '#7C3AED', bg: 'rgba(124,58,237,0.08)', title: 'Negative Balance Protection', desc: 'Your account can never go below zero. Your maximum loss is limited to your deposit.' },
+              { icon: <Clock size={24}/>, color: '#F7931A', bg: 'rgba(247,147,26,0.08)', title: '24/5 Trading', desc: 'Trade forex and other markets round the clock, 5 days a week, from Sunday to Friday.' },
+            ].map((f, i) => (
+              <motion.div key={i} variants={fadeUp} whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(0,0,0,0.09)' }}
+                style={{ background: '#fff', borderRadius: 20, padding: 24, border: '1px solid #E5E7EB', boxShadow: '0 2px 10px rgba(0,0,0,0.04)', transition: 'all 0.25s' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: f.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: f.color, marginBottom: 14 }}>{f.icon}</div>
+                <h3 style={{ fontSize: 15, fontWeight: 800, color: '#121319', marginBottom: 7 }}>{f.title}</h3>
+                <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.7, margin: 0 }}>{f.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* DARK CTA BANNER */}
+      <section style={{ background: 'linear-gradient(135deg,#0B1929,#0d2035)', padding: '70px 16px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 30% 50%, rgba(31,119,180,0.1) 0%, transparent 60%)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#fff', marginBottom: 16 }}>
+            Ready to Start Trading?
+          </motion.h2>
+          <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+            style={{ color: 'rgba(255,255,255,0.55)', fontSize: 16, marginBottom: 32, lineHeight: 1.7 }}>
+            Open your free account in 2 minutes. No deposit required to start with a demo account.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
+            style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/auth/register">
+              <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 36px', borderRadius: 999, background: '#1F77B4', color: '#fff', fontWeight: 800, fontSize: 15, textDecoration: 'none', boxShadow: '0 8px 28px rgba(31,119,180,0.4)' }}>
+                Open Free Account <ArrowRight size={16}/>
+              </a>
+            </Link>
+            <Link href="/auth/register">
+              <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 28px', borderRadius: 999, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
+                Try Demo Account
+              </a>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
     </PublicLayout>
   );

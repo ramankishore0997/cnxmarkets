@@ -1,206 +1,152 @@
-import { PublicLayout } from '@/components/layout/PublicLayout';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { ChevronDown, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'wouter';
+import { PublicLayout } from '@/components/layout/PublicLayout';
+import { ChevronDown, ChevronUp, ArrowRight, Search } from 'lucide-react';
+
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
+
+const CATEGORIES = ['All', 'Account', 'Deposits & Withdrawals', 'Trading', 'KYC & Verification', 'Security'] as const;
+type Category = typeof CATEGORIES[number];
+
+const FAQS: { q: string; a: string; cat: Category }[] = [
+  { cat: 'Account', q: 'How do I open an account with ECMarket Pro?', a: 'Opening an account takes just 2 minutes. Click "Open Free Account", fill in your basic details, verify your email, and complete KYC with your Aadhaar + PAN. Your account is ready to fund and trade.' },
+  { cat: 'Account', q: 'What account types are available?', a: 'We offer three account types: Standard ($100 min), Pro ($500 min), and Elite ($5,000 min). Each offers different leverage levels, spread conditions, and support options. You can upgrade at any time.' },
+  { cat: 'Account', q: 'Can I have a demo account?', a: 'Yes! Every registered user gets access to a free demo account loaded with $10,000 virtual funds. Practice trading with zero risk before going live.' },
+  { cat: 'Account', q: 'Can I have multiple trading accounts?', a: 'Yes, you can open up to 5 trading accounts under one client profile. This is useful for separating strategies or testing different account types.' },
+  { cat: 'Deposits & Withdrawals', q: 'How long does it take to process a withdrawal?', a: 'Withdrawals are processed within 1 hour to your registered bank account, UPI ID, or crypto wallet — one of the fastest in the industry. Our average processing time is just 23 minutes.' },
+  { cat: 'Deposits & Withdrawals', q: 'What deposit methods are accepted?', a: 'We support UPI, Bank Transfer (NEFT/RTGS/IMPS), and Crypto deposits (Bitcoin, USDT TRC20, ETH). All deposits are instant and there are no deposit fees.' },
+  { cat: 'Deposits & Withdrawals', q: 'Is there a minimum withdrawal amount?', a: 'The minimum withdrawal amount is $10 (approximately ₹840). There are no withdrawal fees charged by ECMarket Pro, though your bank or payment provider may have their own fees.' },
+  { cat: 'Deposits & Withdrawals', q: 'Are there any deposit fees?', a: 'No — ECMarket Pro charges zero deposit fees. You only pay any fees your payment provider charges. UPI deposits are always completely free.' },
+  { cat: 'Trading', q: 'What leverage does ECMarket Pro offer?', a: 'We offer leverage up to 1:2000 on major forex pairs for Elite account holders. Standard accounts get 1:500 and Pro accounts get 1:1000. Leverage varies by instrument — indices and crypto have lower leverage.' },
+  { cat: 'Trading', q: 'What are the spreads on ECMarket Pro?', a: 'Our spreads start from 0.0 pips on major pairs like EUR/USD and GBP/USD for Elite accounts. Standard accounts have spreads from 1.0 pip. All spreads are competitive and displayed in real-time.' },
+  { cat: 'Trading', q: 'What trading platforms do you support?', a: 'We support WebTrader (browser-based), Mobile App (iOS & Android), MetaTrader 4, and MetaTrader 5. All platforms are available for all account types.' },
+  { cat: 'Trading', q: 'What instruments can I trade?', a: 'You can trade 200+ instruments including Forex pairs (50+), Cryptocurrencies (30+), Commodities (metals, oil, gas), Global Indices (US30, NAS100, DAX), and Stock CFDs.' },
+  { cat: 'Trading', q: 'Is copy trading available?', a: 'Yes! Copy trading is available for Pro and Elite account holders. You can automatically mirror the trades of experienced, verified traders with a proven track record.' },
+  { cat: 'KYC & Verification', q: 'What documents are required for KYC?', a: 'For Indian clients: Aadhaar Card (identity) and PAN Card (tax document). For international clients: Government-issued passport + proof of address. All uploads are reviewed within 10 minutes.' },
+  { cat: 'KYC & Verification', q: 'How long does KYC verification take?', a: 'KYC is typically verified within 10 minutes during business hours. In peak times it may take up to 1 hour. You will receive an email confirmation once approved.' },
+  { cat: 'Security', q: 'Are my funds safe?', a: 'Yes. Client funds are held in segregated accounts at tier-1 banks, completely separate from company operating funds. We are regulated in the UAE. Your funds are always protected.' },
+  { cat: 'Security', q: 'What security measures protect my account?', a: 'We use 256-bit SSL encryption, two-factor authentication (2FA), IP monitoring, and withdrawal confirmation emails. All trading activity is monitored in real-time for suspicious behaviour.' },
+  { cat: 'Security', q: 'What is Negative Balance Protection?', a: 'Negative Balance Protection ensures your account can never go below zero. Even in extreme market conditions, your maximum loss is limited to your deposited amount.' },
+];
 
 export function Faq() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [activeCategory, setActiveCategory] = useState('General');
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState<Category>('All');
+  const [search, setSearch] = useState('');
 
-  const categories = ['General', 'Accounts', 'Trading', 'Deposits & Withdrawals', 'Security'];
-
-  const faqs = [
-    {
-      category: 'General',
-      q: "What is ECMarket Pro?",
-      a: "ECMarket Pro is a UAE-regulated global forex broker offering traders access to 200+ instruments including Forex pairs, Cryptocurrencies, Commodities, Indices, and Stocks — all from one account with spreads from 0.0 pips and leverage up to 1:2000."
-    },
-    {
-      category: 'General',
-      q: "Is ECMarket Pro regulated?",
-      a: "Yes. ECMarket Pro is a regulated forex broker headquartered in the UAE. We operate under strict financial compliance standards and maintain full client fund segregation at all times."
-    },
-    {
-      category: 'General',
-      q: "How does ECMarket Pro protect client funds?",
-      a: "Client funds are held in fully segregated tier-1 bank accounts, completely separate from company operating capital. Only you can initiate deposits and withdrawals — we never have access to move your funds without your authorization."
-    },
-    {
-      category: 'General',
-      q: "Do I need prior trading experience?",
-      a: "No experience is required to open an account. However, please be aware that trading in financial markets carries risk. We provide educational resources and a demo environment to help you get started responsibly."
-    },
-    {
-      category: 'General',
-      q: "Which countries can use ECMarket Pro?",
-      a: "ECMarket Pro serves clients globally with a strong focus on Indian and South Asian traders. Our local payment methods (UPI, Bank Transfer) are specifically designed for the Indian market."
-    },
-    {
-      category: 'Accounts',
-      q: "How do I open a live account?",
-      a: "Opening an account takes under 5 minutes. Register online, complete your KYC (Aadhaar + PAN for Indian residents), fund your account via UPI, Bank Transfer, or Crypto, and start trading immediately after verification."
-    },
-    {
-      category: 'Accounts',
-      q: "What documents are required for KYC?",
-      a: "For Indian residents: Aadhaar card (front & back), PAN card, a recent bank statement (last 3 months), and a selfie for identity verification. For NRIs: Passport, proof of overseas address, and bank statement."
-    },
-    {
-      category: 'Accounts',
-      q: "What does the trading dashboard show?",
-      a: "Your dashboard shows your live portfolio balance, open positions, closed trade history with full P&L details, deposit and withdrawal history, and real-time market data."
-    },
-    {
-      category: 'Accounts',
-      q: "Can I have multiple accounts?",
-      a: "Each verified identity can hold one live account. If you require additional account types (e.g., for different trading styles), please contact our support team."
-    },
-    {
-      category: 'Trading',
-      q: "What instruments can I trade?",
-      a: "You can trade 200+ instruments including 80+ Forex pairs (majors, minors, exotics), Cryptocurrencies (BTC, ETH, SOL and more), Gold & Silver, Oil, Global Indices (US30, NAS100, S&P500), and top Stocks."
-    },
-    {
-      category: 'Trading',
-      q: "What is the maximum leverage offered?",
-      a: "ECMarket Pro offers leverage up to 1:2000 on major forex pairs. Leverage on crypto and commodities varies by instrument. Higher leverage amplifies both profits and losses — please trade responsibly."
-    },
-    {
-      category: 'Trading',
-      q: "What are the spreads?",
-      a: "Spreads start from 0.0 pips on major pairs like EUR/USD and GBP/USD during peak liquidity hours. All spreads are displayed in real time on the trading platform before order execution."
-    },
-    {
-      category: 'Trading',
-      q: "What are the trading hours?",
-      a: "Forex markets are open 24 hours a day, 5 days a week (Monday to Friday). Crypto markets are available 24/7. Indices and commodities have specific session hours as listed on the platform."
-    },
-    {
-      category: 'Trading',
-      q: "Can I see my full trade history?",
-      a: "Yes. Your dashboard shows a complete trade log including entry price, exit price, lot size, P&L per trade, and duration. You can export your full history for tax reporting purposes."
-    },
-    {
-      category: 'Deposits & Withdrawals',
-      q: "What deposit methods are available?",
-      a: "We accept UPI (PhonePe, GPay, Paytm & all UPI apps), Bank Transfer (NEFT, RTGS, IMPS), and Crypto (USDT, BTC, ETH and more). All deposits are instant with zero deposit fees."
-    },
-    {
-      category: 'Deposits & Withdrawals',
-      q: "How long do withdrawals take?",
-      a: "Withdrawals are processed within 1 hour to your registered bank account, UPI ID, or crypto wallet — 24 hours a day, 7 days a week. This is one of the fastest withdrawal times in the industry."
-    },
-    {
-      category: 'Deposits & Withdrawals',
-      q: "Are there any withdrawal fees?",
-      a: "No. ECMarket Pro charges zero withdrawal fees. The full amount you request is transferred to your account without any deductions from our side."
-    },
-    {
-      category: 'Deposits & Withdrawals',
-      q: "Can I withdraw at any time?",
-      a: "Yes. There is no lock-in period. You can request a withdrawal at any time from your dashboard. Your funds are always available — no restrictions or waiting periods."
-    },
-    {
-      category: 'Security',
-      q: "Is my money safe?",
-      a: "Yes. Funds are held in segregated tier-1 bank accounts entirely separate from company assets. We are UAE regulated and maintain strict AML/KYC compliance to protect client funds at all times."
-    },
-    {
-      category: 'Security',
-      q: "What happens if ECMarket Pro shuts down?",
-      a: "Client funds are completely segregated from company operating funds. In the unlikely event of closure, client funds are fully protected and returned immediately — they are never used for company operations."
-    },
-    {
-      category: 'Security',
-      q: "How is my personal data protected?",
-      a: "All personal data is encrypted using 256-bit AES encryption both in transit and at rest. We never sell, share, or rent your personal data to third parties."
-    },
-    {
-      category: 'Security',
-      q: "What security features protect my account?",
-      a: "Two-factor authentication (2FA) is available for all accounts. Login activity is monitored for suspicious behavior. Withdrawal requests are verified against your registered identity."
-    },
-  ];
-
-  const filteredFaqs = faqs.filter(faq => faq.category === activeCategory);
+  const filtered = FAQS.filter(f => {
+    const matchCat = activeCategory === 'All' || f.cat === activeCategory;
+    const matchSearch = !search || f.q.toLowerCase().includes(search.toLowerCase()) || f.a.toLowerCase().includes(search.toLowerCase());
+    return matchCat && matchSearch;
+  });
 
   return (
     <PublicLayout>
-      <div className="pt-24 pb-16 text-center section-dark border-b border-[#E5E7EB]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-6">Frequently Asked <span className="text-gradient-gold">Questions</span></h1>
-          <p className="text-xl text-[#6B7280] mb-8">
-            Everything you need to know about trading with ECMarket Pro — accounts, instruments, leverage, and withdrawals.
-          </p>
-          
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-[#6B7280]" />
-            <input 
-              type="text" 
-              placeholder="Search for answers..." 
-              className="input-stealth pl-12 py-3 text-lg"
-            />
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 mb-20 flex flex-col md:flex-row gap-12">
-        <div className="w-full md:w-64 shrink-0">
-          <h3 className="font-bold text-[#111827] mb-4 uppercase tracking-wider text-sm">Categories</h3>
-          <ul className="space-y-2">
-            {categories.map(cat => (
-              <li key={cat}>
-                <button 
-                  onClick={() => { setActiveCategory(cat); setOpenIndex(0); }}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    activeCategory === cat 
-                      ? 'bg-[#F7F9FC] text-[#1F77B4] border-l-2 border-[#1F77B4]' 
-                      : 'text-[#6B7280] hover:bg-[#F7F9FC] hover:text-white'
-                  }`}
-                >
-                  {cat}
-                </button>
-              </li>
-            ))}
-          </ul>
+      {/* HERO */}
+      <section style={{ background: 'linear-gradient(135deg,#0B1929 0%,#0d2035 100%)', padding: '80px 16px 60px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -80, left: '25%', width: 400, height: 400, borderRadius: '50%', background: 'rgba(31,119,180,0.07)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            style={{ fontSize: 'clamp(32px,5vw,56px)', fontWeight: 900, color: '#fff', marginBottom: 16 }}>
+            Frequently Asked<br/>
+            <span style={{ background: 'linear-gradient(90deg,#1F77B4,#16A34A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Questions</span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ color: 'rgba(255,255,255,0.55)', fontSize: 16, marginBottom: 32 }}>
+            Everything you need to know about ECMarket Pro.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ position: 'relative', maxWidth: 480, margin: '0 auto' }}>
+            <Search size={16} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', pointerEvents: 'none' }}/>
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search questions..."
+              style={{ width: '100%', padding: '14px 16px 14px 44px', borderRadius: 999, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+            />
+          </motion.div>
         </div>
-        
-        <div className="flex-1 space-y-4">
-          <h2 className="text-2xl font-bold text-[#111827] mb-6">{activeCategory}</h2>
-          {filteredFaqs.length > 0 ? filteredFaqs.map((faq, i) => (
-            <div 
-              key={i} 
-              className={`card-stealth overflow-hidden transition-colors ${openIndex === i ? 'border-l-2 border-l-[#1F77B4]' : ''}`}
-            >
-              <button
-                className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-              >
-                <span className={`font-semibold text-lg pr-8 ${openIndex === i ? 'text-[#111827]' : 'text-[#6B7280]'}`}>{faq.q}</span>
-                <ChevronDown 
-                  className={`w-5 h-5 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-[#1F77B4]' : 'text-[#6B7280]'}`} 
-                />
+      </section>
+
+      {/* CATEGORIES + FAQ */}
+      <section style={{ background: '#F5F5F5', padding: '60px 16px 80px' }}>
+        <div style={{ maxWidth: 820, margin: '0 auto' }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 36, justifyContent: 'center' }}>
+            {CATEGORIES.map(cat => (
+              <button key={cat} onClick={() => { setActiveCategory(cat); setOpenFaq(null); }}
+                style={{ padding: '9px 18px', borderRadius: 999, border: `1.5px solid ${activeCategory === cat ? '#1F77B4' : '#E5E7EB'}`, background: activeCategory === cat ? '#1F77B4' : '#fff', color: activeCategory === cat ? '#fff' : '#374151', fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s' }}>
+                {cat}
               </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  >
-                    <div className="px-6 pb-5 text-[#6B7280] leading-relaxed border-t border-[#E5E7EB] pt-4">
-                      {faq.a}
-                    </div>
+            ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            {filtered.length === 0 ? (
+              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                style={{ textAlign: 'center', padding: '48px 16px', color: '#9CA3AF' }}>
+                <p style={{ fontSize: 16, fontWeight: 600 }}>No questions found{search ? ` for "${search}"` : ''}</p>
+                <button onClick={() => { setSearch(''); setActiveCategory('All'); }} style={{ marginTop: 12, padding: '8px 20px', borderRadius: 999, background: '#1F77B4', color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Clear filters</button>
+              </motion.div>
+            ) : (
+              <motion.div key={activeCategory + search} initial="hidden" animate="visible" variants={stagger}
+                style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {filtered.map((faq, i) => (
+                  <motion.div key={i} variants={fadeUp}
+                    style={{ borderRadius: 18, border: '1px solid #E5E7EB', background: '#fff', overflow: 'hidden', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
+                    <button
+                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, padding: '18px 22px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                        <span style={{ fontSize: 9, fontWeight: 800, color: '#1F77B4', background: 'rgba(31,119,180,0.08)', padding: '3px 8px', borderRadius: 6, marginTop: 3, textTransform: 'uppercase', letterSpacing: 0.5, whiteSpace: 'nowrap', flexShrink: 0 }}>{faq.cat}</span>
+                        <span style={{ fontWeight: 700, color: '#121319', fontSize: 14, lineHeight: 1.5 }}>{faq.q}</span>
+                      </div>
+                      <div style={{ flexShrink: 0, marginTop: 2 }}>
+                        {openFaq === i ? <ChevronUp size={18} color="#1F77B4"/> : <ChevronDown size={18} color="#9CA3AF"/>}
+                      </div>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {openFaq === i && (
+                        <motion.div key="content" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28 }}>
+                          <p style={{ padding: '0 22px 18px', margin: 0, fontSize: 13.5, color: '#6B7280', lineHeight: 1.75, borderTop: '1px solid #F3F4F6', paddingTop: 14 }}>{faq.a}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )) : (
-            <div className="text-[#6B7280] py-8 text-center">No questions found for this category.</div>
-          )}
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </section>
+
+      {/* STILL HAVE QUESTIONS */}
+      <section style={{ background: '#fff', padding: '70px 16px' }}>
+        <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(31,119,180,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28 }}>💬</motion.div>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(24px,4vw,36px)', fontWeight: 900, color: '#121319', marginBottom: 12 }}>Still have questions?</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280', fontSize: 15, marginBottom: 32, lineHeight: 1.7 }}>
+              Our support team is available 24/7. We typically respond within 10 minutes.
+            </motion.p>
+            <motion.div variants={fadeUp} style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link href="/contact">
+                <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 30px', borderRadius: 999, background: '#0B1929', color: '#fff', fontWeight: 800, fontSize: 14, textDecoration: 'none' }}>
+                  Contact Support <ArrowRight size={15}/>
+                </a>
+              </Link>
+              <Link href="/auth/register">
+                <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 999, background: '#fff', border: '1.5px solid #E5E7EB', color: '#374151', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
+                  Open Free Account
+                </a>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
     </PublicLayout>
   );
 }

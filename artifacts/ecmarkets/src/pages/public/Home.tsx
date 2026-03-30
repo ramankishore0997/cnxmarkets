@@ -531,6 +531,89 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
+          §1.5 DASHBOARD MOCKUP
+      ══════════════════════════════════════════ */}
+      <section style={{ background: 'linear-gradient(180deg, #0B1929 0%, #0d2035 100%)', padding: '80px 16px', overflow: 'hidden', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: -100, left: '20%', width: 400, height: 400, borderRadius: '50%', background: 'rgba(31,119,180,0.08)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -100, right: '15%', width: 350, height: 350, borderRadius: '50%', background: 'rgba(22,163,74,0.06)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 1000, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <motion.p variants={fadeUp} style={{ fontSize: 11, fontWeight: 800, color: '#1F77B4', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12 }}>Professional Platform</motion.p>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#fff', marginBottom: 12 }}>A Dashboard Built for<br/>Serious Traders</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: 'rgba(255,255,255,0.55)', maxWidth: 460, margin: '0 auto', fontSize: 15 }}>Monitor all your positions, analyse markets, and manage your portfolio — all in one place.</motion.p>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 50, scale: 0.97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
+            style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
+            {/* Browser bar */}
+            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {['#DC2626','#F7931A','#16A34A'].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c, opacity: 0.7 }} />)}
+              </div>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '4px 12px', fontSize: 11, color: 'rgba(255,255,255,0.3)', textAlign: 'center' }}>app.ecmarketpro.in/dashboard</div>
+            </div>
+            <div style={{ display: 'flex', minHeight: 340 }}>
+              {/* Mini sidebar */}
+              <div style={{ width: 52, background: 'rgba(11,25,41,0.8)', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 0', gap: 18 }}>
+                {[BarChart2, TrendingUp, Wallet, Globe, Shield].map((Icon, i) => (
+                  <div key={i} style={{ width: 34, height: 34, borderRadius: 10, background: i === 0 ? 'rgba(31,119,180,0.2)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={15} color={i === 0 ? '#1F77B4' : 'rgba(255,255,255,0.2)'} />
+                  </div>
+                ))}
+              </div>
+              {/* Main content */}
+              <div style={{ flex: 1, padding: '16px', display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
+                {/* Stats row */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10 }}>
+                  {[{ label:'Portfolio Balance', val:'$12,480.50', color:'#fff', sub:'+$284.20 today' },{ label:"Today's P&L", val:'+$284.20', color:'#16A34A', sub:'+2.33%' },{ label:'Open Positions', val:'3', color:'#fff', sub:'Active' },{ label:'Free Margin', val:'$8,240', color:'#fff', sub:'Available' }].map((s,i) => (
+                    <div key={i} style={{ background:'rgba(255,255,255,0.04)', borderRadius:12, padding:'10px 12px', border:'1px solid rgba(255,255,255,0.06)' }}>
+                      <p style={{ fontSize:9, color:'rgba(255,255,255,0.35)', margin:'0 0 3px', fontWeight:600, textTransform:'uppercase', letterSpacing:0.5 }}>{s.label}</p>
+                      <p style={{ fontSize:14, fontWeight:900, color:s.color, margin:'0 0 2px' }}>{s.val}</p>
+                      <span style={{ fontSize:9, color:'#16A34A', fontWeight:700 }}>{s.sub}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Chart */}
+                <div style={{ flex:1, background:'rgba(255,255,255,0.02)', borderRadius:12, border:'1px solid rgba(255,255,255,0.05)', padding:'12px' }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                    <div style={{ display:'flex', gap:6 }}>
+                      {['EUR/USD','BTC/USD','XAU/USD'].map((p,i) => <span key={p} style={{ fontSize:10, fontWeight:700, padding:'3px 8px', borderRadius:6, background:i===0?'rgba(31,119,180,0.2)':'transparent', color:i===0?'#1F77B4':'rgba(255,255,255,0.25)' }}>{p}</span>)}
+                    </div>
+                    <span style={{ fontSize:10, color:'rgba(255,255,255,0.25)' }}>1H · 4H · 1D</span>
+                  </div>
+                  <svg viewBox="0 0 500 90" style={{ width:'100%', height:80 }}>
+                    <defs>
+                      <linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#1F77B4" stopOpacity="0.25"/>
+                        <stop offset="100%" stopColor="#1F77B4" stopOpacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M0,70 C30,65 50,72 80,55 C110,38 130,58 160,42 C190,26 210,35 250,22 C290,9 310,18 350,12 C390,6 430,15 500,5" fill="none" stroke="#1F77B4" strokeWidth="2.5"/>
+                    <path d="M0,70 C30,65 50,72 80,55 C110,38 130,58 160,42 C190,26 210,35 250,22 C290,9 310,18 350,12 C390,6 430,15 500,5 L500,90 L0,90 Z" fill="url(#cg1)"/>
+                    <circle cx="500" cy="5" r="4" fill="#1F77B4"/>
+                  </svg>
+                </div>
+                {/* Positions table */}
+                <div style={{ background:'rgba(255,255,255,0.02)', borderRadius:12, border:'1px solid rgba(255,255,255,0.05)', overflow:'hidden' }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 60px 60px 80px 70px', padding:'7px 12px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+                    {['Instrument','Type','Lot','Open Price','P&L'].map(h => <span key={h} style={{ fontSize:9, fontWeight:700, color:'rgba(255,255,255,0.22)', textTransform:'uppercase', letterSpacing:0.5 }}>{h}</span>)}
+                  </div>
+                  {[{ inst:'EUR/USD', type:'BUY', lot:'0.50', price:'1.09215', pnl:'+$127.40', pos:true },{ inst:'XAU/USD', type:'BUY', lot:'0.10', price:'2341.50', pnl:'+$84.00', pos:true },{ inst:'BTC/USD', type:'SELL', lot:'0.01', price:'67200', pnl:'-$28.80', pos:false }].map((row,i) => (
+                    <div key={i} style={{ display:'grid', gridTemplateColumns:'1fr 60px 60px 80px 70px', padding:'7px 12px', borderBottom:i<2?'1px solid rgba(255,255,255,0.03)':'none', alignItems:'center' }}>
+                      <span style={{ fontSize:11, fontWeight:700, color:'#fff' }}>{row.inst}</span>
+                      <span style={{ fontSize:9, fontWeight:700, color:row.type==='BUY'?'#16A34A':'#DC2626', background:row.type==='BUY'?'rgba(22,163,74,0.12)':'rgba(220,38,38,0.12)', padding:'2px 6px', borderRadius:4, width:'fit-content' }}>{row.type}</span>
+                      <span style={{ fontSize:10, color:'rgba(255,255,255,0.35)' }}>{row.lot}</span>
+                      <span style={{ fontSize:10, color:'rgba(255,255,255,0.35)' }}>{row.price}</span>
+                      <span style={{ fontSize:11, fontWeight:700, color:row.pos?'#16A34A':'#DC2626' }}>{row.pnl}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
           §2 FAN CARDS — "Make Your Next Trade"
       ══════════════════════════════════════════ */}
       <section style={{ background: '#F5F5F5', padding: '80px 16px 60px' }}>
@@ -551,6 +634,35 @@ export function Home() {
               See All Features <ArrowRight size={15} />
             </a>
           </Link>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §2.5 FEATURE CARDS — Why Choose Us
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#F5F5F5', padding: '80px 16px' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Why Traders Choose ECMarket Pro</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 460, margin: '0 auto' }}>Built for the modern trader — fast, reliable, and fully transparent.</motion.p>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 16 }}>
+            {[
+              { icon: <Zap size={24}/>, color:'#1F77B4', bg:'rgba(31,119,180,0.08)', title:'Zero Commission', desc:'Trade all 200+ instruments with zero commission. Keep 100% of your profits every time.' },
+              { icon: <TrendingUp size={24}/>, color:'#16A34A', bg:'rgba(22,163,74,0.08)', title:'1:2000 Leverage', desc:'Maximise your trading power with up to 1:2000 leverage on major forex pairs.' },
+              { icon: <Clock size={24}/>, color:'#7C3AED', bg:'rgba(124,58,237,0.08)', title:'1-Hour Withdrawals', desc:'Instant withdrawals to bank, UPI, or crypto wallet — processed in under 60 minutes.' },
+              { icon: <Copy size={24}/>, color:'#F7931A', bg:'rgba(247,147,26,0.08)', title:'Copy Trading', desc:'Mirror top-performing traders automatically. Earn while you learn, with zero manual effort.' },
+              { icon: <Activity size={24}/>, color:'#DC2626', bg:'rgba(220,38,38,0.08)', title:'Free Trading Signals', desc:'Get daily professional signals with entry, TP, and SL — completely free for all users.' },
+              { icon: <Shield size={24}/>, color:'#0891B2', bg:'rgba(8,145,178,0.08)', title:'Bank-Grade Security', desc:'256-bit SSL encryption. Funds held in segregated tier-1 bank accounts — always safe.' },
+            ].map((f,i) => (
+              <motion.div key={i} variants={fadeUp} whileHover={{ y:-5, boxShadow:'0 16px 40px rgba(0,0,0,0.10)' }}
+                style={{ background:'#fff', borderRadius:22, padding:28, border:'1px solid #E5E7EB', boxShadow:'0 2px 12px rgba(0,0,0,0.04)', transition:'all 0.25s' }}>
+                <div style={{ width:52, height:52, borderRadius:16, background:f.bg, display:'flex', alignItems:'center', justifyContent:'center', color:f.color, marginBottom:16 }}>{f.icon}</div>
+                <h3 style={{ fontSize:16, fontWeight:800, color:'#121319', marginBottom:8 }}>{f.title}</h3>
+                <p style={{ fontSize:13, color:'#6B7280', lineHeight:1.7, margin:0 }}>{f.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -659,6 +771,51 @@ export function Home() {
               Check All Instruments →
             </a>
           </Link>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §4.5 ACCOUNT PRICING CARDS
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#F5F5F5', padding: '80px 16px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Choose Your Account Type</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 440, margin: '0 auto' }}>Select the account that fits your trading style and experience level.</motion.p>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20, alignItems: 'start' }}>
+            {[
+              { name:'Standard', badge:null, popular:false, minDeposit:'$100', leverage:'1:500', spread:'From 1.0 pip', commission:'Zero', withdrawal:'24 hours', color:'#374151', textColor:'#121319', bg:'#fff', border:'#E5E7EB', featureColor:'#374151', features:['200+ instruments','Free education','Email support','Demo account','Basic signals'], cta:'Open Standard Account' },
+              { name:'Pro', badge:'MOST POPULAR', popular:true, minDeposit:'$500', leverage:'1:1000', spread:'From 0.2 pip', commission:'Zero', withdrawal:'4 hours', color:'#1F77B4', textColor:'#fff', bg:'linear-gradient(135deg,#0B1929 0%,#0d2035 100%)', border:'#1F77B4', featureColor:'rgba(255,255,255,0.75)', features:['200+ instruments','Priority support','Copy trading','Advanced signals','Dedicated manager'], cta:'Open Pro Account' },
+              { name:'Elite', badge:null, popular:false, minDeposit:'$5,000', leverage:'1:2000', spread:'From 0.0 pip', commission:'Zero', withdrawal:'≤1 hour', color:'#F7931A', textColor:'#121319', bg:'#fff', border:'#E5E7EB', featureColor:'#374151', features:['200+ instruments','24/7 VIP support','Copy trading','Premium signals','Dedicated manager','Custom leverage'], cta:'Open Elite Account' },
+            ].map((plan,i) => (
+              <motion.div key={i} variants={fadeUp}
+                style={{ borderRadius:24, padding:28, border:`1px solid ${plan.popular ? plan.color : plan.border}`, background:plan.bg, position:'relative', overflow:'hidden', boxShadow:plan.popular?`0 0 0 3px rgba(31,119,180,0.12), 0 24px 60px rgba(0,0,0,0.15)`:'0 2px 14px rgba(0,0,0,0.04)' }}>
+                {plan.popular && <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:'linear-gradient(90deg,#1F77B4,#16A34A)' }} />}
+                {plan.badge && <div style={{ display:'inline-flex', marginBottom:12, padding:'3px 10px', borderRadius:8, background:'rgba(31,119,180,0.15)', fontSize:9, fontWeight:800, color:'#1F77B4', letterSpacing:1.5, textTransform:'uppercase' }}>{plan.badge}</div>}
+                <h3 style={{ fontSize:24, fontWeight:900, color:plan.textColor, marginBottom:4 }}>{plan.name}</h3>
+                <p style={{ fontSize:12, color:plan.popular?'rgba(255,255,255,0.45)':'#9CA3AF', marginBottom:20 }}>Min. Deposit: <strong style={{ color:plan.color }}>{plan.minDeposit}</strong></p>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:24 }}>
+                  {[{label:'Leverage',val:plan.leverage},{label:'Spread',val:plan.spread},{label:'Commission',val:plan.commission},{label:'Withdrawal',val:plan.withdrawal}].map(s => (
+                    <div key={s.label} style={{ background:plan.popular?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.02)', borderRadius:10, padding:'8px 10px', border:`1px solid ${plan.popular?'rgba(255,255,255,0.07)':'#F3F4F6'}` }}>
+                      <p style={{ fontSize:9, color:plan.popular?'rgba(255,255,255,0.3)':'#9CA3AF', margin:'0 0 2px', fontWeight:600, textTransform:'uppercase', letterSpacing:0.5 }}>{s.label}</p>
+                      <p style={{ fontSize:12, fontWeight:800, color:plan.textColor, margin:0 }}>{s.val}</p>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display:'flex', flexDirection:'column', gap:7, marginBottom:24 }}>
+                  {plan.features.map(f => (
+                    <div key={f} style={{ display:'flex', alignItems:'center', gap:8, fontSize:13, color:plan.featureColor }}>
+                      <CheckCircle2 size={14} color={plan.popular?'#16A34A':plan.color} />{f}
+                    </div>
+                  ))}
+                </div>
+                <Link href="/auth/register">
+                  <a style={{ display:'block', textAlign:'center', padding:'12px 24px', borderRadius:999, background:plan.popular?'#1F77B4':'transparent', border:`2px solid ${plan.popular?'transparent':plan.color}`, color:plan.popular?'#fff':plan.color, fontWeight:800, fontSize:14, textDecoration:'none', boxShadow:plan.popular?'0 8px 24px rgba(31,119,180,0.4)':'none' }}>{plan.cta}</a>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -790,6 +947,51 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
+          §7.5 TRADING PLATFORM SECTION
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#0B1929', padding: '80px 16px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(31,119,180,0.07) 0%, transparent 55%), radial-gradient(circle at 80% 50%, rgba(22,163,74,0.05) 0%, transparent 55%)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 960, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <motion.p variants={fadeUp} style={{ fontSize: 11, fontWeight: 800, color: '#1F77B4', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12 }}>Multi-Platform Trading</motion.p>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#fff', marginBottom: 12 }}>Trade on Any Device, Anywhere</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: 'rgba(255,255,255,0.5)', maxWidth: 440, margin: '0 auto' }}>Access your account from desktop, tablet, or mobile — 24/5 trading with zero downtime.</motion.p>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
+            {[
+              { icon:'🖥️', name:'WebTrader', desc:'Trade directly from your browser. No download, no installation required.', badge:'Browser-Based', color:'#1F77B4' },
+              { icon:'📱', name:'Mobile App', desc:'Full-featured iOS and Android apps. Trade on the go, anytime.', badge:'iOS & Android', color:'#16A34A' },
+              { icon:'💻', name:'MetaTrader 4', desc:'Industry-standard MT4 with full EA and algorithmic trading support.', badge:'Windows · Mac', color:'#7C3AED' },
+              { icon:'📊', name:'MetaTrader 5', desc:'Advanced multi-asset platform with superior charting and analytics.', badge:'All Platforms', color:'#F7931A' },
+            ].map((p,i) => (
+              <motion.div key={i} variants={fadeUp} whileHover={{ background:'rgba(255,255,255,0.07)', borderColor:`rgba(${p.color === '#1F77B4' ? '31,119,180' : '22,163,74'},0.3)` }}
+                style={{ background:'rgba(255,255,255,0.04)', borderRadius:20, padding:24, border:'1px solid rgba(255,255,255,0.07)', textAlign:'center', transition:'all 0.25s' }}>
+                <div style={{ fontSize:38, marginBottom:14 }}>{p.icon}</div>
+                <h3 style={{ fontSize:16, fontWeight:800, color:'#fff', marginBottom:8 }}>{p.name}</h3>
+                <p style={{ fontSize:12.5, color:'rgba(255,255,255,0.4)', lineHeight:1.7, marginBottom:14 }}>{p.desc}</p>
+                <span style={{ fontSize:10, fontWeight:700, color:p.color, background:`rgba(${p.color==='#1F77B4'?'31,119,180':p.color==='#16A34A'?'22,163,74':p.color==='#7C3AED'?'124,58,237':'247,147,26'},0.12)`, padding:'4px 10px', borderRadius:8 }}>{p.badge}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+          <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginTop: 52 }}>
+            {[{ label:'Execution Speed', val:'<10ms' },{ label:'Uptime', val:'99.9%' },{ label:'Instruments', val:'200+' },{ label:'Charts', val:'50+ types' }].map(s => (
+              <div key={s.label} style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: 28, fontWeight: 900, color: '#1F77B4', margin: '0 0 4px' }}>{s.val}</p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.8 }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 44 }}>
+            <Link href="/auth/register">
+              <a style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 36px', borderRadius: 999, background: '#1F77B4', color: '#fff', fontWeight: 800, fontSize: 15, textDecoration: 'none', boxShadow: '0 8px 28px rgba(31,119,180,0.4)' }}>
+                Start Trading Now <ArrowRight size={16}/>
+              </a>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
           §8 HOW IT WORKS
       ══════════════════════════════════════════ */}
       <section style={{ background: '#F5F5F5', padding: '70px 16px' }}>
@@ -813,6 +1015,85 @@ export function Home() {
               </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §8.5 DEPOSIT / WITHDRAWAL STEPS
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#F5F5F5', padding: '80px 16px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Deposits & Withdrawals</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 440, margin: '0 auto' }}>Fund your account in seconds. Withdraw in under 1 hour.</motion.p>
+          </motion.div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 40 }}>
+            {/* Deposit side */}
+            <motion.div initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:28 }}>
+                <div style={{ width:44, height:44, borderRadius:14, background:'rgba(22,163,74,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <DollarSign size={22} color="#16A34A"/>
+                </div>
+                <div>
+                  <h3 style={{ fontSize:20, fontWeight:900, color:'#121319', margin:0 }}>How to Deposit</h3>
+                  <p style={{ fontSize:12, color:'#9CA3AF', margin:0 }}>Instant · Zero Fees</p>
+                </div>
+              </div>
+              <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+                {[
+                  { step:'1', title:'Login to Your Account', desc:'Access your client portal with email and password.' },
+                  { step:'2', title:'Go to Deposit Section', desc:'Navigate to Funds → Deposit from your dashboard.' },
+                  { step:'3', title:'Choose Payment Method', desc:'Select from UPI, Bank Transfer, or Crypto wallet.' },
+                  { step:'4', title:'Enter Amount & Confirm', desc:'Funds appear in your trading account within seconds.' },
+                ].map(s => (
+                  <div key={s.step} style={{ display:'flex', gap:14, alignItems:'flex-start' }}>
+                    <div style={{ width:32, height:32, borderRadius:10, background:'rgba(22,163,74,0.1)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:12, fontWeight:900, color:'#16A34A' }}>{s.step}</div>
+                    <div>
+                      <p style={{ fontSize:14, fontWeight:700, color:'#121319', margin:'0 0 3px' }}>{s.title}</p>
+                      <p style={{ fontSize:12.5, color:'#6B7280', margin:0 }}>{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop:24, display:'flex', gap:8, flexWrap:'wrap' }}>
+                {['UPI','NEFT/RTGS','IMPS','Bitcoin','USDT TRC20','ETH'].map(m => (
+                  <span key={m} style={{ fontSize:11, fontWeight:700, padding:'5px 12px', borderRadius:8, background:'#fff', border:'1px solid #E5E7EB', color:'#374151' }}>{m}</span>
+                ))}
+              </div>
+            </motion.div>
+            {/* Withdrawal side */}
+            <motion.div initial={{ opacity:0, x:30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:28 }}>
+                <div style={{ width:44, height:44, borderRadius:14, background:'rgba(31,119,180,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <Wallet size={22} color="#1F77B4"/>
+                </div>
+                <div>
+                  <h3 style={{ fontSize:20, fontWeight:900, color:'#121319', margin:0 }}>How to Withdraw</h3>
+                  <p style={{ fontSize:12, color:'#9CA3AF', margin:0 }}>Within 1 Hour · Zero Fees</p>
+                </div>
+              </div>
+              <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+                {[
+                  { step:'1', title:'Go to Withdrawal Section', desc:'Navigate to Funds → Withdraw from your dashboard.' },
+                  { step:'2', title:'Enter the Amount', desc:'Type how much you want to withdraw (minimum $10).' },
+                  { step:'3', title:'Choose Destination', desc:'Select bank account, UPI ID, or crypto wallet.' },
+                  { step:'4', title:'Funds Received in 1 Hour', desc:'Processed and credited to your account in under 60 minutes.' },
+                ].map(s => (
+                  <div key={s.step} style={{ display:'flex', gap:14, alignItems:'flex-start' }}>
+                    <div style={{ width:32, height:32, borderRadius:10, background:'rgba(31,119,180,0.1)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:12, fontWeight:900, color:'#1F77B4' }}>{s.step}</div>
+                    <div>
+                      <p style={{ fontSize:14, fontWeight:700, color:'#121319', margin:'0 0 3px' }}>{s.title}</p>
+                      <p style={{ fontSize:12.5, color:'#6B7280', margin:0 }}>{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop:24, background:'rgba(22,163,74,0.06)', borderRadius:14, padding:'14px 18px', border:'1px solid rgba(22,163,74,0.15)' }}>
+                <p style={{ fontSize:13, fontWeight:700, color:'#16A34A', margin:'0 0 4px' }}>⚡ Avg. Processing: 23 minutes</p>
+                <p style={{ fontSize:12, color:'#6B7280', margin:0 }}>Based on last 30 days. 99.8% withdrawal success rate.</p>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -843,6 +1124,58 @@ export function Home() {
                   )}
                 </AnimatePresence>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          §10 CONTACT / GET IN TOUCH
+      ══════════════════════════════════════════ */}
+      <section style={{ background: '#fff', padding: '80px 16px' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 48 }}>
+            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Get in Touch</motion.h2>
+            <motion.p variants={fadeUp} style={{ color: '#6B7280' }}>Have questions? Our support team responds within 10 minutes, 24/7.</motion.p>
+          </motion.div>
+          <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
+            style={{ background:'#fff', borderRadius:24, border:'1px solid #E5E7EB', padding:'36px 32px', boxShadow:'0 4px 28px rgba(0,0,0,0.06)' }}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16 }}>
+              <div>
+                <label style={{ fontSize:12, fontWeight:700, color:'#374151', display:'block', marginBottom:6 }}>Full Name</label>
+                <input placeholder="Your full name" style={{ width:'100%', padding:'11px 14px', borderRadius:12, border:'1px solid #E5E7EB', fontSize:14, color:'#121319', outline:'none', background:'#F9FAFB', boxSizing:'border-box' }}/>
+              </div>
+              <div>
+                <label style={{ fontSize:12, fontWeight:700, color:'#374151', display:'block', marginBottom:6 }}>Email Address</label>
+                <input type="email" placeholder="you@example.com" style={{ width:'100%', padding:'11px 14px', borderRadius:12, border:'1px solid #E5E7EB', fontSize:14, color:'#121319', outline:'none', background:'#F9FAFB', boxSizing:'border-box' }}/>
+              </div>
+            </div>
+            <div style={{ marginBottom:16 }}>
+              <label style={{ fontSize:12, fontWeight:700, color:'#374151', display:'block', marginBottom:6 }}>Subject</label>
+              <select style={{ width:'100%', padding:'11px 14px', borderRadius:12, border:'1px solid #E5E7EB', fontSize:14, color:'#121319', outline:'none', background:'#F9FAFB', boxSizing:'border-box' }}>
+                <option>Account Opening</option>
+                <option>Deposit / Withdrawal</option>
+                <option>Technical Support</option>
+                <option>Trading Conditions</option>
+                <option>KYC Verification</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div style={{ marginBottom:24 }}>
+              <label style={{ fontSize:12, fontWeight:700, color:'#374151', display:'block', marginBottom:6 }}>Message</label>
+              <textarea rows={4} placeholder="How can we help you?" style={{ width:'100%', padding:'11px 14px', borderRadius:12, border:'1px solid #E5E7EB', fontSize:14, color:'#121319', outline:'none', background:'#F9FAFB', resize:'vertical', boxSizing:'border-box', fontFamily:'inherit' }}/>
+            </div>
+            <button style={{ width:'100%', padding:'13px 24px', borderRadius:999, background:'#0B1929', color:'#fff', fontWeight:800, fontSize:15, border:'none', cursor:'pointer', boxShadow:'0 4px 20px rgba(0,0,0,0.15)' }}>
+              Send Message →
+            </button>
+          </motion.div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14, marginTop:20 }}>
+            {[{ icon:'💬', label:'Live Chat', val:'Available 24/7' },{ icon:'📧', label:'Email', val:'support@ecmarketpro.in' },{ icon:'📞', label:'WhatsApp', val:'+91 98765 43210' }].map(c => (
+              <div key={c.label} style={{ textAlign:'center', padding:'16px 12px', background:'#F9FAFB', borderRadius:14, border:'1px solid #E5E7EB' }}>
+                <div style={{ fontSize:22, marginBottom:6 }}>{c.icon}</div>
+                <p style={{ fontSize:10, color:'#9CA3AF', margin:'0 0 2px', fontWeight:600, textTransform:'uppercase', letterSpacing:0.5 }}>{c.label}</p>
+                <p style={{ fontSize:12, color:'#121319', margin:0, fontWeight:700 }}>{c.val}</p>
+              </div>
             ))}
           </div>
         </div>
