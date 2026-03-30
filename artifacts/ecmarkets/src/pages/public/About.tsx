@@ -23,13 +23,6 @@ const VALUES = [
   { icon: TrendingUp, color: '#F7931A', bg: 'rgba(247,147,26,0.08)', title: 'Transparency First', desc: 'No hidden fees, no surprise charges. Every spread, every commission, every condition is visible and published — because you deserve full clarity.' },
 ];
 
-const TEAM = [
-  { name: 'Aravind Krishnan', role: 'CEO & Co-Founder', desc: '15+ years in global forex markets. Former VP at a leading UAE investment bank.', initials: 'AK', color: '#1F77B4' },
-  { name: 'Priya Sharma', role: 'Chief Risk Officer', desc: 'Expert in financial risk management with 12 years at tier-1 institutions.', initials: 'PS', color: '#16A34A' },
-  { name: 'Mohammed Al-Farsi', role: 'Head of Operations', desc: 'UAE-based operations expert, ensuring regulatory compliance and smooth service.', initials: 'MF', color: '#7C3AED' },
-  { name: 'Rahul Gupta', role: 'Head of Technology', desc: 'Built and scaled trading infrastructure for 10 Lakh+ concurrent users.', initials: 'RG', color: '#F7931A' },
-];
-
 const MILESTONES = [
   { year: '2018', title: 'Founded in UAE', desc: 'ECMarket Pro launched in Dubai with a mission to democratise professional trading for Indian and global traders.' },
   { year: '2019', title: '1 Lakh Traders', desc: 'Reached 1 lakh registered traders, proving the demand for transparent, low-cost forex trading.' },
@@ -141,30 +134,6 @@ export function About() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* LEADERSHIP TEAM */}
-      <section style={{ background: '#F5F5F5', padding: '80px 16px' }}>
-        <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} style={{ textAlign: 'center', marginBottom: 52 }}>
-            <motion.h2 variants={fadeUp} style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 900, color: '#121319', marginBottom: 8 }}>Leadership Team</motion.h2>
-            <motion.p variants={fadeUp} style={{ color: '#6B7280', maxWidth: 440, margin: '0 auto' }}>Experienced professionals from top financial institutions.</motion.p>
-          </motion.div>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
-            {TEAM.map((member, i) => (
-              <motion.div key={i} variants={fadeUp} whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(0,0,0,0.09)' }}
-                style={{ background: '#fff', borderRadius: 22, padding: 28, border: '1px solid #E5E7EB', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.04)', transition: 'all 0.25s' }}>
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: member.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 20, fontWeight: 900, color: '#fff' }}>
-                  {member.initials}
-                </div>
-                <h3 style={{ fontSize: 16, fontWeight: 800, color: '#121319', marginBottom: 4 }}>{member.name}</h3>
-                <p style={{ fontSize: 12, fontWeight: 700, color: member.color, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 }}>{member.role}</p>
-                <p style={{ fontSize: 12.5, color: '#6B7280', lineHeight: 1.65, margin: 0 }}>{member.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </section>
 

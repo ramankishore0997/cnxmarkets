@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { PublicLayout } from '@/components/layout/PublicLayout';
-import { Mail, MapPin, Phone, Send, Clock, MessageSquare, Globe, ChevronDown, ArrowRight } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, Clock, ChevronDown, ArrowRight } from 'lucide-react';
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55 } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.09 } } };
@@ -22,10 +22,7 @@ export function Contact() {
   };
 
   const CHANNELS = [
-    { icon: <MessageSquare size={22}/>, color: '#1F77B4', bg: 'rgba(31,119,180,0.08)', title: 'Live Chat', detail: 'Available 24/7', sub: 'Average response < 2 min', action: 'Start Chat' },
     { icon: <Mail size={22}/>, color: '#16A34A', bg: 'rgba(22,163,74,0.08)', title: 'Email Support', detail: 'support@ecmarketpro.in', sub: 'Response within 1 hour', action: 'Send Email' },
-    { icon: <Phone size={22}/>, color: '#7C3AED', bg: 'rgba(124,58,237,0.08)', title: 'WhatsApp', detail: '+91 98765 43210', sub: 'Mon-Sat, 9AM–9PM IST', action: 'WhatsApp Us' },
-    { icon: <Globe size={22}/>, color: '#F7931A', bg: 'rgba(247,147,26,0.08)', title: 'Telegram', detail: '@ecmarketpro', sub: 'Join our community channel', action: 'Join Channel' },
   ];
 
   return (
